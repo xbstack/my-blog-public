@@ -1,0 +1,18 @@
+# XBSTACK Permanent Redirects (Old to New Architecture)
+
+# 1. 技术栈迁移
+/stack/*          /ai/:splat          301
+/stack            /ai                 301
+
+# 2. 投资/理财迁移
+# /horizon/*        /investing/:splat   301
+/horizon          /investing          301
+/guides/compound-interest/*  /investing/compound/:splat  301
+
+# 3. 生活/影像迁移
+# /lens/*           /life/:splat        301
+/lens             /life               301
+
+# 4. 其他历史遗留 (如有)
+/pages/future     /investing/fire     301
+/future           /investing/fire     301

@@ -1,0 +1,3 @@
+# AltStack Adsense Configuration
+# Once approved, replace the line below with your own publisher ID:
+# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0

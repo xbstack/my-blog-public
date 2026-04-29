@@ -1,0 +1,9 @@
+# XBSTACK Final Robots.txt (Frozen Version)
+# Optimized for xbstack.com
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://www.xbstack.com/sitemap-index.xml

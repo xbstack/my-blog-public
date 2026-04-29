@@ -1,0 +1,24 @@
+# Cloudflare Pages Headers
+# 激进缓存静态资源 (Hash过的文件名)
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# 字体文件
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# 图片资源 (稍微短一点，以便更替)
+/assets/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+# HTML 文件 (不缓存，确保内容实时性)
+/*
+  ! Cache-Control
+  Cache-Control: public, max-age=0, must-revalidate
+
+# 安全头 (Security Headers)
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
