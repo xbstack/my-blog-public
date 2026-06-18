@@ -1,0 +1,234 @@
+# XBSTACK Permanent Redirects (V6.1 SEO Architecture)
+
+# 0. 全局扁平化迁移与规范化
+/index.html       /                   301
+/blog/            /archive/           301
+/blog/*           /:splat/            301
+
+# 1. 技术栈与架构迁移 (彻底整合到 /ai/)
+/stack/           /ai/                301
+/stack/*          /ai/:splat/         301
+/stack            /ai/                301
+
+# 2. 投资/理财迁移
+# /horizon/         /investing/         301
+# /horizon/*        /investing/:splat/  301
+# /horizon          /investing/         301
+
+# [XBSTACK 6.6] 投资文章大合并 (77 合 3)：重定向旧 URL 到基石长文
+/investing/100k-plan/                                   /investing/programmer-fire-system/            301
+/investing/2026-vision/                                 /investing/ultimate-compounding-guide/        301
+/investing/advanced-tips/                               /investing/ultimate-compounding-guide/        301
+/investing/annual-truth/                                /investing/ultimate-compounding-guide/        301
+/investing/asset-allocation-barbell/                    /investing/ultimate-compounding-guide/        301
+/investing/asset-allocation/                            /investing/ultimate-compounding-guide/        301
+/investing/automated-investment-logic/                  /investing/ultimate-compounding-guide/        301
+/investing/best-calculator/                             /investing/ultimate-compounding-guide/        301
+/investing/core-logic-of-compounding/                   /investing/ultimate-compounding-guide/        301
+/investing/deep-dive/                                   /investing/ultimate-compounding-guide/        301
+/investing/entropy-and-compounding/                     /investing/ultimate-compounding-guide/        301
+/investing/etf-drip-power/                              /investing/ultimate-compounding-guide/        301
+/investing/full-stack-engineer-35-years-old-financial-freedom/ /investing/programmer-fire-system/            301
+/investing/high-dividend-yield-compounding-strategy/    /investing/ultimate-compounding-guide/        301
+/investing/how-long-to-financial-freedom-calculator/    /investing/programmer-fire-system/            301
+/investing/how-long-to-reach-one-million-target/        /investing/programmer-fire-system/            301
+/investing/how-to-calculate-annualized-return-standard/ /investing/ultimate-compounding-guide/        301
+/investing/how-to-invest-100k-best-strategy/            /investing/programmer-fire-system/            301
+/investing/index-funds-comparison/                      /investing/ultimate-compounding-guide/        301
+/investing/invest-100k/                                 /investing/programmer-fire-system/            301
+/investing/is-compound-interest-investment-reliable-truth/ /investing/ultimate-compounding-guide/        301
+/investing/launch-plan/                                 /investing/programmer-fire-system/            301
+/investing/long-term-vs-trading/                        /investing/ultimate-compounding-guide/        301
+/investing/long-termism-algorithm/                      /investing/ultimate-compounding-guide/        301
+/investing/mastering-compound-interest-logic/           /investing/ultimate-compounding-guide/        301
+/investing/math-of-compounding/                         /investing/ultimate-compounding-guide/        301
+/investing/max-drawdown-math/                           /investing/ultimate-compounding-guide/        301
+/investing/monte-carlo-simulation-compounding-risk/     /investing/ultimate-compounding-guide/        301
+/investing/monthly-2000-30y/                            /investing/mastering-dca-strategy/            301
+/investing/monthly-2000/                                /investing/mastering-dca-strategy/            301
+/investing/monthly-investment-2000-returns-forecast/    /investing/mastering-dca-strategy/            301
+/investing/negative-compounding-risks/                  /investing/ultimate-compounding-guide/        301
+/investing/one-million/                                 /investing/programmer-fire-system/            301
+/investing/optimize/                                    /investing/ultimate-compounding-guide/        301
+/investing/passive-income-sources-financial-freedom-guide/ /investing/programmer-fire-system/            301
+/investing/passive-income-system/                       /investing/ultimate-compounding-guide/        301
+/investing/passive-income/                              /investing/ultimate-compounding-guide/        301
+/investing/path-to-ten-percent-annual/                  /investing/ultimate-compounding-guide/        301
+/investing/portfolio/                                   /investing/ultimate-compounding-guide/        301
+/investing/programmer-retirement-plan/                  /investing/programmer-fire-system/            301
+/investing/proper-simulation-method/                    /investing/ultimate-compounding-guide/        301
+/investing/psychology-of-compounding/                   /investing/ultimate-compounding-guide/        301
+/investing/psychology/                                  /investing/ultimate-compounding-guide/        301
+/investing/real-case-doubling-assets/                   /investing/ultimate-compounding-guide/        301
+/investing/reliability/                                 /investing/ultimate-compounding-guide/        301
+/investing/retirement-plan-simulation/                  /investing/programmer-fire-system/            301
+/investing/return-table/                                /investing/ultimate-compounding-guide/        301
+/investing/review-cycle-turnaround-miss/                /investing/ultimate-compounding-guide/        301
+/investing/roadmap-to-ten-million/                      /investing/programmer-fire-system/            301
+/investing/simple-vs-compound-interest-difference/      /investing/ultimate-compounding-guide/        301
+/investing/sp500-nasdaq-buffett-compounding-benchmarks/ /investing/ultimate-compounding-guide/        301
+/investing/ten-times-growth-simulation/                 /investing/ultimate-compounding-guide/        301
+/investing/the-pain-of-first-hundred-thousand-compounding/ /investing/ultimate-compounding-guide/        301
+/investing/three-in-one-system/                         /investing/ultimate-compounding-guide/        301
+/investing/tools-comparison-guide/                      /investing/ultimate-compounding-guide/        301
+/investing/top-5-investment-tools/                      /investing/ultimate-compounding-guide/        301
+/investing/traps/                                       /investing/ultimate-compounding-guide/        301
+/investing/tutorial/                                    /investing/ultimate-compounding-guide/        301
+/investing/two-sessions-asset-allocation/               /investing/ultimate-compounding-guide/        301
+/investing/ultimate/                                    /investing/ultimate-compounding-guide/        301
+/investing/us-stocks-compounding-nvda/                  /investing/ultimate-compounding-guide/        301
+/investing/user-guide/                                  /investing/ultimate-compounding-guide/        301
+/investing/visualization-vs-excel/                      /investing/ultimate-compounding-guide/        301
+/investing/vs-simple/                                   /investing/ultimate-compounding-guide/        301
+/investing/wealth-latency-penalty-catch-up/             /investing/ultimate-compounding-guide/        301
+/investing/what-is-compound-interest-pillar/            /investing/ultimate-compounding-guide/        301
+/investing/what-is-compound/                            /investing/ultimate-compounding-guide/        301
+/investing/why-i-built-lunest/                          /investing/ultimate-compounding-guide/        301
+
+# [XBSTACK 6.5] Legacy Redirects (Redundant)
+/investing/compound-interest-code-tutorial/           /investing/ultimate-compounding-guide/   301
+/investing/compound-interest-deep-dive/               /investing/ultimate-compounding-guide/   301
+/investing/compound-interest-formula-mathematical-source-code/  /investing/ultimate-compounding-guide/   301
+/investing/compound-power/                            /investing/ultimate-compounding-guide/   301
+/investing/compound-vs-simple-interest/               /investing/ultimate-compounding-guide/   301
+/investing/compound-vs-simple/                        /investing/ultimate-compounding-guide/   301
+/investing/compound-wealth-flipping-system/           /investing/ultimate-compounding-guide/   301
+
+/investing/dca-logic/                                 /investing/mastering-dca-strategy/       301
+/investing/dca-lump-sum/                              /investing/mastering-dca-strategy/       301
+/investing/dca-strategy-math/                         /investing/mastering-dca-strategy/       301
+/investing/dca-strategy-wealth-growth-guide/          /investing/mastering-dca-strategy/       301
+/investing/dca-strategy/                              /investing/mastering-dca-strategy/       301
+/investing/dca-vs-ls/                                 /investing/mastering-dca-strategy/       301
+/investing/dca-vs-lump-sum-investment-strategy/       /investing/mastering-dca-strategy/       301
+/investing/dca-vs-lumpsum-simulation/                 /investing/mastering-dca-strategy/       301
+/investing/dca-vs-once/                               /investing/mastering-dca-strategy/       301
+
+/guides/compound-interest/   /compound-interest/   301
+/guides/compound-interest/*  /compound-interest/:splat/  301
+
+# 3. 生活/影像迁移
+/life/review-kunlun-perfect-miss/        /investing/review-kunlun-perfect-miss/   301
+/lens/            /life/              301
+/lens/*           /life/:splat/       301
+/lens             /life/              301
+
+# 4. 标签重定向与规范化
+/tag/*            /tags/:splat        301
+/tag              /tags/              301
+
+# 5. 旧栏目 301 重定向
+/ai开发/           /ai/                301
+/ai开发           /ai/                301
+/投资复利/         /investing/         301
+/投资复利         /investing/         301
+/项目/             /tools/             301
+/项目             /tools/             301
+/生活/             /life/              301
+/生活             /life/              301
+
+# 6. 其他历史遗留
+/pages/future/    /investing/fire/    301
+/pages/future     /investing/fire/    301
+/future/          /investing/fire/    301
+/future           /investing/fire/    301
+
+# 7. 尾斜杠规范化 (301 重定向)
+/ai               /ai/                301
+/life             /life/              301
+/investing        /investing/         301
+/tools            /tools/             301
+/notes            /notes/             301
+/tags             /tags/              301
+/archive          /archive/           301
+
+# 8. 旧栏目及旧路由 301 重定向 (404 路径筛选优化)
+/agent       /ai/agent/          301
+/agents      /ai/agent/          301
+/workflow    /ai/workflow/       301
+/workflows   /ai/workflow/       301
+/mcp         /ai/mcp/            301
+/langgraph   /ai/langgraph/      301
+/n8n         /ai/workflow/       301
+/reading     /horizon/reading/   301
+/thinking    /horizon/thinking/  301
+/outdoor     /life/outdoor/      301
+/photo       /life/photo/        301
+/photography /life/photo/        301
+/gear        /life/gear/         301
+
+# 9. 跨 Hub 历史遗留文章精准重定向 (防止被通配符错误重定向或 404)
+# Horizon (Investing)
+/blog/antifragile-reading-notes                        /investing/antifragile-reading-notes/          301
+/antifragile-reading-notes                             /investing/antifragile-reading-notes/          301
+/blog/hackers-and-painters                             /investing/hackers-and-painters/               301
+/hackers-and-painters                                  /investing/hackers-and-painters/               301
+/blog/reading-system-for-independent-developer         /investing/reading-system-for-independent-developer/ 301
+/reading-system-for-independent-developer              /investing/reading-system-for-independent-developer/ 301
+/blog/poor-charlies-almanack                           /investing/poor-charlies-almanack/             301
+/poor-charlies-almanack                                /investing/poor-charlies-almanack/             301
+/blog/programmer-fire-system                           /investing/programmer-fire-system/             301
+/programmer-fire-system                                /investing/programmer-fire-system/             301
+/blog/review-tfc-sold-too-early                        /investing/review-tfc-sold-too-early/          301
+/review-tfc-sold-too-early                             /investing/review-tfc-sold-too-early/          301
+/blog/the-great-game-reading-notes                     /investing/the-great-game-reading-notes/       301
+/the-great-game-reading-notes                          /investing/the-great-game-reading-notes/       301
+/blog/review-linear-thinking-trap                      /investing/review-linear-thinking-trap/        301
+/review-linear-thinking-trap                           /investing/review-linear-thinking-trap/        301
+/blog/ultimate-compounding-guide                       /investing/ultimate-compounding-guide/          301
+/ultimate-compounding-guide                            /investing/ultimate-compounding-guide/          301
+/blog/leek-self-cultivation-01                         /investing/leek-self-cultivation-01/           301
+/leek-self-cultivation-01                              /investing/leek-self-cultivation-01/           301
+/blog/2025-investment-review                           /investing/2025-investment-review/             301
+/2025-investment-review                                /investing/2025-investment-review/             301
+/blog/mastering-dca-strategy                           /investing/mastering-dca-strategy/             301
+/mastering-dca-strategy                                /investing/mastering-dca-strategy/             301
+/blog/principles-notes                                 /investing/principles-notes/                   301
+/principles-notes                                      /investing/principles-notes/                   301
+/blog/review-kunlun-perfect-miss                       /investing/review-kunlun-perfect-miss/         301
+/review-kunlun-perfect-miss                            /investing/review-kunlun-perfect-miss/         301
+/blog/review-psychological-warfare                     /investing/review-psychological-warfare/       301
+/review-psychological-warfare                          /investing/review-psychological-warfare/       301
+/blog/naval-ravikant                                   /investing/naval-ravikant/                      301
+/naval-ravikant                                        /investing/naval-ravikant/                      301
+
+# Lens (Life)
+/blog/nas-deployment-tutorial                          /life/nas-deployment-tutorial/                 301
+/nas-deployment-tutorial                               /life/nas-deployment-tutorial/                 301
+/blog/self-hosted-ai-workflow-infrastructure          /life/self-hosted-ai-workflow-infrastructure/  301
+/self-hosted-ai-workflow-infrastructure                /life/self-hosted-ai-workflow-infrastructure/  301
+/blog/video-climbing                                   /life/video-climbing/                          301
+/video-climbing                                        /life/video-climbing/                          301
+/blog/hhkb-review                                      /life/hhkb-review/                             301
+/hhkb-review                                           /life/hhkb-review/                             301
+/blog/lens-forest                                      /life/lens-forest/                             301
+/lens-forest                                           /life/lens-forest/                             301
+/blog/weining-caohai-reset                             /life/weining-caohai-reset/                    301
+/weining-caohai-reset                                  /life/weining-caohai-reset/                    301
+/blog/habasnow                                         /life/habasnow/                                301
+/habasnow                                              /life/habasnow/                                301
+/blog/guizhou-hidden-trails                            /life/guizhou-hidden-trails/                   301
+/guizhou-hidden-trails                                 /life/guizhou-hidden-trails/                   301
+/blog/lens-city-light                                  /life/lens-city-light/                         301
+/lens-city-light                                       /life/lens-city-light/                         301
+/blog/altstack-v1                                      /life/altstack-v1/                             301
+/altstack-v1                                           /life/altstack-v1/                              301
+/blog/gaopo-cloud-top-offline                          /life/gaopo-cloud-top-offline/                 301
+/gaopo-cloud-top-offline                               /life/gaopo-cloud-top-offline/                 301
+/blog/high-altitude-edc                                /life/high-altitude-edc/                       301
+/high-altitude-edc                                     /life/high-altitude-edc/                       301
+/blog/hhkb-pro-hybrid                                  /life/hhkb-pro-hybrid/                         301
+/hhkb-pro-hybrid                                       /life/hhkb-pro-hybrid/                          301
+/blog/nas-private-ai-center                            /life/nas-private-ai-center/                   301
+/nas-private-ai-center                                 /life/nas-private-ai-center/                   301
+/blog/nas-deployment-master-guide                      /life/nas-deployment-master-guide/             301
+/nas-deployment-master-guide                           /life/nas-deployment-master-guide/             301
+/blog/city-drone                                       /life/city-drone/                              301
+/city-drone                                            /life/city-drone/                              301
+/blog/lens-snow-peak                                   /life/lens-snow-peak/                          301
+/lens-snow-peak                                        /life/lens-snow-peak/                          301
+/blog/yala-summit                                      /life/yala-summit/                             301
+/yala-summit                                           /life/yala-summit/                              301
+/blog/guanling-ice-mortar-preview                      /life/guanling-ice-mortar-preview/             301
+/guanling-ice-mortar-preview                           /life/guanling-ice-mortar-preview/             301
+

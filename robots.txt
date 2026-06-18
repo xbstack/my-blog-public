@@ -1,0 +1,15 @@
+# XBSTACK Robots.txt
+# Standard SEO Rules for xbstack.com
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /category/
+Disallow: /archive/
+Disallow: /search/
+Disallow: /notes/
+Disallow: /practice/
+Disallow: /drafts/
+
+Sitemap: https://www.xbstack.com/sitemap.xml
