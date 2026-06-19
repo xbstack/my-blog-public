@@ -13,3 +13,40 @@ Disallow: /practice/
 Disallow: /drafts/
 
 Sitemap: https://www.xbstack.com/sitemap.xml
+
+# ============================================================
+# GEO: AI Crawler Explicit Allow Rules
+# 显式允许主流 AI 爬虫抓取，配合 GEO 优化体系
+# ============================================================
+
+# OpenAI ChatGPT
+User-agent: GPTBot
+Allow: /
+
+# Anthropic Claude
+User-agent: ClaudeBot
+Allow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+
+# Google Gemini / SGE
+User-agent: Google-Extended
+Allow: /
+
+# Meta AI
+User-agent: FacebookBot
+Allow: /
+
+# Microsoft Copilot / Bing AI
+User-agent: Bingbot
+Allow: /
+
+# Bytedance AI (抖音/豆包)
+User-agent: Bytespider
+Allow: /
+
+# Common Crawler (AI 训练数据集)
+User-agent: CCBot
+Allow: /
