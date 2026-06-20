@@ -1,5 +1,12 @@
 # XBSTACK Permanent Redirects (V6.1 SEO Architecture)
 
+# 00. NAS Admin & API Backends
+/admin             https://admin.xbstack.com/admin/login     302
+/admin/*           https://admin.xbstack.com/admin/:splat    302
+/api/*             https://api.xbstack.com/api/:splat        200
+/assets/uploads/*  https://api.xbstack.com/assets/uploads/:splat  200
+/uploads/*         https://api.xbstack.com/uploads/:splat    200
+
 # 0. 全局扁平化迁移与规范化
 /index.html       /                   301
 /blog/            /archive/           301
