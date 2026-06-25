@@ -5,6 +5,13 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /api/
+Disallow: /preview/
+Disallow: /draft/
+Disallow: /prototype/
+Disallow: /search?*
+Disallow: /*?utm_*
+Disallow: /*?fbclid=*
+Disallow: /*?gclid=*
 Disallow: /category/
 Disallow: /archive/
 Disallow: /search/
@@ -12,7 +19,7 @@ Disallow: /notes/
 Disallow: /practice/
 Disallow: /drafts/
 
-Sitemap: https://www.xbstack.com/sitemap.xml
+Sitemap: https://www.xbstack.com/sitemap-index.xml
 
 # ============================================================
 # GEO: AI Crawler Explicit Allow Rules
