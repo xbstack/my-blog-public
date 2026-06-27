@@ -1,59 +1,17 @@
 # XBSTACK Robots.txt
-# Standard SEO Rules for xbstack.com
+# Thin utility pages such as /tags/ and /search/ are not blocked here, because they carry noindex,follow and must remain crawlable for de-indexing.
 
 User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /api/
+Disallow: /drafts/
+Disallow: /go/
 Disallow: /preview/
 Disallow: /draft/
 Disallow: /prototype/
-Disallow: /search?*
 Disallow: /*?utm_*
 Disallow: /*?fbclid=*
 Disallow: /*?gclid=*
-Disallow: /category/
-Disallow: /archive/
-Disallow: /search/
-Disallow: /notes/
-Disallow: /practice/
-Disallow: /drafts/
 
 Sitemap: https://www.xbstack.com/sitemap-index.xml
-
-# ============================================================
-# GEO: AI Crawler Explicit Allow Rules
-# 显式允许主流 AI 爬虫抓取，配合 GEO 优化体系
-# ============================================================
-
-# OpenAI ChatGPT
-User-agent: GPTBot
-Allow: /
-
-# Anthropic Claude
-User-agent: ClaudeBot
-Allow: /
-
-# Perplexity AI
-User-agent: PerplexityBot
-Allow: /
-
-# Google Gemini / SGE
-User-agent: Google-Extended
-Allow: /
-
-# Meta AI
-User-agent: FacebookBot
-Allow: /
-
-# Microsoft Copilot / Bing AI
-User-agent: Bingbot
-Allow: /
-
-# Bytedance AI (抖音/豆包)
-User-agent: Bytespider
-Allow: /
-
-# Common Crawler (AI 训练数据集)
-User-agent: CCBot
-Allow: /
