@@ -47,6 +47,5 @@ Disallow: /prototype/
 Disallow: /go/
 
 Sitemap: https://www.xbstack.com/sitemap-index.xml
-Sitemap: https://www.xbstack.com/sitemap.xml
 # LLM index: https://www.xbstack.com/llms.txt
 # LLM full index: https://www.xbstack.com/llms-full.txt

@@ -10,7 +10,11 @@
 # 0. 全局扁平化迁移与规范化
 /index.html       /                   301
 /blog/            /archive/           301
-/blog/*           /:splat/            301
+# 禁用危险的宽泛 /blog/* 迁移规则。
+# Cloudflare Pages _redirects 按顺序命中，过早使用 /blog/* -> /:splat/ 会抢在后面的精准旧文规则之前，
+# 把 /blog/<old-slug> 转到 /<old-slug>/，大量旧文章会落到不存在的根路径，导致 GSC 404 / 重定向错误暴增。
+# 后续应按 Search Console 导出的具体 URL 逐条补精准 301，而不是用这个宽泛通配规则兜底。
+# /blog/*           /:splat/            301
 
 # 1. 技术栈与架构迁移 (彻底整合到 /ai/)
 /stack/           /ai/                301
@@ -157,9 +161,11 @@
 /mcp         /ai/mcp/            301
 /langgraph   /ai/langgraph/      301
 /n8n         /ai/workflow/       301
-/reading     /horizon/reading/   301
-/thinking    /horizon/thinking/  301
-/outdoor     /life/outdoor/      301
+/reading     /life/reading/      301
+/thinking    /investing/thoughts/ 301
+/horizon/thinking/ /investing/thoughts/ 301
+/horizon/thinking  /investing/thoughts/ 301
+/outdoor     /life/hiking/       301
 /photo       /life/photo/        301
 /photography /life/photo/        301
 /gear        /life/gear/         301
