@@ -1,6 +1,6 @@
 # XBSTACK Full LLM Index
 
-Last updated: 2026-07-03
+Last updated: 2026-07-08
 Canonical site: https://www.xbstack.com/
 Author: 小白 / Xiaobai
 Primary language: zh-CN
@@ -31,6 +31,7 @@ Blocked surfaces:
 - Contact: https://www.xbstack.com/contact/
 - AI Hub: https://www.xbstack.com/ai/
 - Tools: https://www.xbstack.com/tools/
+- Growth Lab: https://www.xbstack.com/growth/
 - Newsletter: https://www.xbstack.com/newsletter/
 - Search: https://www.xbstack.com/search/
 - Sitemap index: https://www.xbstack.com/sitemap-index.xml
@@ -56,14 +57,17 @@ Blocked surfaces:
 - Web Builder Log: https://www.xbstack.com/ai/web/
   Summary: XBSTACK website operations, Astro, Cloudflare, Search Console, 404 recovery, sitemap, robots, Pagefind, content audit, and CTR optimization.
 
-- AI Tools: https://www.xbstack.com/ai/tools/
-  Summary: AI development toolbox for prompt engineering, debugging, deployment, automation, and engineering workflows.
-
 - AI Tools Lab: https://www.xbstack.com/ai/tools-lab/
   Summary: AI model and tool review hub for real-task testing of model updates, coding tools, AI search, multimodal generation, edge AI, and world model signals.
 
-- AI Notes: https://www.xbstack.com/ai/notes/
-- AI Practice: https://www.xbstack.com/ai/practice/
+- Model Updates: https://www.xbstack.com/ai/model-updates/
+  Summary: Real-task review hub for GPT, Gemini, Claude, Qwen, DeepSeek, Kimi and other model updates.
+
+- Local AI: https://www.xbstack.com/ai/local-ai/
+  Summary: On-device AI, Core ML, ONNX, llama.cpp, NPU, mobile performance, privacy and App integration.
+
+- Growth Lab: https://www.xbstack.com/growth/
+  Summary: SEO, GEO, Search Console, Analytics, Astro, Cloudflare, 404 recovery, UTM distribution and content operations.
 
 ## LangGraph canonical articles
 
@@ -143,6 +147,9 @@ Blocked surfaces:
 
 - UTM Builder: https://www.xbstack.com/tools/utm-builder/
   Summary: UTM link generator for tracking off-site content distribution.
+
+- Templates: https://www.xbstack.com/tools/templates/
+  Summary: AI Workflow, Prompt, Agent, MCP, n8n, distribution and content operations templates.
 
 - Gear Library: https://www.xbstack.com/tools/gear-library/
   Summary: Gear and product notes for long-term tools and outdoor equipment.

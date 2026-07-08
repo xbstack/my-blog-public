@@ -3,6 +3,7 @@
 # Public content is open to search engines, AI search, RAG grounding,
 # user-triggered AI browsing, and reference-style AI answers.
 # Private, admin, API, draft, preview, prototype, and outbound redirect surfaces stay blocked.
+# Public growth and conversion hubs include /growth/, /ai/tools-lab/, /ai/model-updates/, /ai/local-ai/, /tools/utm-builder/ and /tools/templates/.
 #
 # IMPORTANT: If Cloudflare Managed robots.txt / AI crawler blocking is enabled,
 # Cloudflare may prepend Disallow rules for AI crawlers before this file.

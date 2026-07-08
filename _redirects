@@ -151,6 +151,13 @@
 /ai/langgraph-human-in-the-loop-*                     /ai/langgraph-human-in-the-loop-approval/ 301
 
 # 5. 旧栏目 301 重定向
+# AI 二级旧栏目治理：顶部导航不再暴露 notes/practice/tools，统一收敛到有效专题。
+/ai/tools          /ai/tools-lab/      301
+/ai/tools/         /ai/tools-lab/      301
+/ai/practice       /ai/                301
+/ai/practice/      /ai/                301
+/ai/notes          /ai/                301
+/ai/notes/         /ai/                301
 /ai开发/           /ai/                301
 /ai开发           /ai/                301
 /投资复利/         /investing/         301

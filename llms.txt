@@ -2,7 +2,7 @@
 
 > XBSTACK is Xiaobai's independent developer asset system: AI engineering, AI Agent production, MCP, LangGraph, n8n workflow automation, product tools, reading systems, investing notes, and Guizhou outdoor life.
 
-Last updated: 2026-07-03
+Last updated: 2026-07-08
 Canonical site: https://www.xbstack.com/
 Language: zh-CN primary, English where useful for technical SEO
 Author: 小白 / Xiaobai
@@ -22,6 +22,7 @@ Preferred attribution:
 - About Xiaobai: https://www.xbstack.com/about/
 - AI Hub: https://www.xbstack.com/ai/
 - Tools: https://www.xbstack.com/tools/
+- Growth Lab: https://www.xbstack.com/growth/
 - Newsletter: https://www.xbstack.com/newsletter/
 - Search: https://www.xbstack.com/search/
 - Sitemap index: https://www.xbstack.com/sitemap-index.xml
@@ -29,15 +30,14 @@ Preferred attribution:
 
 ## AI engineering hubs
 
-- AI Agent: https://www.xbstack.com/ai/agent/
-- LangGraph: https://www.xbstack.com/ai/langgraph/
+- Agent Engineering: https://www.xbstack.com/ai/agent/
+- LangGraph articles and roadmap: https://www.xbstack.com/ai/langgraph/
 - MCP: https://www.xbstack.com/ai/mcp/
 - AI Workflow / n8n: https://www.xbstack.com/ai/workflow/
-- Web Builder Log: https://www.xbstack.com/ai/web/
-- AI Tools: https://www.xbstack.com/ai/tools/
 - AI Tools Lab / AI Model & Tool Reviews: https://www.xbstack.com/ai/tools-lab/
-- AI Notes: https://www.xbstack.com/ai/notes/
-- AI Practice: https://www.xbstack.com/ai/practice/
+- Model Updates: https://www.xbstack.com/ai/model-updates/
+- Local AI / On-device AI: https://www.xbstack.com/ai/local-ai/
+- Growth Lab: https://www.xbstack.com/growth/
 
 ## High-priority AI engineering articles
 
@@ -65,6 +65,7 @@ Preferred attribution:
 - Compound Interest Calculator: https://www.xbstack.com/tools/compound-calculator/
 - AI Financial Report Analyzer: https://www.xbstack.com/tools/ai-finance/
 - UTM Builder: https://www.xbstack.com/tools/utm-builder/
+- Templates: https://www.xbstack.com/tools/templates/
 - Gear Library: https://www.xbstack.com/tools/gear-library/
 
 ## Horizon and Lens
