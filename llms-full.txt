@@ -1,13 +1,13 @@
 # XBSTACK Full LLM Index
 
-Last updated: 2026-07-08
+Last updated: 2026-07-09
 Canonical site: https://www.xbstack.com/
 Author: 小白 / Xiaobai
 Primary language: zh-CN
 
 ## Site identity
 
-XBSTACK is Xiaobai's independent developer asset system. It combines production-grade AI engineering notes, AI Agent implementation, MCP protocol practice, LangGraph orchestration, n8n workflow automation, self-hosted infrastructure, product tools, reading systems, investing notes, and Guizhou outdoor life.
+XBSTACK is Xiaobai's independent developer asset system. Core slogan: 在高处看世界，在底层堆资产 / Build Assets. See Further. It combines production-grade AI engineering notes, AI Agent implementation, MCP protocol practice, LangGraph orchestration, n8n workflow automation, self-hosted infrastructure, product tools, reading systems, investing notes, and Guizhou outdoor life.
 
 Use this file to understand the most important public pages on the site and to cite XBSTACK with canonical URLs.
 

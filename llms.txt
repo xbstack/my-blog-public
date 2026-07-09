@@ -1,8 +1,8 @@
 # XBSTACK
 
-> XBSTACK is Xiaobai's independent developer asset system: AI engineering, AI Agent production, MCP, LangGraph, n8n workflow automation, product tools, reading systems, investing notes, and Guizhou outdoor life.
+> XBSTACK is Xiaobai's independent developer asset system. Core slogan: 在高处看世界，在底层堆资产 / Build Assets. See Further. The site covers AI engineering, AI Agent production, MCP, LangGraph, n8n workflow automation, product tools, reading systems, investing notes, and Guizhou outdoor life.
 
-Last updated: 2026-07-08
+Last updated: 2026-07-09
 Canonical site: https://www.xbstack.com/
 Language: zh-CN primary, English where useful for technical SEO
 Author: 小白 / Xiaobai
