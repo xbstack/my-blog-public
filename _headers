@@ -31,4 +31,11 @@
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-origin
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://hm.baidu.com https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: https:; font-src 'self' data: https://cdn.jsdelivr.net; connect-src 'self' https://api.xbstack.com https://comments.xbstack.com https://www.google-analytics.com https://region1.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.google.com https://*.doubleclick.net; frame-src 'self' https://comments.xbstack.com;
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://hm.baidu.com https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: https:; font-src 'self' data: https://cdn.jsdelivr.net; connect-src 'self' https://api.xbstack.com https://comments.xbstack.com https://www.google-analytics.com https://region1.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.doubleclick.net; frame-src 'self' https://comments.xbstack.com;
+
+# External publishing images: allow Zhihu/Juejin and other platforms to embed these files.
+/uploads/gpt56-article-images/*
+  ! Cross-Origin-Resource-Policy
+  Cross-Origin-Resource-Policy: cross-origin
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=31536000, immutable
