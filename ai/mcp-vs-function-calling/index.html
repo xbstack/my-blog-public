@@ -6,7 +6,7 @@
       };
       applyTheme();
       document.addEventListener("astro:page-load", applyTheme);
-    </script><title>MCP vs Function Calling：区别、适用场景、什么时候该用 MCP？ | AI - XBSTACK</title><meta name="description" content="MCP vs Function Calling 怎么选？本文用 Function Calling、MCP、API Gateway 三列表格对比工具发现、资源接入、权限治理、部署复杂度和真实项目适用场景。"><meta name="keywords" content="mcp vs function calling, mcp function calling difference, model context protocol, openai function calling, ai agent tool use, mcp vs tools, mcp vs api gateway"><link rel="preload" href="/_astro/macos2.o78GMXI4.jpg" as="image" fetchpriority="high"><link rel="preload" href="/_astro/macos2-night.CoD4YEnY.jpg" as="image" fetchpriority="high"><meta name="theme-color" content="#050608"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://www.xbstack.com/ai/mcp-vs-function-calling/"><meta property="og:title" content="MCP vs Function Calling：区别、适用场景、什么时候该用 MCP？ | AI - XBSTACK"><meta property="og:description" content="MCP vs Function Calling 怎么选？本文用 Function Calling、MCP、API Gateway 三列表格对比工具发现、资源接入、权限治理、部署复杂度和真实项目适用场景。"><meta property="og:image" content="https://www.xbstack.com/_astro/cogview4-cad35af5.Dx2lS8PS.png"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/ai/mcp-vs-function-calling/"><meta property="twitter:title" content="MCP vs Function Calling：区别、适用场景、什么时候该用 MCP？ | AI - XBSTACK"><meta property="twitter:description" content="MCP vs Function Calling 怎么选？本文用 Function Calling、MCP、API Gateway 三列表格对比工具发现、资源接入、权限治理、部署复杂度和真实项目适用场景。"><meta property="twitter:image" content="https://www.xbstack.com/_astro/cogview4-cad35af5.Dx2lS8PS.png"><link rel="canonical" href="https://www.xbstack.com/ai/mcp-vs-function-calling/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Precision Tools","description":"AI finance analyzer, compound calculator, Lunest and practical product tools.","url":"https://www.xbstack.com/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Thinking","description":"Investing notes, reading system, decision system and long-term thinking.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Photography and Gear","description":"Guizhou outdoor field notes, photography, gear lab and real-life trust assets.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"About Xiaobai, the XBSTACK asset system and the slogan 在高处看世界，在底层堆资产.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"MCP vs Function Calling：区别、适用场景、什么时候该用 MCP？","description":"MCP vs Function Calling 怎么选？本文用 Function Calling、MCP、API Gateway 三列表格对比工具发现、资源接入、权限治理、部署复杂度和真实项目适用场景。","image":"https://www.xbstack.com/_astro/cogview4-cad35af5.Dx2lS8PS.png","datePublished":"2026-05-24T00:00:00.000Z","dateModified":"2026-07-06T00:00:00.000Z","author":{"@type":"Person","name":"小白","url":"https://www.xbstack.com/about"},"publisher":{"@type":"Organization","name":"XBSTACK","logo":{"@type":"ImageObject","url":"https://www.xbstack.com/favicon/favicon.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.xbstack.com/ai/mcp-vs-function-calling/"},"articleSection":"dev","keywords":["mcp vs function calling","mcp function calling difference","model context protocol","openai function calling","ai agent tool use","mcp vs tools","mcp vs api gateway"],"about":[{"@type":"Thing","name":"mcp"},{"@type":"Thing","name":"function-calling"},{"@type":"Thing","name":"ai-agent"},{"@type":"Thing","name":"orchestration"},{"@type":"Thing","name":"architecture"}],"speakable":{"@type":"SpeakableSpecification","cssSelector":[".markdown-content h2",".markdown-content p:first-of-type"]}}]}</script><meta property="article:published_time" content="Sun May 24 2026 08:00:00 GMT+0800 (China Standard Time)"><meta name="abstract" content="MCP vs Function Calling 怎么选？本文用 Function Calling、MCP、API Gateway 三列表格对比工具发现、资源接入、权限治理、部署复杂度和真实项目适用场景。"><meta name="speakable-selector" content=".markdown-content h2, .markdown-content p"><meta name="ai-content-access" content="allowed"><meta name="geo-optimized" content="true"><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script async src="https://www.googletagmanager.com/gtag/js?id=G-1J4274CPMT"></script><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
+    </script><title>MCP vs Function Calling：核心区别、选型表与真实项目怎么选 | AI - XBSTACK</title><meta name="description" content="MCP vs Function Calling 怎么选？本文从调用链、工具发现、Resources、权限边界、部署成本和 API Gateway 分工出发，给出可直接用于真实项目的选型表与组合架构。"><meta name="keywords" content="mcp vs function calling, mcp function calling difference, model context protocol, openai function calling, ai agent tool use, mcp vs tools, mcp vs api gateway"><link rel="preload" href="/_astro/macos2.o78GMXI4.jpg" as="image" fetchpriority="high"><link rel="preload" href="/_astro/macos2-night.CoD4YEnY.jpg" as="image" fetchpriority="high"><meta name="theme-color" content="#050608"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://www.xbstack.com/ai/mcp-vs-function-calling/"><meta property="og:title" content="MCP vs Function Calling：核心区别、选型表与真实项目怎么选 | AI - XBSTACK"><meta property="og:description" content="MCP vs Function Calling 怎么选？本文从调用链、工具发现、Resources、权限边界、部署成本和 API Gateway 分工出发，给出可直接用于真实项目的选型表与组合架构。"><meta property="og:image" content="https://www.xbstack.com/_astro/cogview4-cad35af5.Dx2lS8PS.png"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/ai/mcp-vs-function-calling/"><meta property="twitter:title" content="MCP vs Function Calling：核心区别、选型表与真实项目怎么选 | AI - XBSTACK"><meta property="twitter:description" content="MCP vs Function Calling 怎么选？本文从调用链、工具发现、Resources、权限边界、部署成本和 API Gateway 分工出发，给出可直接用于真实项目的选型表与组合架构。"><meta property="twitter:image" content="https://www.xbstack.com/_astro/cogview4-cad35af5.Dx2lS8PS.png"><link rel="canonical" href="https://www.xbstack.com/ai/mcp-vs-function-calling/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Precision Tools","description":"AI finance analyzer, compound calculator, Lunest and practical product tools.","url":"https://www.xbstack.com/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Thinking","description":"Investing notes, reading system, decision system and long-term thinking.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Photography and Gear","description":"Guizhou outdoor field notes, photography, gear lab and real-life trust assets.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"About Xiaobai, the XBSTACK asset system and the slogan 在高处看世界，在底层堆资产.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"MCP vs Function Calling：核心区别、选型表与真实项目怎么选","description":"MCP vs Function Calling 怎么选？本文从调用链、工具发现、Resources、权限边界、部署成本和 API Gateway 分工出发，给出可直接用于真实项目的选型表与组合架构。","image":"https://www.xbstack.com/_astro/cogview4-cad35af5.Dx2lS8PS.png","datePublished":"2026-05-24T00:00:00.000Z","dateModified":"2026-07-10T00:00:00.000Z","author":{"@type":"Person","name":"小白","url":"https://www.xbstack.com/about"},"publisher":{"@type":"Organization","name":"XBSTACK","logo":{"@type":"ImageObject","url":"https://www.xbstack.com/favicon/favicon.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.xbstack.com/ai/mcp-vs-function-calling/"},"articleSection":"dev","keywords":["mcp vs function calling","mcp function calling difference","model context protocol","openai function calling","ai agent tool use","mcp vs tools","mcp vs api gateway"],"abstract":"固定少量 API、单应用快速上线，优先 Function Calling。 多客户端复用、本地或远程资源接入、能力动态发现，考虑 MCP。 MCP 不是沙箱、权限系统或 API Gateway；这些能力仍要由 Host、Server、操作系统和网关共同实现。 真实项目常见组合是：模型使用 Function Calling，Host 通过 MCP Client 连接 MCP Server，Server 再访问受 API Gateway 保护的后端服务。","about":[{"@type":"Thing","name":"mcp"},{"@type":"Thing","name":"function-calling"},{"@type":"Thing","name":"ai-agent"},{"@type":"Thing","name":"orchestration"},{"@type":"Thing","name":"architecture"}],"speakable":{"@type":"SpeakableSpecification","cssSelector":[".markdown-content h2",".markdown-content p:first-of-type"]}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"MCP 和 Function Calling 可以同时使用吗？","acceptedAnswer":{"@type":"Answer","text":"可以，而且这是很常见的组合。模型侧仍以结构化工具调用选择动作，Host 把这些动作路由到 MCP Client，再由对应 MCP Server 执行。"}},{"@type":"Question","name":"工具只有三个，也需要搭 MCP Server 吗？","acceptedAnswer":{"@type":"Answer","text":"通常不需要。只有一个应用、三个固定接口时，直接 Function Calling 更容易开发、调试和部署。等工具需要跨客户端复用或资源边界变复杂，再引入 MCP。"}},{"@type":"Question","name":"MCP 的 Tools 和 Resources 有什么区别？","acceptedAnswer":{"@type":"Answer","text":"Tools 更像可执行动作，例如查询数据库或调用 API；Resources 更像由应用选择并注入上下文的数据，例如文件、数据库 Schema 或项目资料。具体如何展示和加入上下文由 Host 决定。"}},{"@type":"Question","name":"使用 MCP 后还要做输入校验和权限控制吗？","acceptedAnswer":{"@type":"Answer","text":"必须做。MCP 工具规范要求 Server 校验输入并实现访问控制，Client 也应对敏感操作提示确认、设置超时、记录日志并验证工具结果。"}},{"@type":"Question","name":"MCP 能自动降低 Token 成本吗？","acceptedAnswer":{"@type":"Answer","text":"不能保证。MCP 提供 tools/list、resources/list 等发现能力，但 Host 最终把多少工具定义和资源内容交给模型，仍由应用的路由、筛选和上下文策略决定。"}}]}]}</script><meta property="article:published_time" content="Sun May 24 2026 08:00:00 GMT+0800 (China Standard Time)"><meta name="abstract" content="MCP vs Function Calling 怎么选？本文从调用链、工具发现、Resources、权限边界、部署成本和 API Gateway 分工出发，给出可直接用于真实项目的选型表与组合架构。"><meta name="speakable-selector" content=".markdown-content h2, .markdown-content p"><meta name="ai-content-access" content="allowed"><meta name="geo-optimized" content="true"><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script async src="https://www.googletagmanager.com/gtag/js?id=G-1J4274CPMT"></script><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
 
           if (!window.__ga4_initialized) {
             window.dataLayer = window.dataLayer || [];
@@ -345,345 +345,350 @@
 #function-calling </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
 #ai-agent </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
 #orchestration </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
-#architecture </span> </div> </div> </div>  <div class="flex flex-col gap-4"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 px-2">相关文章</div> <div class="flex flex-col gap-3"> <a href="/ai/mcp-vs-semantic-kernel/" class="ceramic-card-hover p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5"> <h4 class="text-xs font-bold line-clamp-2 text-zinc-800 dark:text-zinc-200">MCP vs Semantic Kernel：AI Tool 协议和企业 Agent 框架怎么选？</h4> </a><a href="/ai/mcp-filesystem-server/" class="ceramic-card-hover p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5"> <h4 class="text-xs font-bold line-clamp-2 text-zinc-800 dark:text-zinc-200">MCP Filesystem Server 实战：让 Claude / Cursor 安全读取本地文件</h4> </a> </div> </div> </aside>  <main class="min-w-0"> <div class="ceramic-card p-6 md:p-12"> <div class="entry-header-root animate-fadeUp mb-16" data-astro-cid-wy6pnlvm> <div class="relative" data-astro-cid-wy6pnlvm>  <div class="w-full h-[400px] md:h-[500px] rounded-[40px] overflow-hidden shadow-2xl mb-12 relative group " data-astro-cid-wy6pnlvm> <img src="/_astro/cogview4-cad35af5.Dx2lS8PS_ZApXup.webp" alt="Technical comparison between Function Calling and MCP by Xiaobai - XBSTACK" loading="eager" fetchpriority="high" data-astro-cid-wy6pnlvm="true" decoding="async" width="1400" height="600" class="w-full h-full transition-transform duration-1000 group-hover:scale-105 object-cover">  <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" data-astro-cid-wy6pnlvm></div> </div> <div class="px-4 md:px-8" data-astro-cid-wy6pnlvm>  <div class="flex flex-wrap gap-3 mb-8" data-astro-cid-wy6pnlvm> <a href="/ai?category=dev" class="liquid-capsule text-orange-700 dark:text-white border-orange-500/20 dark:border-white/10 whitespace-nowrap inline-flex items-center shrink-0" data-astro-cid-wy6pnlvm> <div class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse shrink-0" data-astro-cid-wy6pnlvm></div> <span class="ml-2 font-black" data-astro-cid-wy6pnlvm>全栈工程</span> </a> </div>  <h1 class="entry-title text-4xl md:text-6xl lg:text-7xl font-black mb-10 leading-[1.1] tracking-tighter italic" data-astro-cid-wy6pnlvm>MCP vs Function Calling：区别、适用场景、什么时候该用 MCP？</h1>  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12" data-astro-cid-wy6pnlvm> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-orange-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-orange-600 dark:text-orange-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Release Date</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-4 h-4 text-orange-600/50 dark:text-orange-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm>2026-05-24</div> </div> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-blue-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-blue-600 dark:text-blue-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Reading Time</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="w-4 h-4 text-blue-600/50 dark:text-blue-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm>26分钟</div> </div> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-emerald-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Impact Factor</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-4 h-4 text-emerald-600/50 dark:text-emerald-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M288 144a110.94 110.94 0 0 0-31.24 5 55.4 55.4 0 0 1 7.24 27 56 56 0 0 1-56 56 55.4 55.4 0 0 1-27-7.24A111.71 111.71 0 1 0 288 144zm284.52 97.4C518.29 135.59 410.93 64 288 64S57.68 135.64 3.48 241.41a32.35 32.35 0 0 0 0 29.19C57.71 376.41 165.07 448 288 448s230.32-71.64 284.52-177.41a32.35 32.35 0 0 0 0-29.19zM288 400c-98.65 0-189.09-55-237.93-144C98.91 167 189.34 112 288 112s189.09 55 237.93 144C477.1 345 386.66 400 288 400z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm> 4,385 </div> </div> </div>  <div class="flex flex-wrap items-center gap-2" data-astro-cid-wy6pnlvm> <div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>MCP 协议</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>function-calling</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>ai-agent</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>orchestration</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>架构设计</span> </div> </div> </div> </div> </div>   <div class="mb-12 p-8 rounded-[32px] bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 relative overflow-hidden group"> <div class="absolute top-0 left-0 w-1.5 h-full bg-blue-500"></div> <div class="flex flex-col gap-4"> <div class="flex items-center gap-2"> <span class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500">Xiaobai&#39;s Note / 实验室笔记</span> </div> <p class="text-lg font-bold text-slate-700 dark:text-slate-300 italic leading-relaxed"> 这篇文章记录了我在贵阳实验室的实战过程。我坚信，在技术下行的时代，程序员唯一的护城河就是通过 AI 建立属于自己的数字资产。 </p> </div> </div>  <div class="mb-12 grid grid-cols-1 md:grid-cols-2 gap-5"> <section class="p-6 rounded-[28px] bg-emerald-500/5 border border-emerald-500/10"> <h2 class="text-xs font-black uppercase tracking-[0.3em] text-emerald-600 dark:text-emerald-400 mb-4 flex items-center gap-2"> <div class="w-1 h-3 bg-emerald-500 rounded-full"></div> 先给结论 </h2> <ul class="space-y-3"> <li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-emerald-500 mt-0.5">✓</span> <span>MCP vs Function Calling 怎么选？本文用 Function Calling、MCP、API Gateway 三列表格对比工具发现、资源接入、权限治理、部署复杂度和真实项目适用场景。</span> </li> </ul> </section> <section class="p-6 rounded-[28px] bg-orange-500/5 border border-orange-500/10"> <h2 class="text-xs font-black uppercase tracking-[0.3em] text-orange-600 dark:text-orange-400 mb-4 flex items-center gap-2"> <div class="w-1 h-3 bg-orange-500 rounded-full"></div> 适合谁读 </h2> <ul class="space-y-3"> <li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-orange-500 mt-0.5">●</span> <span>正在把 mcp / function-calling / ai-agent / orchestration 落到真实项目里的开发者。</span> </li><li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-orange-500 mt-0.5">●</span> <span>不想只看概念，希望知道取舍、边界、风险和下一步怎么做的独立开发者。</span> </li><li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-orange-500 mt-0.5">●</span> <span>正在做技术选型、工具链治理、自动化工作流或个人数字资产建设的读者。</span> </li> </ul> </section> </div>   <div class="prose prose-tech markdown-content">   <h2 id="先给结论mcp-和-function-calling-不是同一层东西">先给结论：MCP 和 Function Calling 不是同一层东西</h2>
-<p>如果只看“让大模型调用工具”，MCP 和 Function Calling 很像；但它们解决的不是同一层问题。Function Calling 更像一次模型调用里的工具调用格式，适合少量固定 API、短链路原型和无状态任务；MCP 更像一套让模型客户端连接外部工具、资源和服务的协议层，适合本地文件、数据库、IDE、NAS、多工具服务器和需要权限边界的长期工作流。</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<table><thead><tr><th align="left">对比项</th><th align="left">Function Calling</th><th align="left">MCP</th><th align="left">API Gateway</th></tr></thead><tbody><tr><td align="left">解决层级</td><td align="left">单次模型请求里的结构化工具参数</td><td align="left">模型客户端连接工具、资源、提示词和 Server 的协议层</td><td align="left">后端服务统一入口、鉴权、限流和路由</td></tr><tr><td align="left">工具规模</td><td align="left">3-5 个固定函数</td><td align="left">多个工具服务器、工具会持续增加</td><td align="left">多个后端 API、微服务或外部服务</td></tr><tr><td align="left">上下文方式</td><td align="left">每次请求携带 tools schema</td><td align="left">客户端运行时发现 tools/resources</td><td align="left">不直接解决模型上下文，只治理服务入口</td></tr><tr><td align="left">数据来源</td><td align="left">云端 API、轻量业务接口</td><td align="left">本地文件、SQLite、IDE、NAS、私有系统</td><td align="left">HTTP API、RPC 服务、内部业务系统</td></tr><tr><td align="left">权限边界</td><td align="left">应用层自己拦截</td><td align="left">客户端、Server、目录、账号分层控制</td><td align="left">Token、网关策略、WAF、限流和审计</td></tr><tr><td align="left">开发复杂度</td><td align="left">低，适合快速原型</td><td align="left">中高，适合长期系统和团队复用</td><td align="left">中高，适合服务治理，不替代工具协议</td></tr><tr><td align="left">典型选择</td><td align="left">查天气、查订单、调用一个 SaaS API</td><td align="left">连接本地 NAS、代码仓库、SQLite、企业知识库</td><td align="left">给后端接口做统一认证、配额和访问控制</td></tr></tbody></table>
-<p>简单说：<strong>小项目、固定工具、快速验证，用 Function Calling；多工具、多客户端、需要统一接入和权限边界，用 MCP。</strong></p>
-<p>如果你还在纠结 API Gateway，它和前两者又不是同一层：API Gateway 管后端服务入口，MCP 管 AI 客户端怎么连接工具资源，Function Calling 管模型这一轮应该输出什么工具参数。</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<table><thead><tr><th align="left">选型对象</th><th align="left">解决的问题</th><th align="left">最适合的场景</th><th align="left">不适合的场景</th></tr></thead><tbody><tr><td align="left">Function Calling</td><td align="left">单次模型调用的结构化参数输出</td><td align="left">固定 API、少量函数、快速原型</td><td align="left">工具很多、本地资源复杂、权限边界复杂</td></tr><tr><td align="left">MCP</td><td align="left">AI 客户端连接工具、资源、提示词和服务器的协议</td><td align="left">IDE、本地文件、SQLite、NAS、多工具服务器</td><td align="left">只调一个简单云端 API 的小功能</td></tr><tr><td align="left">API Gateway</td><td align="left">后端服务统一入口、鉴权、限流、路由</td><td align="left">企业服务治理、微服务网关、外部 API 暴露</td><td align="left">直接解决模型工具发现和本地资源挂载</td></tr></tbody></table>
-<h2 id="本文解决的问题">本文解决的问题</h2>
+#architecture </span> </div> </div> </div>  <div class="flex flex-col gap-4"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 px-2">相关文章</div> <div class="flex flex-col gap-3"> <a href="/ai/mcp-vs-semantic-kernel/" class="ceramic-card-hover p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5"> <h4 class="text-xs font-bold line-clamp-2 text-zinc-800 dark:text-zinc-200">MCP vs Semantic Kernel：AI Tool 协议和企业 Agent 框架怎么选？</h4> </a><a href="/ai/mcp-filesystem-server/" class="ceramic-card-hover p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5"> <h4 class="text-xs font-bold line-clamp-2 text-zinc-800 dark:text-zinc-200">MCP Filesystem Server 实战：让 Claude / Cursor 安全读取本地文件</h4> </a> </div> </div> </aside>  <main class="min-w-0"> <div class="ceramic-card p-6 md:p-12"> <div class="entry-header-root animate-fadeUp mb-16" data-astro-cid-wy6pnlvm> <div class="relative" data-astro-cid-wy6pnlvm>  <div class="w-full h-[400px] md:h-[500px] rounded-[40px] overflow-hidden shadow-2xl mb-12 relative group " data-astro-cid-wy6pnlvm> <img src="/_astro/cogview4-cad35af5.Dx2lS8PS_ZApXup.webp" alt="MCP、Function Calling 与 API Gateway 工程选型对比 - XBSTACK" loading="eager" fetchpriority="high" data-astro-cid-wy6pnlvm="true" decoding="async" width="1400" height="600" class="w-full h-full transition-transform duration-1000 group-hover:scale-105 object-cover">  <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" data-astro-cid-wy6pnlvm></div> </div> <div class="px-4 md:px-8" data-astro-cid-wy6pnlvm>  <div class="flex flex-wrap gap-3 mb-8" data-astro-cid-wy6pnlvm> <a href="/ai?category=dev" class="liquid-capsule text-orange-700 dark:text-white border-orange-500/20 dark:border-white/10 whitespace-nowrap inline-flex items-center shrink-0" data-astro-cid-wy6pnlvm> <div class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse shrink-0" data-astro-cid-wy6pnlvm></div> <span class="ml-2 font-black" data-astro-cid-wy6pnlvm>全栈工程</span> </a> </div>  <h1 class="entry-title text-4xl md:text-6xl lg:text-7xl font-black mb-10 leading-[1.1] tracking-tighter italic" data-astro-cid-wy6pnlvm>MCP vs Function Calling：核心区别、选型表与真实项目怎么选</h1>  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12" data-astro-cid-wy6pnlvm> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-orange-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-orange-600 dark:text-orange-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Release Date</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-4 h-4 text-orange-600/50 dark:text-orange-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm>2026-05-24</div> </div> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-blue-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-blue-600 dark:text-blue-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Reading Time</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="w-4 h-4 text-blue-600/50 dark:text-blue-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm>11分钟</div> </div> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-emerald-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Impact Factor</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-4 h-4 text-emerald-600/50 dark:text-emerald-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M288 144a110.94 110.94 0 0 0-31.24 5 55.4 55.4 0 0 1 7.24 27 56 56 0 0 1-56 56 55.4 55.4 0 0 1-27-7.24A111.71 111.71 0 1 0 288 144zm284.52 97.4C518.29 135.59 410.93 64 288 64S57.68 135.64 3.48 241.41a32.35 32.35 0 0 0 0 29.19C57.71 376.41 165.07 448 288 448s230.32-71.64 284.52-177.41a32.35 32.35 0 0 0 0-29.19zM288 400c-98.65 0-189.09-55-237.93-144C98.91 167 189.34 112 288 112s189.09 55 237.93 144C477.1 345 386.66 400 288 400z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm> 4,385 </div> </div> </div>  <div class="flex flex-wrap items-center gap-2" data-astro-cid-wy6pnlvm> <div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>MCP 协议</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>function-calling</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>ai-agent</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>orchestration</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>架构设计</span> </div> </div> </div> </div> </div>   <div class="mb-12 p-8 rounded-[32px] bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 relative overflow-hidden group"> <div class="absolute top-0 left-0 w-1.5 h-full bg-blue-500"></div> <div class="flex flex-col gap-4"> <div class="flex items-center gap-2"> <span class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500">Xiaobai&#39;s Note / 实验室笔记</span> </div> <p class="text-lg font-bold text-slate-700 dark:text-slate-300 italic leading-relaxed"> 这篇文章记录了我在贵阳实验室的实战过程。我坚信，在技术下行的时代，程序员唯一的护城河就是通过 AI 建立属于自己的数字资产。 </p> </div> </div>  <div class="mb-12 grid grid-cols-1 md:grid-cols-2 gap-5"> <section class="p-6 rounded-[28px] bg-emerald-500/5 border border-emerald-500/10"> <h2 class="text-xs font-black uppercase tracking-[0.3em] text-emerald-600 dark:text-emerald-400 mb-4 flex items-center gap-2"> <div class="w-1 h-3 bg-emerald-500 rounded-full"></div> 先给结论 </h2> <ul class="space-y-3"> <li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-emerald-500 mt-0.5">✓</span> <span>固定少量 API、单应用快速上线，优先 Function Calling。</span> </li><li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-emerald-500 mt-0.5">✓</span> <span>多客户端复用、本地或远程资源接入、能力动态发现，考虑 MCP。</span> </li><li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-emerald-500 mt-0.5">✓</span> <span>MCP 不是沙箱、权限系统或 API Gateway；这些能力仍要由 Host、Server、操作系统和网关共同实现。</span> </li><li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-emerald-500 mt-0.5">✓</span> <span>真实项目常见组合是：模型使用 Function Calling，Host 通过 MCP Client 连接 MCP Server，Server 再访问受 API Gateway 保护的后端服务。</span> </li> </ul> </section> <section class="p-6 rounded-[28px] bg-orange-500/5 border border-orange-500/10"> <h2 class="text-xs font-black uppercase tracking-[0.3em] text-orange-600 dark:text-orange-400 mb-4 flex items-center gap-2"> <div class="w-1 h-3 bg-orange-500 rounded-full"></div> 适合谁读 </h2> <ul class="space-y-3"> <li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-orange-500 mt-0.5">●</span> <span>正在把 mcp / function-calling / ai-agent / orchestration 落到真实项目里的开发者。</span> </li><li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-orange-500 mt-0.5">●</span> <span>不想只看概念，希望知道取舍、边界、风险和下一步怎么做的独立开发者。</span> </li><li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-orange-500 mt-0.5">●</span> <span>正在做技术选型、工具链治理、自动化工作流或个人数字资产建设的读者。</span> </li> </ul> </section> </div>   <div class="prose prose-tech markdown-content">   <h2 id="先给结论两者不是替代关系而是不同层级">先给结论：两者不是替代关系，而是不同层级</h2>
+<p><strong>Function Calling 解决“模型如何提出一次结构化工具调用”，MCP 解决“AI 应用如何用统一协议连接外部能力”。</strong></p>
+<p>只做一个天气查询、订单查询或内部接口调用时，Function Calling 已经足够。你把函数的名称、说明和 JSON Schema 交给模型，模型生成调用参数，应用执行函数，再把结果送回模型。</p>
+<p>当项目逐渐出现这些需求时，MCP 才开始体现价值：</p>
 <ul>
-<li>解决不同大模型在调用本地工具时缺乏统一接口协议，导致适配代码重复编写的痛点。</li>
-<li>解决在长对话中静态硬编码大量工具描述（Schema）导致 Token 占用过多、成本暴涨的性能瓶颈。</li>
-<li>解决 AI 智能体在需要访问本地文件、数据库等敏感物理资产时，如何避免安全越界与误操作的防护难题。</li>
-<li>解决本地工具在遭遇进程挂死、参数校验失败等运行时错误时，如何建立标准化自愈与重试机制的工程挑战。</li>
-<li>解决复杂智能体工作流中，如何实现动态工具发现、长连接状态维护以及高吞吐量异步调用的架构难题。</li>
+<li>同一组工具要被 IDE、桌面客户端、内部 Agent 和自动化系统复用。</li>
+<li>工具不只是一组 HTTP API，还包含本地文件、代码仓库、SQLite、NAS 或企业知识库。</li>
+<li>不同工具由不同进程、团队或服务维护。</li>
+<li>客户端需要发现工具、Resources 和 Prompts，并协商双方支持的能力。</li>
+<li>需要把连接生命周期、通知、订阅和远程认证放进统一协议。</li>
 </ul>
-<h2 id="适合谁读">适合谁读</h2>
+<p>但有三个边界必须先说清楚：</p>
+<ol>
+<li><strong>MCP 不是天然沙箱。</strong> Server 可以作为本地进程或远程服务运行，真正的进程隔离、文件权限和网络隔离仍要靠操作系统、容器和部署策略。</li>
+<li><strong>MCP 不会自动完成授权和人工确认。</strong> 规范要求 Host 管理权限、同意与授权决策，并建议敏感工具调用提供确认界面，但具体能力必须由产品实现。</li>
+<li><strong>MCP 不保证自动节省 Token。</strong> 它提供工具与资源发现机制，最终向模型加载多少 Schema 和上下文，仍由 Host 的路由与上下文策略决定。</li>
+</ol>
+<h2 id="一张表看懂-function-callingmcp-和-api-gateway">一张表看懂 Function Calling、MCP 和 API Gateway</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>对比项</th><th>Function Calling</th><th>MCP</th><th>API Gateway</th></tr></thead><tbody><tr><td>主要解决什么</td><td>模型如何输出结构化工具调用</td><td>AI Host 如何连接并发现 Tools、Resources、Prompts</td><td>后端 API 如何统一鉴权、限流、路由和审计</td></tr><tr><td>核心参与者</td><td>模型、应用、业务函数</td><td>Host、Client、Server</td><td>调用方、网关、后端服务</td></tr><tr><td>常见描述格式</td><td>JSON Schema / Custom Tool</td><td>MCP Schema + JSON-RPC 消息</td><td>OpenAPI、HTTP、RPC、网关策略</td></tr><tr><td>工具发现</td><td>应用在请求或工具搜索阶段提供</td><td>Client 通过 <code>tools/list</code> 查询 Server</td><td>不负责模型工具发现</td></tr><tr><td>资源模型</td><td>通常把数据包装成函数结果</td><td>原生区分 Tools、Resources、Prompts</td><td>只暴露 API，不定义模型上下文语义</td></tr><tr><td>会话与连接</td><td>由模型 API 和应用管理</td><td>Client 与特定 Server 建立有状态会话</td><td>通常处理无状态或业务层会话</td></tr><tr><td>权限责任</td><td>应用自己实现</td><td>Host、Client、Server 分层实现</td><td>网关和后端服务实现</td></tr><tr><td>部署成本</td><td>最低</td><td>中等，需维护 Host/Client/Server</td><td>中高，面向服务治理</td></tr><tr><td>最合适场景</td><td>少量固定工具、单应用、快速上线</td><td>多客户端复用、本地资源、多能力服务器</td><td>企业服务、外部 API、配额和访问治理</td></tr></tbody></table>
+<h2 id="选型规则先看复杂度不要先看概念热度">选型规则：先看复杂度，不要先看概念热度</h2>
+<h3 id="优先-function-calling-的情况">优先 Function Calling 的情况</h3>
+<p>满足下面大部分条件时，不需要为了“架构先进”额外搭 MCP：</p>
 <ul>
-<li>正在设计或开发本地 AI 助手、IDE 智能插件、个人知识库挂载工具，并受困于数据对接效率的全栈开发者。</li>
-<li>正在对 Anthropic MCP 协议与主流 Function Calling 进行深度技术评估，期望在架构设计上抢占先机的技术专家。</li>
-<li>希望利用 AI 工具打通本地 NAS、私有数据库以及开发环境，构建个人自动化高效工作流的独立创作者。</li>
+<li>只有一个应用使用这些工具。</li>
+<li>工具数量少，接口稳定。</li>
+<li>工具主要是现有 HTTP API 或业务函数。</li>
+<li>不需要把工具共享给其他 AI Host。</li>
+<li>团队更关注尽快上线，而不是协议复用。</li>
 </ul>
-<h2 id="本文作为-mcp-对比主力页的定位">本文作为 MCP 对比主力页的定位</h2>
-<p>这篇文章负责承接 <code>mcp vs function calling</code>、<code>mcp function calling difference</code>、<code>MCP vs API Gateway</code> 这类对比搜索意图。后续不再单独新增泛 MCP 对比文；如果遇到新的差异点，优先补到本文或 <code>/ai/mcp/</code> 专题页。</p>
-<h2 id="二-小白的开发随笔">二、 小白的开发随笔</h2>
-<p>贵阳这两天又开始下雨，潮湿的空气顺着窗户缝飘进来。我坐在花果园小区的电脑桌前，旁边老旧的群晖 NAS 正在咔哒咔哒地读取着硬盘，风扇发出细微的嗡嗡声。为了把我放在 NAS 里的好几万条理财数据和技术文档塞给 AI 进行分析，我前阵子用传统的 Function Calling 折腾了三天。</p>
-<p>结果惨不忍睹。每次大模型调用工具，我都必须在请求里把所有的 API 描述全部带上。稍微想加个文件读取工具，上下文直接爆掉，光是 Token 费就花了我好几十块，还频繁遇到 JSON 解析失败把程序卡死的尴尬场面。</p>
-<p>就在我快要把键盘砸了的时候，我决定把整套底层用 MCP（模型上下文协议）重构一遍。重构完的那个深夜，看着终端里一条条利落的 JSON-RPC 消息飞速闪过，本地数据被 AI 秒级挂载且完全不漏，我突然意识到，这才是真正属于开发者的硬核玩具。今天，我就把在这次重构中总结出来的 7 个底层物理差异，给你掰开揉碎了讲清楚。</p>
-<h2 id="三-tool-discovery-差异运行时动态查询与静态预定义-schema-的分水岭">三、 Tool discovery 差异：运行时动态查询与静态预定义 Schema 的分水岭</h2>
-<p>MCP 协议允许 AI 客户端在运行期间通过标准 JSON-RPC 接口动态查询当前可用的工具列表，这与传统的 Function Calling 必须在每次网络请求中静态传入全部 Schema 的做法有着本质区别。</p>
-<p>在传统的 Function Calling 模式下，大模型就像一个只听固定口令的机器。你在初始化 API 请求时，必须在 tools 字段里以 JSON Schema 的格式，把当前系统里所有可能用到的函数定义原封不动地打包送过去。这好比你每次去饭店点菜，老板都得把后厨所有食材的化学成分表打印出来塞进你脑子里。当工具数量只有三五个时，这种做法还算凑合；一旦工具数量扩展到几十个，光是这些工具描述就会吃掉大量的上下文空间，导致模型计算变慢，甚至产生工具混淆的幻觉。</p>
-<p>反观 MCP（Model Context Protocol）的动态发现机制，它建立在标准的 JSON-RPC 2.0 基础之上。客户端（例如 Claude Desktop 或 Cursor）与 MCP 服务器建立长连接之后，会发送一个 tools/list 请求。服务器随之返回当前可用的工具清单。在整个交互过程中，客户端可以通过路由器组件（Router）根据用户的实际输入，动态决定去向哪些 MCP 服务器请求哪些工具。这意味着大模型不需要在每次对话中都背负着沉重的工具描述，只需在需要时进行动态发现和挂载。这种设计类似于现代操作系统的外设热插拔，给智能体的工具库扩展提供了底层别的自由度。</p>
-<p>来看一下 MCP 在工具发现时的底层通信数据帧。以下是客户端发送给服务器的 tools/list 请求样例：</p>
+<p>典型例子：</p>
+<ul>
+<li>App 内查询天气、物流和订单。</li>
+<li>客服助手调用三到五个固定业务接口。</li>
+<li>内容工具调用搜索、摘要和发布接口。</li>
+<li>后台系统让模型生成结构化筛选条件。</li>
+</ul>
+<h3 id="优先考虑-mcp-的情况">优先考虑 MCP 的情况</h3>
+<p>出现下面两到三项后，引入 MCP 才有明显收益：</p>
+<ul>
+<li>同一工具要同时接入多个 AI 客户端。</li>
+<li>工具由不同语言或独立进程实现。</li>
+<li>需要接入文件、代码库、数据库 Schema 等 Resources。</li>
+<li>工具列表会持续变化，希望客户端动态发现。</li>
+<li>需要本地 stdio 与远程 HTTP 两种接入形态。</li>
+<li>需要统一处理能力协商、通知和连接生命周期。</li>
+</ul>
+<p>典型例子：</p>
+<ul>
+<li>Cursor、桌面助手和内部 Agent 共用同一套代码审查工具。</li>
+<li>AI Host 需要读取限定目录内的项目文件和 NAS 文档。</li>
+<li>多个部门分别维护财报、合同、知识库和工单 MCP Server。</li>
+<li>一个 Host 同时连接本地 Server 与远程企业服务。</li>
+</ul>
+<h3 id="api-gateway-仍然不可少的情况">API Gateway 仍然不可少的情况</h3>
+<p>只要 MCP Server 后面连接的是正式业务服务，API Gateway 依然有价值：</p>
+<ul>
+<li>OAuth 或企业身份认证。</li>
+<li>限流、配额和计费。</li>
+<li>多租户隔离。</li>
+<li>WAF、审计和请求追踪。</li>
+<li>后端服务路由与版本治理。</li>
+</ul>
+<p>MCP 不应该绕过现有服务治理。更稳的做法是让 MCP Server 成为受控适配层，后端 API 继续经过网关。</p>
+<h2 id="function-calling-的真实调用链">Function Calling 的真实调用链</h2>
+<p>以 OpenAI Function Calling 为例，基础流程是：</p>
+<ol>
+<li>应用把可调用工具及参数 Schema 提供给模型。</li>
+<li>模型返回工具调用名称和参数。</li>
+<li>应用校验参数并执行对应代码。</li>
+<li>应用把工具结果返回模型。</li>
+<li>模型结合结果生成最终回答，或继续调用其他工具。</li>
+</ol>
+<pre class="astro-code astro-code-themes github-light github-dark-dimmed" style="background-color:#fff;--shiki-dark-bg:#22272e;color:#24292e;--shiki-dark:#adbac7; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>用户请求</span></span>
+<span class="line"><span>   ↓</span></span>
+<span class="line"><span>模型判断是否调用工具</span></span>
+<span class="line"><span>   ↓</span></span>
+<span class="line"><span>返回 tool call + arguments</span></span>
+<span class="line"><span>   ↓</span></span>
+<span class="line"><span>应用校验并执行函数</span></span>
+<span class="line"><span>   ↓</span></span>
+<span class="line"><span>把结果返回模型</span></span>
+<span class="line"><span>   ↓</span></span>
+<span class="line"><span>生成答案或继续调用</span></span></code></pre>
+<p>Function Calling 的优势在于简单直接。应用完全掌握工具执行、权限检查、超时、重试和结果处理，不需要额外协议层。</p>
+<p>为了提高参数可靠性，应优先使用严格的 JSON Schema 约束。OpenAI 官方文档建议启用 strict mode，使函数调用尽可能符合提供的 Schema。工具很多时，也不必把所有工具无差别放进每次推理：官方 API 已提供 deferred tool loading、tool search 和 allowed tools 等机制，用来缩小当前可调用工具范围。</p>
+<p>参考：</p>
+<ul>
+<li><a href="https://developers.openai.com/api/docs/guides/function-calling" rel="nofollow noopener noreferrer" target="_blank">OpenAI Function Calling Guide</a></li>
+<li><a href="https://developers.openai.com/api/docs/guides/tools" rel="nofollow noopener noreferrer" target="_blank">OpenAI Tools Guide</a></li>
+</ul>
+<h2 id="mcp-的真实架构host-才是协调者">MCP 的真实架构：Host 才是协调者</h2>
+<p>MCP 使用 Client-Host-Server 架构，并建立在 JSON-RPC 之上。</p>
+<pre class="astro-code astro-code-themes github-light github-dark-dimmed" style="background-color:#fff;--shiki-dark-bg:#22272e;color:#24292e;--shiki-dark:#adbac7; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>AI Host</span></span>
+<span class="line"><span>├── MCP Client A ── MCP Server A</span></span>
+<span class="line"><span>├── MCP Client B ── MCP Server B</span></span>
+<span class="line"><span>└── 模型与用户界面</span></span></code></pre>
+<p>其中：</p>
+<ul>
+<li><strong>Host</strong>：管理多个 Client、模型接入、上下文聚合、权限策略、用户授权和确认流程。</li>
+<li><strong>Client</strong>：与一个特定 Server 建立会话，完成初始化、能力协商、消息路由、通知和订阅。</li>
+<li><strong>Server</strong>：暴露聚焦的 Tools、Resources 和 Prompts，可以是本地进程，也可以是远程服务。</li>
+</ul>
+<p>官方架构明确把安全策略、同意要求和用户授权决策放在 Host 侧，而不是宣称 Server 自动安全。一个 Host 通常为每个 Server 创建独立 Client 连接，减少 Server 之间直接共享上下文的机会。</p>
+<p>参考：<a href="https://modelcontextprotocol.io/specification/2025-06-18/architecture" rel="nofollow noopener noreferrer" target="_blank">MCP Architecture</a></p>
+<h2 id="mcp-tools可以发现和调用但不等于可以无条件执行">MCP Tools：可以发现和调用，但不等于可以无条件执行</h2>
+<p>支持 Tools 的 MCP Server 需要声明 <code>tools</code> capability。Client 可以通过 <code>tools/list</code> 获取工具列表，再通过 <code>tools/call</code> 调用工具。</p>
 <pre class="astro-code astro-code-themes github-light github-dark-dimmed" style="background-color:#fff;--shiki-dark-bg:#22272e;color:#24292e;--shiki-dark:#adbac7; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">{</span></span>
 <span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "jsonrpc"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"2.0"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
+<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "id"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#005CC5;--shiki-dark:#6CB6FF">1</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
 <span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "method"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"tools/list"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "params"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: {},</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "id"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#005CC5;--shiki-dark:#6CB6FF">1</span></span>
+<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "params"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: {}</span></span>
 <span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">}</span></span></code></pre>
-<p>服务器返回的响应则清晰地标明了工具的具体格式与参数要求：</p>
+<p>工具定义包含名称、描述、输入 Schema，也可以包含输出 Schema。Server 应校验工具输入、执行访问控制、限流并清理输出；Client 对敏感操作应展示参数、请求用户确认、设置超时并记录审计日志。</p>
+<p>这里最容易被误解的一点是：<strong>规范建议提供 Human-in-the-loop，不代表所有 MCP 客户端都自动实现了相同确认流程。</strong> 产品仍需明确哪些工具只读、哪些写入、哪些必须审批。</p>
+<p>参考：<a href="https://modelcontextprotocol.io/specification/2025-06-18/server/tools" rel="nofollow noopener noreferrer" target="_blank">MCP Tools Specification</a></p>
+<h2 id="mcp-resources是标准化上下文不是自动挂载整块硬盘">MCP Resources：是标准化上下文，不是自动挂载整块硬盘</h2>
+<p>Resources 用于让 Server 以 URI 暴露文件、数据库 Schema 或应用数据。Client 可以使用 <code>resources/list</code> 发现资源，用 <code>resources/read</code> 获取内容。</p>
 <pre class="astro-code astro-code-themes github-light github-dark-dimmed" style="background-color:#fff;--shiki-dark-bg:#22272e;color:#24292e;--shiki-dark:#adbac7; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">{</span></span>
 <span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "jsonrpc"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"2.0"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "result"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: {</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">    "tools"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: [</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">      {</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">        "name"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"read_financial_report"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">        "description"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"读取本地指定的财务报表文件"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">        "inputSchema"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: {</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">          "type"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"object"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">          "properties"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: {</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">            "filePath"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: {</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">              "type"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"string"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">              "description"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"报表文件的绝对路径"</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">            }</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">          },</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">          "required"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: [</span><span style="color:#032F62;--shiki-dark:#96D0FF">"filePath"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">]</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">        }</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">      }</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">    ]</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">  },</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "id"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#005CC5;--shiki-dark:#6CB6FF">1</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">}</span></span></code></pre>
-<p>这种动态握手协议保证了工具定义的即插即用，开发人员在增加新工具时，根本不需要修改大模型客户端的主代码，直接在服务器端更新工具列表，客户端在下一次握手时就能立刻感知并使用。</p>
-<h2 id="四-runtime-boundary-差异基于进程间通信的沙箱与应用层高度耦合的代码执行">四、 Runtime boundary 差异：基于进程间通信的沙箱与应用层高度耦合的代码执行</h2>
-<p>MCP 协议在架构设计上将工具执行进程与 AI 客户端进行底层解耦，而传统的 Function Calling 则将工具运行环境与应用程序宿主紧密粘合在一起。</p>
-<p>在 Function Calling 的世界里，大模型只是一个参数计算器。它输出参数后，宿主应用程序（比如你用 Python 写的 Agent 脚本）在本地进程里捕获到这个输出，接着在同一个进程里调用对应的函数。这意味着，工具的运行生命周期与你的智能体主程序是捆绑在一起的。如果你的某个数据库查询工具发生了内存泄漏，或者在解析一个损坏的 Excel 文件时触发了 C 语言扩展包的段错误（Segmentation Fault），你的整个 Agent服务就会瞬间崩溃。这种架构在工程上被称为紧耦合，在面对复杂的、包含大量第三方库的工具集时，维护难度极大。</p>
-<p>相比之下，MCP 彻底拉平了工具的执行边界。MCP 服务器通常作为独立的子进程运行，客户端通过标准输入输出（stdio）与它进行双向管道通信；或者作为独立的微服务，通过服务器发送事件（SSE）与客户端建立网络连接。在这种设计下，每个 MCP 服务器都是一个天然的安全沙箱和独立的运行时（Runtime）。</p>
-<p>如果你手写了一个读取本地串口数据的工具，就算这个工具由于硬件故障导致进程无限期挂起，MCP 客户端也只需要按照协议层设定的超时机制直接杀掉对应的子进程，主程序依然能够安然无恙地继续给用户报错或寻找替代方案。不仅如此，由于接口通信标准化，你甚至可以用 TypeScript 写 Agent 客户端，而用 Python 写处理复杂矩阵运算的 MCP 服务器，两者在完全不同的语言环境中运行，只通过规范的 JSON-RPC 消息进行数据交换。这种底层解耦，让系统的鲁棒性提升了不止一个量级。</p>
-<h2 id="五-local-data-access-差异协议层直连物理资产与云端反向代理的适配器">五、 Local data access 差异：协议层直连物理资产与云端反向代理的适配器</h2>
-<p>MCP 协议原生定义了 Resources（资源）与 Prompts（提示词）规范，这让大模型能像操作系统一样直接挂载和读取本地物理资产，而 Function Calling 本质上只是为了对齐云端无状态 API 所设计的转换工具。</p>
-<p>在传统的开发实践中，大模型如果想获取本地的某张数据库表或者某个日志文件，Function Calling 唯一的办法就是通过工具调用的形式。你需要写一个类似于 read_file_content 的工具，让模型传入路径，执行后再把文本塞回对话上下文。这种做法的问题在于它抹平了资源与动作的界限。文件、数据库、日志这些本应属于静态或者流式的资源，全都被伪装成了可以执行的动作。</p>
-<p>MCP 协议在此处展现出了极强的系统级思维。它将接口抽象细分为三驾马车：Tools（工具）、Resources（资源）和 Prompts（提示词模板）。其中，资源（Resources）是专门为本地物理资产直连设计的协议规范。MCP 服务器可以把本地的文件系统目录、SQLite 数据库、甚至实时的系统性能指标，声明为统一的 URI 格式资源（例如 file:///Users/workspace/project/config.json 或 db://financial/audit_log）。</p>
-<p>模型可以通过标准的 resources/read 接口直接读取这些资源，甚至可以通过订阅机制（Subscription），在本地文件发生变化时自动接收更新通知。这就好比给 AI 挂载了一块本地虚拟硬盘，它能直接浏览目录树，按需读取特定文件的内容，而不用像以前那样通过工具函数笨拙地一次次调用。这种直接读取物理资产的能力，是 Function Calling 无法企及的。</p>
-<p>来看一下客户端读取 MCP 资源的交互请求：</p>
-<pre class="astro-code astro-code-themes github-light github-dark-dimmed" style="background-color:#fff;--shiki-dark-bg:#22272e;color:#24292e;--shiki-dark:#adbac7; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">{</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "jsonrpc"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"2.0"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
+<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "id"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#005CC5;--shiki-dark:#6CB6FF">2</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
 <span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "method"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"resources/read"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
 <span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "params"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: {</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">    "uri"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"file:///Users/workspace/project/config.json"</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">  },</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "id"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#005CC5;--shiki-dark:#6CB6FF">2</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">}</span></span></code></pre>
-<p>服务器返回的资源内容不仅包含数据，还能携带多媒体格式或元数据，让大模型直接感知物理资产的真实状态，极大地降低了开发者在数据管道适配上的开发工作量。</p>
-<h2 id="六-permission-scope-差异细粒度进程级动态确认与粗放的应用层代码拦截">六、 Permission scope 差异：细粒度进程级动态确认与粗放的应用层代码拦截</h2>
-<p>MCP 协议通过持久的双向连接为每一次高危工具调用提供了进程级的动态用户确认机制，而 Function Calling 的安全防线完全依赖于开发者在应用层编写的拦截逻辑。</p>
-<p>大模型在实际运行中常常会受到 Prompt 注入攻击的威胁。例如，如果一个 AI 智能体在阅读网页时，网页内容里隐藏了一段恶意指令，要求智能体执行删除本地所有文档的命令。在 Function Calling 架构下，一旦大模型被欺骗并生成了对应的函数调用参数，宿主程序如果缺乏完备的白名单和过滤逻辑，就会直接调用物理函数，导致灾难性的后果。开发者不得不编写复杂的逻辑去防御此类攻击，工作量巨大且极易出现疏漏。</p>
-<p>MCP 则在客户端与服务器的协议交互设计上天然地加入了权限确认层。在 MCP 架构中，客户端是用户可以直接控制的信任实体（如 IDE 界面或独立的桌面客户端），而服务器则是执行具体任务的外设。每当大模型尝试通过客户端调用某个被标记为高危的 MCP 工具（如执行终端命令、写入敏感文件）时，协议栈允许客户端在物理执行前挂起请求，并在用户界面上弹出一个明确的确认窗口，要求用户手动点击确认。</p>
-<p>这种设计将安全防护从应用层的硬编码过滤提升到了协议层的标准化流控。即使 MCP 服务器遭到恶意提示词注入，客户端也能守住最后一道物理防线。加之，MCP 的配置文件中可以针对每个 Server 设置独立的权限范围，例如限制某个文件读取 Server 只能访问特定的文件夹，从操作系统层面实现了最小特权原则的物理沙箱管理。</p>
-<h2 id="七-stateful-workflow-差异双向持久的会话通信与单向无状态的-request-response-循环">七、 Stateful workflow 差异：双向持久的会话通信与单向无状态的 Request-Response 循环</h2>
-<p>MCP 基于 JSON-RPC 2.0 规范建立起客户端与服务器之间的持久双向连接，改变了 Function Calling 那种只能由客户端发起、单向且无状态的请求响应循环。</p>
-<p>经典的 Function Calling 本质上是基于无状态的 HTTP 请求响应模式。大模型所在的云端服务器并不保存你本地工具的任何运行状态。每一次会话交互，客户端都必须重新整理上下文发送过去。如果在调用工具的途中发生了耗时较长的操作（例如编译一段大型代码或运行一次大数据导表），宿主程序很难将实时的执行进度反馈给大模型，只能在后台傻等工具返回最终结果。大模型在整个等待期间对执行状态一无所知。</p>
-<p>在持久的双向连接加持下， MCP 拥有了维持长生命周期有状态工作流（Stateful Workflow）的物理能力。客户端与 MCP 服务器通过持久的通道交互，支持服务器主动向客户端推送通知（Notifications）。这带来了一系列极其硬核的交互特性：</p>
-<p>第一，进度条反馈（Progress Tracking）。当大模型调用一个需要耗时数分钟的任务时，MCP 服务器可以源源不断地向客户端发送进度百分比和当前状态日志。</p>
-<p>第二，交互式提示（Interactive Prompts）。在工具执行到一半发现参数缺失或需要决策时，服务器可以通过协议向模型请求追加输入，实现人机协同的闭环。</p>
-<p>第三，连接池与上下文复用。MCP 服务器在建立连接时初始化数据库连接池和内存索引，在整个对话生命周期内一直保持活跃，不需要像 Function Calling 那样每次调用工具都重新经历一次耗时的数据库握手与文件扫描。这种持久化状态极大地提升了复杂智能体在工业级场景下的运行效率。</p>
-<h2 id="八-error-recovery-差异协议层标准化错误码透传与脆弱的提示词自愈">八、 Error recovery 差异：协议层标准化错误码透传与脆弱的提示词自愈</h2>
-<p>MCP 协议利用标准的 JSON-RPC 错误码规范将工具执行时的底层异常转化为大模型可理解的结构化反馈，这比 Function Calling 依赖拼贴 Traceback 的粗暴重试要优雅得多。</p>
-<p>分布式系统在运行过程中，工具出错几乎是家常便饭。在 Function Calling 模式下，当本地执行的 Python 脚本抛出异常时，宿主程序通常只能抓取一段混乱的堆栈信息（Traceback），然后以纯文本字符串的形式作为工具执行结果发给大模型。大模型面对这种杂乱无章的报错信息，往往难以精准判断究竟是参数类型传错了，还是网络超时，亦或是目标资源微小不存在。这种依靠拼接字符串的容错机制极度脆弱，经常导致模型陷入重复调用相同错误参数的死循环。</p>
-<p>MCP 协议规范则直接引入了 JSON-RPC 2.0 的错误定义标准。当工具调用失败时，MCP 服务器会返回一个包含标准错误码（如 -32602 表示参数校验失败，-32603 表示内部处理错误）和具体错误信息的结构化数据包。</p>
-<p>大模型的推理引擎或客户端 SDK 能够通过解析这些标准的错误响应，准确了解失败的具体物理原因。例如，如果发生了参数缺失错误，响应中会明确标注缺失的字段名称，模型接收到这个结构化反馈后，能够一目了然地知道如何在下一轮调用中补齐该参数。这种协议级别的错误传导机制，让智能体具备了更强的自愈能力。</p>
-<p>下面是一个标准的 MCP 工具调用错误响应载荷：</p>
-<pre class="astro-code astro-code-themes github-light github-dark-dimmed" style="background-color:#fff;--shiki-dark-bg:#22272e;color:#24292e;--shiki-dark:#adbac7; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">{</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "jsonrpc"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"2.0"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "error"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: {</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">    "code"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#005CC5;--shiki-dark:#6CB6FF">-32602</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">    "message"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"参数 filePath 必须以 .xlsx 结尾"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">    "data"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: {</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">      "invalidParams"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: [</span><span style="color:#032F62;--shiki-dark:#96D0FF">"filePath"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">]</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">    }</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">  },</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "id"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#005CC5;--shiki-dark:#6CB6FF">3</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">}</span></span></code></pre>
-<p>拿到了这样规范的报错数据，智能体就能根据 invalidParams 字段精确定位故障点，立刻调整参数发起重新调用，整个错误恢复过程优雅且确定性极高。</p>
-<h2 id="九-token-cost-差异按需按次加载与长会话大段-schema-的降维打击">九、 Token cost 差异：按需按次加载与长会话大段 Schema 的降维打击</h2>
-<p>MCP 通过动态的路由机制和资源订阅模式避免了在长会话中重复发送全部工具定义，从而将长文本对话的 Token 开销降低了数倍，解决了 Function Calling 随着工具规模扩大而面临的 Token 暴涨难题。</p>
-<p>在智能体开发中，Token 就是实打实的真金白银。Function Calling 的无状态特性决定了，在大模型长对话的每一个轮次中，你都必须把整个系统支持的所有 tools 数据结构打包发给云端接口。这相当于你每对 AI 说一句话，都要在前面大声朗读一遍整本工具说明书。当会话进入第 20 个轮次，光是重复发送的工具说明书可能就占用了上万个 Token。这种累积性的开销，在商用落地场景中是无法承受的财务灾难。</p>
-<p>MCP 的物理优势在于其允许按需挂载。当大模型与本地 MCP 客户端建立持久连接后，工具定义只需要在连接初始化或者大模型触发 tools/list 时传输一次。在之后的日常会话请求中，客户端与大模型服务器之间仅交换必要的上下文数据，无需在每次网络封包中重复塞入那些冗长的 JSON Schema。</p>
-<p>不仅如此，对于本地的超大文件资源，MCP Server 提供了分片读取（Range Read）和元数据提取的手段。大模型可以先读取文件的大小和结构目录，仅当它确认需要分析第 200 到 300 行的代码时，才通过资源读取请求拉取该特定范围的内容。这避免了将数万字的文件一次性灌入上下文，把 Token 消耗精准控制在个位数级别，对于构建长生命周期、高频交互的投研或开发智能体具有决定性的降本意义。</p>
-<h2 id="十-常见坑--常见报错-error-logs">十、 常见坑 / 常见报错 (Error Logs)</h2>
-<p>在使用 MCP 协议和 Function Calling 搭建智能体的工作流中，由于并发调用、进程管道读写以及调试日志输出等物理原因，经常会踩到以下几个深坑。以下是我们在开发中收集的真实报错数据与排查方案。</p>
-<h3 id="1-json-rpc-解析失败调试日志污染物理输出通道">1. JSON-RPC 解析失败：调试日志污染物理输出通道</h3>
-<p>MCP 服务器在 stdio 传输模式下运行，控制台报错信息如下：</p>
-<pre class="astro-code astro-code-themes github-light github-dark-dimmed" style="background-color:#fff;--shiki-dark-bg:#22272e;color:#24292e;--shiki-dark:#adbac7; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>[MCP Error] Connection lost: Invalid JSON-RPC message received</span></span>
-<span class="line"><span>SyntaxError: Unexpected token 'D' at position 0</span></span>
-<span class="line"><span>Database connection established successfully...</span></span></code></pre>
-<p>故障原因：
-由于在编写 MCP 服务器代码（特别是用 Python 或 Node.js）时，随手使用了 print(“Database connection established…”) 或 console.log() 输出调试信息，这些普通的文本输出被写入了系统的 stdout（标准输出），混入了 MCP 协议的 JSON-RPC 消息流中。客户端尝试解析时，发现开头不是标准的 JSON 括号，直接触发 SyntaxError 并强行断开连接。
-解决方案：
-在 MCP 服务器中，所有的非协议调试日志必须强制输出到 stderr（标准错误）。Python 开发者应当使用 sys.stderr.write() 或者专门的 logging 库并配置输出到 stderr。</p>
-<h3 id="2-本地文件锁死高并发调用导致的资源竞争">2. 本地文件锁死：高并发调用导致的资源竞争</h3>
-<p>大模型发起并发读取操作时，本地服务抛出以下异常：</p>
-<pre class="astro-code astro-code-themes github-light github-dark-dimmed" style="background-color:#fff;--shiki-dark-bg:#22272e;color:#24292e;--shiki-dark:#adbac7; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>sqlite3.OperationalError: database is locked</span></span>
-<span class="line"><span>at SQLiteServer.execute_query (server.py:45)</span></span>
-<span class="line"><span>at MCPConnection.handle_tool_call (protocol.py:112)</span></span></code></pre>
-<p>故障原因：
-在 Function Calling 或 MCP 高并发的工具调用下，如果多个智能体进程同时尝试对同一个 SQLite 本地文件进行写操作，由于缺乏数据库连接池的并发控制，会导致 SQLite 触发物理文件锁保护。
-解决方案：
-在写操作工具中引入线程安全队列，或者将本地 SQLite 数据库切换为 WAL（Write-Ahead Logging）模式，以支持多读一写的物理并发要求。</p>
-<h3 id="3-工具调用递归超限智能体逻辑陷入无底洞">3. 工具调用递归超限：智能体逻辑陷入无底洞</h3>
-<p>智能体在运行中出现死循环，控制台疯狂刷屏报错：</p>
-<pre class="astro-code astro-code-themes github-light github-dark-dimmed" style="background-color:#fff;--shiki-dark-bg:#22272e;color:#24292e;--shiki-dark:#adbac7; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>RecursionError: maximum recursion depth exceeded in comparison</span></span>
-<span class="line"><span>[Agent Guard] Execution halted: max_iterations (15) reached without terminal state</span></span></code></pre>
-<p>故障原因：
-模型生成的工具参数不符合本地服务的校验规则，而开发者未对异常进行阻断，大模型接收到错误反馈后继续生成错误的参数进行重试，导致智能体陷入死循环，直到触发了系统设定的最大迭代步数（max_iterations）保护。
-解决方案：
-必须在 Agent 的控制循环中设置全局的熔断器。限制单次用户请求下工具的最大调用次数（例如最多 10 次），一旦超限立即挂起并转为人工交互模式。</p>
-<h2 id="十一-对比块mcp-与-function-calling-的物理比拼">十一、 对比块：MCP 与 Function Calling 的物理比拼</h2>
-<p>通过将 MCP 与 Function Calling 放在同一个维度进行对比，我们可以清晰地看出两者在运行边界、资源利用以及工程复杂度上的本质不同。</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<table><thead><tr><th align="left">评估维度</th><th align="left">Function Calling</th><th align="left">Model Context Protocol (MCP)</th><th align="left">适用场景与胜出者</th></tr></thead><tbody><tr><td align="left">工具动态发现</td><td align="left">静态声明，每次请求都需要带上完整的 Schema 数据包</td><td align="left">运行期动态握手，通过 tools/list 协议按需查询</td><td align="left">MCP 胜出，适合工具规模庞大且需要动态热插拔的系统</td></tr><tr><td align="left">运行期执行边界</td><td align="left">与宿主应用程序同进程高度耦合，工具崩溃会导致主程序崩溃</td><td align="left">独立的子进程或微服务运行，物理隔离，安全性极高</td><td align="left">MCP 胜出，多语言混合开发及高稳定性要求的智能体</td></tr><tr><td align="left">本地数据直连</td><td align="left">无原生通道，需手动把文件和数据库内容转成字符串硬灌给模型</td><td align="left">原生支持 Resources 规范，通过 URI 直接挂载和分片读取本地数据</td><td align="left">MCP 胜出，私有知识库挂载、本地数据库直连等本地资产处理</td></tr><tr><td align="left">安全与权限控制</td><td align="left">依赖应用层开发者的手工过滤拦截，缺乏标准协议约束</td><td align="left">持久连接支持底层最小特权沙箱，高危调用可触发客户端弹窗</td><td align="left">MCP 胜出，对安全性、合规性要求苛刻的物理环境</td></tr><tr><td align="left">状态与生命周期</td><td align="left">无状态的 Request-Response 模式，每次调用都是独立连接</td><td align="left">双向持久会话，支持服务端实时进度推送与交互式输入</td><td align="left">MCP 胜出，耗时较长的复杂工作流与高频会话</td></tr><tr><td align="left">Token 资源损耗</td><td align="left">随着工具数量增多和会话轮次加深，Token 呈指数级累积损耗</td><td align="left">动态路由与按需发现，连接期单次传输，Token 开销极低且平稳</td><td align="left">MCP 胜出，超长上下文长对话及商业运营降本场景</td></tr><tr><td align="left">工程接入复杂度</td><td align="left">开箱即用，适合快速对接几项简单的云端 API</td><td align="left">需部署标准的 Client-Server 协议栈，前期开发有一定门槛</td><td align="left">Function Calling 胜出，单次任务或极简原型开发</td></tr></tbody></table>
-<h2 id="十二-多模态与流式输出差异协议层的物理扩展能力">十二、 多模态与流式输出差异：协议层的物理扩展能力</h2>
-<p>MCP 协议在资源规范层面原生支持多媒体内容类型，而 Function Calling 仅能通过字符串序列化模拟多模态传输。</p>
-<p>这个差异在日常开发中不那么显眼，但在实际生产场景里却是个决定性的分叉点。用 Function Calling 的时候，如果你想让 AI 分析一张本地截图，你需要把图片先 base64 编码，再塞进请求体里一起发给云端接口。整个过程不仅占用大量 Token，还存在隐私上云的合规风险。</p>
-<p>MCP 的 Resources 规范对内容类型做了原生抽象。服务器返回资源时，可以携带标准的 MIME 类型声明：</p>
-<pre class="astro-code astro-code-themes github-light github-dark-dimmed" style="background-color:#fff;--shiki-dark-bg:#22272e;color:#24292e;--shiki-dark:#adbac7; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">{</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "jsonrpc"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"2.0"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "result"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: {</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">    "contents"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: [</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">      {</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">        "uri"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"file:///Users/workspace/screenshot.png"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">        "mimeType"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"image/png"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">        "blob"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"iVBORw0KGgoAAAANSUhEUgAA..."</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">      }</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">    ]</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">  },</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "id"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#005CC5;--shiki-dark:#6CB6FF">3</span></span>
-<span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">}</span></span></code></pre>
-<p>客户端在接收到这类内容后，可以根据 MIME 类型决定如何将数据送入多模态模型（如 Claude 3.5 Sonnet 的视觉接口），整个过程在本地完成，图片数据不经过任何第三方路由节点。</p>
-<p>流式输出方面，MCP 的双向持久连接让服务器能够通过 Notifications 通道向客户端主动推送分段结果。例如，当 AI 在 MCP Server 里调用一个耗时 30 秒的数据报表生成任务时，服务器可以每隔 2 秒推送一次当前进度：</p>
-<pre class="astro-code astro-code-themes github-light github-dark-dimmed" style="background-color:#fff;--shiki-dark-bg:#22272e;color:#24292e;--shiki-dark:#adbac7; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">{</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "jsonrpc"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"2.0"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "method"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"notifications/progress"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">  "params"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: {</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">    "progressToken"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"report-gen-001"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">    "progress"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#005CC5;--shiki-dark:#6CB6FF">45</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">    "total"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#005CC5;--shiki-dark:#6CB6FF">100</span><span style="color:#24292E;--shiki-dark:#ADBAC7">,</span></span>
-<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">    "message"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"正在聚合 Q1-Q2 财务数据，已处理 4500/10000 行..."</span></span>
+<span class="line"><span style="color:#005CC5;--shiki-dark:#8DDB8C">    "uri"</span><span style="color:#24292E;--shiki-dark:#ADBAC7">: </span><span style="color:#032F62;--shiki-dark:#96D0FF">"file:///project/src/main.ts"</span></span>
 <span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">  }</span></span>
 <span class="line"><span style="color:#24292E;--shiki-dark:#ADBAC7">}</span></span></code></pre>
-<p>Function Calling 完全没有这个能力。它的工具调用是一个黑盒，AI 发出请求后就进入等待，中间没有任何状态反馈，用户只能盯着光标发呆，也不知道是卡死了还是正在运行。</p>
-<h2 id="十三-常见问题解答">十三、 常见问题解答</h2>
-<h3 id="mcp-和-function-calling-有什么区别">MCP 和 Function Calling 有什么区别？</h3>
-<p>Function Calling 是模型输出结构化工具调用参数的一种能力，重点在“这一次模型请求应该调用哪个函数、传什么参数”。MCP 是 Model Context Protocol，是客户端连接工具、资源、提示词和外部服务的一套协议，重点在“模型客户端如何长期、安全、标准化地接入工具系统”。所以 Function Calling 更偏调用格式，MCP 更偏协议与运行时边界。</p>
-<h3 id="小项目应该用-mcp-还是-function-calling">小项目应该用 MCP 还是 Function Calling？</h3>
-<p>如果你只是给一个应用加 3-5 个固定 API，比如查天气、查库存、查订单，Function Calling 更省事。它开发成本低，调试链路短，不需要额外部署 MCP Server。如果你的项目开始连接本地文件、数据库、IDE、NAS、多个工具服务，或者需要团队复用统一工具入口，MCP 会更适合。</p>
-<h3 id="openai-function-calling-和-mcp-能一起用吗">OpenAI Function Calling 和 MCP 能一起用吗？</h3>
-<p>可以。实际工程里两者并不冲突。你可以在应用内部继续使用 OpenAI Function Calling 约束模型输出，也可以在外层通过 MCP Server 暴露本地工具和资源。更现实的架构是：Function Calling 解决单次模型调用的结构化输出，MCP 解决跨工具、跨客户端、跨本地资源的连接协议。</p>
-<h3 id="为什么-ai-agent-项目开始讨论-mcp">为什么 AI Agent 项目开始讨论 MCP？</h3>
-<p>因为 Agent 项目一旦进入生产环境，问题就不再只是“模型会不会调用函数”，而是工具怎么发现、权限怎么限制、日志怎么隔离、本地资源怎么读取、多个工具服务怎么复用。MCP 正好把这些问题提升到协议层处理，而不是让每个项目都重复写一套工具注册、权限控制和本地资源适配代码。</p>
-<h3 id="mcp-会替代-function-calling-吗">MCP 会替代 Function Calling 吗？</h3>
-<p>不会。它们在物理应用场景中有着不同的定位。对于简单的云端无状态任务，例如让 AI 查一下天气、查个快递单号，直接使用大模型厂商提供的 Function Calling 依旧是开发路径最短的选择。而在涉及复杂的本地文件操作、IDE 插件联动、局域网私有数据库挂载，以及多个微服务工具群动态协同的场景下，MCP 才是能够支撑大规模工程落地的高效协议。</p>
-<h3 id="为什么-mcp-协议强制要求将非协议日志输出到-stderr-而不是-stdout">为什么 MCP 协议强制要求将非协议日志输出到 stderr 而不是 stdout？</h3>
-<p>这是由底层的通信物理通道决定的。在标准进程间通信（IPC）的 stdio 模式下，客户端通过读取子进程的 stdout 管道来获取 JSON-RPC 协议消息。如果你的服务器代码直接向 stdout 输出了普通的调试字符，这些脏数据就会与 JSON-RPC 消息混合在一起，客户端解析器无法识别这些非标准格式的文本，就会报错中断连接。将普通日志重定向到 stderr，既能保证调试信息不丢失，又能确保 stdout 协议通道的纯净。</p>
-<h3 id="本地部署的-mcp-server-怎么防范黑客通过-prompt-注入拿到我的-shell-权限">本地部署的 MCP Server 怎么防范黑客通过 Prompt 注入拿到我的 shell 权限？</h3>
-<p>这必须贯彻物理隔离和最小特权原则。首先，绝对不能将执行任意系统命令的 shell 工具暴露给 MCP Server；其次，针对读取文件系统的工具，应在代码中硬编码限定可访问的根目录，并使用绝对路径校验，防范路径穿透攻击；最后，利用容器技术（如将 MCP Server 部署在受限的 Docker 容器中）或者在客户端配置动态审批流，将高危动作的最终执行权交由人类用户手动点击确认。</p>
-<h3 id="如果我想用-python-快速构建一个-mcp-server有现成的工具链可以使用吗">如果我想用 Python 快速构建一个 MCP Server，有现成的工具链可以使用吗？</h3>
-<p>有的。Anthropic 官方提供了一套完整的 Python SDK（mcp），你可以通过 <code>pip install mcp</code> 命令直接安装。它内置了 FastMCP 抽象类，让开发者能像写 Flask 接口一样，用简单的装饰器将一个普通的 Python 函数注册为大模型可调用的 Tool，SDK 会在底层自动处理复杂的 JSON-RPC 通信和 stdio 管道监听，极大降低了手写协议解析的门槛。</p>
-<h3 id="生产环境下应该用-stdio-还是-sse-模式部署-mcp-server">生产环境下应该用 stdio 还是 SSE 模式部署 MCP Server？</h3>
-<p>两种模式适用场景完全不同。stdio 适合本地开发机上的 IDE 插件场景（Cursor/Claude Desktop），零网络配置、生命周期与客户端绑定，但对 stdout 纯净度要求极高，任何一行 print 都会造成连接崩溃。SSE（Server-Sent Events）适合需要跨主机访问或多人共享同一 MCP 服务的团队环境，网络端口可达即可连接，日志不污染协议通道，调试也更直观。如果你的 MCP Server 要跑在 NAS 或云服务器上给多个 IDE 客户端使用，选 SSE 模式，否则 stdio 就够了。</p>
-<h2 id="十四-继续阅读">十四、 继续阅读</h2>
+<p>但 Resources 是 <strong>application-driven</strong> 的：由 Host 决定如何展示、搜索、筛选和加入模型上下文。协议没有规定“发现资源后自动全部发送给模型”。</p>
+<p>订阅和资源列表变更通知也是可选能力，只有 Server 声明支持后才能使用。因此，不能把 Resources 写成“模型天然拥有整个本地文件系统”。真正可访问的目录和数据必须由 Server 白名单、操作系统权限和 Host 策略共同限定。</p>
+<p>参考：<a href="https://modelcontextprotocol.io/specification/2025-06-18/server/resources" rel="nofollow noopener noreferrer" target="_blank">MCP Resources Specification</a></p>
+<h2 id="mcp-是否比-function-calling-更省-token">MCP 是否比 Function Calling 更省 Token</h2>
+<p>不能只根据协议名称下结论。</p>
+<p>Function Calling 的 Token 成本取决于：</p>
 <ul>
-<li>👉 <a href="/ai/mcp-protocol-deep-dive/">MCP 协议规范深度拆解：从 Stdio 传输层到 JSON-RPC 消息格式解析</a></li>
-<li>👉 <a href="/ai/mcp-protocol-guide/">MCP Protocol Guide：从 Resources、Tools 到 Prompts 的完整协议地图</a></li>
-<li>👉 <a href="/ai/mcp-security-best-practices/">MCP 安全治理实战：Tool Scope、allowedRoots、只读账号与审计日志</a></li>
-<li>👉 <a href="/ai/ai-agent-tool-use/">AI Agent Tool Use：工具调用、权限边界与执行链路怎么设计</a></li>
-<li>👉 <a href="/ai/mcp-json-rpc-parse-error/">MCP JSON-RPC parse error 怎么排查：Claude 与 Cursor 连接失败的 5 个关键步骤</a></li>
-<li>👉 <a href="/ai/mcp-server-sqlite/">MCP Server 实战：让 Claude 访问本地 SQLite 的 5 个步骤与避坑手册</a></li>
+<li>当前请求向模型提供了多少工具定义。</li>
+<li>Schema 是否过长。</li>
+<li>是否使用工具搜索、允许列表和提示缓存。</li>
+<li>工具结果是否被过量塞回上下文。</li>
+</ul>
+<p>MCP 的 Token 成本取决于：</p>
+<ul>
+<li>Host 是否把所有 MCP 工具都转换后交给模型。</li>
+<li>是否先按 Server、任务和权限筛选工具。</li>
+<li>Resources 是按需读取还是整批注入。</li>
+<li>工具结果是否经过裁剪、摘要和结构化。</li>
+</ul>
+<p>因此，MCP 的优势是提供标准化发现与连接，不是保证“Schema 只传一次”或“Token 自动下降数倍”。真正降低成本的是路由、延迟加载、结果裁剪和上下文治理。</p>
+<h2 id="mcp-是否天然更安全">MCP 是否天然更安全</h2>
+<p>同样不能。</p>
+<p>MCP 提供了更清晰的角色边界，但安全仍然是系统工程：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>层级</th><th>必须做的控制</th></tr></thead><tbody><tr><td>Host</td><td>可信 Server 清单、敏感操作确认、上下文隔离、结果校验</td></tr><tr><td>Client</td><td>超时、取消、消息校验、连接生命周期和审计</td></tr><tr><td>Server</td><td>输入校验、访问控制、限流、输出清理、最小权限</td></tr><tr><td>操作系统</td><td>目录权限、用户权限、容器隔离、网络出口限制</td></tr><tr><td>远程服务</td><td>OAuth、Token 生命周期、TLS、网关策略和租户隔离</td></tr></tbody></table>
+<p>不要因为用了 stdio 就认为进程天然安全，也不要因为用了远程 MCP 就把 OAuth Token 直接交给第三方 Server。未受信任的 Server 应放进独立用户、容器或沙箱环境，写操作默认关闭。</p>
+<h2 id="最稳的组合架构">最稳的组合架构</h2>
+<p>真实项目不必在 MCP 和 Function Calling 之间二选一。常见组合是：</p>
+<pre class="astro-code astro-code-themes github-light github-dark-dimmed" style="background-color:#fff;--shiki-dark-bg:#22272e;color:#24292e;--shiki-dark:#adbac7; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>用户</span></span>
+<span class="line"><span>  ↓</span></span>
+<span class="line"><span>AI Host / Agent Runtime</span></span>
+<span class="line"><span>  ↓</span></span>
+<span class="line"><span>模型选择工具（Function Calling）</span></span>
+<span class="line"><span>  ↓</span></span>
+<span class="line"><span>Host 路由到 MCP Client</span></span>
+<span class="line"><span>  ↓</span></span>
+<span class="line"><span>MCP Server</span></span>
+<span class="line"><span>  ↓</span></span>
+<span class="line"><span>API Gateway / 数据库 / 文件系统 / SaaS</span></span></code></pre>
+<p>在这套架构里：</p>
+<ul>
+<li>Function Calling 负责模型侧的结构化选择。</li>
+<li>MCP 负责 Host 与能力服务器之间的标准化连接。</li>
+<li>API Gateway 负责正式后端服务治理。</li>
+<li>Host 负责把用户权限、模型决策和 Server 能力连接起来。</li>
+</ul>
+<p>这比“全部改成 MCP”更符合生产系统的分层原则。</p>
+<h2 id="三个具体场景怎么选">三个具体场景怎么选</h2>
+<h3 id="场景一app-内查询天气和订单">场景一：App 内查询天气和订单</h3>
+<p>选择：<strong>Function Calling</strong>。</p>
+<p>原因：工具少、接口固定、只服务一个 App。直接在应用中完成参数校验、用户身份校验和 API 调用，复杂度最低。</p>
+<h3 id="场景二ide桌面助手和内部-agent-共用代码工具">场景二：IDE、桌面助手和内部 Agent 共用代码工具</h3>
+<p>选择：<strong>MCP + Function Calling</strong>。</p>
+<p>原因：代码搜索、文件读取、测试执行等能力需要被多个 Host 复用。MCP Server 提供统一能力，Host 再决定哪些工具暴露给模型。</p>
+<h3 id="场景三企业财报分析与内部数据">场景三：企业财报分析与内部数据</h3>
+<p>选择：<strong>MCP + API Gateway + 人工审批</strong>。</p>
+<p>原因：MCP Server 负责把财报解析、知识库和审计工具标准化；API Gateway 负责身份、配额和审计；涉及写入、导出和敏感数据访问时由 Host 发起确认。</p>
+<h2 id="从-function-calling-迁移到-mcp-的顺序">从 Function Calling 迁移到 MCP 的顺序</h2>
+<p>不要一次重构全部工具，按下面顺序更稳：</p>
+<ol>
+<li>先统计现有工具的调用方、权限和数据来源。</li>
+<li>把只服务一个应用的简单工具留在 Function Calling。</li>
+<li>选择一组确实需要跨客户端复用的只读工具做 MCP Server。</li>
+<li>给 Server 配置目录白名单、输入校验、超时和审计日志。</li>
+<li>在 Host 中建立可信 Server 清单与敏感操作确认策略。</li>
+<li>再处理远程认证、OAuth 和 API Gateway 对接。</li>
+<li>最后才迁移写文件、执行命令和修改生产数据等高风险工具。</li>
+</ol>
+<h2 id="常见错误">常见错误</h2>
+<h3 id="错误一把-mcp-当作新的模型工具调用格式">错误一：把 MCP 当作新的模型工具调用格式</h3>
+<p>MCP 不替代模型 API 中的 Function Calling。它定义的是 Host、Client、Server 之间的协议连接。Host 仍需要把可用能力以模型能理解的形式提供给模型。</p>
+<h3 id="错误二把-mcp-server-当作安全沙箱">错误二：把 MCP Server 当作安全沙箱</h3>
+<p>Server 只是独立能力提供者。它是否隔离，取决于进程用户、容器、目录权限和网络策略，而不是协议名称。</p>
+<h3 id="错误三把所有-server-的工具全部交给模型">错误三：把所有 Server 的工具全部交给模型</h3>
+<p>这会重新制造工具过多、描述相似和上下文膨胀的问题。Host 应先根据任务、用户权限和 Server 信任级别筛选工具。</p>
+<h3 id="错误四让-mcp-绕过现有后端鉴权">错误四：让 MCP 绕过现有后端鉴权</h3>
+<p>MCP Server 不应该持有不受约束的超级权限。访问企业 API 时，仍应经过 OAuth、API Gateway、租户隔离和审计。</p>
+<h3 id="错误五把-resources-自动塞满上下文">错误五：把 Resources 自动塞满上下文</h3>
+<p>Resources 应按需读取。先列目录和元数据，再读取必要内容；大文件应分页、分段或通过检索定位，避免一次性注入。</p>
+<h2 id="最终决策表">最终决策表</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>你的项目情况</th><th>建议</th></tr></thead><tbody><tr><td>一个应用，1-5 个固定 API</td><td>Function Calling</td></tr><tr><td>一个应用，工具较多但仍由同一代码库维护</td><td>Function Calling + 工具搜索/允许列表</td></tr><tr><td>多个 AI 客户端复用同一组能力</td><td>MCP</td></tr><tr><td>需要标准化接入文件、代码库、数据库 Schema</td><td>MCP Resources / Tools</td></tr><tr><td>正式企业 API、配额、租户和审计</td><td>API Gateway，必要时外接 MCP</td></tr><tr><td>高风险写操作或命令执行</td><td>MCP 或 Function Calling 都必须加审批与最小权限</td></tr><tr><td>想降低 Token 成本</td><td>先做工具筛选、延迟加载和结果裁剪，不要只换协议</td></tr></tbody></table>
+<h2 id="下一步阅读">下一步阅读</h2>
+<ul>
+<li><a href="/ai/mcp/">MCP 专题：从协议边界到生产治理</a></li>
+<li><a href="/ai/mcp-protocol-guide/">MCP 协议指南：先理解边界，再开始接工具</a></li>
+<li><a href="/ai/mcp-function-calling-api-gateway-architecture/">MCP 与 Function Calling、API Gateway 的组合架构</a></li>
+<li><a href="/ai/mcp-oauth-authentication/">MCP OAuth 认证：远程 Server 怎么做授权</a></li>
+<li><a href="/ai/mcp-server-production-governance/">MCP Server 生产治理：权限、审计与生命周期</a></li>
+<li><a href="/ai/mcp-security-best-practices/">MCP 安全实践：allowedRoots、最小权限与提示注入</a></li>
 </ul>  <section class="mt-16 rounded-[34px] border border-orange-500/20 bg-orange-500/[0.06] p-7 md:p-9 not-prose"> <div class="text-[10px] font-black uppercase tracking-[0.28em] text-orange-500 mb-4">专题入口 / MCP Hub</div> <h2 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-4">继续按 MCP 生产部署路径读，而不是堆 guide / tutorial</h2> <p class="text-sm font-bold leading-7 text-slate-600 dark:text-slate-400 max-w-3xl">MCP 内容统一按协议理解、本地 Server、远程部署、OAuth、安全治理、stdio/JSON-RPC 排障和工具对比来承接，避免站内关键词互相抢。</p> <div class="mt-7 flex flex-wrap gap-3"> <a href="/ai/mcp/" class="rounded-full bg-orange-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-white hover:bg-orange-600 transition-colors">进入 MCP 专题 →</a> <a href="/ai/mcp-security-best-practices/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">查看安全治理清单</a> <a href="/newsletter/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">订阅更新</a> </div> </section> </div> <section class="mt-16 p-8 rounded-[32px] bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5"> <div class="flex items-center justify-between gap-4 mb-6"> <h2 class="text-xs font-black uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400"> 下一步阅读 </h2> <a href="/ai/" class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400 hover:underline"> 返回专题入口 → </a> </div> <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> <a href="/ai/mcp-vs-semantic-kernel/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">mcp</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">MCP vs Semantic Kernel：AI Tool 协议和企业 Agent 框架怎么选？</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">深度对比 MCP 协议与 Semantic Kernel/Function Calling，解答在构建本地工具生态与 AI 代理时的技术选型难题。</p> </a><a href="/ai/mcp-filesystem-server/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">mcp</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">MCP Filesystem Server 实战：让 Claude / Cursor 安全读取本地文件</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">实战讲解如何构建 MCP Filesystem Server，让 Claude / Cursor 安全读取本地文件，并通过路径白名单、Roots、Tool Scope、只读权限和 Prompt Injection 防护控制风险。</p> </a><a href="/ai/mcp-protocol-deep-dive/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">mcp</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">MCP 文件与数据网关实战：Resources、Tools、Prompts 与安全沙箱</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">聚焦 MCP 文件与数据网关的安全落地，拆解 Resources、Tools、Prompts 的职责边界、allowed roots、路径校验、读写隔离和 stdio 排障，避免与泛协议指南重复。</p> </a><a href="/ai/openclaw-mcp-sandbox-architecture/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">mcp</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">OpenClaw 安全沙箱架构：构建基于 MCP 协议的物理隔离 Agent</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">深度拆解 OpenClaw 核心架构，详解如何利用 MCP 协议与 eBPF 沙箱实现 Agent 执行环境的读写分离与零信任安全审计。</p> </a> </div> </section>  <div class="mt-20 p-10 rounded-[40px] bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 shadow-2xl relative overflow-hidden group"> <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-600/5 dark:bg-blue-600/20 blur-[100px] rounded-full group-hover:bg-blue-600/10 transition-all duration-1000"></div> <div class="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-10 items-center"> <div class="md:col-span-8 space-y-6"> <h4 class="text-3xl font-black italic tracking-tighter uppercase text-slate-900 dark:text-white">喜欢这篇文章？<br>加入小白实验室的周刊</h4> <p class="text-slate-600 dark:text-slate-300 font-bold text-sm leading-relaxed max-w-xl"> 每周整理 AI 工程实战、产品构建心得和程序员视角的投资阅读笔记。不发虚高战报，只记录真实实验、真实排障和可复盘判断。 </p> </div> <div class="md:col-span-4 flex flex-col gap-4"> <a href="/newsletter" class="w-full py-4 rounded-full bg-blue-600 text-white text-center font-black uppercase text-[10px] tracking-[0.3em] hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20">订阅周刊 →</a> <a href="/tools" class="w-full py-4 rounded-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-center font-black uppercase text-[10px] tracking-[0.3em] hover:bg-slate-100 dark:hover:bg-white/10 transition-all">实验室工具箱</a> </div> </div> </div> </div>  <div class="mt-12 ceramic-card p-6 md:p-12"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-8 flex items-center gap-4"> <span>Comments</span> <div class="h-[1px] flex-1 bg-zinc-200 dark:bg-white/5"></div> </div> <div id="tcomment" class="markdown-content"></div>  <script>(function(){const twikooEnvId = "https://comments.xbstack.com";
 
   document.addEventListener("astro:page-load", () => {
@@ -757,7 +762,7 @@
     }
     loadTwikoo();
   });
-})();</script> </div> </main>  <aside class="hidden lg:flex flex-col gap-8 sticky top-24 h-fit"> <div class="p-2"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-4 px-4">本文目录</div> <div class="liquid-glass-container "><div class="liquidGlass-wrapper dock !p-6"><div class="liquidGlass-effect-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-tint-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-shine  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-text  intersect:animate-fadeLeft transition-all duration-300 fast-slow"><div class="intersect:animate-fadeLeft" data-astro-cid-hop3l3kc><h2 class="text-2xl border-none mb-3" data-astro-cid-hop3l3kc>内容导航</h2><div class="max-h-96 overflow-y-auto" data-astro-cid-hop3l3kc><ul class="list-none m-0 space-y-1" data-astro-cid-hop3l3kc><li class="ml-0" data-astro-cid-hop3l3kc><a href="#先给结论mcp-和-function-calling-不是同一层东西" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>先给结论：MCP 和 Function Calling 不是同一层东西</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#本文解决的问题" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>本文解决的问题</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#适合谁读" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>适合谁读</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#本文作为-mcp-对比主力页的定位" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>本文作为 MCP 对比主力页的定位</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#二-小白的开发随笔" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>二、 小白的开发随笔</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#三-tool-discovery-差异运行时动态查询与静态预定义-schema-的分水岭" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>三、 Tool discovery 差异：运行时动态查询与静态预定义 Schema 的分水岭</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#四-runtime-boundary-差异基于进程间通信的沙箱与应用层高度耦合的代码执行" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>四、 Runtime boundary 差异：基于进程间通信的沙箱与应用层高度耦合的代码执行</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#五-local-data-access-差异协议层直连物理资产与云端反向代理的适配器" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>五、 Local data access 差异：协议层直连物理资产与云端反向代理的适配器</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#六-permission-scope-差异细粒度进程级动态确认与粗放的应用层代码拦截" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>六、 Permission scope 差异：细粒度进程级动态确认与粗放的应用层代码拦截</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#七-stateful-workflow-差异双向持久的会话通信与单向无状态的-request-response-循环" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>七、 Stateful workflow 差异：双向持久的会话通信与单向无状态的 Request-Response 循环</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#八-error-recovery-差异协议层标准化错误码透传与脆弱的提示词自愈" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>八、 Error recovery 差异：协议层标准化错误码透传与脆弱的提示词自愈</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#九-token-cost-差异按需按次加载与长会话大段-schema-的降维打击" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>九、 Token cost 差异：按需按次加载与长会话大段 Schema 的降维打击</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#十-常见坑--常见报错-error-logs" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>十、 常见坑 / 常见报错 (Error Logs)</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#1-json-rpc-解析失败调试日志污染物理输出通道" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>1. JSON-RPC 解析失败：调试日志污染物理输出通道</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#2-本地文件锁死高并发调用导致的资源竞争" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>2. 本地文件锁死：高并发调用导致的资源竞争</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#3-工具调用递归超限智能体逻辑陷入无底洞" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>3. 工具调用递归超限：智能体逻辑陷入无底洞</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#十一-对比块mcp-与-function-calling-的物理比拼" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>十一、 对比块：MCP 与 Function Calling 的物理比拼</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#十二-多模态与流式输出差异协议层的物理扩展能力" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>十二、 多模态与流式输出差异：协议层的物理扩展能力</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#十三-常见问题解答" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>十三、 常见问题解答</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#mcp-和-function-calling-有什么区别" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>MCP 和 Function Calling 有什么区别？</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#小项目应该用-mcp-还是-function-calling" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>小项目应该用 MCP 还是 Function Calling？</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#openai-function-calling-和-mcp-能一起用吗" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>OpenAI Function Calling 和 MCP 能一起用吗？</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#为什么-ai-agent-项目开始讨论-mcp" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>为什么 AI Agent 项目开始讨论 MCP？</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#mcp-会替代-function-calling-吗" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>MCP 会替代 Function Calling 吗？</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#为什么-mcp-协议强制要求将非协议日志输出到-stderr-而不是-stdout" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>为什么 MCP 协议强制要求将非协议日志输出到 stderr 而不是 stdout？</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#本地部署的-mcp-server-怎么防范黑客通过-prompt-注入拿到我的-shell-权限" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>本地部署的 MCP Server 怎么防范黑客通过 Prompt 注入拿到我的 shell 权限？</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#如果我想用-python-快速构建一个-mcp-server有现成的工具链可以使用吗" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>如果我想用 Python 快速构建一个 MCP Server，有现成的工具链可以使用吗？</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#生产环境下应该用-stdio-还是-sse-模式部署-mcp-server" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>生产环境下应该用 stdio 还是 SSE 模式部署 MCP Server？</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#十四-继续阅读" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>十四、 继续阅读</a></li></ul></div></div></div></div></div> </div>  <div class="ceramic-card p-6 bg-orange-50/30 dark:bg-orange-500/5 border-orange-200/50 dark:border-orange-500/20"> <p class="text-[11px] text-orange-800 dark:text-orange-300 leading-relaxed font-medium"> 觉得有用？欢迎订阅我的周刊，每周获取一份精选的技术与投资笔记。 </p> <a href="/newsletter" class="inline-block mt-3 text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest border-b border-orange-600/30 hover:border-orange-600 transition-all"> 立即加入订阅 → </a> </div> </aside> </div> </main> <script>
+})();</script> </div> </main>  <aside class="hidden lg:flex flex-col gap-8 sticky top-24 h-fit"> <div class="p-2"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-4 px-4">本文目录</div> <div class="liquid-glass-container "><div class="liquidGlass-wrapper dock !p-6"><div class="liquidGlass-effect-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-tint-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-shine  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-text  intersect:animate-fadeLeft transition-all duration-300 fast-slow"><div class="intersect:animate-fadeLeft" data-astro-cid-hop3l3kc><h2 class="text-2xl border-none mb-3" data-astro-cid-hop3l3kc>内容导航</h2><div class="max-h-96 overflow-y-auto" data-astro-cid-hop3l3kc><ul class="list-none m-0 space-y-1" data-astro-cid-hop3l3kc><li class="ml-0" data-astro-cid-hop3l3kc><a href="#先给结论两者不是替代关系而是不同层级" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>先给结论：两者不是替代关系，而是不同层级</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#一张表看懂-function-callingmcp-和-api-gateway" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>一张表看懂 Function Calling、MCP 和 API Gateway</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#选型规则先看复杂度不要先看概念热度" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>选型规则：先看复杂度，不要先看概念热度</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#优先-function-calling-的情况" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>优先 Function Calling 的情况</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#优先考虑-mcp-的情况" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>优先考虑 MCP 的情况</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#api-gateway-仍然不可少的情况" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>API Gateway 仍然不可少的情况</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#function-calling-的真实调用链" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Function Calling 的真实调用链</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#mcp-的真实架构host-才是协调者" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>MCP 的真实架构：Host 才是协调者</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#mcp-tools可以发现和调用但不等于可以无条件执行" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>MCP Tools：可以发现和调用，但不等于可以无条件执行</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#mcp-resources是标准化上下文不是自动挂载整块硬盘" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>MCP Resources：是标准化上下文，不是自动挂载整块硬盘</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#mcp-是否比-function-calling-更省-token" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>MCP 是否比 Function Calling 更省 Token</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#mcp-是否天然更安全" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>MCP 是否天然更安全</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#最稳的组合架构" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>最稳的组合架构</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#三个具体场景怎么选" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>三个具体场景怎么选</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#场景一app-内查询天气和订单" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>场景一：App 内查询天气和订单</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#场景二ide桌面助手和内部-agent-共用代码工具" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>场景二：IDE、桌面助手和内部 Agent 共用代码工具</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#场景三企业财报分析与内部数据" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>场景三：企业财报分析与内部数据</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#从-function-calling-迁移到-mcp-的顺序" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>从 Function Calling 迁移到 MCP 的顺序</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#常见错误" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>常见错误</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#错误一把-mcp-当作新的模型工具调用格式" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>错误一：把 MCP 当作新的模型工具调用格式</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#错误二把-mcp-server-当作安全沙箱" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>错误二：把 MCP Server 当作安全沙箱</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#错误三把所有-server-的工具全部交给模型" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>错误三：把所有 Server 的工具全部交给模型</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#错误四让-mcp-绕过现有后端鉴权" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>错误四：让 MCP 绕过现有后端鉴权</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#错误五把-resources-自动塞满上下文" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>错误五：把 Resources 自动塞满上下文</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#最终决策表" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>最终决策表</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#下一步阅读" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>下一步阅读</a></li></ul></div></div></div></div></div> </div>  <div class="ceramic-card p-6 bg-orange-50/30 dark:bg-orange-500/5 border-orange-200/50 dark:border-orange-500/20"> <p class="text-[11px] text-orange-800 dark:text-orange-300 leading-relaxed font-medium"> 觉得有用？欢迎订阅我的周刊，每周获取一份精选的技术与投资笔记。 </p> <a href="/newsletter" class="inline-block mt-3 text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest border-b border-orange-600/30 hover:border-orange-600 transition-all"> 立即加入订阅 → </a> </div> </aside> </div> </main> <script>
     function initProgress() {
       const progressBar = document.getElementById('reading-progress');
       if (!progressBar) return;
