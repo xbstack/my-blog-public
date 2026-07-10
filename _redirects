@@ -343,3 +343,10 @@
 /blog/guanling-ice-mortar-preview                      /life/guanling-ice-mortar-preview/             301
 /guanling-ice-mortar-preview                           /life/guanling-ice-mortar-preview/             301
 
+# 10. 参数页与英文旧工具入口收敛
+/compound-interest/:slug                              /tools/compound-calculator/?scenario=:slug     301
+/en/tools/ai-financial-analysis                       /en/tools/ai-finance/                           301
+/en/tools/ai-financial-analysis/                      /en/tools/ai-finance/                           301
+/en/tools/compound-interest-calculator                /en/tools/compound-calculator/                  301
+/en/tools/compound-interest-calculator/               /en/tools/compound-calculator/                  301
+

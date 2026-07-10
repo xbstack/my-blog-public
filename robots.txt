@@ -26,7 +26,6 @@ User-agent: CCBot
 User-agent: Amazonbot
 User-agent: Bytespider
 User-agent: meta-externalagent
-Content-Signal: search=yes,ai-input=yes,ai-train=yes,use=reference
 Allow: /
 Disallow: /admin/
 Disallow: /api/
@@ -37,7 +36,6 @@ Disallow: /prototype/
 Disallow: /go/
 
 User-agent: *
-Content-Signal: search=yes,ai-input=yes,ai-train=yes,use=reference
 Allow: /
 Disallow: /admin/
 Disallow: /api/
