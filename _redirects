@@ -1,5 +1,11 @@
 # XBSTACK Permanent Redirects (V6.1 SEO Architecture)
 
+# 00. 高优先级精准迁移（必须位于所有通配规则之前）
+/ai/gpt56-test                                      /ai/tools-lab/gpt56-test/ 301
+/ai/gpt56-test/                                     /ai/tools-lab/gpt56-test/ 301
+/ai/claude-sonnet-5-astro-bundle-optimization       /ai/tools-lab/claude-sonnet-5-astro-bundle-optimization/ 301
+/ai/claude-sonnet-5-astro-bundle-optimization/      /ai/tools-lab/claude-sonnet-5-astro-bundle-optimization/ 301
+
 # 00. NAS Admin & API Backends
 /admin             https://admin.xbstack.com/admin/login     302
 /admin/*           https://admin.xbstack.com/admin/:splat    302
@@ -149,12 +155,6 @@
 /ai/xbstack-404-cloudflare-astro-route-fix            /ai/xbstack-404-cloudflare-astro-route-fix/ 301
 /ai/langgraph-observability-agent-trace/utm_source=*  /ai/langgraph-observability-agent-trace/ 301
 /ai/langgraph-human-in-the-loop-*                     /ai/langgraph-human-in-the-loop-approval/ 301
-
-# 4.2 AI Tools Lab 文章迁移：保留旧扁平 URL，避免首页、GitHub 和搜索历史链接 404
-/ai/gpt56-test                                      /ai/tools-lab/gpt56-test/ 301
-/ai/gpt56-test/                                     /ai/tools-lab/gpt56-test/ 301
-/ai/claude-sonnet-5-astro-bundle-optimization       /ai/tools-lab/claude-sonnet-5-astro-bundle-optimization/ 301
-/ai/claude-sonnet-5-astro-bundle-optimization/      /ai/tools-lab/claude-sonnet-5-astro-bundle-optimization/ 301
 
 # 5. 旧栏目 301 重定向
 # AI 二级旧栏目治理：顶部导航不再暴露 notes/practice/tools，统一收敛到有效专题。
