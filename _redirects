@@ -150,6 +150,12 @@
 /ai/langgraph-observability-agent-trace/utm_source=*  /ai/langgraph-observability-agent-trace/ 301
 /ai/langgraph-human-in-the-loop-*                     /ai/langgraph-human-in-the-loop-approval/ 301
 
+# 4.2 AI Tools Lab 文章迁移：保留旧扁平 URL，避免首页、GitHub 和搜索历史链接 404
+/ai/gpt56-test                                      /ai/tools-lab/gpt56-test/ 301
+/ai/gpt56-test/                                     /ai/tools-lab/gpt56-test/ 301
+/ai/claude-sonnet-5-astro-bundle-optimization       /ai/tools-lab/claude-sonnet-5-astro-bundle-optimization/ 301
+/ai/claude-sonnet-5-astro-bundle-optimization/      /ai/tools-lab/claude-sonnet-5-astro-bundle-optimization/ 301
+
 # 5. 旧栏目 301 重定向
 # AI 二级旧栏目治理：顶部导航不再暴露 notes/practice/tools，统一收敛到有效专题。
 /ai/tools          /ai/tools-lab/      301
