@@ -9,6 +9,27 @@
     </script><title>Lunest 睡眠恢复 App：助眠音景、睡眠监测、晨间报告与户外恢复趋势 | XBSTACK</title><meta name="description" content="Lunest 是一款面向睡前助眠、户外恢复和程序员精力管理的睡眠恢复 App，结合白噪音、雨声、睡眠监测、晨间报告和长期趋势，帮助你理解睡眠质量；它不是医疗诊断工具。"><meta name="keywords" content="Lunest,睡眠App,助眠App,睡眠监测,睡眠追踪,睡眠报告,睡眠评分,睡眠质量分析,入睡困难,失眠助眠,白噪音,雨声助眠,自然音,深度睡眠,睡眠趋势,睡眠健康"><meta name="theme-color" content="#050608"><meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://www.xbstack.com/tools/lunest/"><meta property="og:title" content="Lunest 睡眠恢复 App：助眠音景、睡眠监测、晨间报告与户外恢复趋势 | XBSTACK"><meta property="og:description" content="Lunest 是一款面向睡前助眠、户外恢复和程序员精力管理的睡眠恢复 App，结合白噪音、雨声、睡眠监测、晨间报告和长期趋势，帮助你理解睡眠质量；它不是医疗诊断工具。"><meta property="og:image" content="https://www.xbstack.com/assets/lunest/lunest-feature-graphic.png"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/tools/lunest/"><meta property="twitter:title" content="Lunest 睡眠恢复 App：助眠音景、睡眠监测、晨间报告与户外恢复趋势 | XBSTACK"><meta property="twitter:description" content="Lunest 是一款面向睡前助眠、户外恢复和程序员精力管理的睡眠恢复 App，结合白噪音、雨声、睡眠监测、晨间报告和长期趋势，帮助你理解睡眠质量；它不是医疗诊断工具。"><meta property="twitter:image" content="https://www.xbstack.com/assets/lunest/lunest-feature-graphic.png"><link rel="canonical" href="https://www.xbstack.com/tools/lunest/"><link rel="alternate" hreflang="zh-CN" href="https://www.xbstack.com/tools/lunest/"><link rel="alternate" hreflang="zh-TW" href="https://www.xbstack.com/zh-tw/tools/lunest/"><link rel="alternate" hreflang="en" href="https://www.xbstack.com/en/tools/lunest/"><link rel="alternate" hreflang="x-default" href="https://www.xbstack.com/en/tools/lunest/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Precision Tools","description":"AI finance analyzer, compound calculator, Lunest and practical product tools.","url":"https://www.xbstack.com/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Thinking","description":"Investing notes, reading system, decision system and long-term thinking.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Photography and Gear","description":"Guizhou outdoor field notes, photography, gear lab and real-life trust assets.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"About Xiaobai, the XBSTACK asset system and the slogan 在高处看世界，在底层堆资产.","url":"https://www.xbstack.com/about/"}]}</script><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script async src="https://www.googletagmanager.com/gtag/js?id=G-1J4274CPMT"></script><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
 
           if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
             window.dataLayer = window.dataLayer || [];
             window.gtag = function() {
               window.dataLayer.push(arguments);
@@ -21,8 +42,6 @@
             window.__lastGA4PageLocation = document.referrer || "";
             window.__scroll50Reported = false;
             window.__scroll90Reported = false;
-
-            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
 
             const getReferrerHost = () => {
               try {
@@ -175,6 +194,13 @@
                       event_category: 'outbound',
                     });
                   } else {
+                    if (url.pathname.startsWith('/go/')) {
+                      window.xbTrackEvent('affiliate_click', {
+                        ...payload,
+                        event_category: 'conversion',
+                        affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                      });
+                    }
                     if (url.pathname.startsWith('/tools/') || url.pathname.startsWith('/compound-interest/')) {
                       window.xbTrackEvent('click_tool', {
                         ...payload,
@@ -223,11 +249,13 @@
             window.initGA4Tracking();
 
             document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
               window.sendGA4PageView();
               window.initGA4Tracking();
             });
           } else {
-            // View Transitions 切换页面时只触发新页面的上报
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
             if (typeof window.sendGA4PageView === 'function') {
               window.sendGA4PageView();
             }

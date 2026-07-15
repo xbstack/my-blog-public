@@ -9,6 +9,27 @@
     </script><title>网站理念：XBSTACK 为什么存在 | 关于小白 - XBSTACK</title><meta name="description" content="XBSTACK 是小白的个人品牌系统：以 AI 开发、全栈工程、智能体和 NAS 自托管为能力底座，以工具产品、投资复盘、阅读和户外生活构建长期资产。"><meta name="keywords" content="XBSTACK 理念, 个人品牌站, 独立开发者, AI 工程, NAS 自托管, 长期资产, 小白"><meta name="theme-color" content="#050608"><meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://www.xbstack.com/about/vision/"><meta property="og:title" content="网站理念：XBSTACK 为什么存在 | 关于小白 - XBSTACK"><meta property="og:description" content="XBSTACK 是小白的个人品牌系统：以 AI 开发、全栈工程、智能体和 NAS 自托管为能力底座，以工具产品、投资复盘、阅读和户外生活构建长期资产。"><meta property="og:image" content="https://www.xbstack.com/favicon/favicon.svg"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/about/vision/"><meta property="twitter:title" content="网站理念：XBSTACK 为什么存在 | 关于小白 - XBSTACK"><meta property="twitter:description" content="XBSTACK 是小白的个人品牌系统：以 AI 开发、全栈工程、智能体和 NAS 自托管为能力底座，以工具产品、投资复盘、阅读和户外生活构建长期资产。"><meta property="twitter:image" content="https://www.xbstack.com/favicon/favicon.svg"><link rel="canonical" href="https://www.xbstack.com/about/vision/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Precision Tools","description":"AI finance analyzer, compound calculator, Lunest and practical product tools.","url":"https://www.xbstack.com/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Thinking","description":"Investing notes, reading system, decision system and long-term thinking.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Photography and Gear","description":"Guizhou outdoor field notes, photography, gear lab and real-life trust assets.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"About Xiaobai, the XBSTACK asset system and the slogan 在高处看世界，在底层堆资产.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">[{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"XBSTACK 为什么不是普通博客？","acceptedAnswer":{"@type":"Answer","text":"因为它不是按时间记录碎片，而是围绕 AI 工程、工具产品、效率系统、长期资产和真实生活输入构建个人资产系统。"}},{"@type":"Question","name":"网站理念和内容运营有什么关系？","acceptedAnswer":{"@type":"Answer","text":"理念决定选题边界：不做泛 AI 内容农场，不做荐股，不编造经历，优先写真实工程现场和长期复盘。"}},{"@type":"Question","name":"Build Assets. See Further 是什么意思？","acceptedAnswer":{"@type":"Answer","text":"先在底层堆可复用资产，包括能力、工具、内容、数据和身体状态，再用更高视角看世界。"}}]}]</script><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script async src="https://www.googletagmanager.com/gtag/js?id=G-1J4274CPMT"></script><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
 
           if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
             window.dataLayer = window.dataLayer || [];
             window.gtag = function() {
               window.dataLayer.push(arguments);
@@ -21,8 +42,6 @@
             window.__lastGA4PageLocation = document.referrer || "";
             window.__scroll50Reported = false;
             window.__scroll90Reported = false;
-
-            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
 
             const getReferrerHost = () => {
               try {
@@ -175,6 +194,13 @@
                       event_category: 'outbound',
                     });
                   } else {
+                    if (url.pathname.startsWith('/go/')) {
+                      window.xbTrackEvent('affiliate_click', {
+                        ...payload,
+                        event_category: 'conversion',
+                        affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                      });
+                    }
                     if (url.pathname.startsWith('/tools/') || url.pathname.startsWith('/compound-interest/')) {
                       window.xbTrackEvent('click_tool', {
                         ...payload,
@@ -223,11 +249,13 @@
             window.initGA4Tracking();
 
             document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
               window.sendGA4PageView();
               window.initGA4Tracking();
             });
           } else {
-            // View Transitions 切换页面时只触发新页面的上报
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
             if (typeof window.sendGA4PageView === 'function') {
               window.sendGA4PageView();
             }

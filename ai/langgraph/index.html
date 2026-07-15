@@ -9,6 +9,27 @@
     </script><title>LangGraph 专题指南 | 状态管理、人机协同与生产级多智能体编排 - XBSTACK</title><meta name="description" content="XBSTACK LangGraph Hub 是生产级有状态 Agent 编排入口，系统整理 thread_id 状态隔离、Checkpointer、Human-in-the-loop、失败恢复、Observability、Supervisor Worker 和 Subgraph 拆分实战。"><meta name="keywords" content="LangGraph, StateGraph, thread_id, session_id, Memory Checkpoint, Checkpointer, Human-in-the-loop, HITL, State Isolation, Subgraph, Supervisor Worker, Multi-Agent Systems, LangSmith, Agentic Workflow, LangGraph 实战"><meta name="theme-color" content="#050608"><meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://www.xbstack.com/ai/langgraph/"><meta property="og:title" content="LangGraph 专题指南 | 状态管理、人机协同与生产级多智能体编排 - XBSTACK"><meta property="og:description" content="XBSTACK LangGraph Hub 是生产级有状态 Agent 编排入口，系统整理 thread_id 状态隔离、Checkpointer、Human-in-the-loop、失败恢复、Observability、Supervisor Worker 和 Subgraph 拆分实战。"><meta property="og:image" content="https://www.xbstack.com/favicon/favicon.svg"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/ai/langgraph/"><meta property="twitter:title" content="LangGraph 专题指南 | 状态管理、人机协同与生产级多智能体编排 - XBSTACK"><meta property="twitter:description" content="XBSTACK LangGraph Hub 是生产级有状态 Agent 编排入口，系统整理 thread_id 状态隔离、Checkpointer、Human-in-the-loop、失败恢复、Observability、Supervisor Worker 和 Subgraph 拆分实战。"><meta property="twitter:image" content="https://www.xbstack.com/favicon/favicon.svg"><link rel="canonical" href="https://www.xbstack.com/ai/langgraph/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Precision Tools","description":"AI finance analyzer, compound calculator, Lunest and practical product tools.","url":"https://www.xbstack.com/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Thinking","description":"Investing notes, reading system, decision system and long-term thinking.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Photography and Gear","description":"Guizhou outdoor field notes, photography, gear lab and real-life trust assets.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"About Xiaobai, the XBSTACK asset system and the slogan 在高处看世界，在底层堆资产.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","name":"LangGraph 专题指南 | 状态管理、人机协同与生产级多智能体编排 - XBSTACK | Independent Developer Asset System","url":"https://www.xbstack.com/ai/langgraph/","description":"XBSTACK LangGraph Hub 是生产级有状态 Agent 编排入口，系统整理 thread_id 状态隔离、Checkpointer、Human-in-the-loop、失败恢复、Observability、Supervisor Worker 和 Subgraph 拆分实战。","inLanguage":"zh-CN","about":[{"@type":"Thing","name":"LangGraph"},{"@type":"Thing","name":"StateGraph"},{"@type":"Thing","name":"Checkpointer"},{"@type":"Thing","name":"Human-in-the-loop"},{"@type":"Thing","name":"Multi-Agent Systems"},{"@type":"Thing","name":"LangSmith"}],"isPartOf":{"@type":"WebSite","name":"XBSTACK","url":"https://www.xbstack.com/"}},{"@type":"ItemList","name":"LangGraph core articles","itemListElement":[{"@type":"ListItem","position":1,"name":"LangGraph 状态隔离实战","url":"https://www.xbstack.com/ai/langgraph-thread-session-state-isolation/"},{"@type":"ListItem","position":2,"name":"LangGraph Checkpointer 选型","url":"https://www.xbstack.com/ai/langgraph-checkpointer-memory-sqlite-redis/"},{"@type":"ListItem","position":3,"name":"LangGraph Human-in-the-loop 审批流","url":"https://www.xbstack.com/ai/langgraph-human-in-the-loop-approval/"},{"@type":"ListItem","position":4,"name":"LangGraph 多智能体失败恢复","url":"https://www.xbstack.com/ai/langgraph-agent-error-recovery-retry-timeout/"},{"@type":"ListItem","position":5,"name":"LangGraph Observability 实战","url":"https://www.xbstack.com/ai/langgraph-observability-agent-trace/"},{"@type":"ListItem","position":6,"name":"LangGraph Supervisor / Worker 协作","url":"https://www.xbstack.com/ai/langgraph-supervisor-worker-handoff/"},{"@type":"ListItem","position":7,"name":"LangGraph Subgraph Worker State","url":"https://www.xbstack.com/ai/langgraph-subgraph-worker-state/"},{"@type":"ListItem","position":8,"name":"LangGraph Memory 与长期状态","url":"https://www.xbstack.com/ai/langgraph-memory-checkpointing-production-agents/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"LangGraph 和 LangChain 有什么区别？","acceptedAnswer":{"@type":"Answer","text":"LangChain 更适合快速组合模型、工具和链式调用；LangGraph 关注有状态流程、分支、循环、暂停恢复和多智能体编排。可以把 LangGraph 看成复杂 Agent 工作流的控制层，而不是普通链式调用的替代写法。"}},{"@type":"Question","name":"什么时候需要 LangGraph？","acceptedAnswer":{"@type":"Answer","text":"当流程需要状态隔离、人工审批、失败恢复、子图拆分、循环执行或多角色协同时，LangGraph 更适合。如果只是一次问答或固定步骤调用，直接用简单 Workflow 或函数调用更轻。"}},{"@type":"Question","name":"thread_id 为什么重要？","acceptedAnswer":{"@type":"Answer","text":"thread_id 是 LangGraph 区分不同执行线程的关键。没有清晰的 thread_id、session_id 和 user_id 设计，多用户环境中很容易出现状态串线、记忆污染和错误恢复到别人的任务。"}},{"@type":"Question","name":"Checkpointer 应该选 SQLite、Postgres 还是 Redis？","acceptedAnswer":{"@type":"Answer","text":"SQLite 适合本地开发和轻量场景；Postgres 适合需要事务、备份和稳定持久化的生产场景；Redis 更适合短生命周期、高吞吐和队列式恢复。选择取决于任务生命周期和一致性要求。"}},{"@type":"Question","name":"Human-in-the-loop 如何落地？","acceptedAnswer":{"@type":"Answer","text":"HITL 应该放在写库、发消息、支付、发布、权限变更等高风险动作前。系统需要保存中断前状态、审批输入、恢复入口和审计记录，而不是只在 UI 上弹一个确认框。"}},{"@type":"Question","name":"LangGraph 怎么做失败恢复？","acceptedAnswer":{"@type":"Answer","text":"失败恢复依赖状态设计、Checkpointer 和节点幂等。每个节点都应该知道失败后能否重试、是否需要补偿、是否允许跳过，以及如何把错误写回状态供后续节点判断。"}}]}]}</script><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script async src="https://www.googletagmanager.com/gtag/js?id=G-1J4274CPMT"></script><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
 
           if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
             window.dataLayer = window.dataLayer || [];
             window.gtag = function() {
               window.dataLayer.push(arguments);
@@ -21,8 +42,6 @@
             window.__lastGA4PageLocation = document.referrer || "";
             window.__scroll50Reported = false;
             window.__scroll90Reported = false;
-
-            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
 
             const getReferrerHost = () => {
               try {
@@ -175,6 +194,13 @@
                       event_category: 'outbound',
                     });
                   } else {
+                    if (url.pathname.startsWith('/go/')) {
+                      window.xbTrackEvent('affiliate_click', {
+                        ...payload,
+                        event_category: 'conversion',
+                        affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                      });
+                    }
                     if (url.pathname.startsWith('/tools/') || url.pathname.startsWith('/compound-interest/')) {
                       window.xbTrackEvent('click_tool', {
                         ...payload,
@@ -223,11 +249,13 @@
             window.initGA4Tracking();
 
             document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
               window.sendGA4PageView();
               window.initGA4Tracking();
             });
           } else {
-            // View Transitions 切换页面时只触发新页面的上报
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
             if (typeof window.sendGA4PageView === 'function') {
               window.sendGA4PageView();
             }

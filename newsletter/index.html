@@ -9,6 +9,27 @@
     </script><title>XBSTACK 周刊：每周一封 AI 工程、独立开发与长期资产复盘</title><meta name="description" content="订阅 XBSTACK 周刊，接收可复用的 AI Agent、MCP、LangGraph、n8n、独立开发和网站增长实践。计划按周发送，以真实项目进展、失败记录和长期复盘为主，不做每日热点拼盘。"><meta name="keywords" content="XBSTACK 周刊, XBSTACK Weekly, AI Agent Newsletter, MCP, LangGraph, n8n Workflow, 独立开发, 投资复盘, 工具更新, 户外, 系统审计, 长期复盘"><meta name="theme-color" content="#050608"><meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://www.xbstack.com/newsletter/"><meta property="og:title" content="XBSTACK 周刊：每周一封 AI 工程、独立开发与长期资产复盘"><meta property="og:description" content="订阅 XBSTACK 周刊，接收可复用的 AI Agent、MCP、LangGraph、n8n、独立开发和网站增长实践。计划按周发送，以真实项目进展、失败记录和长期复盘为主，不做每日热点拼盘。"><meta property="og:image" content="https://www.xbstack.com/favicon/favicon.svg"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/newsletter/"><meta property="twitter:title" content="XBSTACK 周刊：每周一封 AI 工程、独立开发与长期资产复盘"><meta property="twitter:description" content="订阅 XBSTACK 周刊，接收可复用的 AI Agent、MCP、LangGraph、n8n、独立开发和网站增长实践。计划按周发送，以真实项目进展、失败记录和长期复盘为主，不做每日热点拼盘。"><meta property="twitter:image" content="https://www.xbstack.com/favicon/favicon.svg"><link rel="canonical" href="https://www.xbstack.com/newsletter/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Precision Tools","description":"AI finance analyzer, compound calculator, Lunest and practical product tools.","url":"https://www.xbstack.com/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Thinking","description":"Investing notes, reading system, decision system and long-term thinking.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Photography and Gear","description":"Guizhou outdoor field notes, photography, gear lab and real-life trust assets.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"About Xiaobai, the XBSTACK asset system and the slogan 在高处看世界，在底层堆资产.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebPage","name":"XBSTACK 周刊订阅","description":"订阅 XBSTACK 周刊，接收可复用的 AI Agent、MCP、LangGraph、n8n、独立开发和网站增长实践。计划按周发送，以真实项目进展、失败记录和长期复盘为主，不做每日热点拼盘。","url":"/newsletter/","datePublished":"2026-01-01","author":{"@type":"Person","name":"小白"}},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"XBSTACK 周刊主要写什么？","acceptedAnswer":{"@type":"Answer","text":"主要整理 AI 工程化、独立开发工具、复利投资、阅读系统、户外生活和网站运营复盘，不追逐每日热点。"}},{"@type":"Question","name":"周刊多久发送一次？","acceptedAnswer":{"@type":"Answer","text":"计划按周发送，具体以真实项目进展和实际发布为准；没有值得保存的内容时不会为了凑频率发送。"}},{"@type":"Question","name":"会不会提供投资建议？","acceptedAnswer":{"@type":"Answer","text":"不会。投资相关内容只做记录、复盘和风险提示，不构成任何买卖建议。"}},{"@type":"Question","name":"适合什么读者订阅？","acceptedAnswer":{"@type":"Answer","text":"适合关注 AI 工程、独立开发、个人网站、长期资产、内容系统和真实生活记录的读者。"}}]},{"@context":"https://schema.org","@type":"SubscribeAction","target":{"@type":"EntryPoint","urlTemplate":"https://buttondown.email/api/emails/embed-subscribe/xbstack","actionPlatform":"http://schema.org/DesktopWebPlatform"},"result":{"@type":"Message","description":"User subscribes to XBSTACK Weekly newsletter"}}]</script><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script async src="https://www.googletagmanager.com/gtag/js?id=G-1J4274CPMT"></script><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
 
           if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
             window.dataLayer = window.dataLayer || [];
             window.gtag = function() {
               window.dataLayer.push(arguments);
@@ -21,8 +42,6 @@
             window.__lastGA4PageLocation = document.referrer || "";
             window.__scroll50Reported = false;
             window.__scroll90Reported = false;
-
-            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
 
             const getReferrerHost = () => {
               try {
@@ -175,6 +194,13 @@
                       event_category: 'outbound',
                     });
                   } else {
+                    if (url.pathname.startsWith('/go/')) {
+                      window.xbTrackEvent('affiliate_click', {
+                        ...payload,
+                        event_category: 'conversion',
+                        affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                      });
+                    }
                     if (url.pathname.startsWith('/tools/') || url.pathname.startsWith('/compound-interest/')) {
                       window.xbTrackEvent('click_tool', {
                         ...payload,
@@ -223,11 +249,13 @@
             window.initGA4Tracking();
 
             document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
               window.sendGA4PageView();
               window.initGA4Tracking();
             });
           } else {
-            // View Transitions 切换页面时只触发新页面的上报
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
             if (typeof window.sendGA4PageView === 'function') {
               window.sendGA4PageView();
             }

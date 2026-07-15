@@ -9,6 +9,27 @@
     </script><title>复利计算器：本金、定投、通胀、回撤与 FIRE 假设测算 - XBSTACK</title><meta name="description" content="XBSTACK 复利计算器是数学假设验证器，用来比较本金、定投、时间、通胀和回撤对 FIRE 目标的影响；它不预测收益，也不构成投资建议。"><meta name="keywords" content="Compound Interest Calculator, Compound Interest Calculator Online, Online ROI Calculator, 复利计算器, 定投复利计算器, FIRE 计算器, 投资收益计算, 定投收益模拟, 通胀影响, XBSTACK"><meta name="theme-color" content="#050608"><meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://www.xbstack.com/tools/compound-calculator/"><meta property="og:title" content="复利计算器：本金、定投、通胀、回撤与 FIRE 假设测算 - XBSTACK"><meta property="og:description" content="XBSTACK 复利计算器是数学假设验证器，用来比较本金、定投、时间、通胀和回撤对 FIRE 目标的影响；它不预测收益，也不构成投资建议。"><meta property="og:image" content="https://www.xbstack.com/favicon/favicon.svg"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/tools/compound-calculator/"><meta property="twitter:title" content="复利计算器：本金、定投、通胀、回撤与 FIRE 假设测算 - XBSTACK"><meta property="twitter:description" content="XBSTACK 复利计算器是数学假设验证器，用来比较本金、定投、时间、通胀和回撤对 FIRE 目标的影响；它不预测收益，也不构成投资建议。"><meta property="twitter:image" content="https://www.xbstack.com/favicon/favicon.svg"><link rel="canonical" href="https://www.xbstack.com/tools/compound-calculator/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Precision Tools","description":"AI finance analyzer, compound calculator, Lunest and practical product tools.","url":"https://www.xbstack.com/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Thinking","description":"Investing notes, reading system, decision system and long-term thinking.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Photography and Gear","description":"Guizhou outdoor field notes, photography, gear lab and real-life trust assets.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"About Xiaobai, the XBSTACK asset system and the slogan 在高处看世界，在底层堆资产.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"XBSTACK Compound Interest Calculator","operatingSystem":"All","applicationCategory":"FinanceApplication","offers":{"@type":"Offer","price":"0"},"description":"A compound interest calculator for testing principal, recurring contributions, inflation and FIRE assumptions. It is not investment advice."},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"复利计算器能预测未来收益吗？","acceptedAnswer":{"@type":"Answer","text":"不能。它只能根据你输入的本金、定投、年化假设、通胀和时间做数学推演，不能预测市场，也不保证任何收益。"}},{"@type":"Question","name":"年化收益率应该怎么填？","acceptedAnswer":{"@type":"Answer","text":"年化收益率应该作为假设参数反复测试，而不是目标承诺。建议同时测试保守、中性、乐观三组参数，并观察回撤和通胀后的购买力变化。"}},{"@type":"Question","name":"定投和一次性投入应该怎么比较？","acceptedAnswer":{"@type":"Answer","text":"一次性投入更依赖起点估值和长期持有，定投更适合现金流分批进入。工具会帮助你比较不同现金流路径下的结果差异。"}},{"@type":"Question","name":"FIRE 测算为什么要考虑通胀？","acceptedAnswer":{"@type":"Answer","text":"FIRE 目标不是账面金额，而是未来购买力。通胀会侵蚀资产真实价值，所以需要同时看名义资产和扣除通胀后的结果。"}},{"@type":"Question","name":"这个工具是否构成投资建议？","acceptedAnswer":{"@type":"Answer","text":"不构成。XBSTACK 复利计算器只是数学假设验证器，所有参数都需要你自行判断，任何投资决策都应独立完成。"}}]}]}</script><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script async src="https://www.googletagmanager.com/gtag/js?id=G-1J4274CPMT"></script><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
 
           if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
             window.dataLayer = window.dataLayer || [];
             window.gtag = function() {
               window.dataLayer.push(arguments);
@@ -21,8 +42,6 @@
             window.__lastGA4PageLocation = document.referrer || "";
             window.__scroll50Reported = false;
             window.__scroll90Reported = false;
-
-            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
 
             const getReferrerHost = () => {
               try {
@@ -175,6 +194,13 @@
                       event_category: 'outbound',
                     });
                   } else {
+                    if (url.pathname.startsWith('/go/')) {
+                      window.xbTrackEvent('affiliate_click', {
+                        ...payload,
+                        event_category: 'conversion',
+                        affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                      });
+                    }
                     if (url.pathname.startsWith('/tools/') || url.pathname.startsWith('/compound-interest/')) {
                       window.xbTrackEvent('click_tool', {
                         ...payload,
@@ -223,11 +249,13 @@
             window.initGA4Tracking();
 
             document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
               window.sendGA4PageView();
               window.initGA4Tracking();
             });
           } else {
-            // View Transitions 切换页面时只触发新页面的上报
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
             if (typeof window.sendGA4PageView === 'function') {
               window.sendGA4PageView();
             }

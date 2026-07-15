@@ -9,6 +9,27 @@
     </script><title>Templates：AI Workflow、Prompt、Agent 与 MCP/n8n 模板 - XBSTACK</title><meta name="description" content="XBSTACK Templates 是 AI Workflow、Prompt、Agent、MCP、n8n、站外分发和内容运营模板入口，用来把文章方法沉淀成可复用清单、配置和工作流。"><meta name="keywords" content="XBSTACK Templates, AI Workflow Templates, Prompt Templates, Agent Templates, MCP 模板, n8n 模板, 内容运营模板, 站外分发模板, AI 自动化模板"><meta name="theme-color" content="#050608"><meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://www.xbstack.com/tools/templates/"><meta property="og:title" content="Templates：AI Workflow、Prompt、Agent 与 MCP/n8n 模板 - XBSTACK"><meta property="og:description" content="XBSTACK Templates 是 AI Workflow、Prompt、Agent、MCP、n8n、站外分发和内容运营模板入口，用来把文章方法沉淀成可复用清单、配置和工作流。"><meta property="og:image" content="https://www.xbstack.com/favicon/favicon.svg"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/tools/templates/"><meta property="twitter:title" content="Templates：AI Workflow、Prompt、Agent 与 MCP/n8n 模板 - XBSTACK"><meta property="twitter:description" content="XBSTACK Templates 是 AI Workflow、Prompt、Agent、MCP、n8n、站外分发和内容运营模板入口，用来把文章方法沉淀成可复用清单、配置和工作流。"><meta property="twitter:image" content="https://www.xbstack.com/favicon/favicon.svg"><link rel="canonical" href="https://www.xbstack.com/tools/templates/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Precision Tools","description":"AI finance analyzer, compound calculator, Lunest and practical product tools.","url":"https://www.xbstack.com/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Thinking","description":"Investing notes, reading system, decision system and long-term thinking.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Photography and Gear","description":"Guizhou outdoor field notes, photography, gear lab and real-life trust assets.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"About Xiaobai, the XBSTACK asset system and the slogan 在高处看世界，在底层堆资产.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","@id":"https://www.xbstack.com/tools/templates/#collection","name":"Templates：AI Workflow、Prompt、Agent 与 MCP/n8n 模板 - XBSTACK","url":"https://www.xbstack.com/tools/templates/","description":"XBSTACK Templates 是 AI Workflow、Prompt、Agent、MCP、n8n、站外分发和内容运营模板入口，用来把文章方法沉淀成可复用清单、配置和工作流。","inLanguage":"zh-CN"},{"@type":"BreadcrumbList","@id":"https://www.xbstack.com/tools/templates/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.xbstack.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://www.xbstack.com/tools/"},{"@type":"ListItem","position":3,"name":"Templates","item":"https://www.xbstack.com/tools/templates/"}]},{"@type":"ItemList","@id":"https://www.xbstack.com/tools/templates/#template-groups","name":"XBSTACK template groups","itemListElement":[{"@type":"ListItem","position":1,"name":"AI Workflow Templates","url":"https://www.xbstack.com/ai/workflow/"},{"@type":"ListItem","position":2,"name":"Prompt Templates","url":"https://www.xbstack.com/ai/tools-lab/"},{"@type":"ListItem","position":3,"name":"Agent Templates","url":"https://www.xbstack.com/ai/agent/"},{"@type":"ListItem","position":4,"name":"MCP / n8n Examples","url":"https://www.xbstack.com/ai/mcp/"},{"@type":"ListItem","position":5,"name":"Distribution Templates","url":"https://www.xbstack.com/growth/"},{"@type":"ListItem","position":6,"name":"Content Ops Checklist","url":"https://www.xbstack.com/growth/"}]},{"@type":"FAQPage","@id":"https://www.xbstack.com/tools/templates/#faq","mainEntity":[{"@type":"Question","name":"Templates 是工具还是文章？","acceptedAnswer":{"@type":"Answer","text":"它是工具承接页。文章解释为什么和怎么做，Templates 把方法沉淀成可复用清单、配置、提示词和工作流入口。"}},{"@type":"Question","name":"现在没有很多模板，为什么要先建这个页？","acceptedAnswer":{"@type":"Answer","text":"因为 n8n、MCP、Agent、模型实测和 Growth 内容都需要一个承接位。先建轻量入口，后续再逐步补真实模板。"}},{"@type":"Question","name":"Templates 会不会变成空栏目？","acceptedAnswer":{"@type":"Answer","text":"不会。页面现在先承接已有专题和工具，后续只有真实文章能沉淀出模板时才继续扩充。"}}]}]}</script><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script async src="https://www.googletagmanager.com/gtag/js?id=G-1J4274CPMT"></script><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
 
           if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
             window.dataLayer = window.dataLayer || [];
             window.gtag = function() {
               window.dataLayer.push(arguments);
@@ -21,8 +42,6 @@
             window.__lastGA4PageLocation = document.referrer || "";
             window.__scroll50Reported = false;
             window.__scroll90Reported = false;
-
-            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
 
             const getReferrerHost = () => {
               try {
@@ -175,6 +194,13 @@
                       event_category: 'outbound',
                     });
                   } else {
+                    if (url.pathname.startsWith('/go/')) {
+                      window.xbTrackEvent('affiliate_click', {
+                        ...payload,
+                        event_category: 'conversion',
+                        affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                      });
+                    }
                     if (url.pathname.startsWith('/tools/') || url.pathname.startsWith('/compound-interest/')) {
                       window.xbTrackEvent('click_tool', {
                         ...payload,
@@ -223,11 +249,13 @@
             window.initGA4Tracking();
 
             document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
               window.sendGA4PageView();
               window.initGA4Tracking();
             });
           } else {
-            // View Transitions 切换页面时只触发新页面的上报
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
             if (typeof window.sendGA4PageView === 'function') {
               window.sendGA4PageView();
             }
