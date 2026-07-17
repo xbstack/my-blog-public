@@ -1,0 +1,1080 @@
+<!DOCTYPE html><html lang="en" class="dark" data-analytics="ga4-baidu"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script>
+      const applyTheme = () => {
+        const theme = localStorage.getItem("theme");
+        const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      };
+      applyTheme();
+      document.addEventListener("astro:page-load", applyTheme);
+    </script><script>(function(){const currentLanguage = "en";
+const languageAlternates = [{"lang":"zh-CN","href":"https://www.xbstack.com/ai/mcp-json-rpc-parse-error/"},{"lang":"en","href":"https://www.xbstack.com/en/ai/mcp-json-rpc-parse-error/"},{"lang":"x-default","href":"https://www.xbstack.com/ai/mcp-json-rpc-parse-error/"}];
+
+      (() => {
+        const normalizeLanguage = (value) => String(value || '').toLowerCase().startsWith('en') ? 'en' : 'zh-CN';
+        const readCookie = (name) => {
+          const prefix = `${name}=`;
+          const item = document.cookie.split(';').map((part) => part.trim()).find((part) => part.startsWith(prefix));
+          return item ? decodeURIComponent(item.slice(prefix.length)) : '';
+        };
+
+        let preferredLanguage = readCookie('xbstack_lang');
+        if (!preferredLanguage) {
+          try {
+            preferredLanguage = localStorage.getItem('xbstack_lang') || '';
+          } catch (error) {}
+        }
+
+        if (!preferredLanguage) {
+          const browserLanguage = Array.isArray(navigator.languages) && navigator.languages.length
+            ? navigator.languages[0]
+            : navigator.language;
+          preferredLanguage = normalizeLanguage(browserLanguage);
+          document.cookie = `xbstack_lang=${encodeURIComponent(preferredLanguage)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+          try {
+            localStorage.setItem('xbstack_lang', preferredLanguage);
+          } catch (error) {}
+        }
+
+        const preferred = normalizeLanguage(preferredLanguage);
+        const current = normalizeLanguage(currentLanguage);
+        const target = (languageAlternates || []).find((item) => normalizeLanguage(item.lang) === preferred);
+        const redirectKey = `xbstack_auto_lang:${window.location.pathname}:${preferred}`;
+
+        if (target && preferred !== current && !sessionStorage.getItem(redirectKey)) {
+          const targetUrl = new URL(target.href, window.location.origin);
+          if (targetUrl.pathname !== window.location.pathname) {
+            sessionStorage.setItem(redirectKey, '1');
+            window.location.replace(targetUrl.href);
+          }
+        }
+      })();
+    })();</script><title>How to Fix MCP -32700 Parse Errors: Troubleshooting stdout, stdio, and &quot;Tool list failed&quot; | AI - XBSTACK</title><meta name="description" content="Troubleshoot MCP -32700 Parse error, Tool list failed, and spawn ENOENT in 5 steps: check stdout contamination, stderr logs, JSON-RPC messages, stdio startup paths, and protocol version."><meta name="keywords" content="MCP JSON-RPC parse error, MCP Server, Claude MCP, Cursor MCP, stdio transport, stdout pollution, stderr logging, JSON-RPC 2.0, MCP debugging, MCP error troubleshooting"><meta name="theme-color" content="#050608"><meta name="robots" content="noindex,follow"><meta property="og:type" content="article"><meta property="og:locale" content="en_US"><meta property="og:url" content="https://www.xbstack.com/en/ai/mcp-json-rpc-parse-error/"><meta property="og:title" content="How to Fix MCP -32700 Parse Errors: Troubleshooting stdout, stdio, and &#34;Tool list failed&#34; | AI - XBSTACK"><meta property="og:description" content="Troubleshoot MCP -32700 Parse error, Tool list failed, and spawn ENOENT in 5 steps: check stdout contamination, stderr logs, JSON-RPC messages, stdio startup paths, and protocol version."><meta property="og:image" content="https://www.xbstack.com/_astro/cogview4-3386bb35.BjmWW5PI.png"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/en/ai/mcp-json-rpc-parse-error/"><meta property="twitter:title" content="How to Fix MCP -32700 Parse Errors: Troubleshooting stdout, stdio, and &#34;Tool list failed&#34; | AI - XBSTACK"><meta property="twitter:description" content="Troubleshoot MCP -32700 Parse error, Tool list failed, and spawn ENOENT in 5 steps: check stdout contamination, stderr logs, JSON-RPC messages, stdio startup paths, and protocol version."><meta property="twitter:image" content="https://www.xbstack.com/_astro/cogview4-3386bb35.BjmWW5PI.png"><link rel="canonical" href="https://www.xbstack.com/en/ai/mcp-json-rpc-parse-error/"><link rel="alternate" hreflang="zh-CN" href="https://www.xbstack.com/ai/mcp-json-rpc-parse-error/"><link rel="alternate" hreflang="en" href="https://www.xbstack.com/en/ai/mcp-json-rpc-parse-error/"><link rel="alternate" hreflang="x-default" href="https://www.xbstack.com/ai/mcp-json-rpc-parse-error/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Precision Tools","description":"AI finance analyzer, compound calculator, Lunest and practical product tools.","url":"https://www.xbstack.com/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Thinking","description":"Investing notes, reading system, decision system and long-term thinking.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Photography and Gear","description":"Guizhou outdoor field notes, photography, gear lab and real-life trust assets.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"About Xiaobai, the XBSTACK asset system and the slogan 在高处看世界，在底层堆资产.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"How to Fix MCP -32700 Parse Errors: Troubleshooting stdout, stdio, and \"Tool list failed\"","description":"Troubleshoot MCP -32700 Parse error, Tool list failed, and spawn ENOENT in 5 steps: check stdout contamination, stderr logs, JSON-RPC messages, stdio startup paths, and protocol version.","image":"https://www.xbstack.com/_astro/cogview4-3386bb35.BjmWW5PI.png","datePublished":"2026-06-04T00:00:00.000Z","dateModified":"2026-07-15T00:00:00.000Z","author":{"@type":"Person","name":"小白","url":"https://www.xbstack.com/about"},"publisher":{"@type":"Organization","name":"XBSTACK","logo":{"@type":"ImageObject","url":"https://www.xbstack.com/favicon/favicon.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.xbstack.com/en/ai/mcp-json-rpc-parse-error/"},"articleSection":"ai","keywords":["MCP JSON-RPC parse error","MCP Server","Claude MCP","Cursor MCP","stdio transport","stdout pollution","stderr logging","JSON-RPC 2.0","MCP debugging","MCP error troubleshooting"],"about":[{"@type":"Thing","name":"mcp"},{"@type":"Thing","name":"mcp-server"},{"@type":"Thing","name":"json-rpc"},{"@type":"Thing","name":"claude"},{"@type":"Thing","name":"cursor"},{"@type":"Thing","name":"troubleshooting"},{"@type":"Thing","name":"Why does it show 'Tool list failed' when refreshing the tool list in Cursor or Claude Desktop?"},{"@type":"Thing","name":"What is the physical root cause when the MCP Server issues a JSON-RPC parse error?"},{"@type":"Thing","name":"How to achieve physical separation of stdout and stderr in Node.js and Python code?"},{"@type":"Thing","name":"How to locate the local running logs of Cursor and Claude on systems like macOS?"},{"@type":"Thing","name":"How to quickly diagnose connection issues using command-line bare execution and manually constructing JSON-RPC messages?"}],"speakable":{"@type":"SpeakableSpecification","cssSelector":[".markdown-content h2",".markdown-content p:first-of-type"]}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does running the MCP Server separately in my local terminal show no errors, but connecting through Cursor keeps prompting 'Tool list failed'?","acceptedAnswer":{"@type":"Answer","text":"This is mainly due to differences in environment variables in the execution environment. When you run it in the terminal, you are using the complete environment variables of your current shell. For example, if your Node.js is installed via nvm, your PATH variable includes the full path to the node executable. However, as a desktop client, when Cursor forks a subprocess in the background, its PATH variable may be the system's default minimal PATH, causing it to not find your node executable and thus throw a spawn ENOENT. You should first write all executable command paths as absolute paths in the Cursor configuration file."}},{"@type":"Question","name":"If a third-party Node.js or Python module outputs copyright statements or warnings to stdout during initialization, how should it be handled?","acceptedAnswer":{"@type":"Answer","text":"First, identify which dependency the output comes from, and prioritize disabling that dependency's banner, debug mode, or default Console Handler. Application logs should consistently use console.error, Python logging's StreamHandler(sys.stderr), or separate files. Do not replace sys.stdout entirely with sys.stderr after FastMCP starts, and do not override the protocol write stream that the SDK is using; this may cause legitimate MCP responses to lose the stdout channel. Dependencies that cannot be disabled should be isolated into another process, with results returned via structured IPC."}},{"@type":"Question","name":"Why do I still get a -32700 Parse error on the client even though I have output all the logs using console.error?","acceptedAnswer":{"@type":"Answer","text":"This is usually because your message content was truncated, or your JSON-RPC message contains illegal characters. For example, if your output JSON string contains unescaped newline characters (such as directly putting a long text with line breaks into the params as a string), the stdio transport framework, when reading line by line, may mistakenly treat this newline as a message separator, thereby splitting a complete message into two lines. When parsing the first line, a Parse error will occur due to the incomplete JSON structure. You should ensure that all text placed in the JSON message is properly escaped (for example, using JSON.stringify will automatically handle the escaping of newline characters)."}},{"@type":"Question","name":"How can I safely record the MCP Server's running logs in the production environment so that I can troubleshoot business bugs at any time?","acceptedAnswer":{"@type":"Answer","text":"The most elegant and safe approach is to use professional logging systems such as Winston (Node.js) or Loguru (Python), configure a File Transport, and append all logs to a specified log file on the local physical disk. This achieves complete physical separation between logs and protocol data. Never take the shortcut of directly outputting logs to the console. Additionally, you can output logs to the standard error stream stderr, because tools like Claude Desktop and Cursor will capture a subprocess's stderr and record it in their internal log files. However, since client logs can easily be overwritten, writing to a separate local log file is still the most reliable method."}}]}]}</script><meta property="article:published_time" content="Thu Jun 04 2026 08:00:00 GMT+0800 (China Standard Time)"><meta name="abstract" content="Troubleshoot MCP -32700 Parse error, Tool list failed, and spawn ENOENT in 5 steps: check stdout contamination, stderr logs, JSON-RPC messages, stdio startup paths, and protocol version."><meta name="speakable-selector" content=".markdown-content h2, .markdown-content p"><meta name="ai-content-access" content="allowed"><meta name="geo-optimized" content="true"><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script async src="https://www.googletagmanager.com/gtag/js?id=G-1J4274CPMT"></script><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
+
+          if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function() {
+              window.dataLayer.push(arguments);
+            };
+            window.gtag('js', new Date());
+            window.gtag('config', googleAnalyticsId, { send_page_view: false });
+
+            window.__ga4_initialized = true;
+            window.__lastGA4PageKey = "";
+            window.__lastGA4PageLocation = document.referrer || "";
+            window.__scroll50Reported = false;
+            window.__scroll90Reported = false;
+
+            const getReferrerHost = () => {
+              try {
+                return document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+              } catch (err) {
+                return '';
+              }
+            };
+
+            const inferSourceHint = () => {
+              const refHost = getReferrerHost();
+              if (!refHost) return '';
+              if (refHost.includes('zhihu')) return 'zhihu_referrer';
+              if (refHost.includes('juejin')) return 'juejin_referrer';
+              if (refHost.includes('csdn')) return 'csdn_referrer';
+              if (refHost.includes('weixin') || refHost.includes('wechat')) return 'wechat_referrer';
+              if (refHost.includes('google')) return 'google_referrer';
+              if (refHost.includes('baidu')) return 'baidu_referrer';
+              return refHost;
+            };
+
+            const getAttributionPayload = () => {
+              const params = new URLSearchParams(window.location.search);
+              const current = {};
+              UTM_KEYS.forEach((key) => {
+                const value = params.get(key);
+                if (value) current[key] = value;
+              });
+
+              let stored = {};
+              try {
+                stored = JSON.parse(sessionStorage.getItem('xbstack_attribution') || '{}');
+              } catch (err) {
+                stored = {};
+              }
+
+              if (Object.keys(current).length) {
+                stored = {
+                  ...stored,
+                  ...current,
+                  landing_page: window.location.pathname,
+                  captured_at: new Date().toISOString(),
+                };
+                try {
+                  sessionStorage.setItem('xbstack_attribution', JSON.stringify(stored));
+                } catch (err) {}
+              }
+
+              return {
+                utm_source: stored.utm_source || '',
+                utm_medium: stored.utm_medium || '',
+                utm_campaign: stored.utm_campaign || '',
+                utm_term: stored.utm_term || '',
+                utm_content: stored.utm_content || '',
+                attribution_landing_page: stored.landing_page || '',
+                referrer_host: getReferrerHost(),
+                source_hint: inferSourceHint(),
+              };
+            };
+
+            window.xbTrackEvent = (eventName, payload = {}) => {
+              if (typeof window.gtag !== 'function' || !googleAnalyticsId || !eventName) return;
+              window.gtag('event', eventName, {
+                transport_type: 'beacon',
+                page_path: window.location.pathname,
+                page_title: document.title || '',
+                ...getAttributionPayload(),
+                ...payload,
+              });
+            };
+
+            window.sendGA4PageView = () => {
+              if (typeof window.gtag !== 'function' || !googleAnalyticsId) return;
+
+              const pageLocation = window.location.href;
+              const pageTitle = document.title || '';
+              const pageKey = `${pageLocation}|${pageTitle}`;
+
+              if (pageKey === window.__lastGA4PageKey) return;
+              const pageReferrer = window.__lastGA4PageLocation;
+              window.__lastGA4PageKey = pageKey;
+              window.__lastGA4PageLocation = pageLocation;
+              window.__scroll50Reported = false;
+              window.__scroll90Reported = false;
+
+              window.gtag('event', 'page_view', {
+                page_title: pageTitle,
+                page_location: pageLocation,
+                page_path: window.location.pathname,
+                page_search: window.location.search,
+                page_referrer: pageReferrer,
+                ...getAttributionPayload(),
+              });
+            };
+
+            window.initGA4Tracking = () => {
+              if (typeof window.gtag !== 'function') return;
+              if (window.__ga4_events_bound) return;
+              window.__ga4_events_bound = true;
+
+              // 1. 页面滚动深度上报
+              const handleScroll = () => {
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const progress = (scrollTop / scrollHeight) * 100;
+
+                if (progress >= 50 && !window.__scroll50Reported) {
+                  window.xbTrackEvent('scroll_50', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll50Reported = true;
+                }
+                if (progress >= 90 && !window.__scroll90Reported) {
+                  window.xbTrackEvent('scroll_90', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll90Reported = true;
+                }
+              };
+
+              window.addEventListener('scroll', handleScroll, { passive: true });
+
+              // 2. 交互、出站、工具与栏目入口点击上报
+              const handleClick = (e) => {
+                const target = e.target.closest('a,button');
+                if (!target) return;
+
+                const label = (target.getAttribute('aria-label') || target.textContent || '').trim().slice(0, 80);
+                if (target.tagName === 'BUTTON') {
+                  window.xbTrackEvent('click_button', {
+                    event_category: 'engagement',
+                    event_label: label,
+                  });
+                  return;
+                }
+
+                if (!target.href) return;
+                if (target.href.startsWith('#')) return;
+
+                try {
+                  const url = new URL(target.href, window.location.origin);
+                  const isExternal = url.origin !== window.location.origin;
+                  const payload = {
+                    event_label: target.href,
+                    link_text: label,
+                    link_url: url.href,
+                    link_path: url.pathname,
+                  };
+
+                  if (isExternal) {
+                    window.xbTrackEvent('click_external', {
+                      ...payload,
+                      event_category: 'outbound',
+                    });
+                  } else {
+                    if (url.pathname.startsWith('/go/')) {
+                      window.xbTrackEvent('affiliate_click', {
+                        ...payload,
+                        event_category: 'conversion',
+                        affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                      });
+                    }
+                    if (url.pathname.startsWith('/tools/') || url.pathname.startsWith('/compound-interest/')) {
+                      window.xbTrackEvent('click_tool', {
+                        ...payload,
+                        event_category: 'conversion',
+                      });
+                    }
+                    if (['/ai/', '/newsletter/', '/search/', '/life/', '/investing/'].some((prefix) => url.pathname.startsWith(prefix))) {
+                      window.xbTrackEvent('click_internal_entry', {
+                        ...payload,
+                        event_category: 'navigation',
+                      });
+                    }
+                  }
+                } catch (err) {}
+              };
+
+              const handleSubmit = (e) => {
+                const form = e.target;
+                if (!form || form.tagName !== 'FORM') return;
+                const action = form.getAttribute('action') || '';
+                const formType = form.getAttribute('data-analytics-form') || '';
+                const formData = new FormData(form);
+                const searchTerm = String(formData.get('q') || '').trim();
+
+                if (action.includes('/search') || formType === 'site-search') {
+                  window.xbTrackEvent('view_search_results', {
+                    event_category: 'site_search',
+                    search_term: searchTerm,
+                  });
+                }
+
+                if (action.includes('buttondown.email') || formType === 'newsletter') {
+                  window.xbTrackEvent('newsletter_subscribe_attempt', {
+                    event_category: 'conversion',
+                    event_label: window.location.pathname,
+                  });
+                }
+              };
+
+              document.addEventListener('click', handleClick);
+              document.addEventListener('submit', handleSubmit, true);
+            };
+
+            // 立即执行首屏发送与事件监听绑定，无需等待 DOMContentLoaded
+            window.sendGA4PageView();
+            window.initGA4Tracking();
+
+            document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+              window.sendGA4PageView();
+              window.initGA4Tracking();
+            });
+          } else {
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+            if (typeof window.sendGA4PageView === 'function') {
+              window.sendGA4PageView();
+            }
+          }
+        })();</script><script data-baidu-id="c7bfaf645bfc8974405a85c2a55573a0">
+          const baiduId = document.currentScript?.dataset.baiduId || '';
+          if (!window.__baidu_analytics_initialized) {
+            window._hmt = window._hmt || [];
+            window.__baidu_analytics_initialized = true;
+            window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+
+            const loadBaiduAnalytics = () => {
+              if (window.__baidu_script_loaded || !baiduId) return;
+              window.__baidu_script_loaded = true;
+              const hm = document.createElement('script');
+              hm.async = true;
+              hm.src = "https://hm.baidu.com/hm.js?" + baiduId;
+              document.head.appendChild(hm);
+              window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+            };
+
+            // 百度统计不是首屏渲染依赖：首次交互时加载，若用户未交互则 12 秒后加载。
+            ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(eventName, loadBaiduAnalytics, { once: true, passive: true });
+            });
+            window.setTimeout(loadBaiduAnalytics, 12000);
+
+            document.addEventListener('astro:page-load', () => {
+              const pageKey = window.location.pathname + window.location.search;
+              if (!window.__baidu_script_loaded || pageKey === window.__lastBaiduPageKey) return;
+              window.__lastBaiduPageKey = pageKey;
+              window._hmt.push(['_trackPageview', pageKey]);
+            });
+          }
+        </script><link rel="stylesheet" href="/_astro/index.Ci2fC5DT.css">
+<link rel="stylesheet" href="/_astro/_slug_.BfiWXHpa.css">
+<link rel="stylesheet" href="/_astro/vendor-media.DSulWsr7.css">
+<style>.glass-button[data-astro-cid-xwnkcw7l]{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:var(--sizeGap);padding:var(--sizePadding);background:var(--variantBase);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--variantBorder);border-radius:var(--sizeBorderRadius);font-size:var(--sizeFontSize);font-weight:500;color:var(--variantColor);cursor:pointer;transition:all .3s cubic-bezier(.175,.885,.32,2.2);box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d;-webkit-user-select:none;-moz-user-select:none;user-select:none;overflow:hidden;text-decoration:none;white-space:nowrap}.glass-button[data-astro-cid-xwnkcw7l]:before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,var(--variantGradient),transparent);transition:left .6s cubic-bezier(.25,.46,.45,.94);pointer-events:none;opacity:0}.glass-button[data-astro-cid-xwnkcw7l]:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);transform:translateY(-4px) scale(1.03);box-shadow:0 20px 25px -5px var(--variantShadow),0 15px 15px -5px #0000004d,inset 1px 1px 4px #ffffff80;filter:brightness(1.2) saturate(1.3)}.glass-button[data-astro-cid-xwnkcw7l]:hover:before{left:100%;opacity:1}.glass-button[data-astro-cid-xwnkcw7l]:active{transform:translateY(-1px) scale(.98);box-shadow:0 2px 6px var(--variantShadow)}.glass-button[data-astro-cid-xwnkcw7l]:disabled{cursor:not-allowed;opacity:.6;transform:none;pointer-events:none}.glass-button[data-astro-cid-xwnkcw7l]:disabled:hover{transform:none;box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d}.glass-button__icon[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;justify-content:center;width:var(--sizeIconSize);height:var(--sizeIconSize);transition:all .3s cubic-bezier(.175,.885,.32,2.2)}.glass-button__icon[data-astro-cid-xwnkcw7l] svg{width:100%;height:100%}.glass-button[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{transform:scale(1.2) rotate(-5deg);filter:drop-shadow(0 0 4px var(--variantShadow))}.glass-button__content[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;transition:all .3s ease}.glass-button__spinner[data-astro-cid-xwnkcw7l]{width:var(--sizeIconSize);height:var(--sizeIconSize);animation:spin 1s linear infinite}.dark[data-astro-cid-xwnkcw7l]{.glass-button{background:#37373799;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-color:#ffffff26;color:#e5e7eb;box-shadow:0 4px 8px #0006,inset 1px 1px 3px #ffffff26}.glass-button:before{background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}.glass-button:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);box-shadow:0 6px 14px var(--variantShadow),inset 1px 1px 4px #fff3;filter:brightness(1.2) saturate(1.3)}}@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.glass-button--primary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--secondary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(37,99,235,.5))}.glass-button--success[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(22,163,74,.5))}.glass-button--warning[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(217,119,6,.5))}.glass-button--danger[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--info[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(99,102,241,.5))}
+</style></head> <body class="bg-white dark:bg-[#050608] text-slate-950 dark:text-white selection:bg-orange-500/20 selection:text-orange-500 overflow-x-hidden"> <style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value=="object"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};"requestIdleCallback"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event("astro:idle"));})();</script><script>(()=>{var A=Object.defineProperty;var g=(i,o,a)=>o in i?A(i,o,{enumerable:!0,configurable:!0,writable:!0,value:a}):i[o]=a;var d=(i,o,a)=>g(i,typeof o!="symbol"?o+"":o,a);{let i={0:t=>m(t),1:t=>a(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(a(t)),5:t=>new Set(a(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t),11:t=>1/0*t},o=t=>{let[l,e]=t;return l in i?i[l](e):void 0},a=t=>t.map(o),m=t=>typeof t!="object"||t===null?t:Object.fromEntries(Object.entries(t).map(([l,e])=>[l,o(e)]));class y extends HTMLElement{constructor(){super(...arguments);d(this,"Component");d(this,"hydrator");d(this,"hydrate",async()=>{var b;if(!this.hydrator||!this.isConnected)return;let e=(b=this.parentElement)==null?void 0:b.closest("astro-island[ssr]");if(e){e.addEventListener("astro:hydrate",this.hydrate,{once:!0});return}let c=this.querySelectorAll("astro-slot"),n={},h=this.querySelectorAll("template[data-astro-template]");for(let r of h){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("data-astro-template")||"default"]=r.innerHTML,r.remove())}for(let r of c){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("name")||"default"]=r.innerHTML)}let p;try{p=this.hasAttribute("props")?m(JSON.parse(this.getAttribute("props"))):{}}catch(r){let s=this.getAttribute("component-url")||"<unknown>",v=this.getAttribute("component-export");throw v&&(s+=` (export ${v})`),console.error(`[hydrate] Error parsing props for component ${s}`,this.getAttribute("props"),r),r}let u;await this.hydrator(this)(this.Component,p,n,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),this.dispatchEvent(new CustomEvent("astro:hydrate"))});d(this,"unmount",()=>{this.isConnected||this.dispatchEvent(new CustomEvent("astro:unmount"))})}disconnectedCallback(){document.removeEventListener("astro:after-swap",this.unmount),document.addEventListener("astro:after-swap",this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute("await-children")||document.readyState==="interactive"||document.readyState==="complete")this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener("DOMContentLoaded",e),c.disconnect(),this.childrenConnectedCallback()},c=new MutationObserver(()=>{var n;((n=this.lastChild)==null?void 0:n.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue==="astro:end"&&(this.lastChild.remove(),e())});c.observe(this,{childList:!0}),document.addEventListener("DOMContentLoaded",e)}}async childrenConnectedCallback(){let e=this.getAttribute("before-hydration-url");e&&await import(e),this.start()}async start(){let e=JSON.parse(this.getAttribute("opts")),c=this.getAttribute("client");if(Astro[c]===void 0){window.addEventListener(`astro:${c}`,()=>this.start(),{once:!0});return}try{await Astro[c](async()=>{let n=this.getAttribute("renderer-url"),[h,{default:p}]=await Promise.all([import(this.getAttribute("component-url")),n?import(n):()=>()=>{}]),u=this.getAttribute("component-export")||"default";if(!u.includes("."))this.Component=h[u];else{this.Component=h;for(let f of u.split("."))this.Component=this.Component[f]}return this.hydrator=p,this.hydrate},e,this)}catch(n){console.error(`[astro-island] Error hydrating ${this.getAttribute("component-url")}`,n)}}attributeChangedCallback(){this.hydrate()}}d(y,"observedAttributes",["props"]),customElements.get("astro-island")||customElements.define("astro-island",y)}})();</script><astro-island uid="ZWjsVO" prefix="r39" component-url="/_astro/GlobalLightbox.CqZePd56.js" component-export="default" renderer-url="/_astro/client.DkeD9bak.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;GlobalLightbox&quot;,&quot;value&quot;:true}"></astro-island> <astro-island uid="2nwVdo" prefix="r40" component-url="/_astro/AffiliatePopup.Bvi0-2cq.js" component-export="default" renderer-url="/_astro/client.DkeD9bak.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;AffiliatePopup&quot;,&quot;value&quot;:true}"></astro-island> <astro-island uid="Z1FWnUA" prefix="r41" component-url="/_astro/SearchBoot.DKwvAheT.js" component-export="default" renderer-url="/_astro/client.DkeD9bak.js" props="{&quot;lang&quot;:[0,&quot;en&quot;]}" ssr client="idle" opts="{&quot;name&quot;:&quot;SearchBoot&quot;,&quot;value&quot;:true}"></astro-island> <div id="app-background" class="fixed inset-0 z-[-1] h-full w-full pointer-events-none bg-slate-50 dark:bg-slate-950 transition-colors duration-500"> <div id="app-background-image" class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-500" data-day="/_astro/macos2.hYF-Pyun.webp" data-night="/_astro/macos2-night.DwJ7amhx.webp" aria-hidden="true"></div> <div class="absolute inset-0 bg-[#DFE1E6]/90 dark:bg-transparent backdrop-blur-[6px] pointer-events-none"></div> <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b82f611,transparent_50%)] dark:hidden pointer-events-none"></div> <div class="absolute inset-0 opacity-[0.08] dark:opacity-[0.03] pointer-events-none mix-blend-multiply" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+');"></div> </div> <script>
+  (() => {
+    const bindBackground = () => {
+      const root = document.documentElement;
+      const background = document.getElementById('app-background-image');
+      if (!background || background.dataset.themeObserverBound === 'true') return;
+
+      const applyBackground = () => {
+        const source = root.classList.contains('dark') ? background.dataset.night : background.dataset.day;
+        if (!source) return;
+        const nextValue = `url("${source}")`;
+        if (background.style.backgroundImage !== nextValue) {
+          background.style.backgroundImage = nextValue;
+        }
+      };
+
+      applyBackground();
+      const observer = new MutationObserver(applyBackground);
+      observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+      background.dataset.themeObserverBound = 'true';
+    };
+
+    bindBackground();
+    document.addEventListener('astro:page-load', bindBackground);
+  })();
+</script> <header class="w-full z-[500] sticky top-0"> <div class="container px-3 lg:px-8 max-w-[1440px] mx-auto py-4 md:py-6"> <div class="header-main relative group transition-all duration-500"> <div class="absolute inset-0 rounded-[35px] header-main-bg shadow-sm dark:shadow-[0_8px_50px_rgba(0,0,0,0.5)] border border-slate-200/50 dark:border-white/10"></div> <nav class="relative z-10 p-2 flex items-center min-h-[64px]"> <!-- Logo (旋转 & 呼吸灯) --> <div class="ml-4 flex-shrink-0"> <a href="/en/" class="flex items-center group/logo"> <div class="relative flex-none isolate w-10 h-10"> <img src="/favicon/favicon.svg" alt="XBSTACK" class="relative z-10 object-contain w-full h-full group-hover/logo:rotate-[360deg] transition-all duration-700"> <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-slate-900 z-20 animate-pulse"></div> </div> <div class="flex flex-col ml-3 text-left"> <span class="text-xl font-black italic tracking-tighter bg-gradient-to-r from-slate-900 via-sky-800 to-slate-900 dark:from-white dark:via-sky-400 dark:to-white bg-clip-text text-transparent uppercase font-brand leading-none">XBSTACK</span> <span class="text-[8px] font-mono font-bold text-green-500/70 uppercase tracking-widest leading-none mt-1">System Status: Online</span> </div> </a> </div> <!-- 桌面端导航 (新 IA 架构) --> <ul class="hidden xl:flex items-center gap-1 ml-10"> <li class="relative group/item"> <a href="/en/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Home  </a>  </li><li class="relative group/item"> <a href="/en/ai/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-blue-600 dark:text-blue-400 bg-blue-500/5"> AI  </a>  </li><li class="relative group/item"> <a href="/en/investing/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Investing  </a>  </li><li class="relative group/item"> <a href="/en/horizon/reading/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Reading  </a>  </li><li class="relative group/item"> <a href="/en/life/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Life  </a>  </li><li class="relative group/item"> <a href="/en/tools/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Tools  </a>  </li> </ul> <!-- 功能区域 (时钟 & 搜索) --> <div class="flex items-center gap-3 ml-auto pr-4 relative z-[110]"> <div class="hidden 2xl:flex items-center gap-4 mr-4 border-r border-slate-200 dark:border-white/10 pr-6 text-right transition-all"> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-slate-400 uppercase">NYC</span><span id="clock-nyc" class="text-[9px] font-mono text-slate-500 font-bold">--:--</span></div> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-slate-400 uppercase">LDN</span><span id="clock-ldn" class="text-[9px] font-mono text-slate-500 font-bold">--:--</span></div> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-blue-500 uppercase italic">GY</span><span id="clock-tyo" class="text-[9px] font-mono text-slate-900 dark:text-white font-bold">--:--</span></div> </div> <div class="hidden sm:block"> <div class="language-switcher inline-flex items-center rounded-full border border-slate-200/60 bg-white/50 p-1 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5" aria-label="Language selector"> <a href="https://www.xbstack.com/ai/mcp-json-rpc-parse-error/" data-language-choice="zh-CN" data-language-current="false" data-language-available="true" title="切换到中文版本" class="flex min-w-8 items-center justify-center rounded-full px-2.5 py-2 text-[10px] font-black tracking-wider transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400">
+中
+</a> <a href="https://www.xbstack.com/en/ai/mcp-json-rpc-parse-error/" data-language-choice="en" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="Current language: English" class="flex min-w-8 items-center justify-center rounded-full px-2.5 py-2 text-[10px] font-black tracking-wider transition-all cursor-default bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-950">
+EN
+</a> </div> <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+    document.addEventListener('click', (event) => {
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+  }
+</script> </div> <div class="flex items-center gap-1.5"> <button id="global-search-trigger" type="button" aria-label="Open site search" class="w-10 h-10 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-blue-500 bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 rounded-full transition-all shadow-sm backdrop-blur-md cursor-pointer"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.81 173.81 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.81 173.81 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3zM97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8z"></path></svg></button> <div class="w-10 h-10 flex items-center justify-center bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 rounded-full hover:border-blue-500 transition-all"><div class="relative flex items-center justify-center w-full h-full"> <input class="sr-only" id="theme-switcher" data-theme-switcher type="checkbox"> <label class="flex items-center justify-center cursor-pointer w-full h-full group/theme" for="theme-switcher" aria-label="切换主题">  <svg class="w-5 h-5 transition-all duration-500 scale-100 dark:scale-0 opacity-100 dark:opacity-0 absolute text-orange-500 group-hover/theme:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg>  <svg class="w-5 h-5 transition-all duration-500 scale-0 dark:scale-100 opacity-0 dark:opacity-100 absolute text-sky-400 group-hover/theme:-rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </label> </div> <script>
+  // 立即执行以防止闪烁
+  (function() {
+    const theme = localStorage.getItem("theme");
+    const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  })();
+
+  // 页面加载和切换后的初始化逻辑
+  function initTheme() {
+    const themeSwitchers = document.querySelectorAll("[data-theme-switcher]");
+    const isDark = document.documentElement.classList.contains("dark");
+
+    // 同步所有切换按钮的状态
+    themeSwitchers.forEach((el) => {
+      el.checked = isDark;
+      
+      // 移除旧的监听器（如果存在），防止重复绑定
+      // 由于是匿名函数难以移除，我们采用 cloneNode 或者简单的标志位
+      // Astro 的 View Transitions 会重新运行脚本，所以只需确保不累积
+      // 最简单的方式是直接覆盖 onclick 或 onchange，但这里用 addEventListener
+      // 我们可以给元素加个标记
+      if (el.dataset.initialized) return;
+      
+      el.addEventListener("change", (e) => {
+        const checked = e.target.checked;
+        if (checked) {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        }
+        
+        // 同步其他可能存在的切换按钮（例如移动端和桌面端各有一个）
+        document.querySelectorAll("[data-theme-switcher]").forEach(other => {
+            if (other !== el) other.checked = checked;
+        });
+      });
+      
+      el.dataset.initialized = "true";
+    });
+  }
+
+  // 绑定事件
+  document.addEventListener("DOMContentLoaded", initTheme);
+  document.addEventListener("astro:page-load", initTheme);
+  document.addEventListener("astro:after-swap", initTheme);
+</script></div> </div> </div> <!-- 移动端 Toggle --> <div class="xl:hidden flex items-center ml-2"> <button id="mobile-menu-trigger" type="button" aria-label="Open navigation menu" aria-controls="mobile-menu" aria-expanded="false" class="w-10 h-10 flex items-center justify-center bg-white/20 dark:bg-black/20 rounded-full border border-slate-200/50 dark:border-white/10 text-slate-700 dark:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path></svg> </button> </div> </nav> </div> </div>  <div id="mobile-menu" class="fixed inset-0 z-[600] pointer-events-none invisible"> <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-500"></div> <aside id="mobile-menu-panel" class="absolute top-0 right-0 bottom-0 w-[300px] bg-white dark:bg-[#0B1020] border-l border-slate-200 dark:border-white/10 translate-x-full transition-transform duration-500 flex flex-col"> <div class="h-[72px] flex items-center justify-between px-6 border-b border-slate-100 dark:border-white/5"> <span class="text-xs font-black uppercase tracking-[0.3em] text-blue-500">Systems Menu</span> <button id="mobile-menu-close" type="button" aria-label="Close navigation menu" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg></button> </div> <div class="border-b border-slate-100 px-6 py-4 dark:border-white/5 sm:hidden"> <div class="language-switcher inline-flex items-center rounded-full border border-slate-200/60 bg-white/50 p-1 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5" aria-label="Language selector"> <a href="https://www.xbstack.com/ai/mcp-json-rpc-parse-error/" data-language-choice="zh-CN" data-language-current="false" data-language-available="true" title="切换到中文版本" class="flex min-w-8 items-center justify-center rounded-full px-2.5 py-2 text-[10px] font-black tracking-wider transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400">
+中
+</a> <a href="https://www.xbstack.com/en/ai/mcp-json-rpc-parse-error/" data-language-choice="en" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="Current language: English" class="flex min-w-8 items-center justify-center rounded-full px-2.5 py-2 text-[10px] font-black tracking-wider transition-all cursor-default bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-950">
+EN
+</a> </div> <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+    document.addEventListener('click', (event) => {
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+  }
+</script> </div> <nav class="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-1"> <div class="space-y-1"> <a href="/en/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Home  </a>  </div><div class="space-y-1"> <a href="/en/ai/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-blue-500 bg-blue-500/5"> AI  </a>  </div><div class="space-y-1"> <a href="/en/investing/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Investing  </a>  </div><div class="space-y-1"> <a href="/en/horizon/reading/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Reading  </a>  </div><div class="space-y-1"> <a href="/en/life/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Life  </a>  </div><div class="space-y-1"> <a href="/en/tools/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Tools  </a>  </div> </nav> </aside> </div>  <script>
+    function updateClocks() {
+      const now = new Date();
+      const format = (tz) => now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: tz });
+      if (document.getElementById('clock-nyc')) document.getElementById('clock-nyc').innerText = format('America/New_York');
+      if (document.getElementById('clock-ldn')) document.getElementById('clock-ldn').innerText = format('Europe/London');
+      if (document.getElementById('clock-tyo')) document.getElementById('clock-tyo').innerText = format('Asia/Shanghai');
+    }
+    document.addEventListener('astro:page-load', () => { 
+      updateClocks(); 
+      setInterval(updateClocks, 60000);
+      const searchTrigger = document.getElementById('global-search-trigger');
+      if (searchTrigger) {
+        searchTrigger.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.dispatchEvent(new CustomEvent('xbstack:open-search'));
+        });
+      }
+      // Mobile Logic
+      const trigger = document.getElementById('mobile-menu-trigger');
+      const close = document.getElementById('mobile-menu-close');
+      const menu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const panel = document.getElementById('mobile-menu-panel');
+      const toggleMenu = (open) => {
+        if (!menu || !overlay || !panel) return;
+        trigger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        const englishUi = document.documentElement.lang.toLowerCase().startsWith('en');
+        trigger?.setAttribute('aria-label', open
+          ? (englishUi ? 'Close navigation menu' : '关闭导航菜单')
+          : (englishUi ? 'Open navigation menu' : '打开导航菜单'));
+        if (open) {
+          menu.classList.remove('invisible', 'pointer-events-none');
+          overlay.classList.add('opacity-100');
+          panel.classList.remove('translate-x-full');
+          document.body.style.overflow = 'hidden';
+          close?.focus();
+        } else {
+          overlay.classList.remove('opacity-100');
+          panel.classList.add('translate-x-full');
+          document.body.style.overflow = '';
+          setTimeout(() => { menu.classList.add('invisible', 'pointer-events-none'); }, 500);
+          trigger?.focus();
+        }
+      };
+      if (trigger) trigger.addEventListener('click', () => toggleMenu(true));
+      if (close) close.addEventListener('click', () => toggleMenu(false));
+      if (overlay) overlay.addEventListener('click', () => toggleMenu(false));
+    });
+    updateClocks();
+  </script> </header> <div id="language-switch-notice" class="pointer-events-none fixed left-1/2 top-24 z-[700] hidden max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/95 px-5 py-3 text-center text-sm font-bold text-slate-700 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 dark:text-slate-200" role="status" aria-live="polite"></div> <main id="main-content" class="flex-1">  <div id="reading-progress" class="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 z-[110] transition-all duration-300 w-0 shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div> <main class="pt-24 md:pt-32 pb-20"> <script type="module">function g(){const t=document.querySelector("header");return t?t.offsetHeight+32:140}function a(){document.querySelectorAll("[data-toc-link]").forEach(e=>{const n=e.cloneNode(!0);e.parentNode?.replaceChild(n,e),n.addEventListener("click",function(o){o.preventDefault();const r=o.currentTarget.getAttribute("href");if(!r)return;const c=r.substring(1),d=document.getElementById(c);if(d){const s=d.getBoundingClientRect(),i=window.pageYOffset||document.documentElement.scrollTop,u=g(),l=i+s.top-u;window.scrollTo({top:Math.max(0,l),behavior:"smooth"}),history.pushState(null,"",`#${c}`)}})})}document.addEventListener("DOMContentLoaded",a);document.addEventListener("astro:page-load",a);</script><div class="grid grid-cols-1 xl:grid-cols-[minmax(190px,230px)_minmax(0,860px)_minmax(190px,230px)] gap-6 xl:gap-8 2xl:gap-10 max-w-[1600px] justify-center mx-auto w-full px-4 md:px-6 xl:px-8">  <aside class="hidden xl:flex flex-col gap-8 sticky top-24 h-fit"> <div class="article-side-panel rounded-[24px] border p-6 flex flex-col gap-4"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Metadata</div> <div class="flex flex-col gap-2"> <span class="text-xs font-mono text-zinc-500"> 6/4/2026 </span> <div class="flex flex-wrap gap-2 mt-2"> <span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#mcp </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#mcp-server </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#json-rpc </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#claude </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#cursor </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#troubleshooting </span> </div> </div> </div>  <div class="flex flex-col gap-4"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 px-2">Related Articles</div> <div class="flex flex-col gap-3"> <a href="/en/ai/mcp-filesystem-server/" class="ceramic-card-hover p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5"> <h4 class="text-xs font-bold line-clamp-2 text-zinc-800 dark:text-zinc-200">MCP Filesystem Server in Practice: Enabling Claude / Cursor to Securely Read Local Files</h4> </a><a href="/en/ai/mcp-tool-call-truncated-fix/" class="ceramic-card-hover p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5"> <h4 class="text-xs font-bold line-clamp-2 text-zinc-800 dark:text-zinc-200">How to Fix Truncated MCP Tool Call Results: A Deep Dive into Stdio Buffers and Semantic Compression</h4> </a> </div> </div> </aside>  <main class="min-w-0 w-full max-w-[920px] mx-auto xl:max-w-none"> <div class="article-paper rounded-[32px] md:rounded-[44px] border p-5 sm:p-7 md:p-10 xl:p-12"> <div class="entry-header-root animate-fadeUp mb-16" data-astro-cid-wy6pnlvm> <div class="relative" data-astro-cid-wy6pnlvm>  <div class="w-full aspect-[40/21] rounded-[28px] md:rounded-[36px] overflow-hidden shadow-2xl mb-10 md:mb-12 relative group " data-astro-cid-wy6pnlvm> <img src="/_astro/cogview4-3386bb35.BjmWW5PI_1nDEAw.webp" alt="MCP -32700 Parse error, stdout contamination, stdio and Tool list failed troubleshooting - XBSTACK" sizes="(min-width: 1280px) 860px, (min-width: 768px) 900px, calc(100vw - 32px)" loading="eager" fetchpriority="high" data-astro-cid-wy6pnlvm="true" decoding="async" width="1200" height="630" class="w-full h-full transition-transform duration-1000 group-hover:scale-105 object-cover">  <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" data-astro-cid-wy6pnlvm></div> </div> <div class="px-1 sm:px-3 md:px-5 xl:px-6" data-astro-cid-wy6pnlvm>  <div class="flex flex-wrap gap-3 mb-8" data-astro-cid-wy6pnlvm> <a href="/ai/agent/" class="liquid-capsule text-orange-700 dark:text-white border-orange-500/20 dark:border-white/10 whitespace-nowrap inline-flex items-center shrink-0" data-astro-cid-wy6pnlvm> <div class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse shrink-0" data-astro-cid-wy6pnlvm></div> <span class="ml-2 font-black" data-astro-cid-wy6pnlvm>Ai</span> </a> </div>  <h1 class="entry-title text-4xl sm:text-5xl xl:text-[3.5rem] not-italic font-black mb-8 md:mb-10 leading-[1.08] tracking-tighter text-balance" data-astro-cid-wy6pnlvm>How to Fix MCP -32700 Parse Errors: Troubleshooting stdout, stdio, and &quot;Tool list failed&quot;</h1>  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12" data-astro-cid-wy6pnlvm> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-orange-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-orange-600 dark:text-orange-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Release Date</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-4 h-4 text-orange-600/50 dark:text-orange-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm>2026-06-04</div> </div> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-blue-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-blue-600 dark:text-blue-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Reading Time</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="w-4 h-4 text-blue-600/50 dark:text-blue-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm>15分钟</div> </div> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-emerald-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Content Size</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 384 512" class="w-4 h-4 text-emerald-600/50 dark:text-emerald-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M288 248v28c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-28c0-6.6 5.4-12 12-12h168c6.6 0 12 5.4 12 12zm-12 72H108c-6.6 0-12 5.4-12 12v28c0 6.6 5.4 12 12 12h168c6.6 0 12-5.4 12-12v-28c0-6.6-5.4-12-12-12zm108-188.1V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V48C0 21.5 21.5 0 48 0h204.1C264.8 0 277 5.1 286 14.1L369.9 98c9 8.9 14.1 21.2 14.1 33.9zm-128-80V128h76.1L256 51.9zM336 464V176H232c-13.3 0-24-10.7-24-24V48H48v416h288z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm> 23,747 chars
+</div> </div> </div>  <div class="flex flex-wrap items-center gap-2" data-astro-cid-wy6pnlvm> <div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>MCP 协议</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>mcp-server</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" role="img" viewBox="0 0 24 24" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>json-rpc</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>claude</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>cursor</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>troubleshooting</span> </div> </div> </div> </div> </div>   <div class="mb-12 p-8 rounded-[32px] bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 relative overflow-hidden group"> <div class="absolute top-0 left-0 w-1.5 h-full bg-blue-500"></div> <div class="flex flex-col gap-4"> <div class="flex items-center gap-2"> <span class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500">Laboratory Note</span> </div> <p class="text-lg font-bold text-slate-700 dark:text-slate-300 italic leading-relaxed"> This article documents my real-world experiments in the lab. I believe that building your own digital assets with AI is the ultimate moat for developers. </p> </div> </div>  <div class="mb-12 grid grid-cols-1 md:grid-cols-2 gap-5"> <section class="p-6 rounded-[28px] bg-emerald-500/5 border border-emerald-500/10"> <h2 class="text-xs font-black uppercase tracking-[0.3em] text-emerald-600 dark:text-emerald-400 mb-4 flex items-center gap-2"> <div class="w-1 h-3 bg-emerald-500 rounded-full"></div> Quick Answer </h2> <ul class="space-y-3"> <li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-emerald-500 mt-0.5">✓</span> <span>Troubleshoot MCP -32700 Parse error, Tool list failed, and spawn ENOENT in 5 steps: check stdout contamination, stderr logs, JSON-RPC messages, stdio startup paths, and protocol version.</span> </li> </ul> </section> <section class="p-6 rounded-[28px] bg-orange-500/5 border border-orange-500/10"> <h2 class="text-xs font-black uppercase tracking-[0.3em] text-orange-600 dark:text-orange-400 mb-4 flex items-center gap-2"> <div class="w-1 h-3 bg-orange-500 rounded-full"></div> Who Should Read This </h2> <ul class="space-y-3"> <li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-orange-500 mt-0.5">●</span> <span>Developers evaluating mcp / mcp-server / json-rpc / claude for production use.</span> </li><li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-orange-500 mt-0.5">●</span> <span>Indie builders who need a practical implementation path instead of another generic concept article.</span> </li><li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-orange-500 mt-0.5">●</span> <span>Readers comparing architecture trade-offs, risks, tooling boundaries and next actions.</span> </li> </ul> </section> </div>  <div class="mb-12 p-8 rounded-[32px] bg-blue-500/5 border border-blue-500/10"> <h2 class="text-xs font-black uppercase tracking-[0.3em] text-blue-500 mb-6 flex items-center gap-2"> <div class="w-1 h-3 bg-blue-500 rounded-full"></div> Problem Solved </h2> <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4"> <li class="flex items-start gap-3 text-sm font-bold text-slate-600 dark:text-slate-400 italic"> <span class="text-blue-500 mt-1">●</span> Why does it show &#39;Tool list failed&#39; when refreshing the tool list in Cursor or Claude Desktop? </li><li class="flex items-start gap-3 text-sm font-bold text-slate-600 dark:text-slate-400 italic"> <span class="text-blue-500 mt-1">●</span> What is the physical root cause when the MCP Server issues a JSON-RPC parse error? </li><li class="flex items-start gap-3 text-sm font-bold text-slate-600 dark:text-slate-400 italic"> <span class="text-blue-500 mt-1">●</span> How to achieve physical separation of stdout and stderr in Node.js and Python code? </li><li class="flex items-start gap-3 text-sm font-bold text-slate-600 dark:text-slate-400 italic"> <span class="text-blue-500 mt-1">●</span> How to locate the local running logs of Cursor and Claude on systems like macOS? </li><li class="flex items-start gap-3 text-sm font-bold text-slate-600 dark:text-slate-400 italic"> <span class="text-blue-500 mt-1">●</span> How to quickly diagnose connection issues using command-line bare execution and manually constructing JSON-RPC messages? </li> </ul> </div> <div class="prose prose-tech markdown-content">   <h2 id="first-follow-these-5-steps-to-troubleshoot">First, follow these 5 steps to troubleshoot</h2>
+<p>If the <code>-32700 Parse error</code>, <code>Tool list failed</code>, or MCP connection indicator turns red, do not change the business logic yet; check in the following order:</p>
+<ol>
+<li><strong>Check stdout</strong>: In stdio mode, stdout may contain only protocol messages. Send all ordinary logs to stderr.</li>
+<li><strong>Start with absolute paths</strong>: Specify <code>node</code>, <code>python3</code>, the script path, and the working directory as absolute paths so you can rule out <code>spawn ENOENT</code> first.</li>
+<li><strong>Run the server directly</strong>: Start it once in a terminal and confirm that initialization produces no banners, warnings, or third-party library output.</li>
+<li><strong>Check JSON-RPC messages</strong>: Make sure the <code>jsonrpc</code>, <code>id</code>, <code>method</code>, <code>params</code>, <code>result</code>, and <code>error</code> structures are valid and the strings have been correctly escaped.</li>
+<li><strong>Check protocol version and capability negotiation</strong>: If the connection can start but the tool list fails, continue to verify the initialize response, capabilities, and client-supported protocol versions.</li>
+</ol>
+<h3 id="do-not-mix-the-three-types-of-error-reports-together">Do not mix the three types of error reports together</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Phenomenon</th><th>Priority inspection</th></tr></thead><tbody><tr><td><code>-32700 Parse error</code></td><td>stdout contamination, message truncation, illegal JSON, encoding, and line breaks</td></tr><tr><td><code>Tool list failed</code></td><td>Whether the server has completed initialization, whether it declares tools capability, and whether <code>tools/list</code> returns a valid structure</td></tr><tr><td><code>spawn ENOENT</code></td><td>Executable file path, script path, PATH, working directory, and file permissions</td></tr></tbody></table>
+<h3 id="symptoms-verification-commands-and-passing-criteria">Symptoms, verification commands, and passing criteria</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Symptoms</th><th>What to do first</th><th>Passed the standard</th></tr></thead><tbody><tr><td>The server reports <code>-32700</code> as soon as it starts</td><td>Start it directly and capture stdout and stderr</td><td>stdout contains only complete JSON-RPC messages; ordinary logs appear only in stderr</td></tr><tr><td><code>Tool list failed</code></td><td>First complete <code>initialize</code> and <code>notifications/initialized</code>, then send <code>tools/list</code></td><td>The initialization response includes the negotiated protocol version and <code>tools</code> capability</td></tr><tr><td><code>spawn ENOENT</code></td><td>Use <code>which node</code> / <code>which python3</code>, then put the resulting absolute path in the client configuration</td><td>The client can start the process, and the log no longer reports that the executable was not found</td></tr><tr><td>Disconnect after a few seconds of connection</td><td>Check the earliest stderr and client logs, not just the last <code>EPIPE</code></td><td>Find the first parsing error, failure to capture exception, or process exit cause</td></tr><tr><td>Only the long-text tool fails</td><td>Check the serialized single-line JSON, encoding, and message size</td><td>Each stdio message is newline-delimited, with no unescaped line breaks inside a message</td></tr></tbody></table>
+<p>This article addresses only <strong>JSON-RPC parsing over stdio and local startup issues</strong>. For remote deployment, see <a href="/en/ai/mcp-streamable-http-deployment/">MCP Streamable HTTP in Practice</a>; for public-network authentication, see <a href="/en/ai/mcp-oauth-authentication/">MCP OAuth Authentication in Practice</a>; for permissions and auditing, see <a href="/en/ai/mcp-security-best-practices/">MCP Security Best Practices</a>.</p>
+<h3 id="use-mcp-inspector-and-staged-imports-to-isolate-hidden-output">Use MCP Inspector and staged imports to isolate hidden output</h3>
+<p>If a direct terminal run produces no obvious logs but the client still reports a parsing failure, take these additional steps:</p>
+<ol>
+<li>Use MCP Inspector to start the same server and observe whether non-protocol text is mixed during initialize, tools/list, and tool calls.</li>
+<li>Delay third-party imports one by one. Some Python or Node.js dependencies print banners, deprecation warnings, or version prompts during import, <code>require</code>, or initialization.</li>
+<li>Don’t just replace <code>print</code> and <code>console.log</code>; also check the default transport of <code>sys.stdout.write</code>, <code>process.stdout.write</code>, and third-party logging frameworks.</li>
+</ol>
+<p>The old stdio contamination page has been merged into this page, and subsequent local connections, stdout contamination, and <code>-32700</code> errors are all maintained here.</p>
+<h2 id="practical-review-checklist">Practical Review Checklist</h2>
+<p>When troubleshooting parse errors, don’t guess the model problem first; check in the following order:</p>
+<ul>
+<li>Run the MCP Server directly and check whether stdout contains only valid JSON-RPC messages.</li>
+<li>Change all debug logs to stderr or standalone log files.</li>
+<li>Check if the PATH is missing when starting a child process with Cursor / Claude.</li>
+<li>Manually test stdin/stdout with the minimal JSON-RPC initialization packet.</li>
+<li>Check whether long texts, newlines, or large file Resources cause message truncation or buffer exceptions.</li>
+</ul>
+<p>Strictly separating the protocol transport from the application console is fundamental to maintaining stable, long-lived Model Context Protocol connections. As a self-described novice full-stack engineer, I know how maddening these low-level communication errors can be. Clients such as Claude Desktop and Cursor are especially frustrating because their transport behavior is largely a black box: we cannot see what the underlying system is saying to the server. To solve the problem, I spent two full days reviewing the official MCP specification and tracing the standard I/O implementations in Node.js and Python. This article distills that hard-won troubleshooting experience and repair process into a reusable MCP diagnostic template so others facing the same problem can avoid the same detours.</p>
+<h3 id="process-stdout-is-the-mcp-stdio-transports-only-protocol-channel">Process stdout Is the MCP stdio Transport’s Only Protocol Channel</h3>
+<p>In stdio transport mode, an MCP Server’s standard output, stdout, is its only protocol channel; any output that is not JSON-RPC can cause the client to fail. On UNIX and UNIX-like systems such as macOS and Linux, every new process starts with three standard file descriptors: standard input, stdin (file descriptor 0); standard output, stdout (file descriptor 1); and standard error, stderr (file descriptor 2). These streams are the basic channels through which a process exchanges data with the outside world.</p>
+<p>With MCP’s stdio transport, a client such as Cursor or Claude Desktop acts as the parent process. It uses an operating-system process API, such as <code>child_process.spawn</code> in Node.js or <code>subprocess.Popen</code> in Python, to start the MCP Server as a child process. The parent connects one of its write streams to the child’s stdin and binds the child’s stdout pipe to one of its own read streams.</p>
+<p>Through this pipe, every control message from the parent process enters the child through stdin, and every response from the child returns to the parent through stdout. Together, these two one-way streams form the protocol’s lifeline.</p>
+<p>Because stdout is the only carrier for protocol responses, its formatting requirements are unforgiving. A typical client reads bytes from the child process’s stdout line by line and attempts to parse and validate each line as JSON. That means every non-JSON-RPC character—even a stray line, an extra newline, or an apparently harmless debug message—can be fed to the JSON parser.</p>
+<p>When contaminated data reaches the parser, the client cannot parse a valid JSON object and raises a JSON-RPC parse error. To protect its own stability, the client may close the child-process channel and terminate the process. The connection will not recover until the user restarts the Server from the IDE client.</p>
+<p>Buffering is another easy-to-miss operating-system behavior. When stdout is attached to a terminal (TTY), it is usually line-buffered and writes as soon as it encounters a newline. When a parent process redirects it to a pipe, the runtime may instead use block buffering, often in 4 KB or 8 KB chunks, to improve I/O efficiency. If the server writes a valid JSON packet without flushing, packets can accumulate in memory and arrive in one burst. The client then receives a large block containing multiple JSON messages; weak line-splitting logic may fail to frame them correctly. stdout must therefore remain clean, and each protocol write must be flushed promptly.</p>
+<h3 id="why-consolelog-and-print-can-break-an-mcp-handshake-instantly">Why <code>console.log</code> and <code>print</code> Can Break an MCP Handshake Instantly</h3>
+<p>Writing any non-JSON-RPC content to stdout breaks message framing and causes the client to read incomplete or contaminated packets. Full-stack developers new to MCP often carry over habits from traditional Web APIs and command-line tools. In conventional web development, <code>console.log</code> or Python’s <code>print</code> is a convenient way to report the connected database, the number of loaded configuration items, or current API usage. In an HTTP service, those logs go to the server console while the business response travels to the client through a network socket as an HTTP response body. Logs and application data occupy separate channels by default.</p>
+<p>That separation disappears in MCP stdio mode. The command-line process’s stdout is effectively the protocol socket. In other words, your <code>console.log</code> becomes a packet sent to the client.</p>
+<p>When you write <code>console.log("Database connected successfully")</code>, Node.js ultimately calls <code>process.stdout.write</code>. The success message enters the stdout pipe while the client is waiting for a JSON-RPC 2.0 message, so the client receives plain text instead.</p>
+<p>The client parser effectively attempts something like <code>JSON.parse("Database connected successfully")</code>, which immediately throws a syntax error. Because this parsing happens in the client’s communication path, an uncaught failure tells the client that the subprocess channel is corrupted. To guard against malformed output or buffer overflow, the client may terminate the subprocess with <code>SIGKILL</code>.</p>
+<p>Worse, contamination often comes not from your own log statements but from third-party dependencies. Some Node.js or Python libraries print messages to stdout as soon as they are required or imported. A database driver might emit a deprecation warning while inspecting the environment, an ORM might report a runtime performance warning, or a configuration loader might print a warning when it cannot find its default file. Even one such byte on stdout can break the current MCP handshake.</p>
+<p>Under stdio, any unstructured text written to stdout is transport contamination. All non-protocol data—including logs, warnings, and stack traces—must instead go to stderr. stderr is also an output channel, but it is intended for diagnostics. A parent process such as Cursor or Claude treats stderr differently from stdout: it records the content as plain text in local logs or discards it, rather than feeding it to the JSON-RPC parser. Using stderr as the sole destination for application logs is therefore a hard requirement for a stable MCP process.</p>
+<h3 id="minimal-reproduction-code-how-to-explicitly-direct-application-logs-to-stderr">Minimal Reproduction Code: How to Explicitly Direct Application Logs to stderr</h3>
+<p>The stable approach is not to globally override <code>process.stdout.write</code>, <code>console.log</code>, or Python’s <code>sys.stdout</code>, but to have your application logs explicitly written to stderr from the start, and to disable banners or Console Handlers of third-party dependencies. Global hijacking may simultaneously intercept legitimate protocol output from the SDK, and should ultimately not be used as a patch.</p>
+<p>The following Node.js example uses only <code>console.error</code> for diagnostic information and does not modify any global output stream:</p>
+<pre class="language-javascript" data-language="javascript"><code is:raw="" class="language-javascript"><span class="token comment">// safe-mcp-server.js</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Server <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"@modelcontextprotocol/sdk/server/index.js"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> StdioServerTransport <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"@modelcontextprotocol/sdk/server/stdio.js"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> CallToolRequestSchema<span class="token punctuation">,</span> ListToolsRequestSchema <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"@modelcontextprotocol/sdk/types.js"</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 初始化 Server</span>
+<span class="token keyword">const</span> server <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Server</span><span class="token punctuation">(</span>
+  <span class="token punctuation">{</span>
+    <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"safe-demo-server"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">version</span><span class="token operator">:</span> <span class="token string">"1.0.0"</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token literal-property property">capabilities</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token literal-property property">tools</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 注册工具列表</span>
+server<span class="token punctuation">.</span><span class="token function">setRequestHandler</span><span class="token punctuation">(</span>ListToolsRequestSchema<span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"收到客户端的 list tools 请求"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 使用 console.error 打印日志</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">tools</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span>
+        <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"calculate_future_value"</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">description</span><span class="token operator">:</span> <span class="token string">"计算复利未来价值"</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">inputSchema</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
+          <span class="token literal-property property">properties</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token literal-property property">principal</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">"number"</span><span class="token punctuation">,</span> <span class="token literal-property property">description</span><span class="token operator">:</span> <span class="token string">"本金"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token literal-property property">rate</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">"number"</span><span class="token punctuation">,</span> <span class="token literal-property property">description</span><span class="token operator">:</span> <span class="token string">"年化收益率"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token literal-property property">years</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">"number"</span><span class="token punctuation">,</span> <span class="token literal-property property">description</span><span class="token operator">:</span> <span class="token string">"投资年限"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token literal-property property">required</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"principal"</span><span class="token punctuation">,</span> <span class="token string">"rate"</span><span class="token punctuation">,</span> <span class="token string">"years"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 注册工具执行</span>
+server<span class="token punctuation">.</span><span class="token function">setRequestHandler</span><span class="token punctuation">(</span>CallToolRequestSchema<span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token parameter">request</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> name<span class="token punctuation">,</span> <span class="token literal-property property">arguments</span><span class="token operator">:</span> args <span class="token punctuation">}</span> <span class="token operator">=</span> request<span class="token punctuation">.</span>params<span class="token punctuation">;</span>
+  console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">开始执行工具 </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">，参数为:</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>name <span class="token operator">===</span> <span class="token string">"calculate_future_value"</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> <span class="token punctuation">{</span> principal<span class="token punctuation">,</span> rate<span class="token punctuation">,</span> years <span class="token punctuation">}</span> <span class="token operator">=</span> args<span class="token punctuation">;</span>
+    <span class="token keyword">const</span> result <span class="token operator">=</span> principal <span class="token operator">*</span> Math<span class="token punctuation">.</span><span class="token function">pow</span><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">+</span> rate<span class="token punctuation">,</span> years<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      <span class="token literal-property property">content</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+          <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">"text"</span><span class="token punctuation">,</span>
+          <span class="token literal-property property">text</span><span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">经过 </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>years<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> 年的复利增值，本金 </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>principal<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> 将增长至 </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>result<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">未知的工具方法: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 启动服务，绑定到 stdio transport</span>
+<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> transport <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StdioServerTransport</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">await</span> server<span class="token punctuation">.</span><span class="token function">connect</span><span class="token punctuation">(</span>transport<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"MCP Server 已成功通过安全 Stdio 通道启动并监听"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">catch</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">error</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Server 发生严重崩溃:"</span><span class="token punctuation">,</span> error<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  process<span class="token punctuation">.</span><span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Do not execute <code>sys.stdout = sys.stderr</code> on the Python side after SDK initialization. FastMCP’s stdio transport must retain stdout for legitimate responses. A safer approach is to send application logs explicitly through <code>logging.StreamHandler(sys.stderr)</code> and disable third-party Console Handlers.</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token comment"># safe_mcp_server.py</span>
+<span class="token keyword">import</span> logging
+<span class="token keyword">import</span> sys
+<span class="token keyword">from</span> mcp<span class="token punctuation">.</span>server<span class="token punctuation">.</span>fastmcp <span class="token keyword">import</span> FastMCP
+
+logger <span class="token operator">=</span> logging<span class="token punctuation">.</span>getLogger<span class="token punctuation">(</span><span class="token string">"safe-mcp-server"</span><span class="token punctuation">)</span>
+logger<span class="token punctuation">.</span>setLevel<span class="token punctuation">(</span>logging<span class="token punctuation">.</span>INFO<span class="token punctuation">)</span>
+logger<span class="token punctuation">.</span>handlers<span class="token punctuation">.</span>clear<span class="token punctuation">(</span><span class="token punctuation">)</span>
+handler <span class="token operator">=</span> logging<span class="token punctuation">.</span>StreamHandler<span class="token punctuation">(</span>sys<span class="token punctuation">.</span>stderr<span class="token punctuation">)</span>
+handler<span class="token punctuation">.</span>setFormatter<span class="token punctuation">(</span>logging<span class="token punctuation">.</span>Formatter<span class="token punctuation">(</span><span class="token string">"%(asctime)s %(levelname)s %(message)s"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+logger<span class="token punctuation">.</span>addHandler<span class="token punctuation">(</span>handler<span class="token punctuation">)</span>
+logger<span class="token punctuation">.</span>propagate <span class="token operator">=</span> <span class="token boolean">False</span>
+
+mcp <span class="token operator">=</span> FastMCP<span class="token punctuation">(</span><span class="token string">"Safe Python MCP Server"</span><span class="token punctuation">)</span>
+
+<span class="token decorator annotation punctuation">@mcp<span class="token punctuation">.</span>tool</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">calculate_dca_returns</span><span class="token punctuation">(</span>monthly_investment<span class="token punctuation">:</span> <span class="token builtin">float</span><span class="token punctuation">,</span> annual_rate<span class="token punctuation">:</span> <span class="token builtin">float</span><span class="token punctuation">,</span> years<span class="token punctuation">:</span> <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">str</span><span class="token punctuation">:</span>
+    logger<span class="token punctuation">.</span>info<span class="token punctuation">(</span>
+        <span class="token string">"calculate_dca_returns monthly=%s rate=%s years=%s"</span><span class="token punctuation">,</span>
+        monthly_investment<span class="token punctuation">,</span>
+        annual_rate<span class="token punctuation">,</span>
+        years<span class="token punctuation">,</span>
+    <span class="token punctuation">)</span>
+    monthly_rate <span class="token operator">=</span> annual_rate <span class="token operator">/</span> <span class="token number">12</span>
+    months <span class="token operator">=</span> years <span class="token operator">*</span> <span class="token number">12</span>
+    total_value <span class="token operator">=</span> <span class="token number">0.0</span>
+    <span class="token keyword">for</span> _ <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>months<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        total_value <span class="token operator">=</span> <span class="token punctuation">(</span>total_value <span class="token operator">+</span> monthly_investment<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">+</span> monthly_rate<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token string-interpolation"><span class="token string">f"期末总资产: </span><span class="token interpolation"><span class="token punctuation">{</span>total_value<span class="token punctuation">:</span><span class="token format-spec">.2f</span><span class="token punctuation">}</span></span><span class="token string">"</span></span>
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">"__main__"</span><span class="token punctuation">:</span>
+    mcp<span class="token punctuation">.</span>run<span class="token punctuation">(</span>transport<span class="token operator">=</span><span class="token string">"stdio"</span><span class="token punctuation">)</span>
+</code></pre>
+<p>If a dependency forcibly prints to stdout during the import phase, prioritize disabling its banner or isolating that dependency into a separate subprocess. Do not override <code>process.stdout.write</code> or Python’s global stdout as a “catch-all,” because this could also truncate legitimate SDK protocol outputs.</p>
+<h3 id="troubleshooting-workflow-how-to-find-and-capture-low-level-errors-in-claude-and-cursor">Troubleshooting Workflow: How to Find and Capture Low-Level Errors in Claude and Cursor</h3>
+<p>When an IDE client such as Claude Desktop or Cursor cannot connect, the only reliable diagnostic path is to run the server directly in a terminal, capture stderr, and inspect the client’s local logs. MCP integrations in these graphical clients run in the background, so their process and pipe interactions are largely opaque. When the tool list fails, many developers see only a red warning indicator and cannot inspect the underlying error. The following standard workflow provides a comprehensive local audit and captures the relevant client logs.</p>
+<p>Step 1: Isolate the server in a terminal.
+Do not rush to add your Server in the configuration file; first, run it locally in isolation in your terminal. Open your iTerm or terminal and execute your startup command. Normally, the service is waiting for the client’s <code>initialize</code> handshake request, and the console should have no normal text output and remain running. If your program prints any initialization text to the console immediately on startup, promptly locate the code line producing this output and either remove it or redirect it to stderr.</p>
+<p>Step 2: Test the minimum handshake in MCP lifecycle order.
+Do not send <code>tools/list</code> immediately. Initialization must be the first interaction between the client and Server; after the Server returns the protocol version and capabilities, the client then sends <code>notifications/initialized</code>, and only then can normal operations begin.</p>
+<p>First, send the initialization request:</p>
+<pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span><span class="token property">"jsonrpc"</span><span class="token operator">:</span><span class="token string">"2.0"</span><span class="token punctuation">,</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token property">"method"</span><span class="token operator">:</span><span class="token string">"initialize"</span><span class="token punctuation">,</span><span class="token property">"params"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"protocolVersion"</span><span class="token operator">:</span><span class="token string">"2025-06-18"</span><span class="token punctuation">,</span><span class="token property">"capabilities"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token property">"clientInfo"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"name"</span><span class="token operator">:</span><span class="token string">"manual-debug-client"</span><span class="token punctuation">,</span><span class="token property">"version"</span><span class="token operator">:</span><span class="token string">"1.0.0"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+</code></pre>
+<p>After confirming that the server returns valid <code>result.protocolVersion</code>, <code>serverInfo</code>, and <code>capabilities</code>, send these messages in order:</p>
+<pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span><span class="token property">"jsonrpc"</span><span class="token operator">:</span><span class="token string">"2.0"</span><span class="token punctuation">,</span><span class="token property">"method"</span><span class="token operator">:</span><span class="token string">"notifications/initialized"</span><span class="token punctuation">}</span>
+<span class="token punctuation">{</span><span class="token property">"jsonrpc"</span><span class="token operator">:</span><span class="token string">"2.0"</span><span class="token punctuation">,</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token property">"method"</span><span class="token operator">:</span><span class="token string">"tools/list"</span><span class="token punctuation">,</span><span class="token property">"params"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+</code></pre>
+<p>Each must be an independent, single-line JSON-RPC message. A healthy server will return a list of valid tools after initialization is complete; If banners, warnings, or regular logs are mixed in during the initialization phase, stdout contamination should be addressed first, rather than continuing to adjust business tools. For actual debugging, MCP Inspector is preferred because it correctly handles lifecycle and message order.</p>
+<p>Step 3: Search the client’s local log files comprehensively.
+If the terminal tests go smoothly but errors still occur after mounting to the client, you must retrieve the runtime logs written on the client’s local disk.</p>
+<p>For Claude Desktop:
+On macOS, open the terminal and run the following command to view the logs:
+<code>cat ~/Library/Logs/Claude/mcp.log</code>
+On Windows, this log is usually stored at:
+<code>%APPDATA%\Claude\logs\mcp.log</code>
+On Linux, this log file is usually stored at:
+<code>~/.config/Claude/logs/mcp.log</code>
+Claude records the command-line arguments for each MCP process-start attempt and every line emitted by the child process in this file. If child-process output violates JSON-RPC, the log reports explicit messages such as <code>Unexpected non-JSON line</code>.</p>
+<p>For Cursor:
+Cursor is developed based on the Electron architecture, which means it runs an instance of the Chromium browser internally. We can fully debug Cursor’s backend communication just like we would a web page.
+Open Cursor, click Help in the top menu, and find Toggle Developer Tools. This will pop up a Chrome DevTools panel. Switch to the Console tab. When you refresh the MCP Server in the Cursor options, all pipe read/write errors and process exception logs will be printed in the console as a red Error. You can filter the keyword MCP in the console to see if there is an error stack where the child process exited with code or the stdio connection is closed.</p>
+<p>Additionally, Cursor’s extended host processes also log the work. On macOS, log paths are usually as follows:
+<code>~/Library/Application Support/Cursor/logs</code>
+On Windows, the log path is:
+<code>%APPDATA%\Cursor\logs</code>
+You can use the terminal’s lookup tool to search these log directories for the latest log files, which usually contain stdio capture data from when Cursor background subprocesses start.</p>
+<p>Step 4: Capture messages with protocol-aware tools.
+Do not plug the <code>tee</code> directly behind the stdout of the MCP Server. Ordinary shell pipes do not understand the MCP lifecycle, request cancellation, and bidirectional message boundaries, and incorrect proxy scripts may further pollute stdout due to additional outputs. Prioritize using MCP Inspector; If you really want to perform byte-level scraping, the proxy process must meet three conditions:</p>
+<ol>
+<li>Stdin and stdout forward bidirectionally as is, without modifying or buffering merged messages.</li>
+<li>All diagnostic information should only be written as stderr or in separate files.</li>
+<li>First, verify in automated testing that every message before and after the proxy is still valid single-line JSON-RPC.</li>
+</ol>
+<p>A simpler approach is to write the server’s business logs to a separate file while saving the client’s MCP logs. Aligning the timestamps on both sides is usually sufficient to pinpoint the first polluted byte or the earliest process anomaly.</p>
+<h3 id="repair-plan-five-steps-to-eliminate-stdout-contamination-and-dropped-long-lived-connections">Repair Plan: Five Steps to Eliminate stdout Contamination and Dropped Long-Lived Connections</h3>
+<p>Fixing MCP transport errors requires a complete loop across five areas: global exception capture, stream redirection, buffer flushing, format validation, and process monitoring. These five refactoring steps produce a resilient MCP Server runtime and eliminate parse errors at the transport layer.</p>
+<p>Step 1: Isolate uncaught exceptions globally.
+When a child process encounters an error that is not caught during execution, the system will by default print the error stack directly to stdout or stderr. In Node.js, if an error is thrown during an asynchronous operation without a catch, the process will exit immediately after a brief delay. If abnormal information leaked before exit accidentally enters stdout, it can cause the client to crash. Therefore, we must add a global uncaught exception barrier at the very beginning of the code.</p>
+<p>Step 2: Rebuild the logging channel.
+Do not use bare console.log directly in your business code. In actual projects, we should introduce mature structured logging systems. For Node.js, it is recommended to use Winston and force the console transfer redirection to stderr.</p>
+<p>Step 3: Enforce message encoding and flushing.
+In StdioTransport communication, any byte fragment caused by encoding mismatches or incomplete data flushing will trigger a Parse error. We must ensure that data is written in full UTF-8 encoding. When writing standard output in Python, if the output is long, you must manually perform a flush operation after each write.</p>
+<p>Step 4: Add a local black-box test script.
+Before configuring the Server to Cursor, write an automated black-box test script that starts the server you want to test as a child process, automatically sends a handshake packet, and makes strict JSON-formatted assertions for every line of the returned stdout. If the script detects any non-JSON strings, it automatically exits and warns the developer.</p>
+<p>Step 5: Eliminate ambiguous paths and environment variables.
+When configuring in client configuration files, avoid using system aliases with relative paths or dependencies that are uncertain. Because the client’s background daemon doesn’t load your interactive shell environment when it starts, it doesn’t know where your global node or Python is installed. The correct approach is to use absolute paths and explicitly specify PATH in the env configuration item.</p>
+<hr>
+<h2 id="common-pitfalls--common-errors-error-logs">Common Pitfalls / Common Errors (Error Logs)</h2>
+<p>Understanding standard JSON-RPC error codes and the corresponding stack traces in stderr helps pinpoint the failing component quickly. The table below lists five common low-level errors and their root causes.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th align="left">Error Code (Code)</th><th align="left">Error message</th><th align="left">Protocol Definition (Specification)</th><th align="left">Physical manifestations and common root causes</th><th align="left">Troubleshooting physical operations</th></tr></thead><tbody><tr><td align="left">-32700</td><td align="left">Parse error</td><td align="left">Parsing error: The server receives an invalid JSON packet</td><td align="left">stdout is contaminated by banner/warning messages from console.log, print, or third-party dependencies, or message encoding, framing, and line breaks are invalid</td><td align="left">Delete the standard stdout output and explicitly write stderr to the application log; Use the SDK to handle protocol serialization, not override global stdout</td></tr><tr><td align="left">-32600</td><td align="left">Invalid Request</td><td align="left">Invalid request: the JSON structure does not comply with JSON-RPC 2.0</td><td align="left">Missing <code>jsonrpc: "2.0"</code>, a missing <code>method</code> field, or a response containing both <code>result</code> and <code>error</code></td><td align="left">Use a Schema Validator to validate message structure and allowlist filtering before serializing the payload</td></tr><tr><td align="left">-32601</td><td align="left">Method not found</td><td align="left">Method not found: the method is not declared or supported by the server</td><td align="left">The client misspelled the tool name, or the server did not declare the <code>tools</code> capability during initialization</td><td align="left">Verify the name mapping between the client and server tool lists, and inspect the schema returned by <code>ListToolsRequestSchema</code></td></tr><tr><td align="left">-32602</td><td align="left">Invalid params</td><td align="left">Invalid parameters: the method-call parameters do not match the declaration</td><td align="left">The client argument types, such as string versus number, or required fields do not match the tool’s <code>inputSchema</code></td><td align="left">Compare the arguments strictly with the <code>properties</code> in <code>inputSchema</code>; if schema validation fails, record the payload and stack trace explicitly to stderr</td></tr><tr><td align="left">-32603</td><td align="left">Internal error</td><td align="left">Internal error: the MCP server crashed while executing the tool</td><td align="left">Business code throws an uncaught exception, such as a database connection failure or insufficient file permissions, causing the Node.js/Python process to error</td><td align="left">Wrap the top level of handlers in <code>try...catch</code>, write the stack with <code>console.error</code>, and return a compliant error payload</td></tr></tbody></table>
+<ol>
+<li>Client outputs an Unexpected non-JSON line error:</li>
+</ol>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">[json-rpc] Unexpected non-JSON line: "DB Connection established..."
+[json-rpc] Unexpected non-JSON line: "DeprecationWarning: Big-endian support is deprecated"
+</code></pre>
+<p>The root cause is that the server prints a message such as a database-connection notice, or a third-party library emits a deprecation warning, before the server writes a valid message to stdout. The client expects JSON but receives plain text, so its parser fails immediately.</p>
+<ol start="2">
+<li>JSON-RPC -32700 Parse error:</li>
+</ol>
+<pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span><span class="token property">"jsonrpc"</span><span class="token operator">:</span> <span class="token string">"2.0"</span><span class="token punctuation">,</span> <span class="token property">"error"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"code"</span><span class="token operator">:</span> <span class="token number">-32700</span><span class="token punctuation">,</span> <span class="token property">"message"</span><span class="token operator">:</span> <span class="token string">"Parse error"</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token property">"id"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">}</span>
+</code></pre>
+<p>This error is returned to you by the server from the client (such as Claude), or by the server to the client. It indicates that during the streaming process, one side received the data but failed when trying to parse the data using JSON.parse. This is usually because the JSON structure was truncated (the buffer was not fully flushed), or the transmitted content contained unrecognized control characters, garbled text, or non-UTF-8 characters.</p>
+<ol start="3">
+<li>The IDE client reports a spawn ENOENT error:</li>
+</ol>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Failed to run command: spawn node ENOENT
+Failed to run command: spawn python3 ENOENT
+</code></pre>
+<p>This error indicates that Cursor or Claude tried to start your MCP process in the background, but since the executable files for node or python3 could not be found in its PATH environment variable, the process did not start at all. The IDE throws this physical exception, usually accompanied by the connection status turning red immediately.</p>
+<ol start="4">
+<li>Broken-pipe <code>write EPIPE</code> error:</li>
+</ol>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Error: write EPIPE at AfterWriteReq.oncomplete (node:internal/stream_base_commons:90:16)
+</code></pre>
+<p>This occurs when your Node.js process tries to write a message to process.stdout and finds that the reading process on the other end (Claude / Cursor) has already exited, or has proactively closed the standard input stream due to a previous parse error. This is a typical cascading error, indicating that the root cause lies in an earlier communication anomaly.</p>
+<ol start="5">
+<li>A noncompliant message format causes -32600 Invalid Request:</li>
+</ol>
+<pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span><span class="token property">"jsonrpc"</span><span class="token operator">:</span> <span class="token string">"2.0"</span><span class="token punctuation">,</span> <span class="token property">"error"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"code"</span><span class="token operator">:</span> <span class="token number">-32600</span><span class="token punctuation">,</span> <span class="token property">"message"</span><span class="token operator">:</span> <span class="token string">"Invalid Request: missing jsonrpc version"</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">}</span>
+</code></pre>
+<p>This indicates that the received message can be successfully parsed as JSON, but the JSON object lacks a key protocol identifier internally. For example, you misspelled jsonrpc (written as json-rpc), or omitted the method field in the request message, or the response contains both result and error fields.</p>
+<hr>
+<h2 id="stdio-and-streamable-http-error-detection-boundaries-are-different">Stdio and Streamable HTTP: error detection boundaries are different</h2>
+<p>Currently, MCP mainly uses two types of transmission: local stdio and remote Streamable HTTP. The <code>stdout</code> contamination issue discussed in this article only directly affects STDIO; Remote HTTP services are more common with authentication, Content-Type, session, proxy, and network layer errors.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Inspection dimension</th><th>Stdio</th><th>Streamable HTTP</th></tr></thead><tbody><tr><td>Connection Method</td><td>The host starts the local subprocess, communicating via stdin/stdout</td><td>The client sends messages via HTTP POST, with optional SSE streaming return</td></tr><tr><td>The most sensitive issue</td><td>stdout mixes in regular logs, PATH, working directory, process exit</td><td>URL, authentication, request header, reverse proxy, session, and timeout</td></tr><tr><td>Log location</td><td>stderr or independent log file</td><td>Application logs, gateway logs, and request tracking</td></tr><tr><td>Common error reports</td><td><code>-32700</code>, <code>spawn ENOENT</code>, <code>EPIPE</code></td><td>401, 403, 404, 415, 502, timeout</td></tr><tr><td>Applicable scenarios</td><td>Local desktop client and development tools</td><td>Remote sharing, team services, and cloud access</td></tr></tbody></table>
+<p>If the local stdio server is stable but the goal is cross-machine or multi-user sharing, stop patching around stdout and move on to <a href="/en/ai/mcp-streamable-http-deployment/">MCP Streamable HTTP deployment</a> and <a href="/en/ai/mcp-oauth-authentication/">MCP OAuth authentication</a>.</p>
+<hr>
+<h2 id="frequently-asked-questions">Frequently Asked Questions</h2>
+<p>The following answers cover common transport- and protocol-layer pitfalls encountered during daily development and edge-case failures.</p>
+<h3 id="why-does-the-mcp-server-run-without-errors-in-my-terminal-while-cursor-keeps-reporting-tool-list-failed">Why does the MCP Server run without errors in my terminal while Cursor keeps reporting “Tool list failed”?</h3>
+<p>This is mainly due to differences in environmental variables in the execution environment. When you run in the terminal, you use the complete environment variables in your current shell. For example, your Node.js is installed via nvm, and your PATH variable contains the complete node executable path. As a desktop client, Cursor’s PATH variable when forking child processes in the background may be the system’s default minimalist PATH, causing it to fail to find your node executable and thus throwing spawn ENOENT. Additionally, some servers do not print any errors when they do not receive standard input, but once the Cursor shakes hands, they crash during initialization due to receiving incorrect packets. You should first write all executable command paths as absolute paths in the Cursor configuration file.</p>
+<h3 id="what-should-i-do-if-a-third-party-nodejs-or-python-module-writes-a-copyright-notice-or-update-warning-to-stdout-during-initialization">What should I do if a third-party Node.js or Python module writes a copyright notice or update warning to stdout during initialization?</h3>
+<p>First, check whether the dependency supports closing banners, silent mode, or custom loggers, and clearly point its log handler to stderr. Do not override <code>process.stdout.write</code>, <code>console.log</code>, or execute <code>sys.stdout = sys.stderr</code>, because the MCP SDK also requires stdout to send legitimate protocol messages, and global redirection may cause the server to lose its response channel entirely. If the dependency cannot close the output, it should be isolated to another child process, which the MCP Server calls via controlled IPC and only receives structured results.</p>
+<h3 id="why-does-the-client-still-report-a--32700-parse-error-after-i-move-every-log-to-consoleerror">Why does the client still report a -32700 Parse error after I move every log to <code>console.error</code>?</h3>
+<p>This is usually because your message content was truncated, or your JSON-RPC message contains invalid characters. For example, if your output JSON string contains unescaped line breaks (for example, placing a long text containing a newline as a string in params), the stdio transport framework will mistakenly treat this line break as a message separator when reading line by line, splitting a complete message into two lines. Parsing the first line will trigger a parse error due to incomplete JSON structure. You should ensure that all text you put into JSON messages has been properly escaped (for example, using JSON.stringify will automatically handle line break escaping).</p>
+<h3 id="how-can-i-record-mcp-server-production-logs-safely-for-later-troubleshooting">How can I record MCP Server production logs safely for later troubleshooting?</h3>
+<p>The safest approach is to use a logging system such as Winston (Node.js) or Loguru (Python), configure a File Transport, and append every log entry to a dedicated file on local disk. This fully separates logs from protocol data. Do not write logs directly to the console for convenience. You can also send them to stderr because Claude Desktop and Cursor capture child-process stderr in their internal logs. Because client logs can be overwritten quickly, however, a separate local log file remains more reliable.</p>
+<h2 id="keep-reading">Keep Reading</h2>
+<p>Explore more advanced Model Context Protocol techniques and architecture patterns for building a more resilient local AI agent network.</p>
+<ul>
+<li>👉 <a href="/en/ai/mcp-protocol-deep-dive/">An In-Depth Guide to the MCP Protocol: From the stdio Transport to JSON-RPC Message Parsing</a></li>
+<li>👉 <a href="/en/ai/mcp-server-sqlite/">MCP Server in Practice: Give Claude Access to Local SQLite in 5 Steps, with a Troubleshooting Guide</a></li>
+<li>👉 <a href="/en/ai/mcp-vs-function-calling/">MCP vs. Function Calling: 7 Key Differences for AI Agent Architecture</a></li>
+<li>👉 <a href="/en/ai/mcp-security-best-practices/">MCP Security Governance in Practice: How to Prevent AI from Scraping Databases and Running Away</a></li>
+<li>👉 <a href="/en/ai/n8n-ai-workflow-error-handling/">Production n8n AI Workflows: Error Handling, Retries, Timeouts, and Cost Monitoring</a></li>
+</ul> <section class="mt-16 rounded-[34px] border border-orange-500/20 bg-orange-500/[0.06] p-7 md:p-9 not-prose"> <div class="text-[10px] font-black uppercase tracking-[0.28em] text-orange-500 mb-4">专题入口 / MCP Hub</div> <h2 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-4">继续按 MCP 生产部署路径读，而不是堆 guide / tutorial</h2> <p class="text-sm font-bold leading-7 text-slate-600 dark:text-slate-400 max-w-3xl">MCP 内容统一按协议理解、本地 Server、远程部署、OAuth、安全治理、stdio/JSON-RPC 排障和工具对比来承接，避免站内关键词互相抢。</p> <div class="mt-7 flex flex-wrap gap-3"> <a href="/ai/mcp/" class="rounded-full bg-orange-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-white hover:bg-orange-600 transition-colors">进入 MCP 专题 →</a> <a href="/ai/mcp-security-best-practices/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">查看安全治理清单</a> <a href="/newsletter/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">订阅更新</a> </div> </section> </div> <section class="mt-16 p-8 rounded-[32px] bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5"> <div class="flex items-center justify-between gap-4 mb-6"> <h2 class="text-xs font-black uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400"> Next Reading </h2> <a href="/en/ai/" class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400 hover:underline"> View Hub → </a> </div> <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> <a href="/en/ai/mcp-filesystem-server/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">mcp</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">MCP Filesystem Server in Practice: Enabling Claude / Cursor to Securely Read Local Files</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Practical guide to building an MCP Filesystem Server: enabling Claude/Cursor to securely read local files while mitigating risks via path whitelisting, Roots, Tool Scope, read-only permissions, and prompt injection protection.</p> </a><a href="/en/ai/mcp-tool-call-truncated-fix/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">mcp</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">How to Fix Truncated MCP Tool Call Results: A Deep Dive into Stdio Buffers and Semantic Compression</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Completely resolve the common issue of truncated tool call results in the MCP (Model Context Protocol). From analyzing the 64KB physical limit of Stdio to implementing intelligent semantic compression algorithms, this guide walks you through ensuring AI agents receive complete tool execution feedback in high-concurrency and long-context scenarios.</p> </a><a href="/en/ai/mcp-streamable-http-deployment/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">mcp</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">MCP Streamable HTTP in Practice: Deploying from Local stdio Server to Remote MCP Service</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">A practical guide on migrating MCP Servers from local stdio mode to remote deployment via Streamable HTTP, covering HTTP POST/GET, SSE streaming, session management, reverse proxy configuration, authentication boundaries, and production troubleshooting.</p> </a><a href="/en/ai/mcp-protocol-deep-dive/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">mcp</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">MCP File Server in Practice: Resources, Tools, Roots, and Secure Sandboxing</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Based on the MCP 2025-11-25 specification, this article demonstrates directory traversal, absolute path, and symbolic link escape vulnerabilities. It clarifies the responsibilities of Resources, Tools, Prompts, and Roots, and implements a secure file gateway in Python with path validation, read/write isolation, size limits, and audit logging.</p> </a> </div> </section> <div class="xl:hidden mt-10 space-y-4"> <section class="bg-white/85 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-sm rounded-[24px] p-5 sm:p-6" aria-label="Author profile"><a href="/about/" class="group flex items-center gap-4 text-left" aria-label="About Xiaobai &#38; XBSTACK →"><div class="rounded-full overflow-hidden border-2 border-white dark:border-slate-800 shadow-md relative shrink-0 w-16 h-16"><img src="/_astro/demo.BzDyfp9G_1hGUOO.webp" alt="小白 / Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div><div class="min-w-0"><h3 class="text-base font-black text-slate-950 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+小白 / Xiaobai
+</h3><p class="mt-1 text-[9px] font-black uppercase tracking-[0.22em] text-blue-500">Full-Stack AI Engineer</p></div></a><p class="font-bold text-slate-600 dark:text-slate-400 leading-relaxed mt-4 text-sm">Full-stack developer documenting AI engineering, indie products, investing reviews and outdoor practice.</p><a href="/about/" class="mt-4 block text-center text-[10px] font-black tracking-[0.12em] text-blue-600 dark:text-blue-400 hover:underline">About Xiaobai &amp; XBSTACK →</a><div class="my-4 h-px bg-slate-100 dark:bg-white/5"></div><ul class="flex items-center w-full gap-2"><li class="min-w-0 flex-1 w-full"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/xbstack-wechat-qr.webp" aria-label="WeChat · 贵州户外"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="WeChat · 贵州户外" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="truncate">WeChat · 贵州户外</span> </span>  </button> </a></li><li class="min-w-0 flex-1 w-full"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span>GitHub</span> </span>  </button> </a></li></ul></section>  </div>  <div class="mt-20 p-10 rounded-[40px] bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 shadow-2xl relative overflow-hidden group"> <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-600/5 dark:bg-blue-600/20 blur-[100px] rounded-full group-hover:bg-blue-600/10 transition-all duration-1000"></div> <div class="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-10 items-center"> <div class="md:col-span-8 space-y-6"> <h4 class="text-3xl font-black italic tracking-tighter uppercase text-slate-900 dark:text-white">Liked this article?<br>Join the newsletter</h4> <p class="text-slate-600 dark:text-slate-300 font-bold text-sm leading-relaxed max-w-xl"> Every week, I share practical AI engineering notes, product building insights, and investment reading logs from an independent developer&#39;s perspective. No fluff, only real experiments and reviewable decisions. </p> </div> <div class="md:col-span-4 flex flex-col gap-4"> <a href="/newsletter/" class="w-full py-4 rounded-full bg-blue-600 text-white text-center font-black uppercase text-[10px] tracking-[0.3em] hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20">JOIN NEWSLETTER →</a> <a href="/tools/" class="w-full py-4 rounded-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-center font-black uppercase text-[10px] tracking-[0.3em] hover:bg-slate-100 dark:hover:bg-white/10 transition-all">LAB TOOLBOX</a> </div> </div> </div> </div>  <div class="mt-12 ceramic-card p-6 md:p-12"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-8 flex items-center gap-4"> <span>Comments</span> <div class="h-[1px] flex-1 bg-zinc-200 dark:bg-white/5"></div> </div> <div id="tcomment" class="markdown-content"></div>  <script>(function(){const twikooEnvId = "https://comments.xbstack.com";
+
+  document.addEventListener("astro:page-load", () => {
+    function loadTwikoo() {
+      const commentsContainer = document.getElementById("tcomment");
+      if (commentsContainer) {
+        // 如果已经初始化，跳过
+        if (commentsContainer.dataset.initialized) return;
+        commentsContainer.dataset.initialized = 'true';
+
+        if (!twikooEnvId) {
+          showError("留言模块未加载，Twikoo envId 未配置。");
+          return;
+        }
+        const script = document.createElement("script");
+        script.src =
+          "https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.min.js";
+        script.async = true;
+        script.onload = () => {
+          const initScript = document.createElement("script");
+          initScript.innerHTML = `
+            twikoo.init({
+                envId: '${twikooEnvId}',
+                el: '#tcomment',
+                onCommentLoaded: function() {
+                   // Twikoo 加载后的清理逻辑 (双重保险)
+                   const trash = document.querySelectorAll('.tk-admin, .tk-submit-action-icon, [title*="管理"], [title*="Settings"]');
+                   trash.forEach(el => el.remove());
+                }
+            });
+          `;
+          document.body.appendChild(initScript);
+
+          // 开启一个长效观察器，专门销毁这些动态出现的按钮
+          const cleaner = new MutationObserver(() => {
+            const adminBtn = document.querySelector('.tk-admin, .tk-submit-action-icon[title*="管理"], .tk-submit-action-icon[title*="Settings"]');
+            if (adminBtn) adminBtn.remove();
+          });
+          cleaner.observe(commentsContainer, { childList: true, subtree: true });
+        };
+        document.body.appendChild(script);
+      }
+    }
+
+    // 使用 IntersectionObserver 实现懒加载
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(() => {
+        if (entries[0].isIntersecting) {
+          loadTwikoo();
+          observer.disconnect(); // 只执行一次
+        }
+      });
+    }, { rootMargin: '300px' }); // 提前 300px 开始加载
+
+    const target = document.getElementById("tcomment");
+    if (target) observer.observe(target);
+
+    function showError(msg){
+      const list = document.getElementById("tcomment");
+      if(!list) return;
+      list.removeAttribute('aria-busy');
+      list.innerHTML = `
+        <div class="py-4">
+          <div class="text-center text-red-600 dark:text-red-400">
+            ${msg || "评论获取失败，请稍后重试。"}
+          </div>
+        </div>
+      `;
+      const btn = document.getElementById("rc-retry-btn");
+      if(btn){ btn.addEventListener("click", load, { once: true }); }
+    }
+    loadTwikoo();
+  });
+})();</script> </div> </main>  <aside class="hidden xl:flex flex-col gap-6 sticky top-24 h-fit"> <div class="article-side-panel rounded-[24px] border p-5"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-4">On this page</div> <div class="liquid-glass-container "><div class="liquidGlass-wrapper dock !p-6"><div class="liquidGlass-effect-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-tint-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-shine  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-text  intersect:animate-fadeLeft transition-all duration-300 fast-slow"><div class="intersect:animate-fadeLeft" data-astro-cid-hop3l3kc><h2 class="text-2xl border-none mb-3" data-astro-cid-hop3l3kc>内容导航</h2><div class="max-h-96 overflow-y-auto" data-astro-cid-hop3l3kc><ul class="list-none m-0 space-y-1" data-astro-cid-hop3l3kc><li class="ml-0" data-astro-cid-hop3l3kc><a href="#first-follow-these-5-steps-to-troubleshoot" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>First, follow these 5 steps to troubleshoot</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#do-not-mix-the-three-types-of-error-reports-together" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Do not mix the three types of error reports together</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#symptoms-verification-commands-and-passing-criteria" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Symptoms, verification commands, and passing criteria</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#use-mcp-inspector-and-staged-imports-to-isolate-hidden-output" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Use MCP Inspector and staged imports to isolate hidden output</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#practical-review-checklist" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Practical Review Checklist</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#process-stdout-is-the-mcp-stdio-transports-only-protocol-channel" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Process stdout Is the MCP stdio Transport’s Only Protocol Channel</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#why-consolelog-and-print-can-break-an-mcp-handshake-instantly" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Why console.log and print Can Break an MCP Handshake Instantly</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#minimal-reproduction-code-how-to-explicitly-direct-application-logs-to-stderr" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Minimal Reproduction Code: How to Explicitly Direct Application Logs to stderr</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#troubleshooting-workflow-how-to-find-and-capture-low-level-errors-in-claude-and-cursor" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Troubleshooting Workflow: How to Find and Capture Low-Level Errors in Claude and Cursor</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#repair-plan-five-steps-to-eliminate-stdout-contamination-and-dropped-long-lived-connections" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Repair Plan: Five Steps to Eliminate stdout Contamination and Dropped Long-Lived Connections</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#common-pitfalls--common-errors-error-logs" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Common Pitfalls / Common Errors (Error Logs)</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#stdio-and-streamable-http-error-detection-boundaries-are-different" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Stdio and Streamable HTTP: error detection boundaries are different</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#frequently-asked-questions" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Frequently Asked Questions</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#why-does-the-mcp-server-run-without-errors-in-my-terminal-while-cursor-keeps-reporting-tool-list-failed" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Why does the MCP Server run without errors in my terminal while Cursor keeps reporting “Tool list failed”?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#what-should-i-do-if-a-third-party-nodejs-or-python-module-writes-a-copyright-notice-or-update-warning-to-stdout-during-initialization" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>What should I do if a third-party Node.js or Python module writes a copyright notice or update warning to stdout during initialization?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#why-does-the-client-still-report-a--32700-parse-error-after-i-move-every-log-to-consoleerror" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Why does the client still report a -32700 Parse error after I move every log to console.error?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#how-can-i-record-mcp-server-production-logs-safely-for-later-troubleshooting" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>How can I record MCP Server production logs safely for later troubleshooting?</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#keep-reading" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Keep Reading</a></li></ul></div></div></div></div></div> </div> <section class="bg-white/85 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-sm rounded-[24px] p-5 article-side-panel" aria-label="Author profile"><a href="/about/" class="group flex items-center flex-col gap-3 text-center" aria-label="About Xiaobai &#38; XBSTACK →"><div class="rounded-full overflow-hidden border-2 border-white dark:border-slate-800 shadow-md relative shrink-0 w-[72px] h-[72px]"><img src="/_astro/demo.BzDyfp9G_1hGUOO.webp" alt="小白 / Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div><div class="w-full"><h3 class="text-base font-black text-slate-950 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+小白 / Xiaobai
+</h3><p class="mt-1 text-[9px] font-black uppercase tracking-[0.22em] text-blue-500">Full-Stack AI Engineer</p></div></a><p class="font-bold text-slate-600 dark:text-slate-400 leading-relaxed mt-4 text-xs text-center">Full-stack developer documenting AI engineering, indie products, investing reviews and outdoor practice.</p><a href="/about/" class="mt-4 block text-center text-[10px] font-black tracking-[0.12em] text-blue-600 dark:text-blue-400 hover:underline">About Xiaobai &amp; XBSTACK →</a><div class="my-4 h-px bg-slate-100 dark:bg-white/5"></div><ul class="flex items-center w-full gap-2 flex-col"><li class="min-w-0 flex-1 w-full"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/xbstack-wechat-qr.webp" aria-label="WeChat · 贵州户外"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="WeChat · 贵州户外" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="truncate">WeChat · 贵州户外</span> </span>  </button> </a></li><li class="min-w-0 flex-1 w-full"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span>GitHub</span> </span>  </button> </a></li></ul></section>  </aside> </div> </main> <script>
+    function initProgress() {
+      const progressBar = document.getElementById('reading-progress');
+      if (!progressBar) return;
+      window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = scrolled + "%";
+      });
+    }
+    document.addEventListener('astro:page-load', initProgress);
+    initProgress();
+  </script>  </main> <footer class="container mx-auto mt-32 animate-fadeUp px-4 pb-16 lg:px-8"> <div class="group relative rounded-[60px] border border-slate-200 bg-white p-10 shadow-2xl transition-all dark:border-white/10 dark:bg-[#0B1020] md:p-16"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[60px] opacity-20 dark:opacity-40"> <div class="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px] transition-transform duration-1000 group-hover:scale-125"></div> <div class="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px] transition-transform duration-1000 group-hover:scale-125"></div> </div> <div class="relative z-10 grid grid-cols-1 gap-12 border-b border-slate-100 pb-16 text-left dark:border-white/5 md:grid-cols-2 xl:grid-cols-12"> <div class="flex flex-col justify-between space-y-8 xl:col-span-4"> <div> <div class="mb-8 flex items-center gap-4"> <div class="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 p-2 shadow-lg dark:border-white/10 dark:bg-white/5"> <img src="/favicon/favicon.svg" alt="XBSTACK" class="h-full w-full object-contain"> </div> <span class="font-brand text-2xl font-black uppercase italic leading-none tracking-tighter text-blue-500">XBSTACK</span> </div> <div class="space-y-6"> <p class="text-2xl font-bold italic leading-tight tracking-tight text-slate-900 dark:text-slate-50"> “Look High. Build Low.” </p> <p class="max-w-sm text-[13px] font-bold leading-relaxed text-slate-600 dark:text-slate-400"> An independent developer asset system covering AI engineering, product tools, investing decisions, reading systems and outdoor field notes. </p> </div> </div> <div class="flex items-center gap-4 pt-4"> <span class="rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 text-[11px] font-black uppercase tracking-widest text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-400"> Built by Xiaobai </span> </div> </div> <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 xl:col-span-5"> <div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">AI Engineering</h4> <ul class="space-y-4"> <li><a href="/en/ai/agent/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Agents</a></li><li><a href="/en/ai/langgraph/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">LangGraph</a></li><li><a href="/en/ai/mcp/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">MCP Protocols</a></li><li><a href="/en/ai/workflow/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Workflow</a></li> </ul> </div><div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">Product Tools</h4> <ul class="space-y-4"> <li><a href="/en/tools/compound-calculator/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Compound Calculator</a></li><li><a href="/en/tools/ai-finance/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">AI Finance</a></li><li><a href="/en/tools/utm-builder/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">UTM Builder</a></li><li><a href="/en/tools/lunest/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Lunest</a></li> </ul> </div><div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">Horizon</h4> <ul class="space-y-4"> <li><a href="/en/investing/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Investing</a></li><li><a href="/en/horizon/reading/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Reading</a></li><li><a href="/en/notes/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Thinking</a></li> </ul> </div><div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">Life &amp; Lens</h4> <ul class="space-y-4"> <li><a href="/en/life/hiking/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Hiking</a></li><li><a href="/en/life/photo/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Photography</a></li><li><a href="/en/life/gear/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Gear</a></li> </ul> </div> </div> <div class="space-y-8 xl:col-span-3"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-slate-400">Systems Connect</h4> <div class="flex flex-col gap-3"> <button type="button" data-wechat-qr="/assets/xbstack-wechat-qr.webp" class="wechat-trigger group/wechat flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left transition-all hover:border-blue-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="h-5 w-5 text-green-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg> <div class="flex flex-col"> <span class="text-[12px] font-black text-slate-900 dark:text-slate-200">WeChat: Guizhou Outdoor</span> <span class="text-[11px] font-bold leading-relaxed text-slate-600 dark:text-slate-300"> Chinese-language hiking routes and direct outdoor field reports from Guizhou. </span> </div> </button> <a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" class="group/github flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-all hover:border-blue-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="h-5 w-5 text-slate-900 dark:text-white" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> <div class="flex flex-col"><span class="text-[12px] font-black text-slate-900 dark:text-slate-200">GitHub: XBSTACK Lab</span><span class="text-[11px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">Source Code</span></div> </a> <a href="mailto:xbstack@163.com" class="group flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-all hover:border-sky-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="h-5 w-5 text-sky-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"></path></svg> <div class="flex flex-col"><span class="text-[12px] font-black text-slate-900 dark:text-slate-200">xbstack@163.com</span><span class="text-[11px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">Email</span></div> </a> </div> </div> </div> <div class="mt-12 flex flex-col items-start justify-between gap-10 lg:flex-row lg:items-center"> <div class="flex flex-wrap gap-8"> <div class="space-y-1"> <h5 class="text-[10px] font-black uppercase tracking-widest text-orange-700 dark:text-orange-500">Risk Notice</h5> <p class="text-[10px] font-bold italic text-slate-500">Content is informational and does not constitute investment advice.</p> </div> <div class="space-y-1"> <h5 class="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-500">Copyright</h5> <p class="text-[10px] font-bold text-slate-500">Original XBSTACK content may not be republished or scraped without permission.</p> </div> </div> <div class="flex w-full flex-col items-end gap-5 lg:w-auto"> <div class="flex flex-wrap justify-end gap-6"> <a href="/en/archive/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Archive</a><a href="/en/privacy/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Privacy</a><a href="/en/tos/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Terms</a><a href="/en/disclosure/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Disclosure</a><a href="/sitemap-index.xml" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Sitemap</a><a href="/llms.txt" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">AI Index</a> </div> <div class="flex flex-wrap justify-end gap-3">   <a href="/en/rss.xml" class="rounded-xl border border-blue-600/20 bg-blue-600/10 px-4 py-2 text-[10px] font-black text-blue-700 shadow-sm transition-all hover:bg-blue-500 hover:text-white dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400">English RSS</a> </div> </div> </div> <div class="mt-8 flex items-center justify-between border-t border-slate-100 pt-8 dark:border-white/5"> <div class="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 opacity-50">&copy; 2026 XBSTACK. LABS_ACTIVE_v6.6</div> <div class="flex items-center gap-2"><span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500"></span><span class="text-[9px] font-black uppercase italic tracking-widest text-emerald-600/60">Built Independently</span></div> </div> </div> </footer> <!-- 桌面悬停卡：由全局脚本定位到当前公众号入口附近 --><div id="wechat-hover-card" class="fixed z-[9998] hidden w-[300px] pointer-events-none opacity-0 translate-y-2 transition-all duration-200" aria-hidden="true"> <div class="rounded-[30px] border border-white/15 bg-[#0d1728]/95 p-5 text-white shadow-[0_28px_80px_rgba(2,6,23,0.48)] backdrop-blur-2xl"> <div class="text-[9px] font-black uppercase tracking-[0.34em] text-orange-400">Join the Journey</div> <div class="mt-2 text-xl font-black tracking-tight">一起探索 · 一起成长</div> <div class="mt-1 text-[11px] font-bold tracking-[0.12em] text-slate-400">户外探索 · 独立开发 · 投资思考</div> <div class="mt-4 grid grid-cols-[112px_1fr] items-center gap-4"> <div class="rounded-[20px] border border-white/10 bg-[#060b14] p-2.5 shadow-inner"> <img id="wechat-hover-qr" src="/assets/xbstack-wechat-qr.webp" width="360" height="360" alt="微信公众号贵州户外二维码" class="block aspect-square w-full rounded-xl bg-white object-contain"> </div> <div class="space-y-2 text-[11px] font-bold leading-relaxed text-slate-300"> <p>贵州徒步与路线实测</p> <p>AI 工具与独立产品</p> <p>投资体系与长期复盘</p> </div> </div> <div class="mt-4 border-t border-white/10 pt-3 text-center text-[11px] font-black text-slate-300">
+点击查看完整名片
+</div> </div> </div> <!-- 全局点击弹窗 --> <div id="wechat-modal" class="fixed inset-0 z-[10000] hidden items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="wechat-modal-title" aria-hidden="true"> <button id="wechat-modal-backdrop" type="button" aria-label="关闭公众号弹窗" class="absolute inset-0 cursor-default bg-slate-950/86 backdrop-blur-xl"></button> <div id="wechat-modal-content" class="relative max-h-[94vh] w-full max-w-[460px] scale-95 overflow-y-auto rounded-[38px] border border-slate-500/45 bg-[#0d1728] text-white opacity-0 shadow-[0_40px_140px_rgba(0,0,0,0.68)] transition-all duration-300 sm:rounded-[50px]"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"> <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px]"></div> <div class="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-orange-500/10 blur-[80px]"></div> </div> <button id="wechat-modal-close" type="button" aria-label="关闭微信公众号弹窗" class="absolute right-5 top-5 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 transition hover:bg-white/10 hover:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg> </button> <div class="relative z-10 px-6 pb-6 pt-10 sm:px-10 sm:pb-9 sm:pt-12"> <header class="text-center"> <div class="text-[10px] font-black uppercase tracking-[0.44em] text-orange-400 sm:text-xs">Join the Journey</div> <h2 id="wechat-modal-title" class="mt-4 text-3xl font-black tracking-tight text-white sm:text-[38px]" style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;">一起探索 · 一起成长</h2> <p class="mt-3 text-sm font-bold tracking-[0.16em] text-slate-400 sm:text-base">户外探索 ｜ 独立开发 ｜ 投资思考</p> </header> <div class="mx-auto mt-7 max-w-[300px] rounded-[34px] border border-white/10 bg-[#070d17] p-5 shadow-inner sm:mt-8"> <div class="rounded-[24px] bg-white p-3"> <img id="wechat-modal-qr" src="/assets/xbstack-wechat-qr.webp" width="360" height="360" decoding="async" alt="微信公众号贵州户外二维码" class="block aspect-square w-full object-contain"> </div> </div> <div class="mt-7 divide-y divide-white/10 sm:mt-8"> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M634.92 462.7l-288-448C341.03 5.54 330.89 0 320 0s-21.03 5.54-26.92 14.7l-288 448a32.001 32.001 0 0 0-1.17 32.64A32.004 32.004 0 0 0 32 512h576c11.71 0 22.48-6.39 28.09-16.67a31.983 31.983 0 0 0-1.17-32.63zM320 91.18L405.39 224H320l-64 64-38.06-38.06L320 91.18z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">户外徒步 · 贵州路线实探与分享</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">记录每一次出发，提供真实路况、补给、风险和下撤信息。</p> </div> </div> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M278.9 511.5l-61-17.7c-6.4-1.8-10-8.5-8.2-14.9L346.2 8.7c1.8-6.4 8.5-10 14.9-8.2l61 17.7c6.4 1.8 10 8.5 8.2 14.9L293.8 503.3c-1.9 6.4-8.5 10.1-14.9 8.2zm-114-112.2l43.5-46.4c4.6-4.9 4.3-12.7-.8-17.2L117 256l90.6-79.7c5.1-4.5 5.5-12.3.8-17.2l-43.5-46.4c-4.5-4.8-12.1-5.1-17-.5L3.8 247.2c-5.1 4.7-5.1 12.8 0 17.5l144.1 135.1c4.9 4.6 12.5 4.4 17-.5zm327.2.6l144.1-135.1c5.1-4.7 5.1-12.8 0-17.5L492.1 112.1c-4.8-4.5-12.4-4.3-17 .5L431.6 159c-4.6 4.9-4.3 12.7.8 17.2L523 256l-90.6 79.7c-5.1 4.5-5.5 12.3-.8 17.2l43.5 46.4c4.5 4.9 12.1 5.1 17 .6z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">独立开发 · AI、工具与产品实战</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">从真实需求到上线复盘，持续构建可长期积累的数字产品。</p> </div> </div> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16zM464 96H345.94c-21.38 0-32.09 25.85-16.97 40.97l32.4 32.4L288 242.75l-73.37-73.37c-12.5-12.5-32.76-12.5-45.25 0l-68.69 68.69c-6.25 6.25-6.25 16.38 0 22.63l22.62 22.62c6.25 6.25 16.38 6.25 22.63 0L192 237.25l73.37 73.37c12.5 12.5 32.76 12.5 45.25 0l96-96 32.4 32.4c15.12 15.12 40.97 4.41 40.97-16.97V112c.01-8.84-7.15-16-15.99-16z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">投资思考 · 复利、风险与长期主义</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">分享投资体系、市场观察和个人决策复盘，不构成投资建议。</p> </div> </div> </div> <div class="mt-6 text-center text-sm font-black leading-relaxed text-slate-300">
+扫码关注微信公众号 <span class="text-orange-400">“贵州户外”</span> <p class="mt-1 text-xs font-bold text-slate-500">获取户外路线、独立开发与投资复盘的最新内容</p> </div> <button id="wechat-modal-confirm" type="button" class="mt-7 w-full rounded-[24px] bg-white px-6 py-4 text-sm font-black tracking-[0.12em] text-slate-950 shadow-xl transition hover:-translate-y-0.5 hover:bg-slate-100 active:translate-y-0">
+知道了 / CLOSE
+</button> </div> </div> </div> <script type="module">const b="/assets/xbstack-wechat-qr.webp";function f(){const t=document.getElementById("wechat-modal"),y=document.getElementById("wechat-modal-backdrop"),a=document.getElementById("wechat-modal-content"),w=document.getElementById("wechat-modal-close"),E=document.getElementById("wechat-modal-confirm"),c=document.getElementById("wechat-modal-qr"),s=document.getElementById("wechat-hover-card"),i=document.getElementById("wechat-hover-qr");if(!t||!a||!s)return;let l=0;const p=window.matchMedia("(hover: hover) and (pointer: fine)"),u=e=>{const n=e.dataset.wechatQr||b;c&&c.src!==new URL(n,window.location.href).href&&(c.src=n),i&&i.src!==new URL(n,window.location.href).href&&(i.src=n)},o=()=>{window.clearTimeout(l),s.classList.add("opacity-0","translate-y-2"),l=window.setTimeout(()=>s.classList.add("hidden"),180)},v=e=>{if(!p.matches||!t.classList.contains("hidden"))return;window.clearTimeout(l),u(e),s.classList.remove("hidden");const n=e.getBoundingClientRect(),L=300,B=250,r=12;let m=n.left+n.width/2-L/2;m=Math.max(r,Math.min(m,window.innerWidth-L-r));let h=n.top-B-12;h<r&&(h=n.bottom+12),s.style.left=`${m}px`,s.style.top=`${h}px`,requestAnimationFrame(()=>s.classList.remove("opacity-0","translate-y-2"))},I=e=>{o(),u(e),t.classList.remove("hidden"),t.classList.add("flex"),t.setAttribute("aria-hidden","false"),document.body.style.overflow="hidden",requestAnimationFrame(()=>{a.classList.remove("scale-95","opacity-0"),a.classList.add("scale-100","opacity-100"),w?.focus()})},d=()=>{a.classList.remove("scale-100","opacity-100"),a.classList.add("scale-95","opacity-0"),window.setTimeout(()=>{t.classList.add("hidden"),t.classList.remove("flex"),t.setAttribute("aria-hidden","true"),document.body.style.overflow=""},260)};document.querySelectorAll(".wechat-trigger").forEach(e=>{e.dataset.wechatInitialized!=="true"&&(e.dataset.wechatInitialized="true",e.addEventListener("mouseenter",()=>v(e)),e.addEventListener("mouseleave",o),e.addEventListener("focus",()=>v(e)),e.addEventListener("blur",o),e.addEventListener("click",n=>{n.preventDefault(),I(e)}))}),t.dataset.wechatInitialized!=="true"&&(t.dataset.wechatInitialized="true",w?.addEventListener("click",d),E?.addEventListener("click",d),y?.addEventListener("click",d),document.addEventListener("keydown",e=>{e.key==="Escape"&&!t.classList.contains("hidden")&&d()}),window.addEventListener("scroll",o,{passive:!0}),window.addEventListener("resize",o))}f();document.addEventListener("astro:page-load",f);</script> <script>
+      const showLanguageSwitchNotice = () => {
+        let payload = null;
+        try {
+          const raw = sessionStorage.getItem('xbstack_language_notice');
+          if (!raw) return;
+          payload = JSON.parse(raw);
+          sessionStorage.removeItem('xbstack_language_notice');
+        } catch (error) {
+          return;
+        }
+
+        const notice = document.getElementById('language-switch-notice');
+        if (!notice) return;
+
+        const targetIsEnglish = String(payload?.language || '').toLowerCase().startsWith('en');
+        notice.textContent = targetIsEnglish
+          ? 'This page does not have an English version yet. You have been taken to the English home page.'
+          : '当前页面暂未提供中文版本，已为你打开中文首页。';
+        notice.classList.remove('hidden');
+        window.setTimeout(() => notice.classList.add('hidden'), 4800);
+      };
+
+      document.addEventListener('astro:page-load', showLanguageSwitchNotice);
+      showLanguageSwitchNotice();
+    </script> </body> </html>

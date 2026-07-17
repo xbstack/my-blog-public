@@ -1,0 +1,897 @@
+<!DOCTYPE html><html lang="en" class="dark" data-analytics="ga4-baidu"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script>
+      const applyTheme = () => {
+        const theme = localStorage.getItem("theme");
+        const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      };
+      applyTheme();
+      document.addEventListener("astro:page-load", applyTheme);
+    </script><script>(function(){const currentLanguage = "en";
+const languageAlternates = [{"lang":"zh-CN","href":"https://www.xbstack.com/ai/n8n-webhook-production-hardening/"},{"lang":"en","href":"https://www.xbstack.com/en/ai/n8n-webhook-production-hardening/"},{"lang":"x-default","href":"https://www.xbstack.com/ai/n8n-webhook-production-hardening/"}];
+
+      (() => {
+        const normalizeLanguage = (value) => String(value || '').toLowerCase().startsWith('en') ? 'en' : 'zh-CN';
+        const readCookie = (name) => {
+          const prefix = `${name}=`;
+          const item = document.cookie.split(';').map((part) => part.trim()).find((part) => part.startsWith(prefix));
+          return item ? decodeURIComponent(item.slice(prefix.length)) : '';
+        };
+
+        let preferredLanguage = readCookie('xbstack_lang');
+        if (!preferredLanguage) {
+          try {
+            preferredLanguage = localStorage.getItem('xbstack_lang') || '';
+          } catch (error) {}
+        }
+
+        if (!preferredLanguage) {
+          const browserLanguage = Array.isArray(navigator.languages) && navigator.languages.length
+            ? navigator.languages[0]
+            : navigator.language;
+          preferredLanguage = normalizeLanguage(browserLanguage);
+          document.cookie = `xbstack_lang=${encodeURIComponent(preferredLanguage)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+          try {
+            localStorage.setItem('xbstack_lang', preferredLanguage);
+          } catch (error) {}
+        }
+
+        const preferred = normalizeLanguage(preferredLanguage);
+        const current = normalizeLanguage(currentLanguage);
+        const target = (languageAlternates || []).find((item) => normalizeLanguage(item.lang) === preferred);
+        const redirectKey = `xbstack_auto_lang:${window.location.pathname}:${preferred}`;
+
+        if (target && preferred !== current && !sessionStorage.getItem(redirectKey)) {
+          const targetUrl = new URL(target.href, window.location.origin);
+          if (targetUrl.pathname !== window.location.pathname) {
+            sessionStorage.setItem(redirectKey, '1');
+            window.location.replace(targetUrl.href);
+          }
+        }
+      })();
+    })();</script><title>n8n Webhook Production Deployment: Header Auth, Raw Body, WEBHOOK_URL, and Reverse Proxy Troubleshooting | AI - XBSTACK</title><meta name="description" content="Systematically deconstructs the critical configuration for self-hosted n8n Webhooks from testing to production deployment, covering Test URL vs. Production URL, Header Auth, JWT, Raw Body, Respond to Webhook, WEBHOOK_URL, N8N_PROXY_HOPS, reverse proxy, signature verification, idempotency deduplication, and security troubleshooting."><meta name="keywords" content="n8n Webhook, n8n Webhook production deployment, n8n Header Auth, n8n Raw Body, n8n WEBHOOK_URL, n8n N8N_PROXY_HOPS, n8n reverse proxy, n8n webhook 404, n8n webhook signature, n8n Respond to Webhook, n8n self-hosted"><meta name="theme-color" content="#050608"><meta name="robots" content="noindex,follow"><meta property="og:type" content="article"><meta property="og:locale" content="en_US"><meta property="og:url" content="https://www.xbstack.com/en/ai/n8n-webhook-production-hardening/"><meta property="og:title" content="n8n Webhook Production Deployment: Header Auth, Raw Body, WEBHOOK_URL, and Reverse Proxy Troubleshooting | AI - XBSTACK"><meta property="og:description" content="Systematically deconstructs the critical configuration for self-hosted n8n Webhooks from testing to production deployment, covering Test URL vs. Production URL, Header Auth, JWT, Raw Body, Respond to Webhook, WEBHOOK_URL, N8N_PROXY_HOPS, reverse proxy, signature verification, idempotency deduplication, and security troubleshooting."><meta property="og:image" content="https://www.xbstack.com/_astro/n8n-webhook-production-hardening-cover.Baj7OQ8F.png"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/en/ai/n8n-webhook-production-hardening/"><meta property="twitter:title" content="n8n Webhook Production Deployment: Header Auth, Raw Body, WEBHOOK_URL, and Reverse Proxy Troubleshooting | AI - XBSTACK"><meta property="twitter:description" content="Systematically deconstructs the critical configuration for self-hosted n8n Webhooks from testing to production deployment, covering Test URL vs. Production URL, Header Auth, JWT, Raw Body, Respond to Webhook, WEBHOOK_URL, N8N_PROXY_HOPS, reverse proxy, signature verification, idempotency deduplication, and security troubleshooting."><meta property="twitter:image" content="https://www.xbstack.com/_astro/n8n-webhook-production-hardening-cover.Baj7OQ8F.png"><link rel="canonical" href="https://www.xbstack.com/en/ai/n8n-webhook-production-hardening/"><link rel="alternate" hreflang="zh-CN" href="https://www.xbstack.com/ai/n8n-webhook-production-hardening/"><link rel="alternate" hreflang="en" href="https://www.xbstack.com/en/ai/n8n-webhook-production-hardening/"><link rel="alternate" hreflang="x-default" href="https://www.xbstack.com/ai/n8n-webhook-production-hardening/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Precision Tools","description":"AI finance analyzer, compound calculator, Lunest and practical product tools.","url":"https://www.xbstack.com/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Thinking","description":"Investing notes, reading system, decision system and long-term thinking.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Photography and Gear","description":"Guizhou outdoor field notes, photography, gear lab and real-life trust assets.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"About Xiaobai, the XBSTACK asset system and the slogan 在高处看世界，在底层堆资产.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"n8n Webhook Production Deployment: Header Auth, Raw Body, WEBHOOK_URL, and Reverse Proxy Troubleshooting","description":"Systematically deconstructs the critical configuration for self-hosted n8n Webhooks from testing to production deployment, covering Test URL vs. Production URL, Header Auth, JWT, Raw Body, Respond to Webhook, WEBHOOK_URL, N8N_PROXY_HOPS, reverse proxy, signature verification, idempotency deduplication, and security troubleshooting.","image":"https://www.xbstack.com/_astro/n8n-webhook-production-hardening-cover.Baj7OQ8F.png","datePublished":"2026-06-26T00:00:00.000Z","dateModified":"2026-06-26T00:00:00.000Z","author":{"@type":"Person","name":"小白","url":"https://www.xbstack.com/about"},"publisher":{"@type":"Organization","name":"XBSTACK","logo":{"@type":"ImageObject","url":"https://www.xbstack.com/favicon/favicon.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.xbstack.com/en/ai/n8n-webhook-production-hardening/"},"articleSection":"ai","keywords":["n8n Webhook","n8n Webhook production deployment","n8n Header Auth","n8n Raw Body","n8n WEBHOOK_URL","n8n N8N_PROXY_HOPS","n8n reverse proxy","n8n webhook 404","n8n webhook signature","n8n Respond to Webhook","n8n self-hosted"],"abstract":"Distinguish between Test and Production: After debugging, switch to the Production URL to ensure the workflow provides stable listening externally while in an Active state. Fixed WEBHOOK_URL: Under a reverse proxy, the WEBHOOK_URL environment variable must be explicitly configured, and N8N_PROXY_HOPS must match the number of proxy hops to prevent 404 or local port exposure. Signature verification must use the Raw Body: When validating third-party Webhook signatures, enable the Raw Body option to prevent signature failures caused by JSON string character order and whitespace inconsistencies resulting from deserialization. Immediate response and asynchronous decoupling: For high-latency workflows (e.g., AI/PDF processing), except in API gateway scenarios requiring synchronous data return, it is recommended to immediately return an 200/202 response after validation passes, with the main business process proceeding via an asynchronous queue. Enforce idempotent deduplication: Generate an idempotency_key using the event_id or payload_hash to prevent duplicate execution and inflated Token/API costs caused by upstream network retries.","about":[{"@type":"Thing","name":"n8n"},{"@type":"Thing","name":"webhook"},{"@type":"Thing","name":"workflow-automation"},{"@type":"Thing","name":"self-hosted"},{"@type":"Thing","name":"reverse-proxy"},{"@type":"Thing","name":"security"},{"@type":"Thing","name":"production-ai"}],"speakable":{"@type":"SpeakableSpecification","cssSelector":[".markdown-content h2",".markdown-content p:first-of-type"]}}]}</script><meta property="article:published_time" content="Fri Jun 26 2026 08:00:00 GMT+0800 (China Standard Time)"><meta name="abstract" content="Systematically deconstructs the critical configuration for self-hosted n8n Webhooks from testing to production deployment, covering Test URL vs. Production URL, Header Auth, JWT, Raw Body, Respond to Webhook, WEBHOOK_URL, N8N_PROXY_HOPS, reverse proxy, signature verification, idempotency deduplication, and security troubleshooting."><meta name="speakable-selector" content=".markdown-content h2, .markdown-content p"><meta name="ai-content-access" content="allowed"><meta name="geo-optimized" content="true"><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script async src="https://www.googletagmanager.com/gtag/js?id=G-1J4274CPMT"></script><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
+
+          if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function() {
+              window.dataLayer.push(arguments);
+            };
+            window.gtag('js', new Date());
+            window.gtag('config', googleAnalyticsId, { send_page_view: false });
+
+            window.__ga4_initialized = true;
+            window.__lastGA4PageKey = "";
+            window.__lastGA4PageLocation = document.referrer || "";
+            window.__scroll50Reported = false;
+            window.__scroll90Reported = false;
+
+            const getReferrerHost = () => {
+              try {
+                return document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+              } catch (err) {
+                return '';
+              }
+            };
+
+            const inferSourceHint = () => {
+              const refHost = getReferrerHost();
+              if (!refHost) return '';
+              if (refHost.includes('zhihu')) return 'zhihu_referrer';
+              if (refHost.includes('juejin')) return 'juejin_referrer';
+              if (refHost.includes('csdn')) return 'csdn_referrer';
+              if (refHost.includes('weixin') || refHost.includes('wechat')) return 'wechat_referrer';
+              if (refHost.includes('google')) return 'google_referrer';
+              if (refHost.includes('baidu')) return 'baidu_referrer';
+              return refHost;
+            };
+
+            const getAttributionPayload = () => {
+              const params = new URLSearchParams(window.location.search);
+              const current = {};
+              UTM_KEYS.forEach((key) => {
+                const value = params.get(key);
+                if (value) current[key] = value;
+              });
+
+              let stored = {};
+              try {
+                stored = JSON.parse(sessionStorage.getItem('xbstack_attribution') || '{}');
+              } catch (err) {
+                stored = {};
+              }
+
+              if (Object.keys(current).length) {
+                stored = {
+                  ...stored,
+                  ...current,
+                  landing_page: window.location.pathname,
+                  captured_at: new Date().toISOString(),
+                };
+                try {
+                  sessionStorage.setItem('xbstack_attribution', JSON.stringify(stored));
+                } catch (err) {}
+              }
+
+              return {
+                utm_source: stored.utm_source || '',
+                utm_medium: stored.utm_medium || '',
+                utm_campaign: stored.utm_campaign || '',
+                utm_term: stored.utm_term || '',
+                utm_content: stored.utm_content || '',
+                attribution_landing_page: stored.landing_page || '',
+                referrer_host: getReferrerHost(),
+                source_hint: inferSourceHint(),
+              };
+            };
+
+            window.xbTrackEvent = (eventName, payload = {}) => {
+              if (typeof window.gtag !== 'function' || !googleAnalyticsId || !eventName) return;
+              window.gtag('event', eventName, {
+                transport_type: 'beacon',
+                page_path: window.location.pathname,
+                page_title: document.title || '',
+                ...getAttributionPayload(),
+                ...payload,
+              });
+            };
+
+            window.sendGA4PageView = () => {
+              if (typeof window.gtag !== 'function' || !googleAnalyticsId) return;
+
+              const pageLocation = window.location.href;
+              const pageTitle = document.title || '';
+              const pageKey = `${pageLocation}|${pageTitle}`;
+
+              if (pageKey === window.__lastGA4PageKey) return;
+              const pageReferrer = window.__lastGA4PageLocation;
+              window.__lastGA4PageKey = pageKey;
+              window.__lastGA4PageLocation = pageLocation;
+              window.__scroll50Reported = false;
+              window.__scroll90Reported = false;
+
+              window.gtag('event', 'page_view', {
+                page_title: pageTitle,
+                page_location: pageLocation,
+                page_path: window.location.pathname,
+                page_search: window.location.search,
+                page_referrer: pageReferrer,
+                ...getAttributionPayload(),
+              });
+            };
+
+            window.initGA4Tracking = () => {
+              if (typeof window.gtag !== 'function') return;
+              if (window.__ga4_events_bound) return;
+              window.__ga4_events_bound = true;
+
+              // 1. 页面滚动深度上报
+              const handleScroll = () => {
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const progress = (scrollTop / scrollHeight) * 100;
+
+                if (progress >= 50 && !window.__scroll50Reported) {
+                  window.xbTrackEvent('scroll_50', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll50Reported = true;
+                }
+                if (progress >= 90 && !window.__scroll90Reported) {
+                  window.xbTrackEvent('scroll_90', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll90Reported = true;
+                }
+              };
+
+              window.addEventListener('scroll', handleScroll, { passive: true });
+
+              // 2. 交互、出站、工具与栏目入口点击上报
+              const handleClick = (e) => {
+                const target = e.target.closest('a,button');
+                if (!target) return;
+
+                const label = (target.getAttribute('aria-label') || target.textContent || '').trim().slice(0, 80);
+                if (target.tagName === 'BUTTON') {
+                  window.xbTrackEvent('click_button', {
+                    event_category: 'engagement',
+                    event_label: label,
+                  });
+                  return;
+                }
+
+                if (!target.href) return;
+                if (target.href.startsWith('#')) return;
+
+                try {
+                  const url = new URL(target.href, window.location.origin);
+                  const isExternal = url.origin !== window.location.origin;
+                  const payload = {
+                    event_label: target.href,
+                    link_text: label,
+                    link_url: url.href,
+                    link_path: url.pathname,
+                  };
+
+                  if (isExternal) {
+                    window.xbTrackEvent('click_external', {
+                      ...payload,
+                      event_category: 'outbound',
+                    });
+                  } else {
+                    if (url.pathname.startsWith('/go/')) {
+                      window.xbTrackEvent('affiliate_click', {
+                        ...payload,
+                        event_category: 'conversion',
+                        affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                      });
+                    }
+                    if (url.pathname.startsWith('/tools/') || url.pathname.startsWith('/compound-interest/')) {
+                      window.xbTrackEvent('click_tool', {
+                        ...payload,
+                        event_category: 'conversion',
+                      });
+                    }
+                    if (['/ai/', '/newsletter/', '/search/', '/life/', '/investing/'].some((prefix) => url.pathname.startsWith(prefix))) {
+                      window.xbTrackEvent('click_internal_entry', {
+                        ...payload,
+                        event_category: 'navigation',
+                      });
+                    }
+                  }
+                } catch (err) {}
+              };
+
+              const handleSubmit = (e) => {
+                const form = e.target;
+                if (!form || form.tagName !== 'FORM') return;
+                const action = form.getAttribute('action') || '';
+                const formType = form.getAttribute('data-analytics-form') || '';
+                const formData = new FormData(form);
+                const searchTerm = String(formData.get('q') || '').trim();
+
+                if (action.includes('/search') || formType === 'site-search') {
+                  window.xbTrackEvent('view_search_results', {
+                    event_category: 'site_search',
+                    search_term: searchTerm,
+                  });
+                }
+
+                if (action.includes('buttondown.email') || formType === 'newsletter') {
+                  window.xbTrackEvent('newsletter_subscribe_attempt', {
+                    event_category: 'conversion',
+                    event_label: window.location.pathname,
+                  });
+                }
+              };
+
+              document.addEventListener('click', handleClick);
+              document.addEventListener('submit', handleSubmit, true);
+            };
+
+            // 立即执行首屏发送与事件监听绑定，无需等待 DOMContentLoaded
+            window.sendGA4PageView();
+            window.initGA4Tracking();
+
+            document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+              window.sendGA4PageView();
+              window.initGA4Tracking();
+            });
+          } else {
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+            if (typeof window.sendGA4PageView === 'function') {
+              window.sendGA4PageView();
+            }
+          }
+        })();</script><script data-baidu-id="c7bfaf645bfc8974405a85c2a55573a0">
+          const baiduId = document.currentScript?.dataset.baiduId || '';
+          if (!window.__baidu_analytics_initialized) {
+            window._hmt = window._hmt || [];
+            window.__baidu_analytics_initialized = true;
+            window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+
+            const loadBaiduAnalytics = () => {
+              if (window.__baidu_script_loaded || !baiduId) return;
+              window.__baidu_script_loaded = true;
+              const hm = document.createElement('script');
+              hm.async = true;
+              hm.src = "https://hm.baidu.com/hm.js?" + baiduId;
+              document.head.appendChild(hm);
+              window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+            };
+
+            // 百度统计不是首屏渲染依赖：首次交互时加载，若用户未交互则 12 秒后加载。
+            ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(eventName, loadBaiduAnalytics, { once: true, passive: true });
+            });
+            window.setTimeout(loadBaiduAnalytics, 12000);
+
+            document.addEventListener('astro:page-load', () => {
+              const pageKey = window.location.pathname + window.location.search;
+              if (!window.__baidu_script_loaded || pageKey === window.__lastBaiduPageKey) return;
+              window.__lastBaiduPageKey = pageKey;
+              window._hmt.push(['_trackPageview', pageKey]);
+            });
+          }
+        </script><link rel="stylesheet" href="/_astro/index.Ci2fC5DT.css">
+<link rel="stylesheet" href="/_astro/_slug_.BfiWXHpa.css">
+<link rel="stylesheet" href="/_astro/vendor-media.DSulWsr7.css">
+<style>.glass-button[data-astro-cid-xwnkcw7l]{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:var(--sizeGap);padding:var(--sizePadding);background:var(--variantBase);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--variantBorder);border-radius:var(--sizeBorderRadius);font-size:var(--sizeFontSize);font-weight:500;color:var(--variantColor);cursor:pointer;transition:all .3s cubic-bezier(.175,.885,.32,2.2);box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d;-webkit-user-select:none;-moz-user-select:none;user-select:none;overflow:hidden;text-decoration:none;white-space:nowrap}.glass-button[data-astro-cid-xwnkcw7l]:before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,var(--variantGradient),transparent);transition:left .6s cubic-bezier(.25,.46,.45,.94);pointer-events:none;opacity:0}.glass-button[data-astro-cid-xwnkcw7l]:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);transform:translateY(-4px) scale(1.03);box-shadow:0 20px 25px -5px var(--variantShadow),0 15px 15px -5px #0000004d,inset 1px 1px 4px #ffffff80;filter:brightness(1.2) saturate(1.3)}.glass-button[data-astro-cid-xwnkcw7l]:hover:before{left:100%;opacity:1}.glass-button[data-astro-cid-xwnkcw7l]:active{transform:translateY(-1px) scale(.98);box-shadow:0 2px 6px var(--variantShadow)}.glass-button[data-astro-cid-xwnkcw7l]:disabled{cursor:not-allowed;opacity:.6;transform:none;pointer-events:none}.glass-button[data-astro-cid-xwnkcw7l]:disabled:hover{transform:none;box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d}.glass-button__icon[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;justify-content:center;width:var(--sizeIconSize);height:var(--sizeIconSize);transition:all .3s cubic-bezier(.175,.885,.32,2.2)}.glass-button__icon[data-astro-cid-xwnkcw7l] svg{width:100%;height:100%}.glass-button[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{transform:scale(1.2) rotate(-5deg);filter:drop-shadow(0 0 4px var(--variantShadow))}.glass-button__content[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;transition:all .3s ease}.glass-button__spinner[data-astro-cid-xwnkcw7l]{width:var(--sizeIconSize);height:var(--sizeIconSize);animation:spin 1s linear infinite}.dark[data-astro-cid-xwnkcw7l]{.glass-button{background:#37373799;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-color:#ffffff26;color:#e5e7eb;box-shadow:0 4px 8px #0006,inset 1px 1px 3px #ffffff26}.glass-button:before{background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}.glass-button:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);box-shadow:0 6px 14px var(--variantShadow),inset 1px 1px 4px #fff3;filter:brightness(1.2) saturate(1.3)}}@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.glass-button--primary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--secondary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(37,99,235,.5))}.glass-button--success[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(22,163,74,.5))}.glass-button--warning[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(217,119,6,.5))}.glass-button--danger[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--info[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(99,102,241,.5))}
+</style></head> <body class="bg-white dark:bg-[#050608] text-slate-950 dark:text-white selection:bg-orange-500/20 selection:text-orange-500 overflow-x-hidden"> <style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value=="object"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};"requestIdleCallback"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event("astro:idle"));})();</script><script>(()=>{var A=Object.defineProperty;var g=(i,o,a)=>o in i?A(i,o,{enumerable:!0,configurable:!0,writable:!0,value:a}):i[o]=a;var d=(i,o,a)=>g(i,typeof o!="symbol"?o+"":o,a);{let i={0:t=>m(t),1:t=>a(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(a(t)),5:t=>new Set(a(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t),11:t=>1/0*t},o=t=>{let[l,e]=t;return l in i?i[l](e):void 0},a=t=>t.map(o),m=t=>typeof t!="object"||t===null?t:Object.fromEntries(Object.entries(t).map(([l,e])=>[l,o(e)]));class y extends HTMLElement{constructor(){super(...arguments);d(this,"Component");d(this,"hydrator");d(this,"hydrate",async()=>{var b;if(!this.hydrator||!this.isConnected)return;let e=(b=this.parentElement)==null?void 0:b.closest("astro-island[ssr]");if(e){e.addEventListener("astro:hydrate",this.hydrate,{once:!0});return}let c=this.querySelectorAll("astro-slot"),n={},h=this.querySelectorAll("template[data-astro-template]");for(let r of h){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("data-astro-template")||"default"]=r.innerHTML,r.remove())}for(let r of c){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("name")||"default"]=r.innerHTML)}let p;try{p=this.hasAttribute("props")?m(JSON.parse(this.getAttribute("props"))):{}}catch(r){let s=this.getAttribute("component-url")||"<unknown>",v=this.getAttribute("component-export");throw v&&(s+=` (export ${v})`),console.error(`[hydrate] Error parsing props for component ${s}`,this.getAttribute("props"),r),r}let u;await this.hydrator(this)(this.Component,p,n,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),this.dispatchEvent(new CustomEvent("astro:hydrate"))});d(this,"unmount",()=>{this.isConnected||this.dispatchEvent(new CustomEvent("astro:unmount"))})}disconnectedCallback(){document.removeEventListener("astro:after-swap",this.unmount),document.addEventListener("astro:after-swap",this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute("await-children")||document.readyState==="interactive"||document.readyState==="complete")this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener("DOMContentLoaded",e),c.disconnect(),this.childrenConnectedCallback()},c=new MutationObserver(()=>{var n;((n=this.lastChild)==null?void 0:n.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue==="astro:end"&&(this.lastChild.remove(),e())});c.observe(this,{childList:!0}),document.addEventListener("DOMContentLoaded",e)}}async childrenConnectedCallback(){let e=this.getAttribute("before-hydration-url");e&&await import(e),this.start()}async start(){let e=JSON.parse(this.getAttribute("opts")),c=this.getAttribute("client");if(Astro[c]===void 0){window.addEventListener(`astro:${c}`,()=>this.start(),{once:!0});return}try{await Astro[c](async()=>{let n=this.getAttribute("renderer-url"),[h,{default:p}]=await Promise.all([import(this.getAttribute("component-url")),n?import(n):()=>()=>{}]),u=this.getAttribute("component-export")||"default";if(!u.includes("."))this.Component=h[u];else{this.Component=h;for(let f of u.split("."))this.Component=this.Component[f]}return this.hydrator=p,this.hydrate},e,this)}catch(n){console.error(`[astro-island] Error hydrating ${this.getAttribute("component-url")}`,n)}}attributeChangedCallback(){this.hydrate()}}d(y,"observedAttributes",["props"]),customElements.get("astro-island")||customElements.define("astro-island",y)}})();</script><astro-island uid="ZWjsVO" prefix="r41" component-url="/_astro/GlobalLightbox.CqZePd56.js" component-export="default" renderer-url="/_astro/client.DkeD9bak.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;GlobalLightbox&quot;,&quot;value&quot;:true}"></astro-island> <astro-island uid="2nwVdo" prefix="r42" component-url="/_astro/AffiliatePopup.Bvi0-2cq.js" component-export="default" renderer-url="/_astro/client.DkeD9bak.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;AffiliatePopup&quot;,&quot;value&quot;:true}"></astro-island> <astro-island uid="Z1FWnUA" prefix="r43" component-url="/_astro/SearchBoot.DKwvAheT.js" component-export="default" renderer-url="/_astro/client.DkeD9bak.js" props="{&quot;lang&quot;:[0,&quot;en&quot;]}" ssr client="idle" opts="{&quot;name&quot;:&quot;SearchBoot&quot;,&quot;value&quot;:true}"></astro-island> <div id="app-background" class="fixed inset-0 z-[-1] h-full w-full pointer-events-none bg-slate-50 dark:bg-slate-950 transition-colors duration-500"> <div id="app-background-image" class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-500" data-day="/_astro/macos2.hYF-Pyun.webp" data-night="/_astro/macos2-night.DwJ7amhx.webp" aria-hidden="true"></div> <div class="absolute inset-0 bg-[#DFE1E6]/90 dark:bg-transparent backdrop-blur-[6px] pointer-events-none"></div> <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b82f611,transparent_50%)] dark:hidden pointer-events-none"></div> <div class="absolute inset-0 opacity-[0.08] dark:opacity-[0.03] pointer-events-none mix-blend-multiply" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+');"></div> </div> <script>
+  (() => {
+    const bindBackground = () => {
+      const root = document.documentElement;
+      const background = document.getElementById('app-background-image');
+      if (!background || background.dataset.themeObserverBound === 'true') return;
+
+      const applyBackground = () => {
+        const source = root.classList.contains('dark') ? background.dataset.night : background.dataset.day;
+        if (!source) return;
+        const nextValue = `url("${source}")`;
+        if (background.style.backgroundImage !== nextValue) {
+          background.style.backgroundImage = nextValue;
+        }
+      };
+
+      applyBackground();
+      const observer = new MutationObserver(applyBackground);
+      observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+      background.dataset.themeObserverBound = 'true';
+    };
+
+    bindBackground();
+    document.addEventListener('astro:page-load', bindBackground);
+  })();
+</script> <header class="w-full z-[500] sticky top-0"> <div class="container px-3 lg:px-8 max-w-[1440px] mx-auto py-4 md:py-6"> <div class="header-main relative group transition-all duration-500"> <div class="absolute inset-0 rounded-[35px] header-main-bg shadow-sm dark:shadow-[0_8px_50px_rgba(0,0,0,0.5)] border border-slate-200/50 dark:border-white/10"></div> <nav class="relative z-10 p-2 flex items-center min-h-[64px]"> <!-- Logo (旋转 & 呼吸灯) --> <div class="ml-4 flex-shrink-0"> <a href="/en/" class="flex items-center group/logo"> <div class="relative flex-none isolate w-10 h-10"> <img src="/favicon/favicon.svg" alt="XBSTACK" class="relative z-10 object-contain w-full h-full group-hover/logo:rotate-[360deg] transition-all duration-700"> <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-slate-900 z-20 animate-pulse"></div> </div> <div class="flex flex-col ml-3 text-left"> <span class="text-xl font-black italic tracking-tighter bg-gradient-to-r from-slate-900 via-sky-800 to-slate-900 dark:from-white dark:via-sky-400 dark:to-white bg-clip-text text-transparent uppercase font-brand leading-none">XBSTACK</span> <span class="text-[8px] font-mono font-bold text-green-500/70 uppercase tracking-widest leading-none mt-1">System Status: Online</span> </div> </a> </div> <!-- 桌面端导航 (新 IA 架构) --> <ul class="hidden xl:flex items-center gap-1 ml-10"> <li class="relative group/item"> <a href="/en/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Home  </a>  </li><li class="relative group/item"> <a href="/en/ai/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-blue-600 dark:text-blue-400 bg-blue-500/5"> AI  </a>  </li><li class="relative group/item"> <a href="/en/investing/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Investing  </a>  </li><li class="relative group/item"> <a href="/en/horizon/reading/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Reading  </a>  </li><li class="relative group/item"> <a href="/en/life/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Life  </a>  </li><li class="relative group/item"> <a href="/en/tools/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Tools  </a>  </li> </ul> <!-- 功能区域 (时钟 & 搜索) --> <div class="flex items-center gap-3 ml-auto pr-4 relative z-[110]"> <div class="hidden 2xl:flex items-center gap-4 mr-4 border-r border-slate-200 dark:border-white/10 pr-6 text-right transition-all"> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-slate-400 uppercase">NYC</span><span id="clock-nyc" class="text-[9px] font-mono text-slate-500 font-bold">--:--</span></div> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-slate-400 uppercase">LDN</span><span id="clock-ldn" class="text-[9px] font-mono text-slate-500 font-bold">--:--</span></div> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-blue-500 uppercase italic">GY</span><span id="clock-tyo" class="text-[9px] font-mono text-slate-900 dark:text-white font-bold">--:--</span></div> </div> <div class="hidden sm:block"> <div class="language-switcher inline-flex items-center rounded-full border border-slate-200/60 bg-white/50 p-1 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5" aria-label="Language selector"> <a href="https://www.xbstack.com/ai/n8n-webhook-production-hardening/" data-language-choice="zh-CN" data-language-current="false" data-language-available="true" title="切换到中文版本" class="flex min-w-8 items-center justify-center rounded-full px-2.5 py-2 text-[10px] font-black tracking-wider transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400">
+中
+</a> <a href="https://www.xbstack.com/en/ai/n8n-webhook-production-hardening/" data-language-choice="en" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="Current language: English" class="flex min-w-8 items-center justify-center rounded-full px-2.5 py-2 text-[10px] font-black tracking-wider transition-all cursor-default bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-950">
+EN
+</a> </div> <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+    document.addEventListener('click', (event) => {
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+  }
+</script> </div> <div class="flex items-center gap-1.5"> <button id="global-search-trigger" type="button" aria-label="Open site search" class="w-10 h-10 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-blue-500 bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 rounded-full transition-all shadow-sm backdrop-blur-md cursor-pointer"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.81 173.81 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.81 173.81 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3zM97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8z"></path></svg></button> <div class="w-10 h-10 flex items-center justify-center bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 rounded-full hover:border-blue-500 transition-all"><div class="relative flex items-center justify-center w-full h-full"> <input class="sr-only" id="theme-switcher" data-theme-switcher type="checkbox"> <label class="flex items-center justify-center cursor-pointer w-full h-full group/theme" for="theme-switcher" aria-label="切换主题">  <svg class="w-5 h-5 transition-all duration-500 scale-100 dark:scale-0 opacity-100 dark:opacity-0 absolute text-orange-500 group-hover/theme:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg>  <svg class="w-5 h-5 transition-all duration-500 scale-0 dark:scale-100 opacity-0 dark:opacity-100 absolute text-sky-400 group-hover/theme:-rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </label> </div> <script>
+  // 立即执行以防止闪烁
+  (function() {
+    const theme = localStorage.getItem("theme");
+    const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  })();
+
+  // 页面加载和切换后的初始化逻辑
+  function initTheme() {
+    const themeSwitchers = document.querySelectorAll("[data-theme-switcher]");
+    const isDark = document.documentElement.classList.contains("dark");
+
+    // 同步所有切换按钮的状态
+    themeSwitchers.forEach((el) => {
+      el.checked = isDark;
+      
+      // 移除旧的监听器（如果存在），防止重复绑定
+      // 由于是匿名函数难以移除，我们采用 cloneNode 或者简单的标志位
+      // Astro 的 View Transitions 会重新运行脚本，所以只需确保不累积
+      // 最简单的方式是直接覆盖 onclick 或 onchange，但这里用 addEventListener
+      // 我们可以给元素加个标记
+      if (el.dataset.initialized) return;
+      
+      el.addEventListener("change", (e) => {
+        const checked = e.target.checked;
+        if (checked) {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        }
+        
+        // 同步其他可能存在的切换按钮（例如移动端和桌面端各有一个）
+        document.querySelectorAll("[data-theme-switcher]").forEach(other => {
+            if (other !== el) other.checked = checked;
+        });
+      });
+      
+      el.dataset.initialized = "true";
+    });
+  }
+
+  // 绑定事件
+  document.addEventListener("DOMContentLoaded", initTheme);
+  document.addEventListener("astro:page-load", initTheme);
+  document.addEventListener("astro:after-swap", initTheme);
+</script></div> </div> </div> <!-- 移动端 Toggle --> <div class="xl:hidden flex items-center ml-2"> <button id="mobile-menu-trigger" type="button" aria-label="Open navigation menu" aria-controls="mobile-menu" aria-expanded="false" class="w-10 h-10 flex items-center justify-center bg-white/20 dark:bg-black/20 rounded-full border border-slate-200/50 dark:border-white/10 text-slate-700 dark:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path></svg> </button> </div> </nav> </div> </div>  <div id="mobile-menu" class="fixed inset-0 z-[600] pointer-events-none invisible"> <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-500"></div> <aside id="mobile-menu-panel" class="absolute top-0 right-0 bottom-0 w-[300px] bg-white dark:bg-[#0B1020] border-l border-slate-200 dark:border-white/10 translate-x-full transition-transform duration-500 flex flex-col"> <div class="h-[72px] flex items-center justify-between px-6 border-b border-slate-100 dark:border-white/5"> <span class="text-xs font-black uppercase tracking-[0.3em] text-blue-500">Systems Menu</span> <button id="mobile-menu-close" type="button" aria-label="Close navigation menu" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg></button> </div> <div class="border-b border-slate-100 px-6 py-4 dark:border-white/5 sm:hidden"> <div class="language-switcher inline-flex items-center rounded-full border border-slate-200/60 bg-white/50 p-1 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5" aria-label="Language selector"> <a href="https://www.xbstack.com/ai/n8n-webhook-production-hardening/" data-language-choice="zh-CN" data-language-current="false" data-language-available="true" title="切换到中文版本" class="flex min-w-8 items-center justify-center rounded-full px-2.5 py-2 text-[10px] font-black tracking-wider transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400">
+中
+</a> <a href="https://www.xbstack.com/en/ai/n8n-webhook-production-hardening/" data-language-choice="en" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="Current language: English" class="flex min-w-8 items-center justify-center rounded-full px-2.5 py-2 text-[10px] font-black tracking-wider transition-all cursor-default bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-950">
+EN
+</a> </div> <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+    document.addEventListener('click', (event) => {
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+  }
+</script> </div> <nav class="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-1"> <div class="space-y-1"> <a href="/en/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Home  </a>  </div><div class="space-y-1"> <a href="/en/ai/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-blue-500 bg-blue-500/5"> AI  </a>  </div><div class="space-y-1"> <a href="/en/investing/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Investing  </a>  </div><div class="space-y-1"> <a href="/en/horizon/reading/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Reading  </a>  </div><div class="space-y-1"> <a href="/en/life/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Life  </a>  </div><div class="space-y-1"> <a href="/en/tools/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Tools  </a>  </div> </nav> </aside> </div>  <script>
+    function updateClocks() {
+      const now = new Date();
+      const format = (tz) => now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: tz });
+      if (document.getElementById('clock-nyc')) document.getElementById('clock-nyc').innerText = format('America/New_York');
+      if (document.getElementById('clock-ldn')) document.getElementById('clock-ldn').innerText = format('Europe/London');
+      if (document.getElementById('clock-tyo')) document.getElementById('clock-tyo').innerText = format('Asia/Shanghai');
+    }
+    document.addEventListener('astro:page-load', () => { 
+      updateClocks(); 
+      setInterval(updateClocks, 60000);
+      const searchTrigger = document.getElementById('global-search-trigger');
+      if (searchTrigger) {
+        searchTrigger.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.dispatchEvent(new CustomEvent('xbstack:open-search'));
+        });
+      }
+      // Mobile Logic
+      const trigger = document.getElementById('mobile-menu-trigger');
+      const close = document.getElementById('mobile-menu-close');
+      const menu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const panel = document.getElementById('mobile-menu-panel');
+      const toggleMenu = (open) => {
+        if (!menu || !overlay || !panel) return;
+        trigger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        const englishUi = document.documentElement.lang.toLowerCase().startsWith('en');
+        trigger?.setAttribute('aria-label', open
+          ? (englishUi ? 'Close navigation menu' : '关闭导航菜单')
+          : (englishUi ? 'Open navigation menu' : '打开导航菜单'));
+        if (open) {
+          menu.classList.remove('invisible', 'pointer-events-none');
+          overlay.classList.add('opacity-100');
+          panel.classList.remove('translate-x-full');
+          document.body.style.overflow = 'hidden';
+          close?.focus();
+        } else {
+          overlay.classList.remove('opacity-100');
+          panel.classList.add('translate-x-full');
+          document.body.style.overflow = '';
+          setTimeout(() => { menu.classList.add('invisible', 'pointer-events-none'); }, 500);
+          trigger?.focus();
+        }
+      };
+      if (trigger) trigger.addEventListener('click', () => toggleMenu(true));
+      if (close) close.addEventListener('click', () => toggleMenu(false));
+      if (overlay) overlay.addEventListener('click', () => toggleMenu(false));
+    });
+    updateClocks();
+  </script> </header> <div id="language-switch-notice" class="pointer-events-none fixed left-1/2 top-24 z-[700] hidden max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/95 px-5 py-3 text-center text-sm font-bold text-slate-700 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 dark:text-slate-200" role="status" aria-live="polite"></div> <main id="main-content" class="flex-1">  <div id="reading-progress" class="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 z-[110] transition-all duration-300 w-0 shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div> <main class="pt-24 md:pt-32 pb-20"> <script type="module">function g(){const t=document.querySelector("header");return t?t.offsetHeight+32:140}function a(){document.querySelectorAll("[data-toc-link]").forEach(e=>{const n=e.cloneNode(!0);e.parentNode?.replaceChild(n,e),n.addEventListener("click",function(o){o.preventDefault();const r=o.currentTarget.getAttribute("href");if(!r)return;const c=r.substring(1),d=document.getElementById(c);if(d){const s=d.getBoundingClientRect(),i=window.pageYOffset||document.documentElement.scrollTop,u=g(),l=i+s.top-u;window.scrollTo({top:Math.max(0,l),behavior:"smooth"}),history.pushState(null,"",`#${c}`)}})})}document.addEventListener("DOMContentLoaded",a);document.addEventListener("astro:page-load",a);</script><div class="grid grid-cols-1 xl:grid-cols-[minmax(190px,230px)_minmax(0,860px)_minmax(190px,230px)] gap-6 xl:gap-8 2xl:gap-10 max-w-[1600px] justify-center mx-auto w-full px-4 md:px-6 xl:px-8">  <aside class="hidden xl:flex flex-col gap-8 sticky top-24 h-fit"> <div class="article-side-panel rounded-[24px] border p-6 flex flex-col gap-4"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Metadata</div> <div class="flex flex-col gap-2"> <span class="text-xs font-mono text-zinc-500"> 6/26/2026 </span> <div class="flex flex-wrap gap-2 mt-2"> <span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#n8n </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#webhook </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#workflow-automation </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#self-hosted </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#reverse-proxy </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#security </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#production-ai </span> </div> </div> </div>  <div class="flex flex-col gap-4"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 px-2">Related Articles</div> <div class="flex flex-col gap-3"> <a href="/en/ai/self-hosted-n8n-ai-workflows/" class="ceramic-card-hover p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5"> <h4 class="text-xs font-bold line-clamp-2 text-zinc-800 dark:text-zinc-200">Self-Hosted n8n Deployment Guide: Docker Compose, Postgres, VPS, and NAS Production Baseline</h4> </a><a href="/en/ai/n8n-queue-mode-redis-worker/" class="ceramic-card-hover p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5"> <h4 class="text-xs font-bold line-clamp-2 text-zinc-800 dark:text-zinc-200">n8n Queue Mode + Redis in Practice: When to Offload Workflows to a Queue</h4> </a> </div> </div> </aside>  <main class="min-w-0 w-full max-w-[920px] mx-auto xl:max-w-none"> <div class="article-paper rounded-[32px] md:rounded-[44px] border p-5 sm:p-7 md:p-10 xl:p-12"> <div class="entry-header-root animate-fadeUp mb-16" data-astro-cid-wy6pnlvm> <div class="relative" data-astro-cid-wy6pnlvm>  <div class="w-full aspect-[40/21] rounded-[28px] md:rounded-[36px] overflow-hidden shadow-2xl mb-10 md:mb-12 relative group " data-astro-cid-wy6pnlvm> <img src="/_astro/n8n-webhook-production-hardening-cover.Baj7OQ8F_1Ws7Cr.webp" alt="n8n Webhook Production Deployment: Header Auth, Raw Body, WEBHOOK_URL, and Reverse Proxy Troubleshooting - XBSTACK" sizes="(min-width: 1280px) 860px, (min-width: 768px) 900px, calc(100vw - 32px)" loading="eager" fetchpriority="high" data-astro-cid-wy6pnlvm="true" decoding="async" width="1200" height="630" class="w-full h-full transition-transform duration-1000 group-hover:scale-105 object-cover">  <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" data-astro-cid-wy6pnlvm></div> </div> <div class="px-1 sm:px-3 md:px-5 xl:px-6" data-astro-cid-wy6pnlvm>  <div class="flex flex-wrap gap-3 mb-8" data-astro-cid-wy6pnlvm> <a href="/ai/agent/" class="liquid-capsule text-orange-700 dark:text-white border-orange-500/20 dark:border-white/10 whitespace-nowrap inline-flex items-center shrink-0" data-astro-cid-wy6pnlvm> <div class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse shrink-0" data-astro-cid-wy6pnlvm></div> <span class="ml-2 font-black" data-astro-cid-wy6pnlvm>Ai</span> </a> </div>  <h1 class="entry-title text-4xl sm:text-5xl xl:text-[3.5rem] not-italic font-black mb-8 md:mb-10 leading-[1.08] tracking-tighter text-balance" data-astro-cid-wy6pnlvm>n8n Webhook Production Deployment: Header Auth, Raw Body, WEBHOOK_URL, and Reverse Proxy Troubleshooting</h1>  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12" data-astro-cid-wy6pnlvm> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-orange-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-orange-600 dark:text-orange-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Release Date</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-4 h-4 text-orange-600/50 dark:text-orange-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm>2026-06-26</div> </div> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-blue-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-blue-600 dark:text-blue-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Reading Time</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="w-4 h-4 text-blue-600/50 dark:text-blue-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm>10分钟</div> </div> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-emerald-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Content Size</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 384 512" class="w-4 h-4 text-emerald-600/50 dark:text-emerald-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M288 248v28c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-28c0-6.6 5.4-12 12-12h168c6.6 0 12 5.4 12 12zm-12 72H108c-6.6 0-12 5.4-12 12v28c0 6.6 5.4 12 12 12h168c6.6 0 12-5.4 12-12v-28c0-6.6-5.4-12-12-12zm108-188.1V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V48C0 21.5 21.5 0 48 0h204.1C264.8 0 277 5.1 286 14.1L369.9 98c9 8.9 14.1 21.2 14.1 33.9zm-128-80V128h76.1L256 51.9zM336 464V176H232c-13.3 0-24-10.7-24-24V48H48v416h288z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm> 15,285 chars
+</div> </div> </div>  <div class="flex flex-wrap items-center gap-2" data-astro-cid-wy6pnlvm> <div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>n8n</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>webhook</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>workflow-automation</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>self-hosted</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>reverse-proxy</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>安全攻防</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>production-ai</span> </div> </div> </div> </div> </div>   <div class="mb-12 p-8 rounded-[32px] bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 relative overflow-hidden group"> <div class="absolute top-0 left-0 w-1.5 h-full bg-blue-500"></div> <div class="flex flex-col gap-4"> <div class="flex items-center gap-2"> <span class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500">Laboratory Note</span> </div> <p class="text-lg font-bold text-slate-700 dark:text-slate-300 italic leading-relaxed"> This article documents my real-world experiments in the lab. I believe that building your own digital assets with AI is the ultimate moat for developers. </p> </div> </div>  <div class="mb-12 grid grid-cols-1 md:grid-cols-2 gap-5"> <section class="p-6 rounded-[28px] bg-emerald-500/5 border border-emerald-500/10"> <h2 class="text-xs font-black uppercase tracking-[0.3em] text-emerald-600 dark:text-emerald-400 mb-4 flex items-center gap-2"> <div class="w-1 h-3 bg-emerald-500 rounded-full"></div> Quick Answer </h2> <ul class="space-y-3"> <li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-emerald-500 mt-0.5">✓</span> <span>Distinguish between Test and Production: After debugging, switch to the Production URL to ensure the workflow provides stable listening externally while in an Active state.</span> </li><li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-emerald-500 mt-0.5">✓</span> <span>Fixed WEBHOOK_URL: Under a reverse proxy, the WEBHOOK_URL environment variable must be explicitly configured, and N8N_PROXY_HOPS must match the number of proxy hops to prevent 404 or local port exposure.</span> </li><li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-emerald-500 mt-0.5">✓</span> <span>Signature verification must use the Raw Body: When validating third-party Webhook signatures, enable the Raw Body option to prevent signature failures caused by JSON string character order and whitespace inconsistencies resulting from deserialization.</span> </li><li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-emerald-500 mt-0.5">✓</span> <span>Immediate response and asynchronous decoupling: For high-latency workflows (e.g., AI/PDF processing), except in API gateway scenarios requiring synchronous data return, it is recommended to immediately return an 200/202 response after validation passes, with the main business process proceeding via an asynchronous queue.</span> </li><li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-emerald-500 mt-0.5">✓</span> <span>Enforce idempotent deduplication: Generate an idempotency_key using the event_id or payload_hash to prevent duplicate execution and inflated Token/API costs caused by upstream network retries.</span> </li> </ul> </section> <section class="p-6 rounded-[28px] bg-orange-500/5 border border-orange-500/10"> <h2 class="text-xs font-black uppercase tracking-[0.3em] text-orange-600 dark:text-orange-400 mb-4 flex items-center gap-2"> <div class="w-1 h-3 bg-orange-500 rounded-full"></div> Who Should Read This </h2> <ul class="space-y-3"> <li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-orange-500 mt-0.5">●</span> <span>Developers evaluating n8n / webhook / workflow-automation / self-hosted for production use.</span> </li><li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-orange-500 mt-0.5">●</span> <span>Indie builders who need a practical implementation path instead of another generic concept article.</span> </li><li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-orange-500 mt-0.5">●</span> <span>Readers comparing architecture trade-offs, risks, tooling boundaries and next actions.</span> </li> </ul> </section> </div>   <div class="prose prose-tech markdown-content">   <h2 id="what-this-guide-covers">What This Guide Covers</h2>
+<ul>
+<li>Resolves configuration issues where Webhook URLs display as <code>localhost:5678</code> or use <code>http</code> after exposing self-hosted n8n behind a reverse proxy (e.g., Nginx, Nginx Proxy Manager, Cloudflare Tunnel), preventing external calls from reaching 404/502.</li>
+<li>Fixes signature (HMAC-SHA256) verification failures when integrating with third-party platforms (e.g., WeChat, GitHub, Stripe) caused by inconsistent JSON deserialization characters.</li>
+<li>Addresses idempotency challenges where high-concurrency or long-running AI nodes slow down Webhook responses, causing the caller to retry repeatedly and trigger duplicate charges or data insertions.</li>
+</ul>
+<h2 id="who-this-guide-is-for">Who This Guide Is For</h2>
+<ul>
+<li>Independent developers deploying n8n via self-hosted Docker/Compose.</li>
+<li>Enterprise system architects planning to use n8n for high-concurrency, production-grade third-party callbacks (e.g., Stripe payment notifications, WeChat Official Account message interfaces).</li>
+<li>AI Agent System builders looking to integrate secure authentication, reverse proxy tuning, signature algorithms, and highly available idempotency mechanisms into their automation workflows.</li>
+</ul>
+<h2 id="distinguishing-test-urls-from-production-urls">Distinguishing Test URLs from Production URLs</h2>
+<h2 id="where-this-fits-in-the-workflow-series">Where This Fits in the Workflow Series</h2>
+<p>This article addresses only the stability and security of using n8n Webhooks as a production API entry point.For basic deployment, see [<a href="/en/ai/self-hosted-n8n-ai-workflows/">Self-hosted n8n AI Workflow</a>；Queue management and high-concurrency execution: see <a href="/en/ai/n8n-queue-mode-redis-worker/">n8n Queue Mode, Redis, and Worker in Action</a>;For error branches and retry strategies, see <a href="/en/ai/n8n-ai-workflow-error-handling/">n8n AI Workflow Error Handling</a>.</p>
+<h2 id="pre-launch-checklist">Pre-Launch Checklist</h2>
+<p>Before deploying the webhook, ensure you have completed at least the following:</p>
+<ul>
+<li>Are the Test URL and Production URL completely separated, with third-party systems configured to use only the Production URL?</li>
+<li>Is at least one of Header Auth, JWT, or signature verification enabled?</li>
+<li>For scenarios requiring signature verification (e.g., Stripe, GitHub, WeChat), is the Raw Body used?</li>
+<li>For long-running AI tasks, does the system first return <code>200</code>/<code>202</code> before proceeding with asynchronous processing?</li>
+<li>Is idempotency and deduplication implemented using <code>event_id</code>, <code>payload_hash</code>, or a business order number?</li>
+</ul>
+<p>When many users first connect an n8n Webhook to an external system, their primary concern is often simply “will it trigger?” However, once deployed to production, the real issues rarely lie in the triggering itself. Instead, they stem from these details: mixing test and production URLs, reverse proxies generating incorrect URLs, third-party signature verification failures, webhook retries causing duplicate data entries, and slow responses leading upstream systems to misinterpret timeouts. A seemingly simple entry point can thus become a source of production incidents.</p>
+<p>Therefore, an n8n Webhook should not be treated merely as a “trigger,” but rather designed as an external API endpoint.</p>
+<p>n8n’s Webhook node has two types of URLs: the test URL and the production URL. The test URL is suitable for development and debugging, typically requiring you to listen for test events within the editor; the production URL only reliably serves external requests after the workflow is published or activated.</p>
+<p>This is often the source of 404: you configure the third-party system with the test URL, which works during debugging, but once deployed, no one clicks “Listen for test event,” causing external calls to fail. Alternatively, you might configure the production URL, but if the workflow hasn’t been published, the production Webhook endpoint isn’t registered at all.</p>
+<p>In actual production operations, the lifecycle of the test mode is extremely brief. My own principle is simple:</p>
+<p>Debug phase: Use only the Test URL, trigger manually, and inspect the input parameter structure.</p>
+<p>Integration phase: Switch to the Production URL, but limit the receiving execution path to logging and validation only.</p>
+<p>Deployment phase: Hardcode the Production URL in the third-party system; no longer use the Test URL.</p>
+<p>Do not treat the test URL as a temporary production address. Once a temporary address is entered into third-party configurations, troubleshooting later becomes extremely painful.</p>
+<h2 id="the-webhook_url-must-be-fixed-after-reverse-proxying">The WEBHOOK_URL must be fixed after reverse proxying</h2>
+<p>The most common deployment method for self-hosted n8n is Docker + reverse proxy. The container runs on port 5678 internally, while external users access it via <a href="https://n8n.example.com%E3%80%82.If" rel="nofollow noopener noreferrer" target="_blank">https://n8n.example.com。.If</a> not explicitly configured, n8n will reverse-guess the Webhook URL based on the HTTP headers of the incoming request. This often results in URLs unsuitable for public access, such as internal IP addresses or incorrect port numbers.。
+In production environments, it is recommended to fix the following environment variables in <code>.env</code> or <code>docker-compose.yml</code>:</p>
+<pre class="language-yaml" data-language="yaml"><code is:raw="" class="language-yaml"><span class="token key atrule">services</span><span class="token punctuation">:</span>
+  <span class="token key atrule">n8n</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> n8nio/n8n<span class="token punctuation">:</span>latest
+    <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> N8N_HOST=n8n.example.com
+      <span class="token punctuation">-</span> N8N_PROTOCOL=https
+      <span class="token punctuation">-</span> WEBHOOK_URL=https<span class="token punctuation">:</span>//n8n.example.com/
+      <span class="token punctuation">-</span> N8N_PROXY_HOPS=1
+</code></pre>
+<p>In this topology, several parameters assume distinct physical responsibilities:</p>
+<ul>
+<li><code>N8N_HOST</code>: Specifies the domain name on which the service runs.</li>
+<li><code>N8N_PROTOCOL</code>: Forces the public protocol to the secure HTTPS level.</li>
+<li><code>WEBHOOK_URL</code>: This is the most critical environment variable. It not only determines the Webhook address displayed in the n8n frontend editor but also registers the callback path for certain third-party push APIs.</li>
+<li><code>N8N_PROXY_HOPS</code>: Informs the n8n container how many IP node hops occurred before reaching the reverse proxy. If you are using a two-layer proxy setup with Cloudflare and Nginx, set this to 2 to ensure that the IP rate-limiting mechanism can retrieve the client’s true source IP.</li>
+</ul>
+<p>The reverse proxy layer (using Nginx as an example) must also correctly configure and pass the following request headers:</p>
+<pre class="language-nginx" data-language="nginx"><code is:raw="" class="language-nginx"><span class="token directive"><span class="token keyword">proxy_set_header</span> X-Forwarded-For <span class="token variable">$proxy_add_x_forwarded_for</span></span><span class="token punctuation">;</span>
+<span class="token directive"><span class="token keyword">proxy_set_header</span> X-Forwarded-Host <span class="token variable">$host</span></span><span class="token punctuation">;</span>
+<span class="token directive"><span class="token keyword">proxy_set_header</span> X-Forwarded-Proto <span class="token variable">$scheme</span></span><span class="token punctuation">;</span>
+</code></pre>
+<p>If you still see <a href="http://localhost:5678/we" rel="nofollow noopener noreferrer" target="_blank">http://localhost:5678/we</a> displayed in the editorbhook/…, or when integrating with WeChat and Stripe, receive 404/502,The first step is to troubleshoot the <code>WEBHOOK_URL</code> and <code>N8N_PROXY_HOPS</code> environment variables, rather than suspecting the interface network.</p>
+<h2 id="webhooks-are-not-exposed-without-protection">Webhooks Are Not Exposed Without Protection</h2>
+<p>When you publish an API to the public internet, it becomes exposed to global malicious scanning and brute-force traffic. If your Webhook directly invokes large language models, performs vector database retrievals, or executes database operations with write permissions, a sudden flood of malicious requests can instantly generate massive API bills or compromise system data integrity.</p>
+<p>Therefore, Webhooks in production environments must never be set to None (no authentication) and left exposed. The n8n Webhook node natively supports multiple authentication mechanisms, which must be securely configured based on specific use cases:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Scenario</th><th>Recommended Method</th><th>Description</th></tr></thead><tbody><tr><td>Low-risk internal system callbacks</td><td>Header Auth</td><td>Simple to implement; adds a custom validation token in the header, suitable for interactions within an enterprise intranet.</td></tr><tr><td>Carrying tenant or user context</td><td>JWT Auth</td><td>Uses JSON Web Token authentication, supporting verification of Issuer, Audience, and expiration time.</td></tr><tr><td>Legacy system integration</td><td>Basic Auth</td><td>The most basic username/password authentication, suitable for older middleware that only supports standard auth mechanisms.</td></tr><tr><td>Public form reception</td><td>None</td><td>Only suitable for low-risk, short-term testing, and requires IP rate limiting configured at the reverse proxy layer.</td></tr></tbody></table>
+<p>In practice, if the third-party system you are integrating with (such as the Stripe payment gateway, GitHub Open Platform, or WeChat Server) provides a signature verification mechanism, it is recommended to use the more secure “Signature Verification” approach at the authentication layer. Do not merely check for the presence of the header; instead, perform HMAC algorithm validation using a Code node or the <code>crypto</code> library.</p>
+<h2 id="common-pitfalls-and-error-logs">Common Pitfalls and Error Logs</h2>
+<h3 id="error-1-nodeinstantiationerror-webhook-node-not-active">Error 1: [NodeInstantiationError: Webhook node not active]</h3>
+<ul>
+<li>Scenario: A production URL is configured for external calls, but it consistently returns 404 or 500.</li>
+<li>Log output:</li>
+</ul>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">{"message":"The requested webhook \"/webhook/some-uuid\" is not registered on this node.","hint":"Make sure the workflow is active."}
+</code></pre>
+<ul>
+<li>Cause and troubleshooting: The workflow is not in the Active state (indicated by the toggle in the top-right corner), or you only clicked “Listen for test event” within the development interface. In production, ensure that the workflow has been properly published and that the toggle in the top-right corner is switched on (green).</li>
+</ul>
+<h3 id="error-2-signature-verification-failed">Error 2: [[Signature Verification Failed]</h3>
+<ul>
+<li>Scenario: When verifying the SHA256 signature for a Stripe or WeChat Official Account API endpoint using an n8n Code node, the locally computed hash does not match the signature provided in the header.</li>
+<li>Log output:</li>
+</ul>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">[Error]: Signature mismatch. Computed: 7e34b9... Expected: 9a23fc...
+</code></pre>
+<ul>
+<li>Cause and troubleshooting: The Raw Body option for the n8n node was not enabled. As a result, the Code node used a JSON string that had been deserialized and reformatted by n8n when calculating the HMAC signature. Because the field order and whitespace changed, the signature values would never match.</li>
+</ul>
+<h3 id="error-3-504-gateway-timeout">Error 3: [[504 Gateway Timeout]</h3>
+<ul>
+<li>Scenario: The upstream caller (e.g., Stripe payment callback) reports a connection timeout, while the request in the n8n backend logs shows as “Success” or “Executing”.</li>
+<li>Log output:</li>
+</ul>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Nginx error: 504 Gateway Time-out while reading response header from upstream
+</code></pre>
+<ul>
+<li>Cause and troubleshooting: The Webhook node’s Response Mode was set to “When Last Node Finishes” (respond when the workflow ends), while the rest of the workflow included long-text LLM generation, external API retries, or large-scale database reads/writes. The total processing time exceeded the default 30-second/60-second timeout limit of Nginx/Cloudflare.</li>
+</ul>
+<h2 id="prioritize-raw-body-when-verifying-signatures">Prioritize Raw Body When Verifying Signatures</h2>
+<p>In the realm of digital signatures, the golden rule for hash verification is that every byte of the input data must remain exactly consistent. Any minor change—such as adding or removing a character, newline, or leading/trailing whitespace—will completely alter the resulting hash.</p>
+<p>Since n8n parses incoming HTTP request bodies into JavaScript objects by default to facilitate subsequent node operations, the original data stream (Raw Request Body) has already been structurally modified. If you attempt to reconstruct the data in a Code node using <code>JSON.stringify($json.body)</code> to calculate the signature, it is highly likely that differences will arise between the reconstructed string and the raw character stream sent by the upstream source. These discrepancies can stem from changes in key ordering or precision conversions performed by the JSON library during deserialization of floating-point numbers and large integers.</p>
+<p>To avoid this issue entirely, enable “Raw Body” in the Webhook node’s Options:</p>
+<p>Once enabled, the original request stream is stored in <code>$json.rawBody</code>. The standard approach for verifying signatures in a Code node is as follows:</p>
+<pre class="language-javascript" data-language="javascript"><code is:raw="" class="language-javascript"><span class="token keyword">const</span> crypto <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'crypto'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 从全局或环境变量读取签名密钥</span>
+<span class="token keyword">const</span> secret <span class="token operator">=</span> $env<span class="token punctuation">.</span><span class="token constant">WEBHOOK_SIGNING_SECRET</span> <span class="token operator">||</span> <span class="token string">'your-fallback-signing-secret'</span><span class="token punctuation">;</span>
+<span class="token comment">// 获取上游传入的签名指纹</span>
+<span class="token keyword">const</span> signature <span class="token operator">=</span> $headers<span class="token punctuation">[</span><span class="token string">'x-signature'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 确保取到的是原始二进制或字符串流</span>
+<span class="token keyword">const</span> rawBody <span class="token operator">=</span> $json<span class="token punctuation">.</span>rawBody<span class="token punctuation">;</span>
+
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>rawBody<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token string">'未检测到原始 Request Body，请确认 Webhook 节点中是否已勾选 Option: Raw Body'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// 使用同样的算法和密钥重新计算哈希</span>
+<span class="token keyword">const</span> computedSignature <span class="token operator">=</span> crypto
+  <span class="token punctuation">.</span><span class="token function">createHmac</span><span class="token punctuation">(</span><span class="token string">'sha256'</span><span class="token punctuation">,</span> secret<span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>rawBody<span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">digest</span><span class="token punctuation">(</span><span class="token string">'hex'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 进行防时序攻击的恒定时间比较</span>
+<span class="token keyword">const</span> verified <span class="token operator">=</span> crypto<span class="token punctuation">.</span><span class="token function">timingSafeEqual</span><span class="token punctuation">(</span>
+  Buffer<span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span>signature<span class="token punctuation">,</span> <span class="token string">'hex'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  Buffer<span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span>computedSignature<span class="token punctuation">,</span> <span class="token string">'hex'</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">return</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">json</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">verified</span><span class="token operator">:</span> verified<span class="token punctuation">,</span>
+    <span class="token literal-property property">computed</span><span class="token operator">:</span> computedSignature<span class="token punctuation">,</span>
+    <span class="token literal-property property">expected</span><span class="token operator">:</span> signature
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+</code></pre>
+<p>With this entry-point design, all requests with invalid signatures are intercepted immediately, allowing the subsequent high-compute AI nodes to be protected by a security barrier.</p>
+<h2 id="respond-to-webhook-requires-proactive-design">Respond to Webhook Requires Proactive Design</h2>
+<p>In many automated scenarios, once the upstream system initiates a webhook, the transaction is considered complete as soon as your server confirms secure receipt of the data. If the connection remains in an HTTP wait state and exceeds the threshold, the upstream system (such as Stripe payment callbacks) will assume the current node is offline and trigger exponential backoff retries, resulting in a single order being triggered multiple times.</p>
+<p>Therefore, except for special scenarios where n8n is used as an API gateway (i.e., downstream clients must synchronously wait for processed result data), it is recommended to set the Response Mode to one of the following two options in production environments:</p>
+<ol>
+<li>Respond Immediately: As soon as the Webhook node receives the request, it immediately returns an 200 OK response, disconnecting from the upstream system while the remaining long-running nodes continue to execute asynchronously in the background.</li>
+<li>Use the Respond to Webhook Node: When you need to perform some preliminary validation first (such as signature verification, IP whitelist filtering, or primary key checks) and then inform the caller “I have accepted the request” after passing validation, you can use the Respond to Webhook node.</li>
+</ol>
+<p>The architectural topology for using the Respond to Webhook node is as follows:</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">[Webhook 触发] -> [身份签名校验] -> [Respond to Webhook: 202 Accepted] -> [长耗时 AI 处理 / 数据库写入]
+</code></pre>
+<p>This asynchronous decoupling design can handle extremely high instantaneous concurrency while avoiding meaningless retries caused by network timeouts from external callers.</p>
+<h2 id="idempotency-and-deduplication-preventing-one-event-from-becoming-three-writes">Idempotency and Deduplication: Preventing One Event from Becoming Three Writes</h2>
+<p>Even if you optimize your Webhook response time to be as fast as possible, network jitter or packet loss in complex distributed environments can still prevent the upstream system from receiving the <code>200</code>/<code>202</code> response, triggering a retry. This means your Webhook endpoint will receive duplicate payload data.</p>
+<p>For standard business systems, this might just result in an extra duplicate log entry. However, in AI Agent workflows, duplicate execution often leads to:</p>
+<ul>
+<li>Multiple redundant LLM API token calls, generating unnecessary compute costs;</li>
+<li>Repeatedly inserting identical document segments into the vector database, causing data redundancy and noise during retrieval;</li>
+<li>Sending duplicate approval/reminders via WeChat, Feishu, or DingTalk channels, severely degrading the end-user experience.</li>
+</ul>
+<p>Therefore, idempotency mechanisms are a mandatory step for bringing Webhooks into production.</p>
+<p>The foundation of implementing idempotency is generating a unique “Idempotency Key.” We typically use one of the following three strategies to extract this key:</p>
+<ol>
+<li>Look for a Unique Event ID: For example, GitHub’s <code>X-GitHub-Delivery</code> header or Stripe’s <code>event.id</code>. These are globally unique identifiers explicitly provided by the sender.</li>
+<li>Compute a Data Hash (Payload Hash): If the sender does not provide an event ID, concatenate core fields from the request body (e.g., <code>user_id + action + timestamp</code>) or calculate an MD5 or SHA256 hash of the entire Raw Body to use as the idempotency key.</li>
+<li>Combine with Business Primary Keys: Use composite keys that precisely represent the unique business state of the operation, such as <code>order_id + target_status</code>.</li>
+</ol>
+<p>Once you have the idempotency key, you can implement a two-step validation at the entry layer of your n8n workflow using a lightweight database (such as Redis or a self-hosted PostgreSQL database):</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">第一步：查询数据库中是否存在该 Idempotency Key 记录？
+  -> 如果存在，且状态为 success/processing，说明该请求已经被受理或正在处理。
+     直接通过 Respond to Webhook 节点返回 200/202，工作流在此分叉，不再往下走主业务流。
+
+第二步：如果不存在。
+     将该 Key 插入数据库，状态设为 processing。
+     执行主逻辑（AI 处理、知识库检索、写入）。
+     主逻辑成功结束后，将该 Key 的状态更新为 success。如果执行失败，将状态更新为 failed，以便允许后续重试重新进入。
+</code></pre>
+<p>This locking mechanism establishes a highly robust security firewall with minimal storage overhead.</p>
+<h2 id="faq">FAQ</h2>
+<h3 id="q-why-does-my-n8n-production-webhook-url-display-as-an-internal-address-like-httplocalhost5678webhook">Q: Why does my n8n production Webhook URL display as an internal address like <a href="http://localhost:5678/webhook/" rel="nofollow noopener noreferrer" target="_blank">http://localhost:5678/webhook/</a>?</h3>
+<p>A: This occurs because you did not explicitly specify the <code>WEBHOOK_URL</code> environment variable during deployment. n8n attempts to guess the URL based on the request host, but this often fails behind a reverse proxy. Set <code>WEBHOOK_URL=https://your-domain.com/，n8n</code> in your container environment variables to generate the correct public HTTPS Webhook path.</p>
+<h3 id="q-stripe-or-wechat-pay-webhooks-consistently-return-504-gateway-timeout-retries-how-should-i-handle-this">Q: Stripe or WeChat Pay Webhooks consistently return 504 Gateway Timeout retries. How should I handle this?</h3>
+<p>A: AI workflows are typically time-consuming. In the Webhook node settings, change the <strong>Response Mode</strong> to “Respond Immediately” or use a “Respond to Webhook” node to send back an 200/202 response at the entry point immediately after preliminary validation, closing the connection before executing subsequent long-running nodes.</p>
+<h3 id="q-how-do-i-prevent-my-webhook-nodes-from-being-maliciously-brute-forced-or-ddosed-by-external-traffic-to-exhaust-quotas">Q: How do I prevent my Webhook nodes from being maliciously brute-forced or DDOSed by external traffic to exhaust quotas?</h3>
+<p>A: Production Webhook nodes must never be set to None (no authentication) and exposed publicly. It is recommended to configure Header Auth (custom secret keys) or restrict access via IP whitelisting. If using a reverse proxy, configure rate-limiting rules at the Nginx or Cloudflare WAF level to block illegal or high-frequency IPs at the proxy layer, thereby protecting the n8n container’s compute resources.</p>
+<h3 id="q-in-n8ns-queue-mode-who-should-listen-to-and-handle-webhooks">Q: In n8n’s Queue Mode, who should listen to and handle Webhooks?</h3>
+<p>A: In a Queue Mode architecture, you should deploy dedicated Webhook container instances. The Main Node is responsible for visual editing and scheduling management, the Worker Node handles actual tasks, and the Webhook Node is specifically used to receive external callbacks at high performance and push tasks into the Redis queue, achieving complete decoupling between the receiver and the consumer.</p>
+<h3 id="q-why-is-jsonrawbody-still-an-empty-object-in-the-code-node-even-though-i-checked-the-raw-body-option">Q: Why is <code>$json.rawBody</code> still an empty object in the Code node even though I checked the Raw Body option?</h3>
+<p>A: This is usually caused by two factors. First, the request sender did not correctly specify <code>Content-Type: application/json</code> or another valid text type in the headers, causing the parser to fail. Second, your Docker container may have restricted permissions, or the version of n8n being used does not have the corresponding configuration feature enabled. It is recommended to check the user permissions of the Docker container mount directory and ensure that n8n is using the latest official image.</p>
+<h2 id="related-reading">Related Reading</h2>
+<ul>
+<li><a href="/en/ai/workflow/">Workflow Series</a></li>
+<li><a href="/en/ai/self-hosted-n8n-ai-workflows/">Self-hosted n8n AI Workflow in Practice: Docker, Postgres, VPS, and NAS Deployment Guide</a></li>
+<li><a href="/en/ai/n8n-queue-mode-redis-worker/">n8n Queue Mode + Redis in Practice: How to Split main, worker, and webhook for High-concurrency AI Workflows?</a></li>
+<li><a href="/en/ai/n8n-ai-workflow-error-handling/">Productionizing n8n AI Workflows: Error Handling, Retries, and Cost Monitoring</a></li>
+<li><a href="/en/ai/ai-agent-vs-workflow-automation/">AI Agent vs. Workflow Automation: When to Use Agents and When a Workflow Suffices</a></li>
+</ul>
+<h2 id="summary">Summary</h2>
+<p>The key to deploying n8n Webhooks in production isn’t just copying the URL to an external system; it’s treating it as a production API endpoint that requires proper governance.</p>
+<p>A production-ready webhook must address at least seven questions: Is the public URL correct? Is authentication reliable? Can the signature be verified? Is the raw request body preserved? Is the response timely? Are duplicate requests handled idempotently? Does the reverse proxy correctly forward the actual protocol and host to n8n?</p>
+<p>If these aren’t designed, a webhook is merely a functional entry point. If they are addressed, it becomes a boundary for a long-running automation system.</p> <section class="mt-16 rounded-[34px] border border-orange-500/20 bg-orange-500/[0.06] p-7 md:p-9 not-prose"> <div class="text-[10px] font-black uppercase tracking-[0.28em] text-orange-500 mb-4">专题入口 / AI Workflow Hub</div> <h2 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-4">继续按 n8n 生产排障链路读</h2> <p class="text-sm font-bold leading-7 text-slate-600 dark:text-slate-400 max-w-3xl">自托管、Queue Mode、Webhook、错误处理和案例文统一沉淀到 Workflow 专题页：部署文做主力页，案例文做长尾页，对比文承接工具选择流量。</p> <div class="mt-7 flex flex-wrap gap-3"> <a href="/ai/workflow/" class="rounded-full bg-orange-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-white hover:bg-orange-600 transition-colors">进入 Workflow 专题 →</a> <a href="/ai/n8n-webhook-production-hardening/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">查看 Webhook 排障</a> <a href="/newsletter/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">订阅更新</a> </div> </section> </div> <section class="mt-16 p-8 rounded-[32px] bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5"> <div class="flex items-center justify-between gap-4 mb-6"> <h2 class="text-xs font-black uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400"> Next Reading </h2> <a href="/en/ai/" class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400 hover:underline"> View Hub → </a> </div> <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> <a href="/en/ai/self-hosted-n8n-ai-workflows/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">workflow</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Self-Hosted n8n Deployment Guide: Docker Compose, Postgres, VPS, and NAS Production Baseline</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">How to deploy self-hosted n8n for stability? This article provides a production baseline using Docker Compose + Postgres, covering version pinning, N8N_ENCRYPTION_KEY, WEBHOOK_URL, N8N_EDITOR_BASE_URL, reverse proxying, backup and recovery, NAS networking, and upgrade boundaries for Queue Mode.</p> </a><a href="/en/ai/n8n-queue-mode-redis-worker/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">workflow</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">n8n Queue Mode + Redis in Practice: When to Offload Workflows to a Queue</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">A hands-on guide to deploying n8n Queue Mode, Redis, and Workers in production. Covers when to switch from regular mode to queue mode, how to split the main instance, workers, webhooks, Redis, and database, plus strategies for handling high concurrency, long-running tasks, webhook callbacks, and execution timeouts in AI workflows.</p> </a><a href="/en/ai/n8n-ai-gmail-summarizer-openai-google-sheets/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">workflow</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">n8n Gmail Email Summary Automation: AI Extracts Action Items and Writes to Google Sheets</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Build a Gmail email summarization workflow in n8n: use the Gmail Trigger to search and filter emails, invoke an AI agent to extract summaries, priorities, and action items, then deduplicate by Message ID before writing to Google Sheets.</p> </a><a href="/en/ai/n8n-ai-slack-daily-digest-bot/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">workflow</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">n8n AI Workflow in Action: Slack Daily Digest Bot</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">A hands-on guide to building a daily briefing AI agent using self-hosted n8n, OpenAI, and the Slack API. Covers batch retrieval of Slack messages, filtering for short messages and system notifications, multi-thread context correlation, precise decision extraction by large language models, and automated push delivery.</p> </a> </div> </section> <div class="xl:hidden mt-10 space-y-4"> <section class="bg-white/85 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-sm rounded-[24px] p-5 sm:p-6" aria-label="Author profile"><a href="/about/" class="group flex items-center gap-4 text-left" aria-label="About Xiaobai &#38; XBSTACK →"><div class="rounded-full overflow-hidden border-2 border-white dark:border-slate-800 shadow-md relative shrink-0 w-16 h-16"><img src="/_astro/demo.BzDyfp9G_1hGUOO.webp" alt="小白 / Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div><div class="min-w-0"><h3 class="text-base font-black text-slate-950 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+小白 / Xiaobai
+</h3><p class="mt-1 text-[9px] font-black uppercase tracking-[0.22em] text-blue-500">Full-Stack AI Engineer</p></div></a><p class="font-bold text-slate-600 dark:text-slate-400 leading-relaxed mt-4 text-sm">Full-stack developer documenting AI engineering, indie products, investing reviews and outdoor practice.</p><a href="/about/" class="mt-4 block text-center text-[10px] font-black tracking-[0.12em] text-blue-600 dark:text-blue-400 hover:underline">About Xiaobai &amp; XBSTACK →</a><div class="my-4 h-px bg-slate-100 dark:bg-white/5"></div><ul class="flex items-center w-full gap-2"><li class="min-w-0 flex-1 w-full"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/xbstack-wechat-qr.webp" aria-label="WeChat · 贵州户外"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="WeChat · 贵州户外" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="truncate">WeChat · 贵州户外</span> </span>  </button> </a></li><li class="min-w-0 flex-1 w-full"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span>GitHub</span> </span>  </button> </a></li></ul></section>  </div>  <div class="mt-20 p-10 rounded-[40px] bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 shadow-2xl relative overflow-hidden group"> <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-600/5 dark:bg-blue-600/20 blur-[100px] rounded-full group-hover:bg-blue-600/10 transition-all duration-1000"></div> <div class="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-10 items-center"> <div class="md:col-span-8 space-y-6"> <h4 class="text-3xl font-black italic tracking-tighter uppercase text-slate-900 dark:text-white">Liked this article?<br>Join the newsletter</h4> <p class="text-slate-600 dark:text-slate-300 font-bold text-sm leading-relaxed max-w-xl"> Every week, I share practical AI engineering notes, product building insights, and investment reading logs from an independent developer&#39;s perspective. No fluff, only real experiments and reviewable decisions. </p> </div> <div class="md:col-span-4 flex flex-col gap-4"> <a href="/newsletter/" class="w-full py-4 rounded-full bg-blue-600 text-white text-center font-black uppercase text-[10px] tracking-[0.3em] hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20">JOIN NEWSLETTER →</a> <a href="/tools/" class="w-full py-4 rounded-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-center font-black uppercase text-[10px] tracking-[0.3em] hover:bg-slate-100 dark:hover:bg-white/10 transition-all">LAB TOOLBOX</a> </div> </div> </div> </div>  <div class="mt-12 ceramic-card p-6 md:p-12"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-8 flex items-center gap-4"> <span>Comments</span> <div class="h-[1px] flex-1 bg-zinc-200 dark:bg-white/5"></div> </div> <div id="tcomment" class="markdown-content"></div>  <script>(function(){const twikooEnvId = "https://comments.xbstack.com";
+
+  document.addEventListener("astro:page-load", () => {
+    function loadTwikoo() {
+      const commentsContainer = document.getElementById("tcomment");
+      if (commentsContainer) {
+        // 如果已经初始化，跳过
+        if (commentsContainer.dataset.initialized) return;
+        commentsContainer.dataset.initialized = 'true';
+
+        if (!twikooEnvId) {
+          showError("留言模块未加载，Twikoo envId 未配置。");
+          return;
+        }
+        const script = document.createElement("script");
+        script.src =
+          "https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.min.js";
+        script.async = true;
+        script.onload = () => {
+          const initScript = document.createElement("script");
+          initScript.innerHTML = `
+            twikoo.init({
+                envId: '${twikooEnvId}',
+                el: '#tcomment',
+                onCommentLoaded: function() {
+                   // Twikoo 加载后的清理逻辑 (双重保险)
+                   const trash = document.querySelectorAll('.tk-admin, .tk-submit-action-icon, [title*="管理"], [title*="Settings"]');
+                   trash.forEach(el => el.remove());
+                }
+            });
+          `;
+          document.body.appendChild(initScript);
+
+          // 开启一个长效观察器，专门销毁这些动态出现的按钮
+          const cleaner = new MutationObserver(() => {
+            const adminBtn = document.querySelector('.tk-admin, .tk-submit-action-icon[title*="管理"], .tk-submit-action-icon[title*="Settings"]');
+            if (adminBtn) adminBtn.remove();
+          });
+          cleaner.observe(commentsContainer, { childList: true, subtree: true });
+        };
+        document.body.appendChild(script);
+      }
+    }
+
+    // 使用 IntersectionObserver 实现懒加载
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(() => {
+        if (entries[0].isIntersecting) {
+          loadTwikoo();
+          observer.disconnect(); // 只执行一次
+        }
+      });
+    }, { rootMargin: '300px' }); // 提前 300px 开始加载
+
+    const target = document.getElementById("tcomment");
+    if (target) observer.observe(target);
+
+    function showError(msg){
+      const list = document.getElementById("tcomment");
+      if(!list) return;
+      list.removeAttribute('aria-busy');
+      list.innerHTML = `
+        <div class="py-4">
+          <div class="text-center text-red-600 dark:text-red-400">
+            ${msg || "评论获取失败，请稍后重试。"}
+          </div>
+        </div>
+      `;
+      const btn = document.getElementById("rc-retry-btn");
+      if(btn){ btn.addEventListener("click", load, { once: true }); }
+    }
+    loadTwikoo();
+  });
+})();</script> </div> </main>  <aside class="hidden xl:flex flex-col gap-6 sticky top-24 h-fit"> <div class="article-side-panel rounded-[24px] border p-5"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-4">On this page</div> <div class="liquid-glass-container "><div class="liquidGlass-wrapper dock !p-6"><div class="liquidGlass-effect-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-tint-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-shine  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-text  intersect:animate-fadeLeft transition-all duration-300 fast-slow"><div class="intersect:animate-fadeLeft" data-astro-cid-hop3l3kc><h2 class="text-2xl border-none mb-3" data-astro-cid-hop3l3kc>内容导航</h2><div class="max-h-96 overflow-y-auto" data-astro-cid-hop3l3kc><ul class="list-none m-0 space-y-1" data-astro-cid-hop3l3kc><li class="ml-0" data-astro-cid-hop3l3kc><a href="#what-this-guide-covers" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>What This Guide Covers</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#who-this-guide-is-for" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Who This Guide Is For</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#distinguishing-test-urls-from-production-urls" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Distinguishing Test URLs from Production URLs</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#where-this-fits-in-the-workflow-series" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Where This Fits in the Workflow Series</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#pre-launch-checklist" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Pre-Launch Checklist</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#the-webhook_url-must-be-fixed-after-reverse-proxying" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>The WEBHOOK_URL must be fixed after reverse proxying</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#webhooks-are-not-exposed-without-protection" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Webhooks Are Not Exposed Without Protection</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#common-pitfalls-and-error-logs" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Common Pitfalls and Error Logs</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#error-1-nodeinstantiationerror-webhook-node-not-active" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Error 1: [NodeInstantiationError: Webhook node not active]</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#error-2-signature-verification-failed" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Error 2: [[Signature Verification Failed]</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#error-3-504-gateway-timeout" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Error 3: [[504 Gateway Timeout]</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#prioritize-raw-body-when-verifying-signatures" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Prioritize Raw Body When Verifying Signatures</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#respond-to-webhook-requires-proactive-design" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Respond to Webhook Requires Proactive Design</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#idempotency-and-deduplication-preventing-one-event-from-becoming-three-writes" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Idempotency and Deduplication: Preventing One Event from Becoming Three Writes</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#faq" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>FAQ</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#q-why-does-my-n8n-production-webhook-url-display-as-an-internal-address-like-httplocalhost5678webhook" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Q: Why does my n8n production Webhook URL display as an internal address like http://localhost:5678/webhook/?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#q-stripe-or-wechat-pay-webhooks-consistently-return-504-gateway-timeout-retries-how-should-i-handle-this" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Q: Stripe or WeChat Pay Webhooks consistently return 504 Gateway Timeout retries. How should I handle this?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#q-how-do-i-prevent-my-webhook-nodes-from-being-maliciously-brute-forced-or-ddosed-by-external-traffic-to-exhaust-quotas" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Q: How do I prevent my Webhook nodes from being maliciously brute-forced or DDOSed by external traffic to exhaust quotas?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#q-in-n8ns-queue-mode-who-should-listen-to-and-handle-webhooks" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Q: In n8n’s Queue Mode, who should listen to and handle Webhooks?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#q-why-is-jsonrawbody-still-an-empty-object-in-the-code-node-even-though-i-checked-the-raw-body-option" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Q: Why is $json.rawBody still an empty object in the Code node even though I checked the Raw Body option?</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#related-reading" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Related Reading</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#summary" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Summary</a></li></ul></div></div></div></div></div> </div> <section class="bg-white/85 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-sm rounded-[24px] p-5 article-side-panel" aria-label="Author profile"><a href="/about/" class="group flex items-center flex-col gap-3 text-center" aria-label="About Xiaobai &#38; XBSTACK →"><div class="rounded-full overflow-hidden border-2 border-white dark:border-slate-800 shadow-md relative shrink-0 w-[72px] h-[72px]"><img src="/_astro/demo.BzDyfp9G_1hGUOO.webp" alt="小白 / Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div><div class="w-full"><h3 class="text-base font-black text-slate-950 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+小白 / Xiaobai
+</h3><p class="mt-1 text-[9px] font-black uppercase tracking-[0.22em] text-blue-500">Full-Stack AI Engineer</p></div></a><p class="font-bold text-slate-600 dark:text-slate-400 leading-relaxed mt-4 text-xs text-center">Full-stack developer documenting AI engineering, indie products, investing reviews and outdoor practice.</p><a href="/about/" class="mt-4 block text-center text-[10px] font-black tracking-[0.12em] text-blue-600 dark:text-blue-400 hover:underline">About Xiaobai &amp; XBSTACK →</a><div class="my-4 h-px bg-slate-100 dark:bg-white/5"></div><ul class="flex items-center w-full gap-2 flex-col"><li class="min-w-0 flex-1 w-full"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/xbstack-wechat-qr.webp" aria-label="WeChat · 贵州户外"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="WeChat · 贵州户外" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="truncate">WeChat · 贵州户外</span> </span>  </button> </a></li><li class="min-w-0 flex-1 w-full"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span>GitHub</span> </span>  </button> </a></li></ul></section>  </aside> </div> </main> <script>
+    function initProgress() {
+      const progressBar = document.getElementById('reading-progress');
+      if (!progressBar) return;
+      window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = scrolled + "%";
+      });
+    }
+    document.addEventListener('astro:page-load', initProgress);
+    initProgress();
+  </script>  </main> <footer class="container mx-auto mt-32 animate-fadeUp px-4 pb-16 lg:px-8"> <div class="group relative rounded-[60px] border border-slate-200 bg-white p-10 shadow-2xl transition-all dark:border-white/10 dark:bg-[#0B1020] md:p-16"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[60px] opacity-20 dark:opacity-40"> <div class="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px] transition-transform duration-1000 group-hover:scale-125"></div> <div class="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px] transition-transform duration-1000 group-hover:scale-125"></div> </div> <div class="relative z-10 grid grid-cols-1 gap-12 border-b border-slate-100 pb-16 text-left dark:border-white/5 md:grid-cols-2 xl:grid-cols-12"> <div class="flex flex-col justify-between space-y-8 xl:col-span-4"> <div> <div class="mb-8 flex items-center gap-4"> <div class="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 p-2 shadow-lg dark:border-white/10 dark:bg-white/5"> <img src="/favicon/favicon.svg" alt="XBSTACK" class="h-full w-full object-contain"> </div> <span class="font-brand text-2xl font-black uppercase italic leading-none tracking-tighter text-blue-500">XBSTACK</span> </div> <div class="space-y-6"> <p class="text-2xl font-bold italic leading-tight tracking-tight text-slate-900 dark:text-slate-50"> “Look High. Build Low.” </p> <p class="max-w-sm text-[13px] font-bold leading-relaxed text-slate-600 dark:text-slate-400"> An independent developer asset system covering AI engineering, product tools, investing decisions, reading systems and outdoor field notes. </p> </div> </div> <div class="flex items-center gap-4 pt-4"> <span class="rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 text-[11px] font-black uppercase tracking-widest text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-400"> Built by Xiaobai </span> </div> </div> <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 xl:col-span-5"> <div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">AI Engineering</h4> <ul class="space-y-4"> <li><a href="/en/ai/agent/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Agents</a></li><li><a href="/en/ai/langgraph/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">LangGraph</a></li><li><a href="/en/ai/mcp/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">MCP Protocols</a></li><li><a href="/en/ai/workflow/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Workflow</a></li> </ul> </div><div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">Product Tools</h4> <ul class="space-y-4"> <li><a href="/en/tools/compound-calculator/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Compound Calculator</a></li><li><a href="/en/tools/ai-finance/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">AI Finance</a></li><li><a href="/en/tools/utm-builder/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">UTM Builder</a></li><li><a href="/en/tools/lunest/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Lunest</a></li> </ul> </div><div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">Horizon</h4> <ul class="space-y-4"> <li><a href="/en/investing/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Investing</a></li><li><a href="/en/horizon/reading/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Reading</a></li><li><a href="/en/notes/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Thinking</a></li> </ul> </div><div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">Life &amp; Lens</h4> <ul class="space-y-4"> <li><a href="/en/life/hiking/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Hiking</a></li><li><a href="/en/life/photo/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Photography</a></li><li><a href="/en/life/gear/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Gear</a></li> </ul> </div> </div> <div class="space-y-8 xl:col-span-3"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-slate-400">Systems Connect</h4> <div class="flex flex-col gap-3"> <button type="button" data-wechat-qr="/assets/xbstack-wechat-qr.webp" class="wechat-trigger group/wechat flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left transition-all hover:border-blue-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="h-5 w-5 text-green-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg> <div class="flex flex-col"> <span class="text-[12px] font-black text-slate-900 dark:text-slate-200">WeChat: Guizhou Outdoor</span> <span class="text-[11px] font-bold leading-relaxed text-slate-600 dark:text-slate-300"> Chinese-language hiking routes and direct outdoor field reports from Guizhou. </span> </div> </button> <a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" class="group/github flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-all hover:border-blue-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="h-5 w-5 text-slate-900 dark:text-white" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> <div class="flex flex-col"><span class="text-[12px] font-black text-slate-900 dark:text-slate-200">GitHub: XBSTACK Lab</span><span class="text-[11px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">Source Code</span></div> </a> <a href="mailto:xbstack@163.com" class="group flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-all hover:border-sky-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="h-5 w-5 text-sky-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"></path></svg> <div class="flex flex-col"><span class="text-[12px] font-black text-slate-900 dark:text-slate-200">xbstack@163.com</span><span class="text-[11px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">Email</span></div> </a> </div> </div> </div> <div class="mt-12 flex flex-col items-start justify-between gap-10 lg:flex-row lg:items-center"> <div class="flex flex-wrap gap-8"> <div class="space-y-1"> <h5 class="text-[10px] font-black uppercase tracking-widest text-orange-700 dark:text-orange-500">Risk Notice</h5> <p class="text-[10px] font-bold italic text-slate-500">Content is informational and does not constitute investment advice.</p> </div> <div class="space-y-1"> <h5 class="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-500">Copyright</h5> <p class="text-[10px] font-bold text-slate-500">Original XBSTACK content may not be republished or scraped without permission.</p> </div> </div> <div class="flex w-full flex-col items-end gap-5 lg:w-auto"> <div class="flex flex-wrap justify-end gap-6"> <a href="/en/archive/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Archive</a><a href="/en/privacy/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Privacy</a><a href="/en/tos/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Terms</a><a href="/en/disclosure/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Disclosure</a><a href="/sitemap-index.xml" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Sitemap</a><a href="/llms.txt" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">AI Index</a> </div> <div class="flex flex-wrap justify-end gap-3">   <a href="/en/rss.xml" class="rounded-xl border border-blue-600/20 bg-blue-600/10 px-4 py-2 text-[10px] font-black text-blue-700 shadow-sm transition-all hover:bg-blue-500 hover:text-white dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400">English RSS</a> </div> </div> </div> <div class="mt-8 flex items-center justify-between border-t border-slate-100 pt-8 dark:border-white/5"> <div class="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 opacity-50">&copy; 2026 XBSTACK. LABS_ACTIVE_v6.6</div> <div class="flex items-center gap-2"><span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500"></span><span class="text-[9px] font-black uppercase italic tracking-widest text-emerald-600/60">Built Independently</span></div> </div> </div> </footer> <!-- 桌面悬停卡：由全局脚本定位到当前公众号入口附近 --><div id="wechat-hover-card" class="fixed z-[9998] hidden w-[300px] pointer-events-none opacity-0 translate-y-2 transition-all duration-200" aria-hidden="true"> <div class="rounded-[30px] border border-white/15 bg-[#0d1728]/95 p-5 text-white shadow-[0_28px_80px_rgba(2,6,23,0.48)] backdrop-blur-2xl"> <div class="text-[9px] font-black uppercase tracking-[0.34em] text-orange-400">Join the Journey</div> <div class="mt-2 text-xl font-black tracking-tight">一起探索 · 一起成长</div> <div class="mt-1 text-[11px] font-bold tracking-[0.12em] text-slate-400">户外探索 · 独立开发 · 投资思考</div> <div class="mt-4 grid grid-cols-[112px_1fr] items-center gap-4"> <div class="rounded-[20px] border border-white/10 bg-[#060b14] p-2.5 shadow-inner"> <img id="wechat-hover-qr" src="/assets/xbstack-wechat-qr.webp" width="360" height="360" alt="微信公众号贵州户外二维码" class="block aspect-square w-full rounded-xl bg-white object-contain"> </div> <div class="space-y-2 text-[11px] font-bold leading-relaxed text-slate-300"> <p>贵州徒步与路线实测</p> <p>AI 工具与独立产品</p> <p>投资体系与长期复盘</p> </div> </div> <div class="mt-4 border-t border-white/10 pt-3 text-center text-[11px] font-black text-slate-300">
+点击查看完整名片
+</div> </div> </div> <!-- 全局点击弹窗 --> <div id="wechat-modal" class="fixed inset-0 z-[10000] hidden items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="wechat-modal-title" aria-hidden="true"> <button id="wechat-modal-backdrop" type="button" aria-label="关闭公众号弹窗" class="absolute inset-0 cursor-default bg-slate-950/86 backdrop-blur-xl"></button> <div id="wechat-modal-content" class="relative max-h-[94vh] w-full max-w-[460px] scale-95 overflow-y-auto rounded-[38px] border border-slate-500/45 bg-[#0d1728] text-white opacity-0 shadow-[0_40px_140px_rgba(0,0,0,0.68)] transition-all duration-300 sm:rounded-[50px]"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"> <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px]"></div> <div class="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-orange-500/10 blur-[80px]"></div> </div> <button id="wechat-modal-close" type="button" aria-label="关闭微信公众号弹窗" class="absolute right-5 top-5 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 transition hover:bg-white/10 hover:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg> </button> <div class="relative z-10 px-6 pb-6 pt-10 sm:px-10 sm:pb-9 sm:pt-12"> <header class="text-center"> <div class="text-[10px] font-black uppercase tracking-[0.44em] text-orange-400 sm:text-xs">Join the Journey</div> <h2 id="wechat-modal-title" class="mt-4 text-3xl font-black tracking-tight text-white sm:text-[38px]" style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;">一起探索 · 一起成长</h2> <p class="mt-3 text-sm font-bold tracking-[0.16em] text-slate-400 sm:text-base">户外探索 ｜ 独立开发 ｜ 投资思考</p> </header> <div class="mx-auto mt-7 max-w-[300px] rounded-[34px] border border-white/10 bg-[#070d17] p-5 shadow-inner sm:mt-8"> <div class="rounded-[24px] bg-white p-3"> <img id="wechat-modal-qr" src="/assets/xbstack-wechat-qr.webp" width="360" height="360" decoding="async" alt="微信公众号贵州户外二维码" class="block aspect-square w-full object-contain"> </div> </div> <div class="mt-7 divide-y divide-white/10 sm:mt-8"> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M634.92 462.7l-288-448C341.03 5.54 330.89 0 320 0s-21.03 5.54-26.92 14.7l-288 448a32.001 32.001 0 0 0-1.17 32.64A32.004 32.004 0 0 0 32 512h576c11.71 0 22.48-6.39 28.09-16.67a31.983 31.983 0 0 0-1.17-32.63zM320 91.18L405.39 224H320l-64 64-38.06-38.06L320 91.18z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">户外徒步 · 贵州路线实探与分享</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">记录每一次出发，提供真实路况、补给、风险和下撤信息。</p> </div> </div> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M278.9 511.5l-61-17.7c-6.4-1.8-10-8.5-8.2-14.9L346.2 8.7c1.8-6.4 8.5-10 14.9-8.2l61 17.7c6.4 1.8 10 8.5 8.2 14.9L293.8 503.3c-1.9 6.4-8.5 10.1-14.9 8.2zm-114-112.2l43.5-46.4c4.6-4.9 4.3-12.7-.8-17.2L117 256l90.6-79.7c5.1-4.5 5.5-12.3.8-17.2l-43.5-46.4c-4.5-4.8-12.1-5.1-17-.5L3.8 247.2c-5.1 4.7-5.1 12.8 0 17.5l144.1 135.1c4.9 4.6 12.5 4.4 17-.5zm327.2.6l144.1-135.1c5.1-4.7 5.1-12.8 0-17.5L492.1 112.1c-4.8-4.5-12.4-4.3-17 .5L431.6 159c-4.6 4.9-4.3 12.7.8 17.2L523 256l-90.6 79.7c-5.1 4.5-5.5 12.3-.8 17.2l43.5 46.4c4.5 4.9 12.1 5.1 17 .6z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">独立开发 · AI、工具与产品实战</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">从真实需求到上线复盘，持续构建可长期积累的数字产品。</p> </div> </div> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16zM464 96H345.94c-21.38 0-32.09 25.85-16.97 40.97l32.4 32.4L288 242.75l-73.37-73.37c-12.5-12.5-32.76-12.5-45.25 0l-68.69 68.69c-6.25 6.25-6.25 16.38 0 22.63l22.62 22.62c6.25 6.25 16.38 6.25 22.63 0L192 237.25l73.37 73.37c12.5 12.5 32.76 12.5 45.25 0l96-96 32.4 32.4c15.12 15.12 40.97 4.41 40.97-16.97V112c.01-8.84-7.15-16-15.99-16z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">投资思考 · 复利、风险与长期主义</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">分享投资体系、市场观察和个人决策复盘，不构成投资建议。</p> </div> </div> </div> <div class="mt-6 text-center text-sm font-black leading-relaxed text-slate-300">
+扫码关注微信公众号 <span class="text-orange-400">“贵州户外”</span> <p class="mt-1 text-xs font-bold text-slate-500">获取户外路线、独立开发与投资复盘的最新内容</p> </div> <button id="wechat-modal-confirm" type="button" class="mt-7 w-full rounded-[24px] bg-white px-6 py-4 text-sm font-black tracking-[0.12em] text-slate-950 shadow-xl transition hover:-translate-y-0.5 hover:bg-slate-100 active:translate-y-0">
+知道了 / CLOSE
+</button> </div> </div> </div> <script type="module">const b="/assets/xbstack-wechat-qr.webp";function f(){const t=document.getElementById("wechat-modal"),y=document.getElementById("wechat-modal-backdrop"),a=document.getElementById("wechat-modal-content"),w=document.getElementById("wechat-modal-close"),E=document.getElementById("wechat-modal-confirm"),c=document.getElementById("wechat-modal-qr"),s=document.getElementById("wechat-hover-card"),i=document.getElementById("wechat-hover-qr");if(!t||!a||!s)return;let l=0;const p=window.matchMedia("(hover: hover) and (pointer: fine)"),u=e=>{const n=e.dataset.wechatQr||b;c&&c.src!==new URL(n,window.location.href).href&&(c.src=n),i&&i.src!==new URL(n,window.location.href).href&&(i.src=n)},o=()=>{window.clearTimeout(l),s.classList.add("opacity-0","translate-y-2"),l=window.setTimeout(()=>s.classList.add("hidden"),180)},v=e=>{if(!p.matches||!t.classList.contains("hidden"))return;window.clearTimeout(l),u(e),s.classList.remove("hidden");const n=e.getBoundingClientRect(),L=300,B=250,r=12;let m=n.left+n.width/2-L/2;m=Math.max(r,Math.min(m,window.innerWidth-L-r));let h=n.top-B-12;h<r&&(h=n.bottom+12),s.style.left=`${m}px`,s.style.top=`${h}px`,requestAnimationFrame(()=>s.classList.remove("opacity-0","translate-y-2"))},I=e=>{o(),u(e),t.classList.remove("hidden"),t.classList.add("flex"),t.setAttribute("aria-hidden","false"),document.body.style.overflow="hidden",requestAnimationFrame(()=>{a.classList.remove("scale-95","opacity-0"),a.classList.add("scale-100","opacity-100"),w?.focus()})},d=()=>{a.classList.remove("scale-100","opacity-100"),a.classList.add("scale-95","opacity-0"),window.setTimeout(()=>{t.classList.add("hidden"),t.classList.remove("flex"),t.setAttribute("aria-hidden","true"),document.body.style.overflow=""},260)};document.querySelectorAll(".wechat-trigger").forEach(e=>{e.dataset.wechatInitialized!=="true"&&(e.dataset.wechatInitialized="true",e.addEventListener("mouseenter",()=>v(e)),e.addEventListener("mouseleave",o),e.addEventListener("focus",()=>v(e)),e.addEventListener("blur",o),e.addEventListener("click",n=>{n.preventDefault(),I(e)}))}),t.dataset.wechatInitialized!=="true"&&(t.dataset.wechatInitialized="true",w?.addEventListener("click",d),E?.addEventListener("click",d),y?.addEventListener("click",d),document.addEventListener("keydown",e=>{e.key==="Escape"&&!t.classList.contains("hidden")&&d()}),window.addEventListener("scroll",o,{passive:!0}),window.addEventListener("resize",o))}f();document.addEventListener("astro:page-load",f);</script> <script>
+      const showLanguageSwitchNotice = () => {
+        let payload = null;
+        try {
+          const raw = sessionStorage.getItem('xbstack_language_notice');
+          if (!raw) return;
+          payload = JSON.parse(raw);
+          sessionStorage.removeItem('xbstack_language_notice');
+        } catch (error) {
+          return;
+        }
+
+        const notice = document.getElementById('language-switch-notice');
+        if (!notice) return;
+
+        const targetIsEnglish = String(payload?.language || '').toLowerCase().startsWith('en');
+        notice.textContent = targetIsEnglish
+          ? 'This page does not have an English version yet. You have been taken to the English home page.'
+          : '当前页面暂未提供中文版本，已为你打开中文首页。';
+        notice.classList.remove('hidden');
+        window.setTimeout(() => notice.classList.add('hidden'), 4800);
+      };
+
+      document.addEventListener('astro:page-load', showLanguageSwitchNotice);
+      showLanguageSwitchNotice();
+    </script> </body> </html>

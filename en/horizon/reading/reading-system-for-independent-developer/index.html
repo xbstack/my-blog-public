@@ -1,0 +1,937 @@
+<!DOCTYPE html><html lang="en" class="dark" data-analytics="ga4-baidu"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script>
+      const applyTheme = () => {
+        const theme = localStorage.getItem("theme");
+        const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      };
+      applyTheme();
+      document.addEventListener("astro:page-load", applyTheme);
+    </script><script>(function(){const currentLanguage = "en";
+const languageAlternates = [{"lang":"zh-CN","href":"https://www.xbstack.com/horizon/reading/reading-system-for-independent-developer/"},{"lang":"en","href":"https://www.xbstack.com/en/horizon/reading/reading-system-for-independent-developer/"},{"lang":"x-default","href":"https://www.xbstack.com/horizon/reading/reading-system-for-independent-developer/"}];
+
+      (() => {
+        const normalizeLanguage = (value) => String(value || '').toLowerCase().startsWith('en') ? 'en' : 'zh-CN';
+        const readCookie = (name) => {
+          const prefix = `${name}=`;
+          const item = document.cookie.split(';').map((part) => part.trim()).find((part) => part.startsWith(prefix));
+          return item ? decodeURIComponent(item.slice(prefix.length)) : '';
+        };
+
+        let preferredLanguage = readCookie('xbstack_lang');
+        if (!preferredLanguage) {
+          try {
+            preferredLanguage = localStorage.getItem('xbstack_lang') || '';
+          } catch (error) {}
+        }
+
+        if (!preferredLanguage) {
+          const browserLanguage = Array.isArray(navigator.languages) && navigator.languages.length
+            ? navigator.languages[0]
+            : navigator.language;
+          preferredLanguage = normalizeLanguage(browserLanguage);
+          document.cookie = `xbstack_lang=${encodeURIComponent(preferredLanguage)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+          try {
+            localStorage.setItem('xbstack_lang', preferredLanguage);
+          } catch (error) {}
+        }
+
+        const preferred = normalizeLanguage(preferredLanguage);
+        const current = normalizeLanguage(currentLanguage);
+        const target = (languageAlternates || []).find((item) => normalizeLanguage(item.lang) === preferred);
+        const redirectKey = `xbstack_auto_lang:${window.location.pathname}:${preferred}`;
+
+        if (target && preferred !== current && !sessionStorage.getItem(redirectKey)) {
+          const targetUrl = new URL(target.href, window.location.origin);
+          if (targetUrl.pathname !== window.location.pathname) {
+            sessionStorage.setItem(redirectKey, '1');
+            window.location.replace(targetUrl.href);
+          }
+        }
+      })();
+    })();</script><title>I No Longer Write Book Reviews: How a Programmer Turned Reading into a Decision System | Horizon - XBSTACK</title><meta name="description" content="A programmer's journey from simply finishing books to building a decision-making framework. By integrating note-taking, critical questions, action items, investment post-mortems, product assessments, and content archival on a personal website, reading becomes a core component of long-term asset accumulation."><meta name="keywords" content="Reading, Decision System, Independent Developer, Personal Knowledge Management, Long-term Thinking"><meta name="theme-color" content="#050608"><meta name="robots" content="noindex,follow"><meta property="og:type" content="article"><meta property="og:locale" content="en_US"><meta property="og:url" content="https://www.xbstack.com/en/horizon/reading/reading-system-for-independent-developer/"><meta property="og:title" content="I No Longer Write Book Reviews: How a Programmer Turned Reading into a Decision System | Horizon - XBSTACK"><meta property="og:description" content="A programmer's journey from simply finishing books to building a decision-making framework. By integrating note-taking, critical questions, action items, investment post-mortems, product assessments, and content archival on a personal website, reading becomes a core component of long-term asset accumulation."><meta property="og:image" content="https://www.xbstack.com/_astro/reading-system-for-independent-developer.BTNukRGu.jpg"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/en/horizon/reading/reading-system-for-independent-developer/"><meta property="twitter:title" content="I No Longer Write Book Reviews: How a Programmer Turned Reading into a Decision System | Horizon - XBSTACK"><meta property="twitter:description" content="A programmer's journey from simply finishing books to building a decision-making framework. By integrating note-taking, critical questions, action items, investment post-mortems, product assessments, and content archival on a personal website, reading becomes a core component of long-term asset accumulation."><meta property="twitter:image" content="https://www.xbstack.com/_astro/reading-system-for-independent-developer.BTNukRGu.jpg"><link rel="canonical" href="https://www.xbstack.com/en/horizon/reading/reading-system-for-independent-developer/"><link rel="alternate" hreflang="zh-CN" href="https://www.xbstack.com/horizon/reading/reading-system-for-independent-developer/"><link rel="alternate" hreflang="en" href="https://www.xbstack.com/en/horizon/reading/reading-system-for-independent-developer/"><link rel="alternate" hreflang="x-default" href="https://www.xbstack.com/horizon/reading/reading-system-for-independent-developer/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Precision Tools","description":"AI finance analyzer, compound calculator, Lunest and practical product tools.","url":"https://www.xbstack.com/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Thinking","description":"Investing notes, reading system, decision system and long-term thinking.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Photography and Gear","description":"Guizhou outdoor field notes, photography, gear lab and real-life trust assets.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"About Xiaobai, the XBSTACK asset system and the slogan 在高处看世界，在底层堆资产.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"I No Longer Write Book Reviews: How a Programmer Turned Reading into a Decision System","description":"A programmer's journey from simply finishing books to building a decision-making framework. By integrating note-taking, critical questions, action items, investment post-mortems, product assessments, and content archival on a personal website, reading becomes a core component of long-term asset accumulation.","image":"https://www.xbstack.com/_astro/reading-system-for-independent-developer.BTNukRGu.jpg","datePublished":"2026-06-16T00:00:00.000Z","dateModified":"2026-06-16T00:00:00.000Z","author":{"@type":"Person","name":"小白","url":"https://www.xbstack.com/about"},"publisher":{"@type":"Organization","name":"XBSTACK","logo":{"@type":"ImageObject","url":"https://www.xbstack.com/favicon/favicon.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.xbstack.com/en/horizon/reading/reading-system-for-independent-developer/"},"articleSection":"reading","keywords":["Reading","Decision System","Independent Developer","Personal Knowledge Management","Long-term Thinking"],"about":[{"@type":"Thing","name":"Reading"},{"@type":"Thing","name":"Decision System"},{"@type":"Thing","name":"Independent Developer"},{"@type":"Thing","name":"Personal Knowledge Management"},{"@type":"Thing","name":"Long-term Thinking"}],"speakable":{"@type":"SpeakableSpecification","cssSelector":[".markdown-content h2",".markdown-content p:first-of-type"]}}]}</script><meta property="article:published_time" content="Tue Jun 16 2026 08:00:00 GMT+0800 (China Standard Time)"><meta name="abstract" content="A programmer's journey from simply finishing books to building a decision-making framework. By integrating note-taking, critical questions, action items, investment post-mortems, product assessments, and content archival on a personal website, reading becomes a core component of long-term asset accumulation."><meta name="speakable-selector" content=".markdown-content h2, .markdown-content p"><meta name="ai-content-access" content="allowed"><meta name="geo-optimized" content="true"><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script async src="https://www.googletagmanager.com/gtag/js?id=G-1J4274CPMT"></script><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
+
+          if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function() {
+              window.dataLayer.push(arguments);
+            };
+            window.gtag('js', new Date());
+            window.gtag('config', googleAnalyticsId, { send_page_view: false });
+
+            window.__ga4_initialized = true;
+            window.__lastGA4PageKey = "";
+            window.__lastGA4PageLocation = document.referrer || "";
+            window.__scroll50Reported = false;
+            window.__scroll90Reported = false;
+
+            const getReferrerHost = () => {
+              try {
+                return document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+              } catch (err) {
+                return '';
+              }
+            };
+
+            const inferSourceHint = () => {
+              const refHost = getReferrerHost();
+              if (!refHost) return '';
+              if (refHost.includes('zhihu')) return 'zhihu_referrer';
+              if (refHost.includes('juejin')) return 'juejin_referrer';
+              if (refHost.includes('csdn')) return 'csdn_referrer';
+              if (refHost.includes('weixin') || refHost.includes('wechat')) return 'wechat_referrer';
+              if (refHost.includes('google')) return 'google_referrer';
+              if (refHost.includes('baidu')) return 'baidu_referrer';
+              return refHost;
+            };
+
+            const getAttributionPayload = () => {
+              const params = new URLSearchParams(window.location.search);
+              const current = {};
+              UTM_KEYS.forEach((key) => {
+                const value = params.get(key);
+                if (value) current[key] = value;
+              });
+
+              let stored = {};
+              try {
+                stored = JSON.parse(sessionStorage.getItem('xbstack_attribution') || '{}');
+              } catch (err) {
+                stored = {};
+              }
+
+              if (Object.keys(current).length) {
+                stored = {
+                  ...stored,
+                  ...current,
+                  landing_page: window.location.pathname,
+                  captured_at: new Date().toISOString(),
+                };
+                try {
+                  sessionStorage.setItem('xbstack_attribution', JSON.stringify(stored));
+                } catch (err) {}
+              }
+
+              return {
+                utm_source: stored.utm_source || '',
+                utm_medium: stored.utm_medium || '',
+                utm_campaign: stored.utm_campaign || '',
+                utm_term: stored.utm_term || '',
+                utm_content: stored.utm_content || '',
+                attribution_landing_page: stored.landing_page || '',
+                referrer_host: getReferrerHost(),
+                source_hint: inferSourceHint(),
+              };
+            };
+
+            window.xbTrackEvent = (eventName, payload = {}) => {
+              if (typeof window.gtag !== 'function' || !googleAnalyticsId || !eventName) return;
+              window.gtag('event', eventName, {
+                transport_type: 'beacon',
+                page_path: window.location.pathname,
+                page_title: document.title || '',
+                ...getAttributionPayload(),
+                ...payload,
+              });
+            };
+
+            window.sendGA4PageView = () => {
+              if (typeof window.gtag !== 'function' || !googleAnalyticsId) return;
+
+              const pageLocation = window.location.href;
+              const pageTitle = document.title || '';
+              const pageKey = `${pageLocation}|${pageTitle}`;
+
+              if (pageKey === window.__lastGA4PageKey) return;
+              const pageReferrer = window.__lastGA4PageLocation;
+              window.__lastGA4PageKey = pageKey;
+              window.__lastGA4PageLocation = pageLocation;
+              window.__scroll50Reported = false;
+              window.__scroll90Reported = false;
+
+              window.gtag('event', 'page_view', {
+                page_title: pageTitle,
+                page_location: pageLocation,
+                page_path: window.location.pathname,
+                page_search: window.location.search,
+                page_referrer: pageReferrer,
+                ...getAttributionPayload(),
+              });
+            };
+
+            window.initGA4Tracking = () => {
+              if (typeof window.gtag !== 'function') return;
+              if (window.__ga4_events_bound) return;
+              window.__ga4_events_bound = true;
+
+              // 1. 页面滚动深度上报
+              const handleScroll = () => {
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const progress = (scrollTop / scrollHeight) * 100;
+
+                if (progress >= 50 && !window.__scroll50Reported) {
+                  window.xbTrackEvent('scroll_50', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll50Reported = true;
+                }
+                if (progress >= 90 && !window.__scroll90Reported) {
+                  window.xbTrackEvent('scroll_90', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll90Reported = true;
+                }
+              };
+
+              window.addEventListener('scroll', handleScroll, { passive: true });
+
+              // 2. 交互、出站、工具与栏目入口点击上报
+              const handleClick = (e) => {
+                const target = e.target.closest('a,button');
+                if (!target) return;
+
+                const label = (target.getAttribute('aria-label') || target.textContent || '').trim().slice(0, 80);
+                if (target.tagName === 'BUTTON') {
+                  window.xbTrackEvent('click_button', {
+                    event_category: 'engagement',
+                    event_label: label,
+                  });
+                  return;
+                }
+
+                if (!target.href) return;
+                if (target.href.startsWith('#')) return;
+
+                try {
+                  const url = new URL(target.href, window.location.origin);
+                  const isExternal = url.origin !== window.location.origin;
+                  const payload = {
+                    event_label: target.href,
+                    link_text: label,
+                    link_url: url.href,
+                    link_path: url.pathname,
+                  };
+
+                  if (isExternal) {
+                    window.xbTrackEvent('click_external', {
+                      ...payload,
+                      event_category: 'outbound',
+                    });
+                  } else {
+                    if (url.pathname.startsWith('/go/')) {
+                      window.xbTrackEvent('affiliate_click', {
+                        ...payload,
+                        event_category: 'conversion',
+                        affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                      });
+                    }
+                    if (url.pathname.startsWith('/tools/') || url.pathname.startsWith('/compound-interest/')) {
+                      window.xbTrackEvent('click_tool', {
+                        ...payload,
+                        event_category: 'conversion',
+                      });
+                    }
+                    if (['/ai/', '/newsletter/', '/search/', '/life/', '/investing/'].some((prefix) => url.pathname.startsWith(prefix))) {
+                      window.xbTrackEvent('click_internal_entry', {
+                        ...payload,
+                        event_category: 'navigation',
+                      });
+                    }
+                  }
+                } catch (err) {}
+              };
+
+              const handleSubmit = (e) => {
+                const form = e.target;
+                if (!form || form.tagName !== 'FORM') return;
+                const action = form.getAttribute('action') || '';
+                const formType = form.getAttribute('data-analytics-form') || '';
+                const formData = new FormData(form);
+                const searchTerm = String(formData.get('q') || '').trim();
+
+                if (action.includes('/search') || formType === 'site-search') {
+                  window.xbTrackEvent('view_search_results', {
+                    event_category: 'site_search',
+                    search_term: searchTerm,
+                  });
+                }
+
+                if (action.includes('buttondown.email') || formType === 'newsletter') {
+                  window.xbTrackEvent('newsletter_subscribe_attempt', {
+                    event_category: 'conversion',
+                    event_label: window.location.pathname,
+                  });
+                }
+              };
+
+              document.addEventListener('click', handleClick);
+              document.addEventListener('submit', handleSubmit, true);
+            };
+
+            // 立即执行首屏发送与事件监听绑定，无需等待 DOMContentLoaded
+            window.sendGA4PageView();
+            window.initGA4Tracking();
+
+            document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+              window.sendGA4PageView();
+              window.initGA4Tracking();
+            });
+          } else {
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+            if (typeof window.sendGA4PageView === 'function') {
+              window.sendGA4PageView();
+            }
+          }
+        })();</script><script data-baidu-id="c7bfaf645bfc8974405a85c2a55573a0">
+          const baiduId = document.currentScript?.dataset.baiduId || '';
+          if (!window.__baidu_analytics_initialized) {
+            window._hmt = window._hmt || [];
+            window.__baidu_analytics_initialized = true;
+            window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+
+            const loadBaiduAnalytics = () => {
+              if (window.__baidu_script_loaded || !baiduId) return;
+              window.__baidu_script_loaded = true;
+              const hm = document.createElement('script');
+              hm.async = true;
+              hm.src = "https://hm.baidu.com/hm.js?" + baiduId;
+              document.head.appendChild(hm);
+              window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+            };
+
+            // 百度统计不是首屏渲染依赖：首次交互时加载，若用户未交互则 12 秒后加载。
+            ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(eventName, loadBaiduAnalytics, { once: true, passive: true });
+            });
+            window.setTimeout(loadBaiduAnalytics, 12000);
+
+            document.addEventListener('astro:page-load', () => {
+              const pageKey = window.location.pathname + window.location.search;
+              if (!window.__baidu_script_loaded || pageKey === window.__lastBaiduPageKey) return;
+              window.__lastBaiduPageKey = pageKey;
+              window._hmt.push(['_trackPageview', pageKey]);
+            });
+          }
+        </script><link rel="stylesheet" href="/_astro/index.Ci2fC5DT.css">
+<link rel="stylesheet" href="/_astro/_slug_.BfiWXHpa.css">
+<link rel="stylesheet" href="/_astro/vendor-media.DSulWsr7.css">
+<style>.glass-button[data-astro-cid-xwnkcw7l]{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:var(--sizeGap);padding:var(--sizePadding);background:var(--variantBase);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--variantBorder);border-radius:var(--sizeBorderRadius);font-size:var(--sizeFontSize);font-weight:500;color:var(--variantColor);cursor:pointer;transition:all .3s cubic-bezier(.175,.885,.32,2.2);box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d;-webkit-user-select:none;-moz-user-select:none;user-select:none;overflow:hidden;text-decoration:none;white-space:nowrap}.glass-button[data-astro-cid-xwnkcw7l]:before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,var(--variantGradient),transparent);transition:left .6s cubic-bezier(.25,.46,.45,.94);pointer-events:none;opacity:0}.glass-button[data-astro-cid-xwnkcw7l]:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);transform:translateY(-4px) scale(1.03);box-shadow:0 20px 25px -5px var(--variantShadow),0 15px 15px -5px #0000004d,inset 1px 1px 4px #ffffff80;filter:brightness(1.2) saturate(1.3)}.glass-button[data-astro-cid-xwnkcw7l]:hover:before{left:100%;opacity:1}.glass-button[data-astro-cid-xwnkcw7l]:active{transform:translateY(-1px) scale(.98);box-shadow:0 2px 6px var(--variantShadow)}.glass-button[data-astro-cid-xwnkcw7l]:disabled{cursor:not-allowed;opacity:.6;transform:none;pointer-events:none}.glass-button[data-astro-cid-xwnkcw7l]:disabled:hover{transform:none;box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d}.glass-button__icon[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;justify-content:center;width:var(--sizeIconSize);height:var(--sizeIconSize);transition:all .3s cubic-bezier(.175,.885,.32,2.2)}.glass-button__icon[data-astro-cid-xwnkcw7l] svg{width:100%;height:100%}.glass-button[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{transform:scale(1.2) rotate(-5deg);filter:drop-shadow(0 0 4px var(--variantShadow))}.glass-button__content[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;transition:all .3s ease}.glass-button__spinner[data-astro-cid-xwnkcw7l]{width:var(--sizeIconSize);height:var(--sizeIconSize);animation:spin 1s linear infinite}.dark[data-astro-cid-xwnkcw7l]{.glass-button{background:#37373799;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-color:#ffffff26;color:#e5e7eb;box-shadow:0 4px 8px #0006,inset 1px 1px 3px #ffffff26}.glass-button:before{background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}.glass-button:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);box-shadow:0 6px 14px var(--variantShadow),inset 1px 1px 4px #fff3;filter:brightness(1.2) saturate(1.3)}}@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.glass-button--primary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--secondary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(37,99,235,.5))}.glass-button--success[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(22,163,74,.5))}.glass-button--warning[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(217,119,6,.5))}.glass-button--danger[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--info[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(99,102,241,.5))}
+</style></head> <body class="bg-white dark:bg-[#050608] text-slate-950 dark:text-white selection:bg-orange-500/20 selection:text-orange-500 overflow-x-hidden"> <style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value=="object"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};"requestIdleCallback"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event("astro:idle"));})();</script><script>(()=>{var A=Object.defineProperty;var g=(i,o,a)=>o in i?A(i,o,{enumerable:!0,configurable:!0,writable:!0,value:a}):i[o]=a;var d=(i,o,a)=>g(i,typeof o!="symbol"?o+"":o,a);{let i={0:t=>m(t),1:t=>a(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(a(t)),5:t=>new Set(a(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t),11:t=>1/0*t},o=t=>{let[l,e]=t;return l in i?i[l](e):void 0},a=t=>t.map(o),m=t=>typeof t!="object"||t===null?t:Object.fromEntries(Object.entries(t).map(([l,e])=>[l,o(e)]));class y extends HTMLElement{constructor(){super(...arguments);d(this,"Component");d(this,"hydrator");d(this,"hydrate",async()=>{var b;if(!this.hydrator||!this.isConnected)return;let e=(b=this.parentElement)==null?void 0:b.closest("astro-island[ssr]");if(e){e.addEventListener("astro:hydrate",this.hydrate,{once:!0});return}let c=this.querySelectorAll("astro-slot"),n={},h=this.querySelectorAll("template[data-astro-template]");for(let r of h){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("data-astro-template")||"default"]=r.innerHTML,r.remove())}for(let r of c){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("name")||"default"]=r.innerHTML)}let p;try{p=this.hasAttribute("props")?m(JSON.parse(this.getAttribute("props"))):{}}catch(r){let s=this.getAttribute("component-url")||"<unknown>",v=this.getAttribute("component-export");throw v&&(s+=` (export ${v})`),console.error(`[hydrate] Error parsing props for component ${s}`,this.getAttribute("props"),r),r}let u;await this.hydrator(this)(this.Component,p,n,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),this.dispatchEvent(new CustomEvent("astro:hydrate"))});d(this,"unmount",()=>{this.isConnected||this.dispatchEvent(new CustomEvent("astro:unmount"))})}disconnectedCallback(){document.removeEventListener("astro:after-swap",this.unmount),document.addEventListener("astro:after-swap",this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute("await-children")||document.readyState==="interactive"||document.readyState==="complete")this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener("DOMContentLoaded",e),c.disconnect(),this.childrenConnectedCallback()},c=new MutationObserver(()=>{var n;((n=this.lastChild)==null?void 0:n.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue==="astro:end"&&(this.lastChild.remove(),e())});c.observe(this,{childList:!0}),document.addEventListener("DOMContentLoaded",e)}}async childrenConnectedCallback(){let e=this.getAttribute("before-hydration-url");e&&await import(e),this.start()}async start(){let e=JSON.parse(this.getAttribute("opts")),c=this.getAttribute("client");if(Astro[c]===void 0){window.addEventListener(`astro:${c}`,()=>this.start(),{once:!0});return}try{await Astro[c](async()=>{let n=this.getAttribute("renderer-url"),[h,{default:p}]=await Promise.all([import(this.getAttribute("component-url")),n?import(n):()=>()=>{}]),u=this.getAttribute("component-export")||"default";if(!u.includes("."))this.Component=h[u];else{this.Component=h;for(let f of u.split("."))this.Component=this.Component[f]}return this.hydrator=p,this.hydrate},e,this)}catch(n){console.error(`[astro-island] Error hydrating ${this.getAttribute("component-url")}`,n)}}attributeChangedCallback(){this.hydrate()}}d(y,"observedAttributes",["props"]),customElements.get("astro-island")||customElements.define("astro-island",y)}})();</script><astro-island uid="ZWjsVO" prefix="r37" component-url="/_astro/GlobalLightbox.CqZePd56.js" component-export="default" renderer-url="/_astro/client.DkeD9bak.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;GlobalLightbox&quot;,&quot;value&quot;:true}"></astro-island> <astro-island uid="2nwVdo" prefix="r38" component-url="/_astro/AffiliatePopup.Bvi0-2cq.js" component-export="default" renderer-url="/_astro/client.DkeD9bak.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;AffiliatePopup&quot;,&quot;value&quot;:true}"></astro-island> <astro-island uid="Z1FWnUA" prefix="r39" component-url="/_astro/SearchBoot.DKwvAheT.js" component-export="default" renderer-url="/_astro/client.DkeD9bak.js" props="{&quot;lang&quot;:[0,&quot;en&quot;]}" ssr client="idle" opts="{&quot;name&quot;:&quot;SearchBoot&quot;,&quot;value&quot;:true}"></astro-island> <div id="app-background" class="fixed inset-0 z-[-1] h-full w-full pointer-events-none bg-slate-50 dark:bg-slate-950 transition-colors duration-500"> <div id="app-background-image" class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-500" data-day="/_astro/macos2.hYF-Pyun.webp" data-night="/_astro/macos2-night.DwJ7amhx.webp" aria-hidden="true"></div> <div class="absolute inset-0 bg-[#DFE1E6]/90 dark:bg-transparent backdrop-blur-[6px] pointer-events-none"></div> <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b82f611,transparent_50%)] dark:hidden pointer-events-none"></div> <div class="absolute inset-0 opacity-[0.08] dark:opacity-[0.03] pointer-events-none mix-blend-multiply" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+');"></div> </div> <script>
+  (() => {
+    const bindBackground = () => {
+      const root = document.documentElement;
+      const background = document.getElementById('app-background-image');
+      if (!background || background.dataset.themeObserverBound === 'true') return;
+
+      const applyBackground = () => {
+        const source = root.classList.contains('dark') ? background.dataset.night : background.dataset.day;
+        if (!source) return;
+        const nextValue = `url("${source}")`;
+        if (background.style.backgroundImage !== nextValue) {
+          background.style.backgroundImage = nextValue;
+        }
+      };
+
+      applyBackground();
+      const observer = new MutationObserver(applyBackground);
+      observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+      background.dataset.themeObserverBound = 'true';
+    };
+
+    bindBackground();
+    document.addEventListener('astro:page-load', bindBackground);
+  })();
+</script> <header class="w-full z-[500] sticky top-0"> <div class="container px-3 lg:px-8 max-w-[1440px] mx-auto py-4 md:py-6"> <div class="header-main relative group transition-all duration-500"> <div class="absolute inset-0 rounded-[35px] header-main-bg shadow-sm dark:shadow-[0_8px_50px_rgba(0,0,0,0.5)] border border-slate-200/50 dark:border-white/10"></div> <nav class="relative z-10 p-2 flex items-center min-h-[64px]"> <!-- Logo (旋转 & 呼吸灯) --> <div class="ml-4 flex-shrink-0"> <a href="/en/" class="flex items-center group/logo"> <div class="relative flex-none isolate w-10 h-10"> <img src="/favicon/favicon.svg" alt="XBSTACK" class="relative z-10 object-contain w-full h-full group-hover/logo:rotate-[360deg] transition-all duration-700"> <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-slate-900 z-20 animate-pulse"></div> </div> <div class="flex flex-col ml-3 text-left"> <span class="text-xl font-black italic tracking-tighter bg-gradient-to-r from-slate-900 via-sky-800 to-slate-900 dark:from-white dark:via-sky-400 dark:to-white bg-clip-text text-transparent uppercase font-brand leading-none">XBSTACK</span> <span class="text-[8px] font-mono font-bold text-green-500/70 uppercase tracking-widest leading-none mt-1">System Status: Online</span> </div> </a> </div> <!-- 桌面端导航 (新 IA 架构) --> <ul class="hidden xl:flex items-center gap-1 ml-10"> <li class="relative group/item"> <a href="/en/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Home  </a>  </li><li class="relative group/item"> <a href="/en/ai/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> AI  </a>  </li><li class="relative group/item"> <a href="/en/investing/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Investing  </a>  </li><li class="relative group/item"> <a href="/en/horizon/reading/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-blue-600 dark:text-blue-400 bg-blue-500/5"> Reading  </a>  </li><li class="relative group/item"> <a href="/en/life/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Life  </a>  </li><li class="relative group/item"> <a href="/en/tools/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Tools  </a>  </li> </ul> <!-- 功能区域 (时钟 & 搜索) --> <div class="flex items-center gap-3 ml-auto pr-4 relative z-[110]"> <div class="hidden 2xl:flex items-center gap-4 mr-4 border-r border-slate-200 dark:border-white/10 pr-6 text-right transition-all"> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-slate-400 uppercase">NYC</span><span id="clock-nyc" class="text-[9px] font-mono text-slate-500 font-bold">--:--</span></div> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-slate-400 uppercase">LDN</span><span id="clock-ldn" class="text-[9px] font-mono text-slate-500 font-bold">--:--</span></div> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-blue-500 uppercase italic">GY</span><span id="clock-tyo" class="text-[9px] font-mono text-slate-900 dark:text-white font-bold">--:--</span></div> </div> <div class="hidden sm:block"> <div class="language-switcher inline-flex items-center rounded-full border border-slate-200/60 bg-white/50 p-1 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5" aria-label="Language selector"> <a href="https://www.xbstack.com/horizon/reading/reading-system-for-independent-developer/" data-language-choice="zh-CN" data-language-current="false" data-language-available="true" title="切换到中文版本" class="flex min-w-8 items-center justify-center rounded-full px-2.5 py-2 text-[10px] font-black tracking-wider transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400">
+中
+</a> <a href="https://www.xbstack.com/en/horizon/reading/reading-system-for-independent-developer/" data-language-choice="en" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="Current language: English" class="flex min-w-8 items-center justify-center rounded-full px-2.5 py-2 text-[10px] font-black tracking-wider transition-all cursor-default bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-950">
+EN
+</a> </div> <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+    document.addEventListener('click', (event) => {
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+  }
+</script> </div> <div class="flex items-center gap-1.5"> <button id="global-search-trigger" type="button" aria-label="Open site search" class="w-10 h-10 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-blue-500 bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 rounded-full transition-all shadow-sm backdrop-blur-md cursor-pointer"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.81 173.81 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.81 173.81 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3zM97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8z"></path></svg></button> <div class="w-10 h-10 flex items-center justify-center bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 rounded-full hover:border-blue-500 transition-all"><div class="relative flex items-center justify-center w-full h-full"> <input class="sr-only" id="theme-switcher" data-theme-switcher type="checkbox"> <label class="flex items-center justify-center cursor-pointer w-full h-full group/theme" for="theme-switcher" aria-label="切换主题">  <svg class="w-5 h-5 transition-all duration-500 scale-100 dark:scale-0 opacity-100 dark:opacity-0 absolute text-orange-500 group-hover/theme:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg>  <svg class="w-5 h-5 transition-all duration-500 scale-0 dark:scale-100 opacity-0 dark:opacity-100 absolute text-sky-400 group-hover/theme:-rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </label> </div> <script>
+  // 立即执行以防止闪烁
+  (function() {
+    const theme = localStorage.getItem("theme");
+    const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  })();
+
+  // 页面加载和切换后的初始化逻辑
+  function initTheme() {
+    const themeSwitchers = document.querySelectorAll("[data-theme-switcher]");
+    const isDark = document.documentElement.classList.contains("dark");
+
+    // 同步所有切换按钮的状态
+    themeSwitchers.forEach((el) => {
+      el.checked = isDark;
+      
+      // 移除旧的监听器（如果存在），防止重复绑定
+      // 由于是匿名函数难以移除，我们采用 cloneNode 或者简单的标志位
+      // Astro 的 View Transitions 会重新运行脚本，所以只需确保不累积
+      // 最简单的方式是直接覆盖 onclick 或 onchange，但这里用 addEventListener
+      // 我们可以给元素加个标记
+      if (el.dataset.initialized) return;
+      
+      el.addEventListener("change", (e) => {
+        const checked = e.target.checked;
+        if (checked) {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        }
+        
+        // 同步其他可能存在的切换按钮（例如移动端和桌面端各有一个）
+        document.querySelectorAll("[data-theme-switcher]").forEach(other => {
+            if (other !== el) other.checked = checked;
+        });
+      });
+      
+      el.dataset.initialized = "true";
+    });
+  }
+
+  // 绑定事件
+  document.addEventListener("DOMContentLoaded", initTheme);
+  document.addEventListener("astro:page-load", initTheme);
+  document.addEventListener("astro:after-swap", initTheme);
+</script></div> </div> </div> <!-- 移动端 Toggle --> <div class="xl:hidden flex items-center ml-2"> <button id="mobile-menu-trigger" type="button" aria-label="Open navigation menu" aria-controls="mobile-menu" aria-expanded="false" class="w-10 h-10 flex items-center justify-center bg-white/20 dark:bg-black/20 rounded-full border border-slate-200/50 dark:border-white/10 text-slate-700 dark:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path></svg> </button> </div> </nav> </div> </div>  <div id="mobile-menu" class="fixed inset-0 z-[600] pointer-events-none invisible"> <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-500"></div> <aside id="mobile-menu-panel" class="absolute top-0 right-0 bottom-0 w-[300px] bg-white dark:bg-[#0B1020] border-l border-slate-200 dark:border-white/10 translate-x-full transition-transform duration-500 flex flex-col"> <div class="h-[72px] flex items-center justify-between px-6 border-b border-slate-100 dark:border-white/5"> <span class="text-xs font-black uppercase tracking-[0.3em] text-blue-500">Systems Menu</span> <button id="mobile-menu-close" type="button" aria-label="Close navigation menu" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg></button> </div> <div class="border-b border-slate-100 px-6 py-4 dark:border-white/5 sm:hidden"> <div class="language-switcher inline-flex items-center rounded-full border border-slate-200/60 bg-white/50 p-1 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5" aria-label="Language selector"> <a href="https://www.xbstack.com/horizon/reading/reading-system-for-independent-developer/" data-language-choice="zh-CN" data-language-current="false" data-language-available="true" title="切换到中文版本" class="flex min-w-8 items-center justify-center rounded-full px-2.5 py-2 text-[10px] font-black tracking-wider transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400">
+中
+</a> <a href="https://www.xbstack.com/en/horizon/reading/reading-system-for-independent-developer/" data-language-choice="en" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="Current language: English" class="flex min-w-8 items-center justify-center rounded-full px-2.5 py-2 text-[10px] font-black tracking-wider transition-all cursor-default bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-950">
+EN
+</a> </div> <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+    document.addEventListener('click', (event) => {
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+  }
+</script> </div> <nav class="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-1"> <div class="space-y-1"> <a href="/en/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Home  </a>  </div><div class="space-y-1"> <a href="/en/ai/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> AI  </a>  </div><div class="space-y-1"> <a href="/en/investing/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Investing  </a>  </div><div class="space-y-1"> <a href="/en/horizon/reading/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-blue-500 bg-blue-500/5"> Reading  </a>  </div><div class="space-y-1"> <a href="/en/life/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Life  </a>  </div><div class="space-y-1"> <a href="/en/tools/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Tools  </a>  </div> </nav> </aside> </div>  <script>
+    function updateClocks() {
+      const now = new Date();
+      const format = (tz) => now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: tz });
+      if (document.getElementById('clock-nyc')) document.getElementById('clock-nyc').innerText = format('America/New_York');
+      if (document.getElementById('clock-ldn')) document.getElementById('clock-ldn').innerText = format('Europe/London');
+      if (document.getElementById('clock-tyo')) document.getElementById('clock-tyo').innerText = format('Asia/Shanghai');
+    }
+    document.addEventListener('astro:page-load', () => { 
+      updateClocks(); 
+      setInterval(updateClocks, 60000);
+      const searchTrigger = document.getElementById('global-search-trigger');
+      if (searchTrigger) {
+        searchTrigger.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.dispatchEvent(new CustomEvent('xbstack:open-search'));
+        });
+      }
+      // Mobile Logic
+      const trigger = document.getElementById('mobile-menu-trigger');
+      const close = document.getElementById('mobile-menu-close');
+      const menu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const panel = document.getElementById('mobile-menu-panel');
+      const toggleMenu = (open) => {
+        if (!menu || !overlay || !panel) return;
+        trigger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        const englishUi = document.documentElement.lang.toLowerCase().startsWith('en');
+        trigger?.setAttribute('aria-label', open
+          ? (englishUi ? 'Close navigation menu' : '关闭导航菜单')
+          : (englishUi ? 'Open navigation menu' : '打开导航菜单'));
+        if (open) {
+          menu.classList.remove('invisible', 'pointer-events-none');
+          overlay.classList.add('opacity-100');
+          panel.classList.remove('translate-x-full');
+          document.body.style.overflow = 'hidden';
+          close?.focus();
+        } else {
+          overlay.classList.remove('opacity-100');
+          panel.classList.add('translate-x-full');
+          document.body.style.overflow = '';
+          setTimeout(() => { menu.classList.add('invisible', 'pointer-events-none'); }, 500);
+          trigger?.focus();
+        }
+      };
+      if (trigger) trigger.addEventListener('click', () => toggleMenu(true));
+      if (close) close.addEventListener('click', () => toggleMenu(false));
+      if (overlay) overlay.addEventListener('click', () => toggleMenu(false));
+    });
+    updateClocks();
+  </script> </header> <div id="language-switch-notice" class="pointer-events-none fixed left-1/2 top-24 z-[700] hidden max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/95 px-5 py-3 text-center text-sm font-bold text-slate-700 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 dark:text-slate-200" role="status" aria-live="polite"></div> <main id="main-content" class="flex-1">  <div id="reading-progress" class="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 z-[110] transition-all duration-300 w-0 shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div> <main class="pt-24 md:pt-32 pb-20"> <script type="module">function g(){const t=document.querySelector("header");return t?t.offsetHeight+32:140}function a(){document.querySelectorAll("[data-toc-link]").forEach(e=>{const n=e.cloneNode(!0);e.parentNode?.replaceChild(n,e),n.addEventListener("click",function(o){o.preventDefault();const r=o.currentTarget.getAttribute("href");if(!r)return;const c=r.substring(1),d=document.getElementById(c);if(d){const s=d.getBoundingClientRect(),i=window.pageYOffset||document.documentElement.scrollTop,u=g(),l=i+s.top-u;window.scrollTo({top:Math.max(0,l),behavior:"smooth"}),history.pushState(null,"",`#${c}`)}})})}document.addEventListener("DOMContentLoaded",a);document.addEventListener("astro:page-load",a);</script><div class="grid grid-cols-1 xl:grid-cols-[minmax(190px,230px)_minmax(0,860px)_minmax(190px,230px)] gap-6 xl:gap-8 2xl:gap-10 max-w-[1600px] justify-center mx-auto w-full px-4 md:px-6 xl:px-8"> <aside class="hidden xl:flex flex-col gap-8 sticky top-24 h-fit"> <div class="article-side-panel rounded-[28px] border p-6"> <div class="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-400 mb-5">Metadata</div> <div class="space-y-4 text-xs font-bold text-zinc-600 dark:text-zinc-400"> <div><span class="block text-[9px] uppercase tracking-[0.2em] text-zinc-400 mb-1">Updated</span>2026/06/16</div> <div><span class="block text-[9px] uppercase tracking-[0.2em] text-zinc-400 mb-1">Section</span>Reading</div>  </div> <div class="mt-5 flex flex-wrap gap-2"> <span class="text-[10px] px-2 py-1 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">#Reading</span><span class="text-[10px] px-2 py-1 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">#Decision System</span><span class="text-[10px] px-2 py-1 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">#Independent Developer</span><span class="text-[10px] px-2 py-1 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">#Personal Knowledge Management</span><span class="text-[10px] px-2 py-1 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">#Long-term Thinking</span> </div> </div> <div class="flex flex-col gap-4"> <div class="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-400 px-2">相关文章</div> <div class="flex flex-col gap-3"> <a href="/horizon/reading/en/hackers-and-painters/" class="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 hover:border-blue-500/40 transition-colors"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">investing</div> <h4 class="text-xs font-black line-clamp-2 text-zinc-800 dark:text-zinc-200">Revisiting &#39;Hackers &amp; Painters&#39; in the AI Era: The Logic of Asset-Based Survival for Full-Stack Developers</h4> </a><a href="/horizon/reading/en/poor-charlies-almanack/" class="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 hover:border-blue-500/40 transition-colors"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">investing</div> <h4 class="text-xs font-black line-clamp-2 text-zinc-800 dark:text-zinc-200">Charlie Munger&#39;s Investment Philosophy: Latticework Thinking, Multidisciplinary Audits, and the Engineer&#39;s Decision System</h4> </a><a href="/horizon/reading/en/the-great-game-reading-notes/" class="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 hover:border-blue-500/40 transition-colors"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">investing</div> <h4 class="text-xs font-black line-clamp-2 text-zinc-800 dark:text-zinc-200">Hardcore Gear &amp; Outdoor Logs: The Great Financial History Game: Digital Asset Sovereignty in 2026 Through the Rise and Fall of Wall Street</h4> </a> </div> </div> </aside> <main class="min-w-0 w-full max-w-[920px] mx-auto xl:max-w-none"> <div class="article-paper rounded-[32px] md:rounded-[44px] border p-5 sm:p-7 md:p-10"> <div class="entry-header-root animate-fadeUp mb-16" data-astro-cid-wy6pnlvm> <div class="relative" data-astro-cid-wy6pnlvm>  <div class="w-full aspect-[40/21] rounded-[28px] md:rounded-[36px] overflow-hidden shadow-2xl mb-10 md:mb-12 relative group bg-slate-500/5 backdrop-blur-2xl" data-astro-cid-wy6pnlvm> <img src="/_astro/reading-system-for-independent-developer.BTNukRGu_Hdpov.webp" alt="I No Longer Write Book Reviews: How a Programmer Turned Reading into a Decision System - XBSTACK" sizes="(min-width: 1280px) 860px, (min-width: 768px) 900px, calc(100vw - 32px)" loading="eager" fetchpriority="high" data-astro-cid-wy6pnlvm="true" decoding="async" width="1200" height="630" class="w-full h-full transition-transform duration-1000 group-hover:scale-105 object-contain p-8">  <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" data-astro-cid-wy6pnlvm></div> </div> <div class="px-1 sm:px-3 md:px-5 xl:px-6" data-astro-cid-wy6pnlvm>  <div class="flex flex-wrap gap-3 mb-8" data-astro-cid-wy6pnlvm> <a href="/horizon/reading/" class="liquid-capsule text-orange-700 dark:text-white border-orange-500/20 dark:border-white/10 whitespace-nowrap inline-flex items-center shrink-0" data-astro-cid-wy6pnlvm> <div class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse shrink-0" data-astro-cid-wy6pnlvm></div> <span class="ml-2 font-black" data-astro-cid-wy6pnlvm>知识书架</span> </a> </div>  <h1 class="entry-title text-4xl sm:text-5xl xl:text-[3.5rem] not-italic font-black mb-8 md:mb-10 leading-[1.08] tracking-tighter text-balance" data-astro-cid-wy6pnlvm>I No Longer Write Book Reviews: How a Programmer Turned Reading into a Decision System</h1>  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12" data-astro-cid-wy6pnlvm> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-orange-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-orange-600 dark:text-orange-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Release Date</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-4 h-4 text-orange-600/50 dark:text-orange-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm>2026-06-16</div> </div> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-blue-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-blue-600 dark:text-blue-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Reading Time</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="w-4 h-4 text-blue-600/50 dark:text-blue-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm>14分钟</div> </div> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-emerald-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Content Size</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 384 512" class="w-4 h-4 text-emerald-600/50 dark:text-emerald-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M288 248v28c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-28c0-6.6 5.4-12 12-12h168c6.6 0 12 5.4 12 12zm-12 72H108c-6.6 0-12 5.4-12 12v28c0 6.6 5.4 12 12 12h168c6.6 0 12-5.4 12-12v-28c0-6.6-5.4-12-12-12zm108-188.1V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V48C0 21.5 21.5 0 48 0h204.1C264.8 0 277 5.1 286 14.1L369.9 98c9 8.9 14.1 21.2 14.1 33.9zm-128-80V128h76.1L256 51.9zM336 464V176H232c-13.3 0-24-10.7-24-24V48H48v416h288z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm> 23,784 chars
+</div> </div> </div>  <div class="flex flex-wrap items-center gap-2" data-astro-cid-wy6pnlvm> <div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M448 360V24c0-13.3-10.7-24-24-24H96C43 0 0 43 0 96v320c0 53 43 96 96 96h328c13.3 0 24-10.7 24-24v-16c0-7.5-3.5-14.3-8.9-18.7-4.2-15.4-4.2-59.3 0-74.7 5.4-4.3 8.9-11.1 8.9-18.6zM128 134c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm0 64c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm253.4 250H96c-17.7 0-32-14.3-32-32 0-17.6 14.4-32 32-32h285.4c-1.9 17.1-1.9 46.9 0 64z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>知识书架</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>Decision System</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>Independent Developer</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>Personal Knowledge Management</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>Long-term Thinking</span> </div> </div> </div> </div> </div>  <div class="mb-10 p-6 md:p-8 rounded-[30px] bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 relative overflow-hidden"> <div class="absolute top-0 left-0 w-1.5 h-full bg-blue-500"></div> <div class="text-[10px] font-black uppercase tracking-[0.28em] text-blue-500 mb-4">阅读线索</div> <p class="text-base md:text-lg font-bold text-slate-700 dark:text-slate-300 italic leading-relaxed"> Reading 不是普通书评。每篇都要回答：我带着什么问题读，拿书里的观点做了什么实践，现实验证结果如何，以及下一次怎样修改自己的判断。 </p> </div> <div class="prose prose-life markdown-content drop-cap">    <h2 id="what-this-guide-covers">What This Guide Covers</h2>
+<ul>
+<li>Why traditional note-taking methods like underlining and excerpting fail to change our behavior when we face real-world decisions.</li>
+<li>How to build a “reading as decision-making” feedback loop, physically mapping business and psychological theories onto technical R&#x26;D and systematic asset investment.</li>
+<li>Which three core questions to use for filtering and selecting non-fiction books worth deep reading.</li>
+<li>How independent developers can leverage the Reading section of their personal websites to convert cognitive gains into long-term, compounding digital assets.</li>
+</ul>
+<hr>
+<h2 id="who-this-guide-is-for">Who This Guide Is For</h2>
+<ul>
+<li>Independent developers seeking a closed-loop architecture for knowledge monetization and personal knowledge management (PKM).</li>
+<li>Those who have hoarded hundreds or thousands of clipped articles and highlighted quotes but still feel anxious and unable to make sound decisions when confronted with actual problems.</li>
+<li>Thinkers attempting to establish a Reading section on their personal websites without reducing it to elementary school-style book reports.</li>
+<li>Pioneers trying to physically integrate cross-disciplinary reading (business, investing, psychology) with technical development and asset allocation.</li>
+</ul>
+<hr>
+<h2 id="1-why-i-no-longer-write-standard-book-reviews">1. Why I No Longer Write Standard Book Reviews</h2>
+<p>Many book reviews I’ve written merely prove that I read the book; they don’t prove that I actually used the content.</p>
+<p>In the past, when taking notes, I often fell into a trap of false self-satisfaction. Whenever I encountered a brilliant passage in a book—such as Nassim Taleb’s discussion on “fragility” versus “antifragility” in <em>Antifragile</em>, or Naval Ravikant’s assertions on “building leverage”—I would highlight it with various colored pens on my iPad or copy large chunks into Notion, categorizing them with tags. At the end of each year, I would write lengthy reviews on Douban, dissecting the author’s arguments layer by layer and adding deeply felt reflections.</p>
+<p>But this method of reading quickly became ineffective.</p>
+<p>Once, while debugging a Python script inside a Feiniu NAS Docker container to periodically scrape and analyze cryptocurrency on-chain data, I encountered continuous network timeouts. This caused errors that filled up my local logs and led to an out-of-memory crash. It was 2:00 AM; outside my window lay the distinctive wind noise of late-night Beijing, beyond the Sixth Ring Road in Changping District. Inside, only the hot air from the NAS cooling fans blew steadily. Sitting at my computer, staring at the dense stack traces on the screen, I felt a wave of intense physical nausea. My mind was a blur.</p>
+<p>I should have immediately applied the logic from <em>Antifragile</em>—“gaining feedback through small-scale failures”—to design a distributed exception circuit breaker mechanism with exponential backoff retries. However, exhausted and frustrated, my first instinct was to emotionally fumble with configuration settings in the code, restart the container, and even doubt my own logic. By early morning, I had been banned by the service provider due to continuous errors.</p>
+<p>In that moment, I realized an absurd physical truth: despite having read so much theory on antifragility and written thousands of words praising Taleb’s wisdom in my reviews, when I truly stood at a crossroads of decision-making, those underlined and categorized “knowledge” did not alter my subconscious behavior in the slightest.</p>
+<p>My reading notes were scattered across the vast, chaotic directory structure of Notion, sinking rapidly over time. The reviews on Douban garnered a dozen likes and nothing more. They left behind only “empty shells of concepts” in my brain, never evolving into executable strategies.</p>
+<p>Many book reviews I’ve written merely prove that I read the book; they don’t prove that I actually used the content. This is why I decided to completely abolish the habit of writing reflections and summary reviews. I no longer pursue metrics based on the number of books read. Instead, I treat reading as an input source, directly aligning it with my daily decisions, code refactoring, product design, and asset allocation.</p>
+<hr>
+<h2 id="2-if-a-book-doesnt-change-your-judgment-it-will-disappear-quickly">2. If a Book Doesn’t Change Your Judgment, It Will Disappear Quickly</h2>
+<p>The utility of a book isn’t measured by how many sentences you remember, but by whether it changes a specific judgment.</p>
+<p>For a programmer who deals with logic and state machines all day, information that cannot be instantiated as some form of “behavioral update” is merely invalid cache in memory, ready to be cleared by the garbage collector at any moment.</p>
+<p>I began forcing myself to establish a feedback loop of “reading as decision-making.” Whenever I finished a book or encountered a particularly resonant logic within one, I stopped copying it down. Instead, I looked for: In my real life, is there a process currently running that needs to change direction because of this logic?</p>
+<p>Within my personal system, I identified four real-world decision scenarios that were fundamentally altered by reading:</p>
+<h3 id="1-homepage-redesign-decision-for-my-personal-website">1. Homepage Redesign Decision for My Personal Website</h3>
+<p>During the refactoring of the entire AltStack site, I fell into a severe trap of perfectionism. I spent an entire week tweaking the border radius of glassmorphism cards on the homepage and refining CSS gradient transition animations. I even repeatedly modified the <code>link preload</code> code in <code>BaseLayout.astro</code> just to shave off a fraction of a second—reducing the load time for the “Hanshan Half-Round” font on the first screen from 1.2 seconds to 0.8 seconds.</p>
+<p>Just as I was agonizing over whether to redesign the Lightbox preview effects for the bookshelf component, I reread the chapter on the “Minimum Viable Product (MVP)” in <em>The Lean Startup</em>. The author noted: Any effort beyond what is necessary to validate the core value is waste.</p>
+<p>Those words pricked me awake like a needle. I was using “perfecting the website’s appearance” as an excuse to avoid “producing high-quality content.” So, I made a decisive physical decision:</p>
+<ul>
+<li>Immediately halt all non-essential CSS fine-tuning.</li>
+<li>Take the version of AltStack that had already been localized and had basic typography fixes applied, bind it to the new domain xbstack.com, and launch it.</li>
+<li>Force my energy back into writing the cornerstone articles on Stack and Horizon.</li>
+</ul>
+<p>It turned out this choice was entirely correct. After the site went live, users focused solely on the practical code and investment logic in the articles. Not a single person emailed to complain that my card border radius wasn’t round enough.</p>
+<h3 id="2-field-design-decisions-for-the-compound-interest-calculator-tool">2. Field Design Decisions for the Compound Interest Calculator Tool</h3>
+<p>When developing our compound interest calculator page (<code>/tools/compound-calculator/</code>), my initial design logic was extremely complex. I wanted to cram simple vs. compound interest comparisons, inflation adjustments, multiple additional contributions, dynamic tax rates, and even Monte Carlo simulations into input fields for the user.</p>
+<p>While debugging that massive, hard-to-hydrate React code, I came across <em>The Design of Everyday Things</em> discussion on “constraints” and “intentional guidance”: If a system’s control interface exceeds the user’s everyday mental model, their first reaction isn’t admiration for its power, but frustration and abandonment.</p>
+<p>This led me to make a painful decision:</p>
+<ul>
+<li>Removed 70% of the advanced configuration fields, streamlining the interface to just three core sliders: “Initial Principal,” “Annualized Return Rate,” and “Investment Term.”</li>
+<li>Hid high-level options like Monte Carlo simulations and inflation adjustments behind a secondary collapsible menu.</li>
+</ul>
+<p>After the simplified calculator went live, its average session duration and interaction frequency tripled. This experience profoundly taught me that the judgment gained from reading often manifests in your willingness to make the hard decision to “subtract.”</p>
+<h3 id="3-stop-loss-and-dollar-cost-averaging-decisions-amidst-market-volatility">3. Stop-Loss and Dollar-Cost Averaging Decisions Amidst Market Volatility</h3>
+<p>At the beginning of 2026, the big tech sector experienced a brutal downward correction driven by geopolitical tensions and shifting interest rate expectations. The core tech ETF I held lost 12% of its value within three days. My heart began racing uncontrollably as I watched the charts, my palms breaking out in a cold sweat.</p>
+<p>In the past, I likely would have let emotions drive me to either panic-sell out of pain or blindly go all-in to catch the falling knife.</p>
+<p>At the time, I forced myself to close my laptop and read Daniel Kahneman’s analysis of “prospect theory” and “loss aversion” in <em>Thinking, Fast and Slow</em>. Kahneman points out that the pain of a loss is roughly twice as intense as the pleasure of an equivalent gain. This evolutionary psychological instinct drives us to take irrational risks when we’re down (such as holding onto losing positions or doubling down) and to become overly conservative when we’re up.</p>
+<p>I realized that my urge to trade was driven not by rational expected value, but by an ancient genetic impulse to avoid perceived danger. So, I aligned my investment behavior with this insight:</p>
+<ul>
+<li>I uninstalled intraday market refresh apps from my phone and forcibly limited my market-checking frequency to once a week.</li>
+<li>I strictly executed my pre-established dollar-cost averaging strategy via automatic deductions, refraining from adjusting individual purchase amounts based on daily price fluctuations.</li>
+</ul>
+<p>This decision helped me avoid the sharpest bottom of that sell-off and successfully lowered my average cost basis during the subsequent two-month market rebound.</p>
+<h3 id="4-framework-selection-decisions-when-exploring-the-ai-tech-stack">4. Framework Selection Decisions When Exploring the AI Tech Stack</h3>
+<p>When AutoGen, CrewAI, and LangGraph are dominating GitHub feeds, it’s natural for a tinkerer like me—a full-stack engineer—to want to build demos with every framework, chasing the latest API features. This led to two weeks of configuring complex <code>requirements.txt</code> files and daily anxiety over an overwhelming flood of new terminology.</p>
+<p>Later, while reading about “first principles” and the history of technological evolution, I asked myself a question: What fundamental physical constraints are these agent frameworks actually solving?</p>
+<p>The answer is: building deterministic control flow and persistent state machines on top of unpredictable large model outputs.</p>
+<p>Once I grasped this, I immediately cut my research on other flashy frameworks and locked all my focus onto LangGraph’s directed graph and Checkpointer state machine architecture. This focus proved to be exactly what allowed us to build highly available multi-agent approval flows and isolation systems, rather than just a bunch of toys.</p>
+<hr>
+<h2 id="3-the-three-questions-i-ask-before-reading-a-book">3. The Three Questions I Ask Before Reading a Book</h2>
+<p>Whenever I start reading a non-fiction book, I write down three questions that force me to think critically on the first page or in my physical notebook:</p>
+<h3 id="1-what-problem-does-this-book-solve">1. What problem does this book solve?</h3>
+<p>I no longer care about “what the book says.” Instead, I look for “what specific pain point in human behavior or system operation the book is trying to address.”</p>
+<p>If a book is just piling up correct nonsense (like “you need to improve your cognition”), I will toss it in the trash after reading 10% of it. Only when a book precisely defines a problem and provides a breakdown of its underlying logic is it worth continuing to read.</p>
+<h3 id="2-can-it-change-one-of-my-decisions">2. Can it change one of my decisions?</h3>
+<p>After finishing a book, if all I feel is “that makes sense,” but it doesn’t change my actions tomorrow, my next technical decision, or my next capital allocation, then that book hasn’t truly entered my system. It’s just occupying memory in my brain without generating any I/O output.</p>
+<p>I force myself to write down at least one specific behavioral change. For example, after reading <em>Refactoring</em>, my change was: “From now on, any Node function exceeding 30 lines and containing more than two conditional branches must be immediately refactored and split after tests are written.”</p>
+<h3 id="3-can-it-be-solidified-into-website-content-tools-or-post-mortems">3. Can it be solidified into website content, tools, or post-mortems?</h3>
+<p>The core advantage of an indie developer is the compounding effect of physical assets. If I read a book and keep the knowledge only in my head, it will quickly decay to zero according to the forgetting curve.</p>
+<p>I need to convert it into:</p>
+<ul>
+<li>A practical case study on my personal website, serving as a cornerstone for my personal IP.</li>
+<li>A small tool (such as an algorithmic iteration of a compound interest calculator).</li>
+<li>A rigorous investment or product post-mortem report.</li>
+</ul>
+<p>Only reading that has been solidified can generate long-term compounding value for me around the clock on the server, much like code running 24 hours a day.</p>
+<hr>
+<h2 id="4-how-a-book-enters-my-personal-system">4. How a Book Enters My Personal System</h2>
+<p>To ensure reading generates real value, I have designed a physical conversion process similar to a data pipeline.</p>
+<p>This system ensures that every step from “information intake” to “asset accumulation” is deterministic and addressable:</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">信息输入 (书籍 / 深度报告 / 文献)
+  ↓
+提取观点 (在边栏或物理本子上记录核心逻辑，拒绝大段摘抄)
+  ↓
+映射现实 (寻找目前正在做的项目、持有的资产、或遇到的痛点)
+  ↓
+写成判断 (例如：“当系统节点超过 3 个且有局部状态时，必须使用 Subgraph”)
+  ↓
+执行行动 (修改代码，调整仓位，更新网站排版)
+  ↓
+沉淀复盘 (在个人网站上写下实战复盘，作为物理数字资产)
+</code></pre>
+<p>In this pipeline, the two most critical steps are “forming a judgment” and “taking action.”</p>
+<p>For example, when I read <em>Principles</em>, I didn’t copy down Dalio’s dozens of dense principles. Instead, I extracted his core methodology: turning decisions into algorithms and conducting systematic post-mortems after every decision based on the results.</p>
+<p>I translated this logic into a hard constraint for my main repository, <code>myblogAdmin</code>, regarding <code>git commit</code> standards: every commit must include a <code>Details</code> section clearly explaining “why the change was made” and “what was changed.” This minor rule adjustment has multiplied my code debugging efficiency by several times. This is what it looks like to translate reading into concrete decision-making.</p>
+<hr>
+<h2 id="5-what-does-reading-have-to-do-with-indie-development">5. What Does Reading Have to Do with Indie Development?</h2>
+<p>The hardest part of indie development isn’t writing code; it’s judging what is worth building.</p>
+<p>Many technically minded indie developers make the mistake of “looking for nails when you only have a hammer.” Because they are proficient in React or Go, they build flashy tools that lack genuine market demand. In the end, after spending half a year writing code, they might only garner a few lonely stars on GitHub, with zero commercial monetization.</p>
+<p>Reading serves as a “decision-making sandbox” during this process.</p>
+<ul>
+<li><strong>Reading business and market books:</strong> Not to learn MBA jargon from big tech companies, but to build a filter for identifying “pseudo-demands.” For instance, reading <em>From 0 to 1</em> taught me that if a product cannot be 10 times better than existing solutions in a specific niche, there is no need to write the first line of code.</li>
+<li><strong>Reading product design books:</strong> To curb the endless urge to add features. It reminds me that an indie developer’s survival depends on an extremely high efficiency ratio; every new feature adds infinite future maintenance costs and becomes a source of bugs.</li>
+<li><strong>Reading cybernetics and systems engineering books:</strong> To help me understand the boundaries of technical architecture. For example, while researching multi-agent collaboration, these books enabled me to design the hierarchy of Supervisors and Subgraphs from a system topology perspective, rather than writing out a chaotic mess of node calls.</li>
+</ul>
+<p>Code is merely the execution tool; judgment is the rudder that determines whether a project lives or dies. And reading is the lowest-cost sandbox for training that judgment.</p>
+<hr>
+<h2 id="6-what-is-the-relationship-between-reading-and-investing">6. What Is the Relationship Between Reading and Investing?</h2>
+<p>The most expensive thing in investing isn’t ignorance; it’s knowing what to do but failing to do it.</p>
+<p>In financial markets, publicly available information and analysis reports are severely overloaded. Almost everyone knows to “buy low and sell high,” to practice “long-termism,” and to “control position sizing.” So why do most people still go all-in at the peak of a bull market and cut their losses at the bottom of a bear market?</p>
+<p>Because our brains did not evolve for modern financial markets. When we see our account balances shrink, the amygdala sounds the alarm, releasing large amounts of cortisol and adrenaline. This is an intense physiological panic that physically blocks rational thought.</p>
+<p>At this point, the role of reading is to build a “psychological circuit breaker” for you.</p>
+<ul>
+<li><strong>Identify psychological anchors:</strong> After reading books on behavioral finance, when I feel the urge to catch a falling knife on a plummeting asset, my mind immediately flashes warnings about the “disposition effect” and “anchoring bias.” It forces me to stop and calculate the mathematical expectation rather than being misled by the illusion of “cheapness.”</li>
+<li><strong>Understand cycles and uncertainty:</strong> Re-reading <em>The Cycle</em> and <em>Fooled by Randomness</em> helps me understand that in complex nonlinear systems, short-term returns are often just the product of random noise, not proof that I have mastered the truth. This keeps me humble before the market, maintains a clear head during profitable periods, and curbs the impulse to add leverage indiscriminately.</li>
+</ul>
+<p>Books won’t tell me directly which stock will rise tomorrow, but they can physically hold back my hand from clicking the buy or sell button when the market falls into frenzy or panic, helping me avoid many costly, elementary mistakes.</p>
+<hr>
+<h2 id="7-what-is-the-relationship-between-reading-and-personal-websites">7. What Is the Relationship Between Reading and Personal Websites?</h2>
+<p>A personal website isn’t about uploading reading notes; it’s about turning reading into reusable assets.</p>
+<p>This is the fundamental reason we established the <code>Reading</code> section in AltStack.</p>
+<p>I don’t want this section to become a hollow display wall of book lists, nor do I want it cluttered with verbose text excerpts and superficial reflections like “this book was mind-blowing.” That offers no value to visitors and is merely dead information garbage for me.</p>
+<p>On xbstack.com, the future Reading section will strictly adhere to the following curation guidelines:</p>
+<h3 id="1-centered-on-decision-making-and-action-as-the-core-framework">1. Centered on “Decision-Making” and “Action” as the Core Framework</h3>
+<p>Every reading log must center on a single question: “How did this book change a specific parameter in my development, investing, or system-building?” For example:</p>
+<ul>
+<li>Which book led me to refactor the CSS scrollbars and first-screen loading logic of my blog.</li>
+<li>Which financial analysis book prompted me to adjust the allocation proportions of my household Barbell strategy.</li>
+</ul>
+<h3 id="2-rejecting-golden-quotes-and-vague-sentimentality">2. Rejecting Golden Quotes and Vague Sentimentality</h3>
+<p>No isolated golden quotes without context. Every theory must be paired with real-world error logs and post-mortem data from my FlyNAS, code editor, or securities trading account.</p>
+<p>This approach creates an organic ecosystem between the Reading column and the adjacent Thinking, Investing, and Tools columns:</p>
+<ul>
+<li>The <strong>Tools</strong> column is the “code implementation” of my decision-making logic (e.g., compound interest calculators).</li>
+<li>The <strong>Investing</strong> column represents my “capital deployment” in the market.</li>
+<li>The <strong>Thinking</strong> column captures my “localized reasoning” on complex problems.</li>
+<li>The <strong>Reading</strong> column serves as the “input source” and “algorithm library” for all underlying judgment.</li>
+</ul>
+<p>Only in this way does a personal website cease to be a simple static business card and become a high-value digital asset that continues to grow online.</p>
+<hr>
+<h2 id="8-books-i-keep-vs-books-i-discard">8. Books I Keep vs. Books I Discard</h2>
+<p>To prevent information overload, I enforce a strict “garbage collection mechanism” for both my physical bookshelf and digital reading library.</p>
+<p>I have organized my criteria for retaining and discarding books as follows:</p>
+<h3 id="1-books-i-firmly-retain-and-re-read">1. Books I Firmly Retain and Re-read</h3>
+<ul>
+<li>Books that repeatedly reshape your judgment: such as <em>Antifragile</em>, <em>Thinking, Fast and Slow</em>, and <em>Principles</em>. Each rereading reveals new mappings to current development or investment projects.</li>
+<li>Books that provide foundational mental models: basic works on cybernetics, probability theory, and evolutionary biology. These help me construct universal filters.</li>
+<li>Practical manuals with detailed troubleshooting and post-mortem analysis: whether covering technical architecture or business cases, only books that clearly document specific failure details offer real reference value.</li>
+</ul>
+<h3 id="2-books-to-ruthlessly-eliminate-and-clear-out">2. Books to Ruthlessly Eliminate and Clear Out</h3>
+<ul>
+<li>Books offering only emotional value: bestsellers that sell courses by pumping you up or manufacturing anxiety. They leave you with a brief physiological spike in excitement but no actionable behavioral interface.</li>
+<li>Books suitable only for quote-hunting: works whose viewpoints appear profound and grandiose but cannot be physically verified or algorithmized in reality.</li>
+<li>Books completely irrelevant to the specific problems you face: unless you are trying to completely relax your brain, do not force yourself to slog through academic tomes unrelated to your current survival, product development, or investments just to appear erudite. Human energy and memory bandwidth are extremely limited; you must reserve your cache for the most critical tasks.</li>
+</ul>
+<hr>
+<h2 id="9-common-pitfalls-and-cognitive-errors-mental-bug-logs">9. Common Pitfalls and “Cognitive Errors” (Mental Bug Logs)</h2>
+<p>As we convert reading into a decision-making system, our brains—functioning as biological computers—frequently trigger various “runtime anomalies” due to outdated evolutionary genes or cognitive habits.</p>
+<p>I have outlined these three most insidious “cognitive bugs,” along with their symptoms and countermeasures, below for easy self-audit at any time.</p>
+<h3 id="1-cognitiveerror-bufferoverflow-information-overload-with-zero-execution">1. CognitiveError: BufferOverflow (Information Overload with Zero Execution)</h3>
+<ul>
+<li>The symptom: Your bookmarks are overflowing with thousands of “to-read” technical and financial articles, you’re frantically subscribing to RSS feeds, yet you haven’t written a single line of code for your personal projects in the past month, nor have you conducted any systematic investment reviews.</li>
+<li>Error log (Mental State Logs):
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">CognitiveError: BufferOverflow. Internal memory full (99.8%).
+Information intake rate: 2.5MB/s. Action execution rate: 0.00KB/s.
+Decision processor is locked. Please flush caches or write code.
+</code></pre>
+</li>
+<li>Root cause: Equating the “thrill of acquiring information” with “skill improvement.” When the brain consumes new ideas, it releases dopamine, creating an illusion of growth that allows us to avoid the execution phase, which requires intense cognitive effort.</li>
+<li>Solution: Implement a physical circuit breaker for information intake. For one week, prohibit yourself from consuming any new content. Force yourself to actually run a feature in your local editor or write a complete post-mortem article.</li>
+</ul>
+<h3 id="2-memoryleak-notehoarding-hoarding-notes-without-ever-reviewing-them">2. MemoryLeak: NoteHoarding (Hoarding notes without ever reviewing them)</h3>
+<ul>
+<li>Symptom: You’ve created hundreds of beautifully formatted card notes in Obsidian or Notion, using incredibly complex bidirectional linking and tagging systems, but these notes have never been opened since the day they were created.</li>
+<li>Error Log (Mental State Logs):
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">MemoryLeak: NoteHoarding detected. Found 1024 orphan nodes in database 'PKM'.
+Last access time for 95% of nodes is > 180 days ago.
+System efficiency degraded due to excessive cognitive bookkeeping.
+</code></pre>
+</li>
+<li>Root Cause: Mistaking “organizing notes” for “mastering knowledge.” Complex management systems consume significant energy, and the tediousness of organizing itself kills the impulse to instantiate knowledge into action.</li>
+<li>Solution: Delete the 80% classification tags. Keep only a “Problem Area” and an “Action Area.” Any note that cannot be categorized as a specific to-do task or a current project bug fix should not be recorded or organized.</li>
+</ul>
+<h3 id="3-executionerror-opinionasdecision-blindly-trusting-others-opinions-as-your-own-judgment">3. ExecutionError: OpinionAsDecision (Blindly trusting others’ opinions as your own judgment)</h3>
+<ul>
+<li>Symptom: Buying into an investment because a prominent influencer recommended it, or blindly refactoring a tech stack based on a blog post from a major tech company, only to find yourself completely unsure how to handle the situation when the market drops or you hit an architectural bottleneck.</li>
+<li>Error Log (Mental State Logs):
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">ExecutionError: OpinionAsDecision. Current state logic imported from external source without local validation.
+Crash occurred at step 'handle_exception': missing local handler.
+</code></pre>
+</li>
+<li>Root cause: Directly adopting someone else’s “conclusions” without also adopting the “inputs and logic verification flow” they used to reach those conclusions. When external conditions shift, the brain crashes instantly due to a lack of underlying logical support.</li>
+<li>Solution: When incorporating any external viewpoint, you must run it through your own local data (e.g., compound interest calculator formulas, real-world performance benchmarking results) in a “local sandbox.” Only logic that passes this local validation should be written into your decision-making database.</li>
+</ul>
+<hr>
+<h2 id="10-general-reading-vs-decision-systems-comparison">10. General Reading vs. Decision Systems (Comparison)</h2>
+<p>To make the physical differences between these two reading modes more intuitive, we can compare them using the table below:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Dimension</th><th>Casual Reading (Read for Fun/Info)</th><th>Systematic Decision-Making Reading (Read for Decision)</th></tr></thead><tbody><tr><td>Ultimate Goal</td><td>Finish a book and gain the self-satisfaction of expanded knowledge</td><td>Alter a specific judgment or behavioral parameter in real life</td></tr><tr><td>Note Format</td><td>Copying long passages of quotes and writing vague reflections</td><td>Writing “decision rules” and “action checklists” that map directly to project bugs or assets</td></tr><tr><td>Knowledge Flow</td><td>One-way intake, eventually decaying to zero in brain memory following the forgetting curve</td><td>Closed-loop circulation, solidified into articles, tool algorithms, or investment reviews on a personal website</td></tr><tr><td>Filtering Mechanism</td><td>Follow the crowd: read whatever topic is trending or has an attractive cover.</td><td>Problem-oriented: only read books that address your current core pain points and long-term themes.</td></tr><tr><td>Facing Volatility</td><td>Still dragged by emotions and instincts, making irrational choices</td><td>Activate the instantiated “psychological circuit breaker” and strictly adhere to system parameters</td></tr></tbody></table>
+<hr>
+<h2 id="xi-conclusion-reading-is-not-about-appearing-profound">XI. Conclusion: Reading Is Not About Appearing Profound</h2>
+<p>I hope this <code>Reading</code> column will never become a dusty e-bookshelf or a collection of hollow reading reflections.</p>
+<p>It reads more like a long-term system log for a programmer: documenting which books truly informed my judgment while building the AltStack website, developing multi-agent tools, and managing household asset allocation; which theories helped me withstand the panic of real-world volatility; which seemingly grand ideas were ruthlessly overturned by reality; and which bore fruit over the long term through the power of compounding.</p>
+<p>The ultimate goal of reading isn’t to appear profound or to show off new jargon at dinner parties. It’s so that when we face our next choice, we make slightly fewer of the same mistakes as before.</p>
+<hr>
+<h2 id="faq">FAQ</h2>
+<h3 id="will-the-reading-section-feature-standard-book-reviews">Will the Reading section feature standard book reviews?</h3>
+<p>No. This section focuses on how a book maps to and influences my product judgment, investment post-mortems, personal website development, and long-term decision-making. I do not write pure summaries or reflections that lack real-world alignment.</p>
+<h3 id="should-programmers-read-technical-or-non-technical-books">Should programmers read technical or non-technical books?</h3>
+<p>Both are equally important. Technical books address how to implement (How), while non-technical books (business, investing, psychology, systems engineering) address what is worth doing (What) and how to make the right choices.</p>
+<h3 id="should-reading-notes-be-published-publicly-on-the-website">Should reading notes be published publicly on the website?</h3>
+<p>They can be, but simply posting excerpts isn’t recommended. It’s far more valuable to explain on the site how a book solved a specific, current real-world problem for you, and what changes it prompted in your codebase or asset allocation.</p>
+<h3 id="what-is-the-difference-between-the-reading-and-thinking-sections">What is the difference between the Reading and Thinking sections?</h3>
+<p>The Reading section starts with “books” and “system inputs,” documenting how knowledge is digested and converted into rules. The Thinking section starts with “actual pain points and practice,” recording local reflections and architectural explorations during the process of getting things done.</p>
+<h3 id="can-reading-directly-improve-my-investment-returns">Can reading directly improve my investment returns?</h3>
+<p>It cannot guarantee direct results. However, reading helps you establish clear psychological defense boundaries, allowing you to identify emotions, cycles, position sizing, and decision biases. In the long run, these are key determinants of your portfolio’s survival probability.</p>
+<h2 id="keep-reading">Keep Reading</h2>
+<p>A previous attempt failed validation: short-output:7->19. Correct those issues while preserving all content.</p>
+<ul>
+<li><a href="/en/ai/langgraph-thread-session-state-isolation/">LangGraph State Isolation in Practice: How to Design thread_id, session_id, and user_id</a></li>
+<li><a href="/en/ai/langgraph-memory-checkpointing-production-agents/">LangGraph Memory and Checkpointing for Production AI Agents</a></li>
+<li><a href="/en/investing/ultimate-compounding-guide/">How Independent Developers Can Build a Compound Interest Investment Model</a></li>
+<li><a href="/en/investing/thoughts/">Thinking | Systems Thinking, Digital Sovereignty, and Full-Stack Advancement</a></li>
+<li><a href="/en/tools/compound-calculator/">Compound Interest Calculator Tool</a></li>
+<li><a href="/en/tools/compound-calculator/">Compound Interest Calculator: Clarify the Rate of Return and Time Horizon First</a></li>
+<li><a href="/en/investing/programmer-fire-system/">Programmer FIRE System: Income, Cash Flow, and Risk Redundancy</a></li>
+<li><a href="/en/investing/">2026 Asset Allocation Draft: Framework Only, Not Investment Advice</a></li>
+</ul>   </div> <section class="mt-16 p-7 md:p-8 rounded-[32px] bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5"> <div class="flex items-center justify-between gap-4 mb-6"> <h2 class="text-xs font-black uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">下一步阅读</h2> <a href="/en/horizon/reading/" class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400 hover:underline">返回专题入口 →</a> </div> <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> <a href="/horizon/reading/en/hackers-and-painters/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">investing</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Revisiting &#39;Hackers &amp; Painters&#39; in the AI Era: The Logic of Asset-Based Survival for Full-Stack Developers</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">This reading is restructured around questions, practice, real-world validation, outcomes, and decision rules for next time.</p> </a><a href="/horizon/reading/en/poor-charlies-almanack/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">investing</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Charlie Munger&#39;s Investment Philosophy: Latticework Thinking, Multidisciplinary Audits, and the Engineer&#39;s Decision System</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Reading Practice Review: Approach books with specific questions, test mental models against real-world outcomes, and document decision rules for future reference.</p> </a><a href="/horizon/reading/en/the-great-game-reading-notes/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">investing</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Hardcore Gear &amp; Outdoor Logs: The Great Financial History Game: Digital Asset Sovereignty in 2026 Through the Rise and Fall of Wall Street</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Reading Practice Review: Read financial history with specific questions, validate viewpoints against real-world actions, record the results, and refine decision-making rules for future judgments.</p> </a><a href="/horizon/reading/en/naval-ravikant/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">investing</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">The Naval Experiment: How Programmers Can Use Code and Media Leverage to Achieve Social Mobility in 2026</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Reading and Practice Review: Approach The Almanack of Naval Ravikant with specific questions, test leverage concepts against real-world actions, record the results, and refine decision-making rules for next time.</p> </a> </div> </section> <section class="mt-8 p-7 md:p-8 rounded-[32px] border border-blue-200/60 dark:border-blue-500/20 bg-blue-50/55 dark:bg-blue-500/[0.04]"> <div class="flex items-center justify-between gap-4 mb-6"> <h2 class="text-xs font-black uppercase tracking-[0.28em] text-blue-600 dark:text-blue-400">继续探索</h2> <span class="text-[9px] font-black uppercase tracking-[0.18em] text-slate-400">XBSTACK Paths</span> </div> <div class="grid grid-cols-1 md:grid-cols-3 gap-4"> <a href="/horizon/reading/" class="group p-5 rounded-2xl bg-white/85 dark:bg-white/[0.035] border border-blue-100 dark:border-white/10 hover:border-blue-500/40 transition-colors"> <h3 class="text-sm font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Reading 总入口</h3> <p class="mt-2 text-xs font-bold leading-relaxed text-slate-500 dark:text-slate-400">阅读—实践—验证自己的长期复盘系统。</p> </a><a href="/horizon/" class="group p-5 rounded-2xl bg-white/85 dark:bg-white/[0.035] border border-blue-100 dark:border-white/10 hover:border-blue-500/40 transition-colors"> <h3 class="text-sm font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Horizon 资产系统</h3> <p class="mt-2 text-xs font-bold leading-relaxed text-slate-500 dark:text-slate-400">投资、阅读、独立开发和现金流的总入口。</p> </a><a href="/investing/" class="group p-5 rounded-2xl bg-white/85 dark:bg-white/[0.035] border border-blue-100 dark:border-white/10 hover:border-blue-500/40 transition-colors"> <h3 class="text-sm font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">投资复盘</h3> <p class="mt-2 text-xs font-bold leading-relaxed text-slate-500 dark:text-slate-400">把判断放进市场和工具里校验。</p> </a> </div> </section> <div class="xl:hidden mt-10 space-y-4"> <section class="bg-white/85 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-sm rounded-[24px] p-5 sm:p-6" aria-label="Author profile"><a href="/about/" class="group flex items-center gap-4 text-left" aria-label="About Xiaobai &#38; XBSTACK →"><div class="rounded-full overflow-hidden border-2 border-white dark:border-slate-800 shadow-md relative shrink-0 w-16 h-16"><img src="/_astro/demo.BzDyfp9G_1hGUOO.webp" alt="小白 / Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div><div class="min-w-0"><h3 class="text-base font-black text-slate-950 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+小白 / Xiaobai
+</h3><p class="mt-1 text-[9px] font-black uppercase tracking-[0.22em] text-blue-500">Full-Stack AI Engineer</p></div></a><p class="font-bold text-slate-600 dark:text-slate-400 leading-relaxed mt-4 text-sm">Full-stack developer documenting AI engineering, indie products, investing reviews and outdoor practice.</p><a href="/about/" class="mt-4 block text-center text-[10px] font-black tracking-[0.12em] text-blue-600 dark:text-blue-400 hover:underline">About Xiaobai &amp; XBSTACK →</a><div class="my-4 h-px bg-slate-100 dark:bg-white/5"></div><ul class="flex items-center w-full gap-2"><li class="min-w-0 flex-1 w-full"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/xbstack-wechat-qr.webp" aria-label="WeChat · 贵州户外"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="WeChat · 贵州户外" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="truncate">WeChat · 贵州户外</span> </span>  </button> </a></li><li class="min-w-0 flex-1 w-full"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span>GitHub</span> </span>  </button> </a></li></ul></section>  </div> <footer class="hidden xl:flex mt-20 pt-10 border-t border-zinc-200 dark:border-white/5 flex-col items-center gap-4"> <div class="font-serif italic text-zinc-400 dark:text-zinc-600 text-center">
+Written by Xiaobai
+  on 2026/06/16 </div> <div class="w-12 h-12 rounded-full border border-zinc-200 dark:border-white/10 flex items-center justify-center opacity-50 grayscale hover:grayscale-0 transition-all"> <span class="font-serif font-black text-xs">白</span> </div> </footer> <div class="mt-20"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-12 flex items-center gap-4 px-4"> <div class="h-[1px] flex-1 bg-zinc-200 dark:bg-white/5"></div> <span>Discussions</span> <div class="h-[1px] flex-1 bg-zinc-200 dark:bg-white/5"></div> </div> <div id="tcomment" class="markdown-content"></div>  <script>(function(){const twikooEnvId = "https://comments.xbstack.com";
+
+  document.addEventListener("astro:page-load", () => {
+    function loadTwikoo() {
+      const commentsContainer = document.getElementById("tcomment");
+      if (commentsContainer) {
+        // 如果已经初始化，跳过
+        if (commentsContainer.dataset.initialized) return;
+        commentsContainer.dataset.initialized = 'true';
+
+        if (!twikooEnvId) {
+          showError("留言模块未加载，Twikoo envId 未配置。");
+          return;
+        }
+        const script = document.createElement("script");
+        script.src =
+          "https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.min.js";
+        script.async = true;
+        script.onload = () => {
+          const initScript = document.createElement("script");
+          initScript.innerHTML = `
+            twikoo.init({
+                envId: '${twikooEnvId}',
+                el: '#tcomment',
+                onCommentLoaded: function() {
+                   // Twikoo 加载后的清理逻辑 (双重保险)
+                   const trash = document.querySelectorAll('.tk-admin, .tk-submit-action-icon, [title*="管理"], [title*="Settings"]');
+                   trash.forEach(el => el.remove());
+                }
+            });
+          `;
+          document.body.appendChild(initScript);
+
+          // 开启一个长效观察器，专门销毁这些动态出现的按钮
+          const cleaner = new MutationObserver(() => {
+            const adminBtn = document.querySelector('.tk-admin, .tk-submit-action-icon[title*="管理"], .tk-submit-action-icon[title*="Settings"]');
+            if (adminBtn) adminBtn.remove();
+          });
+          cleaner.observe(commentsContainer, { childList: true, subtree: true });
+        };
+        document.body.appendChild(script);
+      }
+    }
+
+    // 使用 IntersectionObserver 实现懒加载
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(() => {
+        if (entries[0].isIntersecting) {
+          loadTwikoo();
+          observer.disconnect(); // 只执行一次
+        }
+      });
+    }, { rootMargin: '300px' }); // 提前 300px 开始加载
+
+    const target = document.getElementById("tcomment");
+    if (target) observer.observe(target);
+
+    function showError(msg){
+      const list = document.getElementById("tcomment");
+      if(!list) return;
+      list.removeAttribute('aria-busy');
+      list.innerHTML = `
+        <div class="py-4">
+          <div class="text-center text-red-600 dark:text-red-400">
+            ${msg || "评论获取失败，请稍后重试。"}
+          </div>
+        </div>
+      `;
+      const btn = document.getElementById("rc-retry-btn");
+      if(btn){ btn.addEventListener("click", load, { once: true }); }
+    }
+    loadTwikoo();
+  });
+})();</script> </div> </div> </main> <script type="application/json" data-xbstack-geo-payload>{"version":"xbstack-geo-v1","visibility":"machine-readable-only","lang":"en","summary":"I No Longer Write Book Reviews: How a Programmer Turned Reading into a Decision System 是 XBSTACK Reading 栏目文章，按阅读—实践—验证自己的规则组织，重点回答这本书或观点如何影响现实判断、产品建设、投资复盘或户外决策。","tldr":["A programmer's journey from simply finishing books to building a decision-making framework. By integrating note-taking, critical questions, action items, investment post-mortems, product assessments, and content archival on a personal website, reading becomes a core component of long-term asset accumulation."],"questions":["这篇阅读文章解决了什么现实问题？","书里的观点被拿去做了什么实践？","现实验证结果如何？","下一次判断规则怎么修改？"],"entities":[{"name":"Reading","type":"Thing"},{"name":"Decision System","type":"Thing"},{"name":"Independent Developer","type":"Thing"},{"name":"Personal Knowledge Management","type":"Thing"},{"name":"Long-term Thinking","type":"Thing"},{"name":"reading","type":"Thing"},{"name":"horizon","type":"Thing"}],"links":[{"title":"Reading 总入口","href":"/horizon/reading/","desc":"阅读—实践—验证自己的长期复盘系统。"},{"title":"Horizon 资产系统","href":"/horizon/","desc":"投资、阅读、独立开发和现金流的总入口。"},{"title":"投资复盘","href":"/investing/","desc":"把判断放进市场和工具里校验。"},{"title":"Revisiting 'Hackers & Painters' in the AI Era: The Logic of Asset-Based Survival for Full-Stack Developers","href":"/horizon/reading/en/hackers-and-painters/","description":"This reading is restructured around questions, practice, real-world validation, outcomes, and decision rules for next time."},{"title":"Charlie Munger's Investment Philosophy: Latticework Thinking, Multidisciplinary Audits, and the Engineer's Decision System","href":"/horizon/reading/en/poor-charlies-almanack/","description":"Reading Practice Review: Approach books with specific questions, test mental models against real-world outcomes, and document decision rules for future reference."},{"title":"Hardcore Gear & Outdoor Logs: The Great Financial History Game: Digital Asset Sovereignty in 2026 Through the Rise and Fall of Wall Street","href":"/horizon/reading/en/the-great-game-reading-notes/","description":"Reading Practice Review: Read financial history with specific questions, validate viewpoints against real-world actions, record the results, and refine decision-making rules for future judgments."},{"title":"The Naval Experiment: How Programmers Can Use Code and Media Leverage to Achieve Social Mobility in 2026","href":"/horizon/reading/en/naval-ravikant/","description":"Reading and Practice Review: Approach The Almanack of Naval Ravikant with specific questions, test leverage concepts against real-world actions, record the results, and refine decision-making rules for next time."}]}</script> <aside class="hidden xl:flex flex-col gap-6 sticky top-24 h-fit"> <div class="article-side-panel rounded-[24px] border p-5"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-4">本文目录</div> <div class="liquid-glass-container "><div class="liquidGlass-wrapper dock !p-6"><div class="liquidGlass-effect-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-tint-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-shine  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-text  intersect:animate-fadeLeft transition-all duration-300 fast-slow"><div class="intersect:animate-fadeLeft" data-astro-cid-hop3l3kc><h2 class="text-2xl border-none mb-3" data-astro-cid-hop3l3kc>内容导航</h2><div class="max-h-96 overflow-y-auto" data-astro-cid-hop3l3kc><ul class="list-none m-0 space-y-1" data-astro-cid-hop3l3kc><li class="ml-0" data-astro-cid-hop3l3kc><a href="#what-this-guide-covers" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>What This Guide Covers</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#who-this-guide-is-for" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Who This Guide Is For</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#1-why-i-no-longer-write-standard-book-reviews" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>1. Why I No Longer Write Standard Book Reviews</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#2-if-a-book-doesnt-change-your-judgment-it-will-disappear-quickly" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>2. If a Book Doesn’t Change Your Judgment, It Will Disappear Quickly</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#1-homepage-redesign-decision-for-my-personal-website" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>1. Homepage Redesign Decision for My Personal Website</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#2-field-design-decisions-for-the-compound-interest-calculator-tool" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>2. Field Design Decisions for the Compound Interest Calculator Tool</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#3-stop-loss-and-dollar-cost-averaging-decisions-amidst-market-volatility" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>3. Stop-Loss and Dollar-Cost Averaging Decisions Amidst Market Volatility</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#4-framework-selection-decisions-when-exploring-the-ai-tech-stack" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>4. Framework Selection Decisions When Exploring the AI Tech Stack</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#3-the-three-questions-i-ask-before-reading-a-book" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>3. The Three Questions I Ask Before Reading a Book</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#1-what-problem-does-this-book-solve" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>1. What problem does this book solve?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#2-can-it-change-one-of-my-decisions" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>2. Can it change one of my decisions?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#3-can-it-be-solidified-into-website-content-tools-or-post-mortems" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>3. Can it be solidified into website content, tools, or post-mortems?</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#4-how-a-book-enters-my-personal-system" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>4. How a Book Enters My Personal System</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#5-what-does-reading-have-to-do-with-indie-development" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>5. What Does Reading Have to Do with Indie Development?</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#6-what-is-the-relationship-between-reading-and-investing" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>6. What Is the Relationship Between Reading and Investing?</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#7-what-is-the-relationship-between-reading-and-personal-websites" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>7. What Is the Relationship Between Reading and Personal Websites?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#1-centered-on-decision-making-and-action-as-the-core-framework" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>1. Centered on “Decision-Making” and “Action” as the Core Framework</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#2-rejecting-golden-quotes-and-vague-sentimentality" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>2. Rejecting Golden Quotes and Vague Sentimentality</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#8-books-i-keep-vs-books-i-discard" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>8. Books I Keep vs. Books I Discard</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#1-books-i-firmly-retain-and-re-read" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>1. Books I Firmly Retain and Re-read</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#2-books-to-ruthlessly-eliminate-and-clear-out" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>2. Books to Ruthlessly Eliminate and Clear Out</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#9-common-pitfalls-and-cognitive-errors-mental-bug-logs" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>9. Common Pitfalls and “Cognitive Errors” (Mental Bug Logs)</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#1-cognitiveerror-bufferoverflow-information-overload-with-zero-execution" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>1. CognitiveError: BufferOverflow (Information Overload with Zero Execution)</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#2-memoryleak-notehoarding-hoarding-notes-without-ever-reviewing-them" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>2. MemoryLeak: NoteHoarding (Hoarding notes without ever reviewing them)</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#3-executionerror-opinionasdecision-blindly-trusting-others-opinions-as-your-own-judgment" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>3. ExecutionError: OpinionAsDecision (Blindly trusting others’ opinions as your own judgment)</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#10-general-reading-vs-decision-systems-comparison" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>10. General Reading vs. Decision Systems (Comparison)</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#xi-conclusion-reading-is-not-about-appearing-profound" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>XI. Conclusion: Reading Is Not About Appearing Profound</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#faq" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>FAQ</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#will-the-reading-section-feature-standard-book-reviews" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Will the Reading section feature standard book reviews?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#should-programmers-read-technical-or-non-technical-books" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Should programmers read technical or non-technical books?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#should-reading-notes-be-published-publicly-on-the-website" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Should reading notes be published publicly on the website?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#what-is-the-difference-between-the-reading-and-thinking-sections" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>What is the difference between the Reading and Thinking sections?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#can-reading-directly-improve-my-investment-returns" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Can reading directly improve my investment returns?</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#keep-reading" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Keep Reading</a></li></ul></div></div></div></div></div> </div> <section class="bg-white/85 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-sm rounded-[24px] p-5 article-side-panel" aria-label="Author profile"><a href="/about/" class="group flex items-center flex-col gap-3 text-center" aria-label="About Xiaobai &#38; XBSTACK →"><div class="rounded-full overflow-hidden border-2 border-white dark:border-slate-800 shadow-md relative shrink-0 w-[72px] h-[72px]"><img src="/_astro/demo.BzDyfp9G_1hGUOO.webp" alt="小白 / Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div><div class="w-full"><h3 class="text-base font-black text-slate-950 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+小白 / Xiaobai
+</h3><p class="mt-1 text-[9px] font-black uppercase tracking-[0.22em] text-blue-500">Full-Stack AI Engineer</p></div></a><p class="font-bold text-slate-600 dark:text-slate-400 leading-relaxed mt-4 text-xs text-center">Full-stack developer documenting AI engineering, indie products, investing reviews and outdoor practice.</p><a href="/about/" class="mt-4 block text-center text-[10px] font-black tracking-[0.12em] text-blue-600 dark:text-blue-400 hover:underline">About Xiaobai &amp; XBSTACK →</a><div class="my-4 h-px bg-slate-100 dark:bg-white/5"></div><ul class="flex items-center w-full gap-2 flex-col"><li class="min-w-0 flex-1 w-full"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/xbstack-wechat-qr.webp" aria-label="WeChat · 贵州户外"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="WeChat · 贵州户外" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="truncate">WeChat · 贵州户外</span> </span>  </button> </a></li><li class="min-w-0 flex-1 w-full"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span>GitHub</span> </span>  </button> </a></li></ul></section>  </aside> </div> </main> <script>
+    function initProgress() {
+      const progressBar = document.getElementById('reading-progress');
+      if (!progressBar) return;
+      window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = scrolled + "%";
+      });
+    }
+    document.addEventListener('astro:page-load', initProgress);
+    initProgress();
+  </script>  </main> <footer class="container mx-auto mt-32 animate-fadeUp px-4 pb-16 lg:px-8"> <div class="group relative rounded-[60px] border border-slate-200 bg-white p-10 shadow-2xl transition-all dark:border-white/10 dark:bg-[#0B1020] md:p-16"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[60px] opacity-20 dark:opacity-40"> <div class="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px] transition-transform duration-1000 group-hover:scale-125"></div> <div class="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px] transition-transform duration-1000 group-hover:scale-125"></div> </div> <div class="relative z-10 grid grid-cols-1 gap-12 border-b border-slate-100 pb-16 text-left dark:border-white/5 md:grid-cols-2 xl:grid-cols-12"> <div class="flex flex-col justify-between space-y-8 xl:col-span-4"> <div> <div class="mb-8 flex items-center gap-4"> <div class="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 p-2 shadow-lg dark:border-white/10 dark:bg-white/5"> <img src="/favicon/favicon.svg" alt="XBSTACK" class="h-full w-full object-contain"> </div> <span class="font-brand text-2xl font-black uppercase italic leading-none tracking-tighter text-blue-500">XBSTACK</span> </div> <div class="space-y-6"> <p class="text-2xl font-bold italic leading-tight tracking-tight text-slate-900 dark:text-slate-50"> “Look High. Build Low.” </p> <p class="max-w-sm text-[13px] font-bold leading-relaxed text-slate-600 dark:text-slate-400"> An independent developer asset system covering AI engineering, product tools, investing decisions, reading systems and outdoor field notes. </p> </div> </div> <div class="flex items-center gap-4 pt-4"> <span class="rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 text-[11px] font-black uppercase tracking-widest text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-400"> Built by Xiaobai </span> </div> </div> <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 xl:col-span-5"> <div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">AI Engineering</h4> <ul class="space-y-4"> <li><a href="/en/ai/agent/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Agents</a></li><li><a href="/en/ai/langgraph/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">LangGraph</a></li><li><a href="/en/ai/mcp/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">MCP Protocols</a></li><li><a href="/en/ai/workflow/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Workflow</a></li> </ul> </div><div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">Product Tools</h4> <ul class="space-y-4"> <li><a href="/en/tools/compound-calculator/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Compound Calculator</a></li><li><a href="/en/tools/ai-finance/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">AI Finance</a></li><li><a href="/en/tools/utm-builder/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">UTM Builder</a></li><li><a href="/en/tools/lunest/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Lunest</a></li> </ul> </div><div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">Horizon</h4> <ul class="space-y-4"> <li><a href="/en/investing/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Investing</a></li><li><a href="/en/horizon/reading/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Reading</a></li><li><a href="/en/notes/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Thinking</a></li> </ul> </div><div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">Life &amp; Lens</h4> <ul class="space-y-4"> <li><a href="/en/life/hiking/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Hiking</a></li><li><a href="/en/life/photo/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Photography</a></li><li><a href="/en/life/gear/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Gear</a></li> </ul> </div> </div> <div class="space-y-8 xl:col-span-3"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-slate-400">Systems Connect</h4> <div class="flex flex-col gap-3"> <button type="button" data-wechat-qr="/assets/xbstack-wechat-qr.webp" class="wechat-trigger group/wechat flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left transition-all hover:border-blue-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="h-5 w-5 text-green-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg> <div class="flex flex-col"> <span class="text-[12px] font-black text-slate-900 dark:text-slate-200">WeChat: Guizhou Outdoor</span> <span class="text-[11px] font-bold leading-relaxed text-slate-600 dark:text-slate-300"> Chinese-language hiking routes and direct outdoor field reports from Guizhou. </span> </div> </button> <a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" class="group/github flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-all hover:border-blue-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="h-5 w-5 text-slate-900 dark:text-white" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> <div class="flex flex-col"><span class="text-[12px] font-black text-slate-900 dark:text-slate-200">GitHub: XBSTACK Lab</span><span class="text-[11px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">Source Code</span></div> </a> <a href="mailto:xbstack@163.com" class="group flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-all hover:border-sky-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="h-5 w-5 text-sky-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"></path></svg> <div class="flex flex-col"><span class="text-[12px] font-black text-slate-900 dark:text-slate-200">xbstack@163.com</span><span class="text-[11px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">Email</span></div> </a> </div> </div> </div> <div class="mt-12 flex flex-col items-start justify-between gap-10 lg:flex-row lg:items-center"> <div class="flex flex-wrap gap-8"> <div class="space-y-1"> <h5 class="text-[10px] font-black uppercase tracking-widest text-orange-700 dark:text-orange-500">Risk Notice</h5> <p class="text-[10px] font-bold italic text-slate-500">Content is informational and does not constitute investment advice.</p> </div> <div class="space-y-1"> <h5 class="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-500">Copyright</h5> <p class="text-[10px] font-bold text-slate-500">Original XBSTACK content may not be republished or scraped without permission.</p> </div> </div> <div class="flex w-full flex-col items-end gap-5 lg:w-auto"> <div class="flex flex-wrap justify-end gap-6"> <a href="/en/archive/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Archive</a><a href="/en/privacy/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Privacy</a><a href="/en/tos/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Terms</a><a href="/en/disclosure/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Disclosure</a><a href="/sitemap-index.xml" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Sitemap</a><a href="/llms.txt" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">AI Index</a> </div> <div class="flex flex-wrap justify-end gap-3">   <a href="/en/rss.xml" class="rounded-xl border border-blue-600/20 bg-blue-600/10 px-4 py-2 text-[10px] font-black text-blue-700 shadow-sm transition-all hover:bg-blue-500 hover:text-white dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400">English RSS</a> </div> </div> </div> <div class="mt-8 flex items-center justify-between border-t border-slate-100 pt-8 dark:border-white/5"> <div class="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 opacity-50">&copy; 2026 XBSTACK. LABS_ACTIVE_v6.6</div> <div class="flex items-center gap-2"><span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500"></span><span class="text-[9px] font-black uppercase italic tracking-widest text-emerald-600/60">Built Independently</span></div> </div> </div> </footer> <!-- 桌面悬停卡：由全局脚本定位到当前公众号入口附近 --><div id="wechat-hover-card" class="fixed z-[9998] hidden w-[300px] pointer-events-none opacity-0 translate-y-2 transition-all duration-200" aria-hidden="true"> <div class="rounded-[30px] border border-white/15 bg-[#0d1728]/95 p-5 text-white shadow-[0_28px_80px_rgba(2,6,23,0.48)] backdrop-blur-2xl"> <div class="text-[9px] font-black uppercase tracking-[0.34em] text-orange-400">Join the Journey</div> <div class="mt-2 text-xl font-black tracking-tight">一起探索 · 一起成长</div> <div class="mt-1 text-[11px] font-bold tracking-[0.12em] text-slate-400">户外探索 · 独立开发 · 投资思考</div> <div class="mt-4 grid grid-cols-[112px_1fr] items-center gap-4"> <div class="rounded-[20px] border border-white/10 bg-[#060b14] p-2.5 shadow-inner"> <img id="wechat-hover-qr" src="/assets/xbstack-wechat-qr.webp" width="360" height="360" alt="微信公众号贵州户外二维码" class="block aspect-square w-full rounded-xl bg-white object-contain"> </div> <div class="space-y-2 text-[11px] font-bold leading-relaxed text-slate-300"> <p>贵州徒步与路线实测</p> <p>AI 工具与独立产品</p> <p>投资体系与长期复盘</p> </div> </div> <div class="mt-4 border-t border-white/10 pt-3 text-center text-[11px] font-black text-slate-300">
+点击查看完整名片
+</div> </div> </div> <!-- 全局点击弹窗 --> <div id="wechat-modal" class="fixed inset-0 z-[10000] hidden items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="wechat-modal-title" aria-hidden="true"> <button id="wechat-modal-backdrop" type="button" aria-label="关闭公众号弹窗" class="absolute inset-0 cursor-default bg-slate-950/86 backdrop-blur-xl"></button> <div id="wechat-modal-content" class="relative max-h-[94vh] w-full max-w-[460px] scale-95 overflow-y-auto rounded-[38px] border border-slate-500/45 bg-[#0d1728] text-white opacity-0 shadow-[0_40px_140px_rgba(0,0,0,0.68)] transition-all duration-300 sm:rounded-[50px]"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"> <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px]"></div> <div class="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-orange-500/10 blur-[80px]"></div> </div> <button id="wechat-modal-close" type="button" aria-label="关闭微信公众号弹窗" class="absolute right-5 top-5 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 transition hover:bg-white/10 hover:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg> </button> <div class="relative z-10 px-6 pb-6 pt-10 sm:px-10 sm:pb-9 sm:pt-12"> <header class="text-center"> <div class="text-[10px] font-black uppercase tracking-[0.44em] text-orange-400 sm:text-xs">Join the Journey</div> <h2 id="wechat-modal-title" class="mt-4 text-3xl font-black tracking-tight text-white sm:text-[38px]" style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;">一起探索 · 一起成长</h2> <p class="mt-3 text-sm font-bold tracking-[0.16em] text-slate-400 sm:text-base">户外探索 ｜ 独立开发 ｜ 投资思考</p> </header> <div class="mx-auto mt-7 max-w-[300px] rounded-[34px] border border-white/10 bg-[#070d17] p-5 shadow-inner sm:mt-8"> <div class="rounded-[24px] bg-white p-3"> <img id="wechat-modal-qr" src="/assets/xbstack-wechat-qr.webp" width="360" height="360" decoding="async" alt="微信公众号贵州户外二维码" class="block aspect-square w-full object-contain"> </div> </div> <div class="mt-7 divide-y divide-white/10 sm:mt-8"> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M634.92 462.7l-288-448C341.03 5.54 330.89 0 320 0s-21.03 5.54-26.92 14.7l-288 448a32.001 32.001 0 0 0-1.17 32.64A32.004 32.004 0 0 0 32 512h576c11.71 0 22.48-6.39 28.09-16.67a31.983 31.983 0 0 0-1.17-32.63zM320 91.18L405.39 224H320l-64 64-38.06-38.06L320 91.18z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">户外徒步 · 贵州路线实探与分享</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">记录每一次出发，提供真实路况、补给、风险和下撤信息。</p> </div> </div> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M278.9 511.5l-61-17.7c-6.4-1.8-10-8.5-8.2-14.9L346.2 8.7c1.8-6.4 8.5-10 14.9-8.2l61 17.7c6.4 1.8 10 8.5 8.2 14.9L293.8 503.3c-1.9 6.4-8.5 10.1-14.9 8.2zm-114-112.2l43.5-46.4c4.6-4.9 4.3-12.7-.8-17.2L117 256l90.6-79.7c5.1-4.5 5.5-12.3.8-17.2l-43.5-46.4c-4.5-4.8-12.1-5.1-17-.5L3.8 247.2c-5.1 4.7-5.1 12.8 0 17.5l144.1 135.1c4.9 4.6 12.5 4.4 17-.5zm327.2.6l144.1-135.1c5.1-4.7 5.1-12.8 0-17.5L492.1 112.1c-4.8-4.5-12.4-4.3-17 .5L431.6 159c-4.6 4.9-4.3 12.7.8 17.2L523 256l-90.6 79.7c-5.1 4.5-5.5 12.3-.8 17.2l43.5 46.4c4.5 4.9 12.1 5.1 17 .6z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">独立开发 · AI、工具与产品实战</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">从真实需求到上线复盘，持续构建可长期积累的数字产品。</p> </div> </div> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16zM464 96H345.94c-21.38 0-32.09 25.85-16.97 40.97l32.4 32.4L288 242.75l-73.37-73.37c-12.5-12.5-32.76-12.5-45.25 0l-68.69 68.69c-6.25 6.25-6.25 16.38 0 22.63l22.62 22.62c6.25 6.25 16.38 6.25 22.63 0L192 237.25l73.37 73.37c12.5 12.5 32.76 12.5 45.25 0l96-96 32.4 32.4c15.12 15.12 40.97 4.41 40.97-16.97V112c.01-8.84-7.15-16-15.99-16z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">投资思考 · 复利、风险与长期主义</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">分享投资体系、市场观察和个人决策复盘，不构成投资建议。</p> </div> </div> </div> <div class="mt-6 text-center text-sm font-black leading-relaxed text-slate-300">
+扫码关注微信公众号 <span class="text-orange-400">“贵州户外”</span> <p class="mt-1 text-xs font-bold text-slate-500">获取户外路线、独立开发与投资复盘的最新内容</p> </div> <button id="wechat-modal-confirm" type="button" class="mt-7 w-full rounded-[24px] bg-white px-6 py-4 text-sm font-black tracking-[0.12em] text-slate-950 shadow-xl transition hover:-translate-y-0.5 hover:bg-slate-100 active:translate-y-0">
+知道了 / CLOSE
+</button> </div> </div> </div> <script type="module">const b="/assets/xbstack-wechat-qr.webp";function f(){const t=document.getElementById("wechat-modal"),y=document.getElementById("wechat-modal-backdrop"),a=document.getElementById("wechat-modal-content"),w=document.getElementById("wechat-modal-close"),E=document.getElementById("wechat-modal-confirm"),c=document.getElementById("wechat-modal-qr"),s=document.getElementById("wechat-hover-card"),i=document.getElementById("wechat-hover-qr");if(!t||!a||!s)return;let l=0;const p=window.matchMedia("(hover: hover) and (pointer: fine)"),u=e=>{const n=e.dataset.wechatQr||b;c&&c.src!==new URL(n,window.location.href).href&&(c.src=n),i&&i.src!==new URL(n,window.location.href).href&&(i.src=n)},o=()=>{window.clearTimeout(l),s.classList.add("opacity-0","translate-y-2"),l=window.setTimeout(()=>s.classList.add("hidden"),180)},v=e=>{if(!p.matches||!t.classList.contains("hidden"))return;window.clearTimeout(l),u(e),s.classList.remove("hidden");const n=e.getBoundingClientRect(),L=300,B=250,r=12;let m=n.left+n.width/2-L/2;m=Math.max(r,Math.min(m,window.innerWidth-L-r));let h=n.top-B-12;h<r&&(h=n.bottom+12),s.style.left=`${m}px`,s.style.top=`${h}px`,requestAnimationFrame(()=>s.classList.remove("opacity-0","translate-y-2"))},I=e=>{o(),u(e),t.classList.remove("hidden"),t.classList.add("flex"),t.setAttribute("aria-hidden","false"),document.body.style.overflow="hidden",requestAnimationFrame(()=>{a.classList.remove("scale-95","opacity-0"),a.classList.add("scale-100","opacity-100"),w?.focus()})},d=()=>{a.classList.remove("scale-100","opacity-100"),a.classList.add("scale-95","opacity-0"),window.setTimeout(()=>{t.classList.add("hidden"),t.classList.remove("flex"),t.setAttribute("aria-hidden","true"),document.body.style.overflow=""},260)};document.querySelectorAll(".wechat-trigger").forEach(e=>{e.dataset.wechatInitialized!=="true"&&(e.dataset.wechatInitialized="true",e.addEventListener("mouseenter",()=>v(e)),e.addEventListener("mouseleave",o),e.addEventListener("focus",()=>v(e)),e.addEventListener("blur",o),e.addEventListener("click",n=>{n.preventDefault(),I(e)}))}),t.dataset.wechatInitialized!=="true"&&(t.dataset.wechatInitialized="true",w?.addEventListener("click",d),E?.addEventListener("click",d),y?.addEventListener("click",d),document.addEventListener("keydown",e=>{e.key==="Escape"&&!t.classList.contains("hidden")&&d()}),window.addEventListener("scroll",o,{passive:!0}),window.addEventListener("resize",o))}f();document.addEventListener("astro:page-load",f);</script> <script>
+      const showLanguageSwitchNotice = () => {
+        let payload = null;
+        try {
+          const raw = sessionStorage.getItem('xbstack_language_notice');
+          if (!raw) return;
+          payload = JSON.parse(raw);
+          sessionStorage.removeItem('xbstack_language_notice');
+        } catch (error) {
+          return;
+        }
+
+        const notice = document.getElementById('language-switch-notice');
+        if (!notice) return;
+
+        const targetIsEnglish = String(payload?.language || '').toLowerCase().startsWith('en');
+        notice.textContent = targetIsEnglish
+          ? 'This page does not have an English version yet. You have been taken to the English home page.'
+          : '当前页面暂未提供中文版本，已为你打开中文首页。';
+        notice.classList.remove('hidden');
+        window.setTimeout(() => notice.classList.add('hidden'), 4800);
+      };
+
+      document.addEventListener('astro:page-load', showLanguageSwitchNotice);
+      showLanguageSwitchNotice();
+    </script> </body> </html>

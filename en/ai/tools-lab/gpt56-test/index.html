@@ -1,0 +1,973 @@
+<!DOCTYPE html><html lang="en" class="dark" data-analytics="ga4-baidu"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script>
+      const applyTheme = () => {
+        const theme = localStorage.getItem("theme");
+        const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      };
+      applyTheme();
+      document.addEventListener("astro:page-load", applyTheme);
+    </script><script>(function(){const currentLanguage = "en";
+const languageAlternates = [{"lang":"zh-CN","href":"https://www.xbstack.com/ai/tools-lab/gpt56-test/"},{"lang":"en","href":"https://www.xbstack.com/en/ai/tools-lab/gpt56-test/"},{"lang":"x-default","href":"https://www.xbstack.com/ai/tools-lab/gpt56-test/"}];
+
+      (() => {
+        const normalizeLanguage = (value) => String(value || '').toLowerCase().startsWith('en') ? 'en' : 'zh-CN';
+        const readCookie = (name) => {
+          const prefix = `${name}=`;
+          const item = document.cookie.split(';').map((part) => part.trim()).find((part) => part.startsWith(prefix));
+          return item ? decodeURIComponent(item.slice(prefix.length)) : '';
+        };
+
+        let preferredLanguage = readCookie('xbstack_lang');
+        if (!preferredLanguage) {
+          try {
+            preferredLanguage = localStorage.getItem('xbstack_lang') || '';
+          } catch (error) {}
+        }
+
+        if (!preferredLanguage) {
+          const browserLanguage = Array.isArray(navigator.languages) && navigator.languages.length
+            ? navigator.languages[0]
+            : navigator.language;
+          preferredLanguage = normalizeLanguage(browserLanguage);
+          document.cookie = `xbstack_lang=${encodeURIComponent(preferredLanguage)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+          try {
+            localStorage.setItem('xbstack_lang', preferredLanguage);
+          } catch (error) {}
+        }
+
+        const preferred = normalizeLanguage(preferredLanguage);
+        const current = normalizeLanguage(currentLanguage);
+        const target = (languageAlternates || []).find((item) => normalizeLanguage(item.lang) === preferred);
+        const redirectKey = `xbstack_auto_lang:${window.location.pathname}:${preferred}`;
+
+        if (target && preferred !== current && !sessionStorage.getItem(redirectKey)) {
+          const targetUrl = new URL(target.href, window.location.origin);
+          if (targetUrl.pathname !== window.location.pathname) {
+            sessionStorage.setItem(redirectKey, '1');
+            window.location.replace(targetUrl.href);
+          }
+        }
+      })();
+    })();</script><title>GPT5.6 Real-World Test: After Putting It Into Actual Projects, Content Creation, and Data Analysis, Where Exactly Is the Upgrade? | AI - XBSTACK</title><meta name="description" content="I put GPT5.6 into XBSTACK's real workflow to test Astro project modifications, content creation, Search Console and GA4 data analysis, and to break down how to choose between the prices of Sol, Terra, Luna, max, ultra, and API."><meta name="keywords" content="GPT5.6 actual test, how GPT5.6 performs, GPT5.6 content creation, GPT5.6 data analysis, GPT5.6 Codex, GPT5.6 Sol, GPT5.6 Terra, GPT5.6 Luna, GPT5.6 Ultra, GPT5.6 Max, GPT5.6 API pricing, is GPT5.6 worth upgrading, ChatGPT Work, Programmatic Tool Calling, AI Coding Agent, Search Console data analysis, GA4 data analysis"><meta name="theme-color" content="#050608"><meta name="robots" content="noindex,follow"><meta property="og:type" content="article"><meta property="og:locale" content="en_US"><meta property="og:url" content="https://www.xbstack.com/en/ai/tools-lab/gpt56-test/"><meta property="og:title" content="GPT5.6 Real-World Test: After Putting It Into Actual Projects, Content Creation, and Data Analysis, Where Exactly Is the Upgrade? | AI - XBSTACK"><meta property="og:description" content="I put GPT5.6 into XBSTACK's real workflow to test Astro project modifications, content creation, Search Console and GA4 data analysis, and to break down how to choose between the prices of Sol, Terra, Luna, max, ultra, and API."><meta property="og:image" content="https://www.xbstack.com/_astro/01-gpt56-cover.COL6K47i.webp"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/en/ai/tools-lab/gpt56-test/"><meta property="twitter:title" content="GPT5.6 Real-World Test: After Putting It Into Actual Projects, Content Creation, and Data Analysis, Where Exactly Is the Upgrade? | AI - XBSTACK"><meta property="twitter:description" content="I put GPT5.6 into XBSTACK's real workflow to test Astro project modifications, content creation, Search Console and GA4 data analysis, and to break down how to choose between the prices of Sol, Terra, Luna, max, ultra, and API."><meta property="twitter:image" content="https://www.xbstack.com/_astro/01-gpt56-cover.COL6K47i.webp"><link rel="canonical" href="https://www.xbstack.com/en/ai/tools-lab/gpt56-test/"><link rel="alternate" hreflang="zh-CN" href="https://www.xbstack.com/ai/tools-lab/gpt56-test/"><link rel="alternate" hreflang="en" href="https://www.xbstack.com/en/ai/tools-lab/gpt56-test/"><link rel="alternate" hreflang="x-default" href="https://www.xbstack.com/ai/tools-lab/gpt56-test/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Precision Tools","description":"AI finance analyzer, compound calculator, Lunest and practical product tools.","url":"https://www.xbstack.com/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Thinking","description":"Investing notes, reading system, decision system and long-term thinking.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Photography and Gear","description":"Guizhou outdoor field notes, photography, gear lab and real-life trust assets.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"About Xiaobai, the XBSTACK asset system and the slogan 在高处看世界，在底层堆资产.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://www.xbstack.com/en/ai/tools-lab/gpt56-test/#article","headline":"GPT5.6 Real-World Test: After Putting It into Actual Projects, Content Creation, and Data Analysis, Where Exactly Is the Upgrade?","description":"I put GPT5.6 into XBSTACK's real workflow to test Astro project modifications, content creation, Search Console and GA4 data analysis, and break down how to choose between Sol, Terra, Luna, max, ultra, and API pricing.","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.xbstack.com/en/ai/tools-lab/gpt56-test/"},"author":{"@type":"Person","name":"Xiaobai","url":"https://www.xbstack.com/en/about/"},"publisher":{"@type":"Organization","name":"XBSTACK","url":"https://www.xbstack.com"},"datePublished":"2026-07-10","dateModified":"2026-07-14","inLanguage":"en","articleSection":"AI Tools Lab","isAccessibleForFree":true,"keywords":["GPT5.6 real test","GPT5.6 Content Creation","GPT5.6 Data Analysis","GPT5.6 Sol","GPT5.6 Terra","GPT5.6 Luna","GPT5.6 Ultra","GPT5.6 API Price","Codex","Search Console","GA4"],"about":[{"@type":"SoftwareApplication","name":"GPT5.6","applicationCategory":"Artificial Intelligence","operatingSystem":"Web, API, Codex"},{"@type":"Thing","name":"Content Creation"},{"@type":"Thing","name":"Data Analysis"},{"@type":"Thing","name":"Programmatic Tool Calling"},{"@type":"Thing","name":"Multi-Agent"},{"@type":"Thing","name":"Generative Engine Optimization"}],"citation":["https://openai.com/index/gpt-5-6/","https://help.openai.com/en/articles/9624314-model-release-notes","https://help.openai.com/en/articles/20001354","https://deploymentsafety.openai.com/gpt-5-6"]},{"@type":"Dataset","@id":"https://www.xbstack.com/en/ai/tools-lab/gpt56-test/#test-data","name":"XBSTACK GPT5.6 real workflow test data","description":"XBSTACK content inventory for GPT5.6 actual testing, daily exports from Search Console, GA4 404 page title summary, and construction results.","creator":{"@type":"Person","name":"Xiaobai"},"license":"https://creativecommons.org/licenses/by-nc-sa/4.0/","variableMeasured":["Published content count","Google Search Console impressions","Google Search Console clicks","Google Search Console CTR","Google Search Console average position","GA4 404 page-title views","GA4 404 page-title concentration","Pagefind indexed static pages"]},{"@type":"FAQPage","@id":"https://www.xbstack.com/en/ai/tools-lab/gpt56-test/#faq","mainEntity":[{"@type":"Question","name":"How effective is GPT-5.6 at content creation?","acceptedAnswer":{"@type":"Answer","text":"It is good at data verification, content differentiation, structural design, SEO metadata, and internal linking, but the author's tone, selection of information, and boundaries of facts still need manual checking."}},{"@type":"Question","name":"Can GPT-5.6 analyze Search Console and GA4 data?","acceptedAnswer":{"@type":"Answer","text":"It can perform ratio calculations, anomaly clustering, priority judgment, and action recommendations, but it must provide real data sources and cannot pretend to have seen the data without backend access."}},{"@type":"Question","name":"How to choose between GPT5.6 Sol, Terra, and Luna?","acceptedAnswer":{"@type":"Answer","text":"Complex research and high-failure-cost tasks prioritize Sol, daily production prioritizes Terra, and classification, extraction, routing, and batch lightweight tasks prioritize Luna."}},{"@type":"Question","name":"Is GPT5.6 suitable for directly operating in a production environment?","acceptedAnswer":{"@type":"Answer","text":"It is not recommended to directly grant permissions for deletion, deployment, credential reading, cloud resource management, and production data writing without approval."}},{"@type":"Question","name":"Will the GEO information of this article be displayed to regular users?","acceptedAnswer":{"@type":"Answer","text":"It will not display additional machine query terms and structured summaries, and the relevant information is provided through JSON-LD and metadata in the page head."}}]},{"@type":"BreadcrumbList","@id":"https://www.xbstack.com/en/ai/tools-lab/gpt56-test/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"XBSTACK","item":"https://www.xbstack.com/"},{"@type":"ListItem","position":2,"name":"AI","item":"https://www.xbstack.com/en/ai/"},{"@type":"ListItem","position":3,"name":"AI Tools Lab","item":"https://www.xbstack.com/en/ai/tools-lab/"},{"@type":"ListItem","position":4,"name":"GPT5.6 actual test","item":"https://www.xbstack.com/en/ai/tools-lab/gpt56-test/"}]}]}</script><meta property="article:published_time" content="Fri Jul 10 2026 08:00:00 GMT+0800 (China Standard Time)"><meta name="abstract" content="I put GPT5.6 into XBSTACK's real workflow to test Astro project modifications, content creation, Search Console and GA4 data analysis, and to break down how to choose between the prices of Sol, Terra, Luna, max, ultra, and API."><meta name="speakable-selector" content=".markdown-content h2, .markdown-content p"><meta name="ai-content-access" content="allowed"><meta name="geo-optimized" content="true"><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script async src="https://www.googletagmanager.com/gtag/js?id=G-1J4274CPMT"></script><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
+
+          if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function() {
+              window.dataLayer.push(arguments);
+            };
+            window.gtag('js', new Date());
+            window.gtag('config', googleAnalyticsId, { send_page_view: false });
+
+            window.__ga4_initialized = true;
+            window.__lastGA4PageKey = "";
+            window.__lastGA4PageLocation = document.referrer || "";
+            window.__scroll50Reported = false;
+            window.__scroll90Reported = false;
+
+            const getReferrerHost = () => {
+              try {
+                return document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+              } catch (err) {
+                return '';
+              }
+            };
+
+            const inferSourceHint = () => {
+              const refHost = getReferrerHost();
+              if (!refHost) return '';
+              if (refHost.includes('zhihu')) return 'zhihu_referrer';
+              if (refHost.includes('juejin')) return 'juejin_referrer';
+              if (refHost.includes('csdn')) return 'csdn_referrer';
+              if (refHost.includes('weixin') || refHost.includes('wechat')) return 'wechat_referrer';
+              if (refHost.includes('google')) return 'google_referrer';
+              if (refHost.includes('baidu')) return 'baidu_referrer';
+              return refHost;
+            };
+
+            const getAttributionPayload = () => {
+              const params = new URLSearchParams(window.location.search);
+              const current = {};
+              UTM_KEYS.forEach((key) => {
+                const value = params.get(key);
+                if (value) current[key] = value;
+              });
+
+              let stored = {};
+              try {
+                stored = JSON.parse(sessionStorage.getItem('xbstack_attribution') || '{}');
+              } catch (err) {
+                stored = {};
+              }
+
+              if (Object.keys(current).length) {
+                stored = {
+                  ...stored,
+                  ...current,
+                  landing_page: window.location.pathname,
+                  captured_at: new Date().toISOString(),
+                };
+                try {
+                  sessionStorage.setItem('xbstack_attribution', JSON.stringify(stored));
+                } catch (err) {}
+              }
+
+              return {
+                utm_source: stored.utm_source || '',
+                utm_medium: stored.utm_medium || '',
+                utm_campaign: stored.utm_campaign || '',
+                utm_term: stored.utm_term || '',
+                utm_content: stored.utm_content || '',
+                attribution_landing_page: stored.landing_page || '',
+                referrer_host: getReferrerHost(),
+                source_hint: inferSourceHint(),
+              };
+            };
+
+            window.xbTrackEvent = (eventName, payload = {}) => {
+              if (typeof window.gtag !== 'function' || !googleAnalyticsId || !eventName) return;
+              window.gtag('event', eventName, {
+                transport_type: 'beacon',
+                page_path: window.location.pathname,
+                page_title: document.title || '',
+                ...getAttributionPayload(),
+                ...payload,
+              });
+            };
+
+            window.sendGA4PageView = () => {
+              if (typeof window.gtag !== 'function' || !googleAnalyticsId) return;
+
+              const pageLocation = window.location.href;
+              const pageTitle = document.title || '';
+              const pageKey = `${pageLocation}|${pageTitle}`;
+
+              if (pageKey === window.__lastGA4PageKey) return;
+              const pageReferrer = window.__lastGA4PageLocation;
+              window.__lastGA4PageKey = pageKey;
+              window.__lastGA4PageLocation = pageLocation;
+              window.__scroll50Reported = false;
+              window.__scroll90Reported = false;
+
+              window.gtag('event', 'page_view', {
+                page_title: pageTitle,
+                page_location: pageLocation,
+                page_path: window.location.pathname,
+                page_search: window.location.search,
+                page_referrer: pageReferrer,
+                ...getAttributionPayload(),
+              });
+            };
+
+            window.initGA4Tracking = () => {
+              if (typeof window.gtag !== 'function') return;
+              if (window.__ga4_events_bound) return;
+              window.__ga4_events_bound = true;
+
+              // 1. 页面滚动深度上报
+              const handleScroll = () => {
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const progress = (scrollTop / scrollHeight) * 100;
+
+                if (progress >= 50 && !window.__scroll50Reported) {
+                  window.xbTrackEvent('scroll_50', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll50Reported = true;
+                }
+                if (progress >= 90 && !window.__scroll90Reported) {
+                  window.xbTrackEvent('scroll_90', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll90Reported = true;
+                }
+              };
+
+              window.addEventListener('scroll', handleScroll, { passive: true });
+
+              // 2. 交互、出站、工具与栏目入口点击上报
+              const handleClick = (e) => {
+                const target = e.target.closest('a,button');
+                if (!target) return;
+
+                const label = (target.getAttribute('aria-label') || target.textContent || '').trim().slice(0, 80);
+                if (target.tagName === 'BUTTON') {
+                  window.xbTrackEvent('click_button', {
+                    event_category: 'engagement',
+                    event_label: label,
+                  });
+                  return;
+                }
+
+                if (!target.href) return;
+                if (target.href.startsWith('#')) return;
+
+                try {
+                  const url = new URL(target.href, window.location.origin);
+                  const isExternal = url.origin !== window.location.origin;
+                  const payload = {
+                    event_label: target.href,
+                    link_text: label,
+                    link_url: url.href,
+                    link_path: url.pathname,
+                  };
+
+                  if (isExternal) {
+                    window.xbTrackEvent('click_external', {
+                      ...payload,
+                      event_category: 'outbound',
+                    });
+                  } else {
+                    if (url.pathname.startsWith('/go/')) {
+                      window.xbTrackEvent('affiliate_click', {
+                        ...payload,
+                        event_category: 'conversion',
+                        affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                      });
+                    }
+                    if (url.pathname.startsWith('/tools/') || url.pathname.startsWith('/compound-interest/')) {
+                      window.xbTrackEvent('click_tool', {
+                        ...payload,
+                        event_category: 'conversion',
+                      });
+                    }
+                    if (['/ai/', '/newsletter/', '/search/', '/life/', '/investing/'].some((prefix) => url.pathname.startsWith(prefix))) {
+                      window.xbTrackEvent('click_internal_entry', {
+                        ...payload,
+                        event_category: 'navigation',
+                      });
+                    }
+                  }
+                } catch (err) {}
+              };
+
+              const handleSubmit = (e) => {
+                const form = e.target;
+                if (!form || form.tagName !== 'FORM') return;
+                const action = form.getAttribute('action') || '';
+                const formType = form.getAttribute('data-analytics-form') || '';
+                const formData = new FormData(form);
+                const searchTerm = String(formData.get('q') || '').trim();
+
+                if (action.includes('/search') || formType === 'site-search') {
+                  window.xbTrackEvent('view_search_results', {
+                    event_category: 'site_search',
+                    search_term: searchTerm,
+                  });
+                }
+
+                if (action.includes('buttondown.email') || formType === 'newsletter') {
+                  window.xbTrackEvent('newsletter_subscribe_attempt', {
+                    event_category: 'conversion',
+                    event_label: window.location.pathname,
+                  });
+                }
+              };
+
+              document.addEventListener('click', handleClick);
+              document.addEventListener('submit', handleSubmit, true);
+            };
+
+            // 立即执行首屏发送与事件监听绑定，无需等待 DOMContentLoaded
+            window.sendGA4PageView();
+            window.initGA4Tracking();
+
+            document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+              window.sendGA4PageView();
+              window.initGA4Tracking();
+            });
+          } else {
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+            if (typeof window.sendGA4PageView === 'function') {
+              window.sendGA4PageView();
+            }
+          }
+        })();</script><script data-baidu-id="c7bfaf645bfc8974405a85c2a55573a0">
+          const baiduId = document.currentScript?.dataset.baiduId || '';
+          if (!window.__baidu_analytics_initialized) {
+            window._hmt = window._hmt || [];
+            window.__baidu_analytics_initialized = true;
+            window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+
+            const loadBaiduAnalytics = () => {
+              if (window.__baidu_script_loaded || !baiduId) return;
+              window.__baidu_script_loaded = true;
+              const hm = document.createElement('script');
+              hm.async = true;
+              hm.src = "https://hm.baidu.com/hm.js?" + baiduId;
+              document.head.appendChild(hm);
+              window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+            };
+
+            // 百度统计不是首屏渲染依赖：首次交互时加载，若用户未交互则 12 秒后加载。
+            ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(eventName, loadBaiduAnalytics, { once: true, passive: true });
+            });
+            window.setTimeout(loadBaiduAnalytics, 12000);
+
+            document.addEventListener('astro:page-load', () => {
+              const pageKey = window.location.pathname + window.location.search;
+              if (!window.__baidu_script_loaded || pageKey === window.__lastBaiduPageKey) return;
+              window.__lastBaiduPageKey = pageKey;
+              window._hmt.push(['_trackPageview', pageKey]);
+            });
+          }
+        </script><link rel="stylesheet" href="/_astro/index.Ci2fC5DT.css">
+<link rel="stylesheet" href="/_astro/_slug_.BfiWXHpa.css">
+<link rel="stylesheet" href="/_astro/vendor-media.DSulWsr7.css">
+<style>.glass-button[data-astro-cid-xwnkcw7l]{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:var(--sizeGap);padding:var(--sizePadding);background:var(--variantBase);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--variantBorder);border-radius:var(--sizeBorderRadius);font-size:var(--sizeFontSize);font-weight:500;color:var(--variantColor);cursor:pointer;transition:all .3s cubic-bezier(.175,.885,.32,2.2);box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d;-webkit-user-select:none;-moz-user-select:none;user-select:none;overflow:hidden;text-decoration:none;white-space:nowrap}.glass-button[data-astro-cid-xwnkcw7l]:before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,var(--variantGradient),transparent);transition:left .6s cubic-bezier(.25,.46,.45,.94);pointer-events:none;opacity:0}.glass-button[data-astro-cid-xwnkcw7l]:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);transform:translateY(-4px) scale(1.03);box-shadow:0 20px 25px -5px var(--variantShadow),0 15px 15px -5px #0000004d,inset 1px 1px 4px #ffffff80;filter:brightness(1.2) saturate(1.3)}.glass-button[data-astro-cid-xwnkcw7l]:hover:before{left:100%;opacity:1}.glass-button[data-astro-cid-xwnkcw7l]:active{transform:translateY(-1px) scale(.98);box-shadow:0 2px 6px var(--variantShadow)}.glass-button[data-astro-cid-xwnkcw7l]:disabled{cursor:not-allowed;opacity:.6;transform:none;pointer-events:none}.glass-button[data-astro-cid-xwnkcw7l]:disabled:hover{transform:none;box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d}.glass-button__icon[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;justify-content:center;width:var(--sizeIconSize);height:var(--sizeIconSize);transition:all .3s cubic-bezier(.175,.885,.32,2.2)}.glass-button__icon[data-astro-cid-xwnkcw7l] svg{width:100%;height:100%}.glass-button[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{transform:scale(1.2) rotate(-5deg);filter:drop-shadow(0 0 4px var(--variantShadow))}.glass-button__content[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;transition:all .3s ease}.glass-button__spinner[data-astro-cid-xwnkcw7l]{width:var(--sizeIconSize);height:var(--sizeIconSize);animation:spin 1s linear infinite}.dark[data-astro-cid-xwnkcw7l]{.glass-button{background:#37373799;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-color:#ffffff26;color:#e5e7eb;box-shadow:0 4px 8px #0006,inset 1px 1px 3px #ffffff26}.glass-button:before{background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}.glass-button:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);box-shadow:0 6px 14px var(--variantShadow),inset 1px 1px 4px #fff3;filter:brightness(1.2) saturate(1.3)}}@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.glass-button--primary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--secondary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(37,99,235,.5))}.glass-button--success[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(22,163,74,.5))}.glass-button--warning[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(217,119,6,.5))}.glass-button--danger[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--info[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(99,102,241,.5))}
+</style></head> <body class="bg-white dark:bg-[#050608] text-slate-950 dark:text-white selection:bg-orange-500/20 selection:text-orange-500 overflow-x-hidden"> <style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value=="object"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};"requestIdleCallback"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event("astro:idle"));})();</script><script>(()=>{var A=Object.defineProperty;var g=(i,o,a)=>o in i?A(i,o,{enumerable:!0,configurable:!0,writable:!0,value:a}):i[o]=a;var d=(i,o,a)=>g(i,typeof o!="symbol"?o+"":o,a);{let i={0:t=>m(t),1:t=>a(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(a(t)),5:t=>new Set(a(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t),11:t=>1/0*t},o=t=>{let[l,e]=t;return l in i?i[l](e):void 0},a=t=>t.map(o),m=t=>typeof t!="object"||t===null?t:Object.fromEntries(Object.entries(t).map(([l,e])=>[l,o(e)]));class y extends HTMLElement{constructor(){super(...arguments);d(this,"Component");d(this,"hydrator");d(this,"hydrate",async()=>{var b;if(!this.hydrator||!this.isConnected)return;let e=(b=this.parentElement)==null?void 0:b.closest("astro-island[ssr]");if(e){e.addEventListener("astro:hydrate",this.hydrate,{once:!0});return}let c=this.querySelectorAll("astro-slot"),n={},h=this.querySelectorAll("template[data-astro-template]");for(let r of h){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("data-astro-template")||"default"]=r.innerHTML,r.remove())}for(let r of c){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("name")||"default"]=r.innerHTML)}let p;try{p=this.hasAttribute("props")?m(JSON.parse(this.getAttribute("props"))):{}}catch(r){let s=this.getAttribute("component-url")||"<unknown>",v=this.getAttribute("component-export");throw v&&(s+=` (export ${v})`),console.error(`[hydrate] Error parsing props for component ${s}`,this.getAttribute("props"),r),r}let u;await this.hydrator(this)(this.Component,p,n,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),this.dispatchEvent(new CustomEvent("astro:hydrate"))});d(this,"unmount",()=>{this.isConnected||this.dispatchEvent(new CustomEvent("astro:unmount"))})}disconnectedCallback(){document.removeEventListener("astro:after-swap",this.unmount),document.addEventListener("astro:after-swap",this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute("await-children")||document.readyState==="interactive"||document.readyState==="complete")this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener("DOMContentLoaded",e),c.disconnect(),this.childrenConnectedCallback()},c=new MutationObserver(()=>{var n;((n=this.lastChild)==null?void 0:n.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue==="astro:end"&&(this.lastChild.remove(),e())});c.observe(this,{childList:!0}),document.addEventListener("DOMContentLoaded",e)}}async childrenConnectedCallback(){let e=this.getAttribute("before-hydration-url");e&&await import(e),this.start()}async start(){let e=JSON.parse(this.getAttribute("opts")),c=this.getAttribute("client");if(Astro[c]===void 0){window.addEventListener(`astro:${c}`,()=>this.start(),{once:!0});return}try{await Astro[c](async()=>{let n=this.getAttribute("renderer-url"),[h,{default:p}]=await Promise.all([import(this.getAttribute("component-url")),n?import(n):()=>()=>{}]),u=this.getAttribute("component-export")||"default";if(!u.includes("."))this.Component=h[u];else{this.Component=h;for(let f of u.split("."))this.Component=this.Component[f]}return this.hydrator=p,this.hydrate},e,this)}catch(n){console.error(`[astro-island] Error hydrating ${this.getAttribute("component-url")}`,n)}}attributeChangedCallback(){this.hydrate()}}d(y,"observedAttributes",["props"]),customElements.get("astro-island")||customElements.define("astro-island",y)}})();</script><astro-island uid="ZWjsVO" prefix="r63" component-url="/_astro/GlobalLightbox.CqZePd56.js" component-export="default" renderer-url="/_astro/client.DkeD9bak.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;GlobalLightbox&quot;,&quot;value&quot;:true}"></astro-island> <astro-island uid="2nwVdo" prefix="r64" component-url="/_astro/AffiliatePopup.Bvi0-2cq.js" component-export="default" renderer-url="/_astro/client.DkeD9bak.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;AffiliatePopup&quot;,&quot;value&quot;:true}"></astro-island> <astro-island uid="Z1FWnUA" prefix="r65" component-url="/_astro/SearchBoot.DKwvAheT.js" component-export="default" renderer-url="/_astro/client.DkeD9bak.js" props="{&quot;lang&quot;:[0,&quot;en&quot;]}" ssr client="idle" opts="{&quot;name&quot;:&quot;SearchBoot&quot;,&quot;value&quot;:true}"></astro-island> <div id="app-background" class="fixed inset-0 z-[-1] h-full w-full pointer-events-none bg-slate-50 dark:bg-slate-950 transition-colors duration-500"> <div id="app-background-image" class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-500" data-day="/_astro/macos2.hYF-Pyun.webp" data-night="/_astro/macos2-night.DwJ7amhx.webp" aria-hidden="true"></div> <div class="absolute inset-0 bg-[#DFE1E6]/90 dark:bg-transparent backdrop-blur-[6px] pointer-events-none"></div> <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b82f611,transparent_50%)] dark:hidden pointer-events-none"></div> <div class="absolute inset-0 opacity-[0.08] dark:opacity-[0.03] pointer-events-none mix-blend-multiply" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+');"></div> </div> <script>
+  (() => {
+    const bindBackground = () => {
+      const root = document.documentElement;
+      const background = document.getElementById('app-background-image');
+      if (!background || background.dataset.themeObserverBound === 'true') return;
+
+      const applyBackground = () => {
+        const source = root.classList.contains('dark') ? background.dataset.night : background.dataset.day;
+        if (!source) return;
+        const nextValue = `url("${source}")`;
+        if (background.style.backgroundImage !== nextValue) {
+          background.style.backgroundImage = nextValue;
+        }
+      };
+
+      applyBackground();
+      const observer = new MutationObserver(applyBackground);
+      observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+      background.dataset.themeObserverBound = 'true';
+    };
+
+    bindBackground();
+    document.addEventListener('astro:page-load', bindBackground);
+  })();
+</script> <header class="w-full z-[500] sticky top-0"> <div class="container px-3 lg:px-8 max-w-[1440px] mx-auto py-4 md:py-6"> <div class="header-main relative group transition-all duration-500"> <div class="absolute inset-0 rounded-[35px] header-main-bg shadow-sm dark:shadow-[0_8px_50px_rgba(0,0,0,0.5)] border border-slate-200/50 dark:border-white/10"></div> <nav class="relative z-10 p-2 flex items-center min-h-[64px]"> <!-- Logo (旋转 & 呼吸灯) --> <div class="ml-4 flex-shrink-0"> <a href="/en/" class="flex items-center group/logo"> <div class="relative flex-none isolate w-10 h-10"> <img src="/favicon/favicon.svg" alt="XBSTACK" class="relative z-10 object-contain w-full h-full group-hover/logo:rotate-[360deg] transition-all duration-700"> <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-slate-900 z-20 animate-pulse"></div> </div> <div class="flex flex-col ml-3 text-left"> <span class="text-xl font-black italic tracking-tighter bg-gradient-to-r from-slate-900 via-sky-800 to-slate-900 dark:from-white dark:via-sky-400 dark:to-white bg-clip-text text-transparent uppercase font-brand leading-none">XBSTACK</span> <span class="text-[8px] font-mono font-bold text-green-500/70 uppercase tracking-widest leading-none mt-1">System Status: Online</span> </div> </a> </div> <!-- 桌面端导航 (新 IA 架构) --> <ul class="hidden xl:flex items-center gap-1 ml-10"> <li class="relative group/item"> <a href="/en/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Home  </a>  </li><li class="relative group/item"> <a href="/en/ai/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-blue-600 dark:text-blue-400 bg-blue-500/5"> AI  </a>  </li><li class="relative group/item"> <a href="/en/investing/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Investing  </a>  </li><li class="relative group/item"> <a href="/en/horizon/reading/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Reading  </a>  </li><li class="relative group/item"> <a href="/en/life/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Life  </a>  </li><li class="relative group/item"> <a href="/en/tools/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Tools  </a>  </li> </ul> <!-- 功能区域 (时钟 & 搜索) --> <div class="flex items-center gap-3 ml-auto pr-4 relative z-[110]"> <div class="hidden 2xl:flex items-center gap-4 mr-4 border-r border-slate-200 dark:border-white/10 pr-6 text-right transition-all"> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-slate-400 uppercase">NYC</span><span id="clock-nyc" class="text-[9px] font-mono text-slate-500 font-bold">--:--</span></div> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-slate-400 uppercase">LDN</span><span id="clock-ldn" class="text-[9px] font-mono text-slate-500 font-bold">--:--</span></div> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-blue-500 uppercase italic">GY</span><span id="clock-tyo" class="text-[9px] font-mono text-slate-900 dark:text-white font-bold">--:--</span></div> </div> <div class="hidden sm:block"> <div class="language-switcher inline-flex items-center rounded-full border border-slate-200/60 bg-white/50 p-1 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5" aria-label="Language selector"> <a href="https://www.xbstack.com/ai/tools-lab/gpt56-test/" data-language-choice="zh-CN" data-language-current="false" data-language-available="true" title="切换到中文版本" class="flex min-w-8 items-center justify-center rounded-full px-2.5 py-2 text-[10px] font-black tracking-wider transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400">
+中
+</a> <a href="https://www.xbstack.com/en/ai/tools-lab/gpt56-test/" data-language-choice="en" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="Current language: English" class="flex min-w-8 items-center justify-center rounded-full px-2.5 py-2 text-[10px] font-black tracking-wider transition-all cursor-default bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-950">
+EN
+</a> </div> <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+    document.addEventListener('click', (event) => {
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+  }
+</script> </div> <div class="flex items-center gap-1.5"> <button id="global-search-trigger" type="button" aria-label="Open site search" class="w-10 h-10 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-blue-500 bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 rounded-full transition-all shadow-sm backdrop-blur-md cursor-pointer"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.81 173.81 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.81 173.81 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3zM97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8z"></path></svg></button> <div class="w-10 h-10 flex items-center justify-center bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 rounded-full hover:border-blue-500 transition-all"><div class="relative flex items-center justify-center w-full h-full"> <input class="sr-only" id="theme-switcher" data-theme-switcher type="checkbox"> <label class="flex items-center justify-center cursor-pointer w-full h-full group/theme" for="theme-switcher" aria-label="切换主题">  <svg class="w-5 h-5 transition-all duration-500 scale-100 dark:scale-0 opacity-100 dark:opacity-0 absolute text-orange-500 group-hover/theme:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg>  <svg class="w-5 h-5 transition-all duration-500 scale-0 dark:scale-100 opacity-0 dark:opacity-100 absolute text-sky-400 group-hover/theme:-rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </label> </div> <script>
+  // 立即执行以防止闪烁
+  (function() {
+    const theme = localStorage.getItem("theme");
+    const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  })();
+
+  // 页面加载和切换后的初始化逻辑
+  function initTheme() {
+    const themeSwitchers = document.querySelectorAll("[data-theme-switcher]");
+    const isDark = document.documentElement.classList.contains("dark");
+
+    // 同步所有切换按钮的状态
+    themeSwitchers.forEach((el) => {
+      el.checked = isDark;
+      
+      // 移除旧的监听器（如果存在），防止重复绑定
+      // 由于是匿名函数难以移除，我们采用 cloneNode 或者简单的标志位
+      // Astro 的 View Transitions 会重新运行脚本，所以只需确保不累积
+      // 最简单的方式是直接覆盖 onclick 或 onchange，但这里用 addEventListener
+      // 我们可以给元素加个标记
+      if (el.dataset.initialized) return;
+      
+      el.addEventListener("change", (e) => {
+        const checked = e.target.checked;
+        if (checked) {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        }
+        
+        // 同步其他可能存在的切换按钮（例如移动端和桌面端各有一个）
+        document.querySelectorAll("[data-theme-switcher]").forEach(other => {
+            if (other !== el) other.checked = checked;
+        });
+      });
+      
+      el.dataset.initialized = "true";
+    });
+  }
+
+  // 绑定事件
+  document.addEventListener("DOMContentLoaded", initTheme);
+  document.addEventListener("astro:page-load", initTheme);
+  document.addEventListener("astro:after-swap", initTheme);
+</script></div> </div> </div> <!-- 移动端 Toggle --> <div class="xl:hidden flex items-center ml-2"> <button id="mobile-menu-trigger" type="button" aria-label="Open navigation menu" aria-controls="mobile-menu" aria-expanded="false" class="w-10 h-10 flex items-center justify-center bg-white/20 dark:bg-black/20 rounded-full border border-slate-200/50 dark:border-white/10 text-slate-700 dark:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path></svg> </button> </div> </nav> </div> </div>  <div id="mobile-menu" class="fixed inset-0 z-[600] pointer-events-none invisible"> <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-500"></div> <aside id="mobile-menu-panel" class="absolute top-0 right-0 bottom-0 w-[300px] bg-white dark:bg-[#0B1020] border-l border-slate-200 dark:border-white/10 translate-x-full transition-transform duration-500 flex flex-col"> <div class="h-[72px] flex items-center justify-between px-6 border-b border-slate-100 dark:border-white/5"> <span class="text-xs font-black uppercase tracking-[0.3em] text-blue-500">Systems Menu</span> <button id="mobile-menu-close" type="button" aria-label="Close navigation menu" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg></button> </div> <div class="border-b border-slate-100 px-6 py-4 dark:border-white/5 sm:hidden"> <div class="language-switcher inline-flex items-center rounded-full border border-slate-200/60 bg-white/50 p-1 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5" aria-label="Language selector"> <a href="https://www.xbstack.com/ai/tools-lab/gpt56-test/" data-language-choice="zh-CN" data-language-current="false" data-language-available="true" title="切换到中文版本" class="flex min-w-8 items-center justify-center rounded-full px-2.5 py-2 text-[10px] font-black tracking-wider transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400">
+中
+</a> <a href="https://www.xbstack.com/en/ai/tools-lab/gpt56-test/" data-language-choice="en" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="Current language: English" class="flex min-w-8 items-center justify-center rounded-full px-2.5 py-2 text-[10px] font-black tracking-wider transition-all cursor-default bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-950">
+EN
+</a> </div> <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+    document.addEventListener('click', (event) => {
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+  }
+</script> </div> <nav class="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-1"> <div class="space-y-1"> <a href="/en/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Home  </a>  </div><div class="space-y-1"> <a href="/en/ai/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-blue-500 bg-blue-500/5"> AI  </a>  </div><div class="space-y-1"> <a href="/en/investing/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Investing  </a>  </div><div class="space-y-1"> <a href="/en/horizon/reading/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Reading  </a>  </div><div class="space-y-1"> <a href="/en/life/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Life  </a>  </div><div class="space-y-1"> <a href="/en/tools/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Tools  </a>  </div> </nav> </aside> </div>  <script>
+    function updateClocks() {
+      const now = new Date();
+      const format = (tz) => now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: tz });
+      if (document.getElementById('clock-nyc')) document.getElementById('clock-nyc').innerText = format('America/New_York');
+      if (document.getElementById('clock-ldn')) document.getElementById('clock-ldn').innerText = format('Europe/London');
+      if (document.getElementById('clock-tyo')) document.getElementById('clock-tyo').innerText = format('Asia/Shanghai');
+    }
+    document.addEventListener('astro:page-load', () => { 
+      updateClocks(); 
+      setInterval(updateClocks, 60000);
+      const searchTrigger = document.getElementById('global-search-trigger');
+      if (searchTrigger) {
+        searchTrigger.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.dispatchEvent(new CustomEvent('xbstack:open-search'));
+        });
+      }
+      // Mobile Logic
+      const trigger = document.getElementById('mobile-menu-trigger');
+      const close = document.getElementById('mobile-menu-close');
+      const menu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const panel = document.getElementById('mobile-menu-panel');
+      const toggleMenu = (open) => {
+        if (!menu || !overlay || !panel) return;
+        trigger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        const englishUi = document.documentElement.lang.toLowerCase().startsWith('en');
+        trigger?.setAttribute('aria-label', open
+          ? (englishUi ? 'Close navigation menu' : '关闭导航菜单')
+          : (englishUi ? 'Open navigation menu' : '打开导航菜单'));
+        if (open) {
+          menu.classList.remove('invisible', 'pointer-events-none');
+          overlay.classList.add('opacity-100');
+          panel.classList.remove('translate-x-full');
+          document.body.style.overflow = 'hidden';
+          close?.focus();
+        } else {
+          overlay.classList.remove('opacity-100');
+          panel.classList.add('translate-x-full');
+          document.body.style.overflow = '';
+          setTimeout(() => { menu.classList.add('invisible', 'pointer-events-none'); }, 500);
+          trigger?.focus();
+        }
+      };
+      if (trigger) trigger.addEventListener('click', () => toggleMenu(true));
+      if (close) close.addEventListener('click', () => toggleMenu(false));
+      if (overlay) overlay.addEventListener('click', () => toggleMenu(false));
+    });
+    updateClocks();
+  </script> </header> <div id="language-switch-notice" class="pointer-events-none fixed left-1/2 top-24 z-[700] hidden max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/95 px-5 py-3 text-center text-sm font-bold text-slate-700 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 dark:text-slate-200" role="status" aria-live="polite"></div> <main id="main-content" class="flex-1">  <div id="reading-progress" class="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 z-[110] transition-all duration-300 w-0 shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div> <main class="pt-24 md:pt-32 pb-20"> <script type="module">function g(){const t=document.querySelector("header");return t?t.offsetHeight+32:140}function a(){document.querySelectorAll("[data-toc-link]").forEach(e=>{const n=e.cloneNode(!0);e.parentNode?.replaceChild(n,e),n.addEventListener("click",function(o){o.preventDefault();const r=o.currentTarget.getAttribute("href");if(!r)return;const c=r.substring(1),d=document.getElementById(c);if(d){const s=d.getBoundingClientRect(),i=window.pageYOffset||document.documentElement.scrollTop,u=g(),l=i+s.top-u;window.scrollTo({top:Math.max(0,l),behavior:"smooth"}),history.pushState(null,"",`#${c}`)}})})}document.addEventListener("DOMContentLoaded",a);document.addEventListener("astro:page-load",a);</script><div class="grid grid-cols-1 xl:grid-cols-[minmax(190px,230px)_minmax(0,860px)_minmax(190px,230px)] gap-6 xl:gap-8 2xl:gap-10 max-w-[1600px] justify-center mx-auto w-full px-4 md:px-6 xl:px-8">  <aside class="hidden xl:flex flex-col gap-8 sticky top-24 h-fit"> <div class="article-side-panel rounded-[24px] border p-6 flex flex-col gap-4"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Metadata</div> <div class="flex flex-col gap-2"> <span class="text-xs font-mono text-zinc-500"> 7/10/2026 </span> <div class="flex flex-wrap gap-2 mt-2"> <span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#AI Tools Lab </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#AI tool practical test </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#Model Update Field Test </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#GPT5.6 </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#GPT5.6 Sol </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#GPT5.6 Terra </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#GPT5.6 Luna </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#Codex </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#ChatGPT Work </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#AI Coding Agent </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#Content creation </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#Data Analysis </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#Search Console </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#GA4 </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#OpenAI API </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#Multi-Agent </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#Programmatic Tool Calling </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#Independent developer </span> </div> </div> </div>  <div class="flex flex-col gap-4"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 px-2">Related Articles</div> <div class="flex flex-col gap-3"> <a href="/en/ai/tools-lab/chatgpt-work-chat-codex-difference/" class="ceramic-card-hover p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5"> <h4 class="text-xs font-bold line-clamp-2 text-zinc-800 dark:text-zinc-200">What’s the Difference Between ChatGPT Work, Chat, and Codex? I Ran a Real Website Task to Find Out</h4> </a><a href="/en/ai/tools-lab/claude-sonnet-5-astro-bundle-optimization/" class="ceramic-card-hover p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5"> <h4 class="text-xs font-bold line-clamp-2 text-zinc-800 dark:text-zinc-200">Claude Sonnet 5 Hands-On: Full Process for Optimizing Oversized Astro Chunks</h4> </a> </div> </div> </aside>  <main class="min-w-0 w-full max-w-[920px] mx-auto xl:max-w-none"> <div class="article-paper rounded-[32px] md:rounded-[44px] border p-5 sm:p-7 md:p-10 xl:p-12"> <div class="entry-header-root animate-fadeUp mb-16" data-astro-cid-wy6pnlvm> <div class="relative" data-astro-cid-wy6pnlvm>  <div class="w-full aspect-[40/21] rounded-[28px] md:rounded-[36px] overflow-hidden shadow-2xl mb-10 md:mb-12 relative group " data-astro-cid-wy6pnlvm> <img src="/_astro/01-gpt56-cover.COL6K47i_Z1fbJXI.webp" alt="GPT5.6 Tested in Real Projects, Content Creation, and Website Data Analysis - XBSTACK" sizes="(min-width: 1280px) 860px, (min-width: 768px) 900px, calc(100vw - 32px)" loading="eager" fetchpriority="high" data-astro-cid-wy6pnlvm="true" decoding="async" width="1200" height="630" class="w-full h-full transition-transform duration-1000 group-hover:scale-105 object-cover">  <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" data-astro-cid-wy6pnlvm></div> </div> <div class="px-1 sm:px-3 md:px-5 xl:px-6" data-astro-cid-wy6pnlvm>  <div class="flex flex-wrap gap-3 mb-8" data-astro-cid-wy6pnlvm> <a href="/ai/agent/" class="liquid-capsule text-orange-700 dark:text-white border-orange-500/20 dark:border-white/10 whitespace-nowrap inline-flex items-center shrink-0" data-astro-cid-wy6pnlvm> <div class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse shrink-0" data-astro-cid-wy6pnlvm></div> <span class="ml-2 font-black" data-astro-cid-wy6pnlvm>Ai</span> </a> </div>  <h1 class="entry-title text-4xl sm:text-5xl xl:text-[3.5rem] not-italic font-black mb-8 md:mb-10 leading-[1.08] tracking-tighter text-balance" data-astro-cid-wy6pnlvm>GPT5.6 Real-World Test: After Putting It Into Actual Projects, Content Creation, and Data Analysis, Where Exactly Is the Upgrade?</h1>  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12" data-astro-cid-wy6pnlvm> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-orange-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-orange-600 dark:text-orange-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Release Date</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-4 h-4 text-orange-600/50 dark:text-orange-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm>2026-07-10</div> </div> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-blue-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-blue-600 dark:text-blue-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Reading Time</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="w-4 h-4 text-blue-600/50 dark:text-blue-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm>16分钟</div> </div> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-emerald-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Content Size</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 384 512" class="w-4 h-4 text-emerald-600/50 dark:text-emerald-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M288 248v28c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-28c0-6.6 5.4-12 12-12h168c6.6 0 12 5.4 12 12zm-12 72H108c-6.6 0-12 5.4-12 12v28c0 6.6 5.4 12 12 12h168c6.6 0 12-5.4 12-12v-28c0-6.6-5.4-12-12-12zm108-188.1V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V48C0 21.5 21.5 0 48 0h204.1C264.8 0 277 5.1 286 14.1L369.9 98c9 8.9 14.1 21.2 14.1 33.9zm-128-80V128h76.1L256 51.9zM336 464V176H232c-13.3 0-24-10.7-24-24V48H48v416h288z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm> 26,205 chars
+</div> </div> </div>  <div class="flex flex-wrap items-center gap-2" data-astro-cid-wy6pnlvm> <div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>AI Tools Lab</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>AI tool practical test</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>Model Update Field Test</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>GPT5.6</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>GPT5.6 Sol</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>GPT5.6 Terra</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>GPT5.6 Luna</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>Codex</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>ChatGPT Work</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>AI Coding Agent</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>Content creation</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" role="img" viewBox="0 0 24 24" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M14.25.18l.9.2.73.26.59.3.45.32.34.34.25.34.16.33.1.3.04.26.02.2-.01.13V8.5l-.05.63-.13.55-.21.46-.26.38-.3.31-.33.25-.35.19-.35.14-.33.1-.3.07-.26.04-.21.02H8.77l-.69.05-.59.14-.5.22-.41.27-.33.32-.27.35-.2.36-.15.37-.1.35-.07.32-.04.27-.02.21v3.06H3.17l-.21-.03-.28-.07-.32-.12-.35-.18-.36-.26-.36-.36-.35-.46-.32-.59-.28-.73-.21-.88-.14-1.05-.05-1.23.06-1.22.16-1.04.24-.87.32-.71.36-.57.4-.44.42-.33.42-.24.4-.16.36-.1.32-.05.24-.01h.16l.06.01h8.16v-.83H6.18l-.01-2.75-.02-.37.05-.34.11-.31.17-.28.25-.26.31-.23.38-.2.44-.18.51-.15.58-.12.64-.1.71-.06.77-.04.84-.02 1.27.05zm-6.3 1.98l-.23.33-.08.41.08.41.23.34.33.22.41.09.41-.09.33-.22.23-.34.08-.41-.08-.41-.23-.33-.33-.22-.41-.09-.41.09zm13.09 3.95l.28.06.32.12.35.18.36.27.36.35.35.47.32.59.28.73.21.88.14 1.04.05 1.23-.06 1.23-.16 1.04-.24.86-.32.71-.36.57-.4.45-.42.33-.42.24-.4.16-.36.09-.32.05-.24.02-.16-.01h-8.22v.82h5.84l.01 2.76.02.36-.05.34-.11.31-.17.29-.25.25-.31.24-.38.2-.44.17-.51.15-.58.13-.64.09-.71.07-.77.04-.84.01-1.27-.04-1.07-.14-.9-.2-.73-.25-.59-.3-.45-.33-.34-.34-.25-.34-.16-.33-.1-.3-.04-.25-.02-.2.01-.13v-5.34l.05-.64.13-.54.21-.46.26-.38.3-.32.33-.24.35-.2.35-.14.33-.1.3-.06.26-.04.21-.02.13-.01h5.84l.69-.05.59-.14.5-.21.41-.28.33-.32.27-.35.2-.36.15-.36.1-.35.07-.32.04-.28.02-.21V6.07h2.09l.14.01zm-6.47 14.25l-.23.33-.08.41.08.41.23.33.33.23.41.08.41-.08.33-.23.23-.33.08-.41-.08-.41-.23-.33-.33-.23-.41-.08-.41.08z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>Data Analysis</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>Search Console</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>GA4</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>OpenAI API</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>Multi-Agent</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>Programmatic Tool Calling</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>Independent developer</span> </div> </div> </div> </div> </div>   <div class="mb-12 p-8 rounded-[32px] bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 relative overflow-hidden group"> <div class="absolute top-0 left-0 w-1.5 h-full bg-blue-500"></div> <div class="flex flex-col gap-4"> <div class="flex items-center gap-2"> <span class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500">Laboratory Note</span> </div> <p class="text-lg font-bold text-slate-700 dark:text-slate-300 italic leading-relaxed"> This article is completed based on the current XBSTACK project, content ledger, daily exports from Search Console, GA4 404 page title summary, and build results, with the official specifications strictly separated from personal testing. </p> </div> </div>     <div class="prose prose-tech markdown-content">   <blockquote>
+<p><strong>2026-07-14 Search Performance Review</strong>: In the past 28 days, this article has received 25 GSC impressions, 2 clicks, an 8% CTR, and an average ranking of 16.4; GA4 records 6 sessions, 5 active users, and 6 views. The sample size is still small, so the title will not be changed for now, only supplementing data caliber, evidence, and internal links, and continuing observation after 14–28 days.</p>
+</blockquote>
+<blockquote>
+<p>The original review data snapshot was created on 2026-07-10. The “218 posts,” “16 clicks / 794 impressions,” and the old 404 summary mentioned in the article are all used to review that test at the time and do not represent the latest total number of sites as of 2026-07-14. The latest operational standards are maintained solely by Growth Console.</p>
+</blockquote>
+<h2 id="this-test-mainly-answered-five-questions">This test mainly answered five questions</h2>
+<p>This article combines real cases and operational data to test and answer the following questions:</p>
+<ul>
+<li>How effective is GPT-5.6’s ability to understand and modify code in real Astro + React projects?</li>
+<li>What changes have the logical structure and reading experience changed when using GPT-5.6 for technical content creation?</li>
+<li>When there is only aggregated data and page-level 404 path details are missing, what analyses can GPT-5.6 perform and which conclusions must be stopped?</li>
+<li>Faced with Sol, Terra, Luna models, and max/ultra runtimes, how should daily production choose the route?</li>
+<li>What security risks exist when Coding Agents execute long tasks, and how can reasonable permission boundaries be set?</li>
+</ul>
+<h2 id="who-is-this-article-for">Who is this article for?</h2>
+<ul>
+<li>Focus on independent developers and technical teams demonstrating the latest AI tools in real-world production.</li>
+<li>Webmasters and growth engineers looking to use AI to assist content creation, SEO operations, and website traffic analysis.</li>
+<li>System architects designing or using Coding Agents and having strong requirements for permission control and security boundaries.</li>
+</ul>
+<h2 id="to-give-you-the-conclusion-its-closer-to-completing-complex-tasks-but-it-cant-make-the-final-judgment-for-you">To give you the conclusion: it’s closer to completing complex tasks, but it can’t make the final judgment for you</h2>
+<p>The core upgrade of GPT-5.6 lies in its ability to maintain logical continuity in multi-step long tasks involving projects, content, and data, but it still cannot replace the final decisions of human authors. After release, I didn’t use it for meaningless Olympiad problems, but instead tested its performance directly in XBSTACK’s real build and analysis workflow.</p>
+<p>This task chain is much more complicated than a single Q&#x26;A round. Code, content, data, SEO, and permission boundaries all exist together. The model not only needs to provide answers, but also remember which files can be modified, which conclusions have data, which are just speculation, and when you must stop and wait for manual authorization.</p>
+<p>My conclusion is: the most obvious improvement in GPT-5.6 isn’t that a sentence suddenly looks better, but that it’s not easy to lose previous limitations during long tasks. It connects “searching materials—reading projects—making judgments—writing documents—running verification” into a continuous workflow. For those who frequently use Codex, Coding Agent, MCP, or multi-tool workflows, this upgrade is more noticeable than regular chat.</p>
+<p>But it still faces a very real problem: the more proactively the model gets things done, the easier it is to put “task done” before “should it be done?” In terms of content, it will carry out the requirements excessively completely; On the engineering side, if permissions are not tightened, it may also expand its operational scope to achieve its goals. So I’m willing to leave more analysis and execution to GPT-5.6, but I won’t hand over author judgment, production deployment, deletion operations, and credential permissions together.</p>
+<p>“This score: 87/100” This score applies only to XBSTACK’s real mission, not the general model leaderboard.</p>
+<p><img alt="Overview of GPT-5.6 Testing Tasks for Real Projects, Content Creation, and Data Analysis" loading="lazy" decoding="async" fetchpriority="auto" width="1672" height="941" src="/_astro/02-gpt56-test-scope.B9oCCiIb_YzpSv.webp" ></p>
+<h2 id="how-i-tested-three-real-tasks-and-nothing-tested-this-time">How I Tested: Three Real Tasks, and Nothing Tested This Time</h2>
+<p>To avoid meaningless score competition, I placed GPT-5.6 directly in XBSTACK’s real Astro build, content deduplication, and Google traffic analysis tasks for closed-loop testing. We must use real projects, real data, and real routes as the final criterion to see if it can autonomously complete revisions and generate publishable manuscripts within limited permissions.</p>
+<p>I reserved three deep tasks.</p>
+<p>| Task | Input materials | Success Criteria | Final evidence | |---|---|---|---|
+| Real project modification | Astro, React, Node SSR, content collection, dynamic routing, script building | Find the correct files and sections without destroying the original structure, and build using | File, route, build log, final HTML |
+| Content Creation | 218 content logs, existing articles, writing rules, SEO/GEO requirements | Avoid duplication, separate official facts from personal tests, and form a publishable manuscript | Main text, metadata, internal links, manual verification records |
+| Data Analysis | GSC daily export, GA4 404 page title summary, number of sections | Recalculate indicators, identify main issues, and provide data-based priorities Formula, scale, caliber instructions, and sequence of actions |</p>
+<p>The testing environment is not a strict laboratory. It takes place in real projects and continuous conversations, including file reading, web verification, code manipulation, and multiple rounds of modification. The model has the ability to read projects and modify specified articles, but it does not have authorization for automatic deployment, deletion of production resources, migration of credentials, or modification of website navigation.</p>
+<p>This time, the strict GPT-5.5 A/B test was not completed either. It did not run ten times each under unified API, unified prompt, unified caching, and unified tool permissions, nor did it record complete initial word latency, total time spent, or token. Therefore, this article will not write about “doubling the speed,” nor will it pass off OpenAI or partner test data as my own personal results.</p>
+<p>Another boundary is data granularity. GSC only provides daily summaries, without complete page-by-page or query-by-query exports; GA4 only has page 404 titles and page views, and does not trigger the original access path to 404. The model can recalculate scales and detect concentration phenomena, but it cannot pretend to complete page-level attribution when path details are missing.</p>
+<h2 id="the-updates-that-truly-affect-usage-arent-the-increase-in-parameters">The updates that truly affect usage aren’t the increase in parameters</h2>
+<p>GPT5.6’s Sol, Terra, and Luna tiered tiers combined with Programmatic Tool Calling will greatly change the previously inefficient development method of piling raw logs into models. The different specifications of the model are not just about speed, but also about achieving intelligent hierarchical routing at the business level.</p>
+<h2 id="how-to-choose-sol-terra-and-luna">How to choose Sol, Terra, and Luna?</h2>
+<p>In real production, the positioning of these three is not just about speed or parameter differences, but about fine-grained routing based on call cost and failure cost:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Features / Model</th><th>Sol</th><th>Terra</th><th>Luna</th></tr></thead><tbody><tr><td>Featured Scenes</td><td>Cross-file refactoring and multi-table data analysis</td><td>Text polishing, single file debug</td><td>Formatting, text extraction, routing classification</td></tr><tr><td>API input unit price (vs base)</td><td>5.0 USD/M (2.0x vs Terra)</td><td>2.5 USD/M (Base)</td><td>1.0 USD/M (0.4x vs Terra)</td></tr><tr><td>Latency</td><td>Approximately 1.2s - 2.5s</td><td>Approximately 0.4s - 0.8s</td><td>&#x3C; 0.2s</td></tr><tr><td>Tool call capability</td><td>Strong (multi-toolchain orchestration)</td><td>(supports Programmatic)</td><td>Weak (single-tool matching only)</td></tr><tr><td>Recommended usage ratio</td><td>10% - 15%</td><td>70% - 80%</td><td>10% - 15%</td></tr></tbody></table>
+<p><code>max</code> and <code>ultra</code> are not the fourth or fifth models. <code>max</code> allows individual models to spend more time on inference, explore solutions, run checks, and revise results; <code>ultra</code> is a multi-agent parallel model. The official default is that four agents handle different workflows separately, which are then aggregated by the main agent. Simply put, Max is one person thinking several rounds of work, Ultra is about splitting tasks into several people to complete simultaneously.</p>
+<p>If Ultra is used for this work, it can be broken down into four branch lines: official document verification, project structure check, content inventory analysis, and GSC/GA4 recalculation. But if you change a title, extract a few fields, or format data, there’s no need to enable four agents. Multi-agent entities increase the upper limit and completion speed of complex tasks, while also consuming more tokens; When tasks can’t be disassembled, they only create repetitive work.</p>
+<p>Another change that deserves more attention from developers is Programmatic Tool Calling. Traditional tool calls often push a large number of intermediate results back into the context before the model judges the next step. GPT-5.6 can write and run lightweight programs within the Responses API, filtering, grouping, and aggregating tool results first, retaining only the truly important content.</p>
+<p>For example, when handling 10,000 logs, a more reasonable process is not to send each log to the model individually, but to first group them by status code, count repeat paths, extract abnormal samples, and then let the model determine the cause and priority. The program is responsible for stable computation, while the model handles uncertainty judgment. This is more practical for website logs, financial reports, MCP, multi-tool agents, and n8n workflows than “the model can write a script.”</p>
+<p><img alt="GPT5.6 Luna, Terra, Sol, Max, Ultra, and Programmatic Tool Calling workflows " loading="lazy" decoding="async" fetchpriority="auto" width="1586" height="992" src="/_astro/03-gpt56-model-routing.CAennfzr_Z6BUwx.webp" ></p>
+<h2 id="real-project-testing-does-it-read-the-rules-before-starting-to-modify-files">Real Project Testing: Does it read the rules before starting to modify files?</h2>
+<p>GPT-5.6 demonstrated strong rule-following capability in the Astro project, accurately locating the Tools Lab routing and collection structure, and successfully passing local build validation. When facing multi-framework hybrid environments like Astro v5, React, and Node SSR, it can follow existing Frontmatter specifications without arbitrarily creating conflicting code.</p>
+<p>My task with GPT-5.6 is not to “write a GPT-5.6 article,” but to first understand the project and then decide where the article should be placed. It needs to read the content collection, existing Tools Lab logic, article frontmatter, route mapping, and content inventory before it can be written.</p>
+<p>The final landing points it identified were:</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">内容文件：src/content/ai/gpt56-test.md
+section：tools-lab
+hub：tools-lab
+subcategory：tools-lab
+series：ai-tools-lab
+页面路由：/ai/tools-lab/gpt56-test/
+</code></pre>
+<p>This result itself is not complicated; the difficulty lies in that it did not create a new directory for the sake of “unified structure,” nor did it modify the top navigation. After the file is written, it continues to update the content ledger, execute Astro builds, check target routes, Sitemap, Pagefind, Canonical, and finally HTML. After clearing the cache, the target page successfully pre-rendered. Pagefind indexed 820 static HTML pages, JSON-LD can parse, and the machine’s query terms do not leak into the visible body.</p>
+<p><img alt="GPT5.6 reads rules, writes articles, and completes build validation " loading="lazy" decoding="async" fetchpriority="auto" width="1586" height="992" src="/_astro/04-gpt56-project-proof.DBHCjOtF_1fzT0E.webp" > in XBSTACK Astro projects</p>
+<p>The best performance in this project task was continuity. The column rules read earlier by the model and the later file write and build validation remain valid, without forgetting constraints after switching tasks midway. It can also map abstract business requirements to specific code locations, such as “GEO does not pollute the general user body,” ultimately ending up in JSON-LD in <code>hideStructuredBlocks</code>, frontmatter, layout, and page head, rather than just writing “optimized GEO” in the article.</p>
+<p>But this time, it cannot be proven that GPT-5.6 can independently maintain any production project. It deals with a content task with clear boundaries, and the scope of modification is limited. No test database migration, large-scale refactoring, automatic deployment, or online rollback. A more accurate conclusion is: in projects where rules already exist, document scope is clear, and results can be verified as constructed, it can handle a large amount of reading, locating, modification, and review work.</p>
+<h2 id="content-creation-test-materials-can-be-well-organized-but-articles-tend-to-turn-into-project-reports">Content Creation Test: Materials can be well organized, but articles tend to turn into project reports</h2>
+<p>Although GPT-5.6 can efficiently perform information retrieval and metadata alignment, its output is highly prone to over-structuring, requiring manual readability reorganization of 25 fragmented H2 titles. Pure AI generation lacks a sense of reading breath, so we need to condense lengthy report structures into logical tech blogs.</p>
+<p>The re-exported ledger contains 218 published entries, including 134 from the AI collection and 96 from the <code>category: ai</code>. The two are not the same metric: collection represents the collection where content is stored, category represents business categories. GPT-5.6 did not add them up, nor did it directly conclude that there are 134 model reviews on the site. It continues to read Frontmatter and column rules, determining that the article should go to AI Tools Lab, not Agent, LangGraph, or regular Notes.</p>
+<p><img alt="XBSTACK collection of 218 published articles, categorized and distributed by Tools Lab " loading="lazy" decoding="async" fetchpriority="auto" width="1672" height="941" src="/_astro/05-xbstack-content-inventory.CTu09MJE_1JBDvJ.webp" ></p>
+<p>It performs consistently in data verification, subject dediality, structuring, and SEO/GEO metadata. Official specs, official benchmark scores, personal tests, and author judgments can basically be separated; Canonical, keywords, FAQs, and on-site links can also be organized around genuine search intent, rather than mechanically repeating “GPT-5.6 real-world testing.”</p>
+<p>The real problem is the reading structure. The model tends to execute each requirement as an independent chapter: test scope, data caliber, content inventory, GSC, GA4, GEO, build, scoring, benchmark, price, security, and target audience—all handled separately. An article of about 6,500 Chinese characters once had 25 secondary headings, averaging only two to three hundred words per section. Most of the facts are correct, but they read like project delivery reports rather than in-depth reviews completed by a technical author.</p>
+<p>This failure is quite typical. Models excel at ensuring “no missing items,” but they don’t naturally know which content should be merged, which details might interrupt reading, or which contradictions are worth governing the entire text. In the end, it still needs to manually consolidate 25 H2s into about 10 core chapters and clarify the main thread: “GPT-5.6 is closer to completing complex tasks, but the stronger the capability, the more important permission boundaries and human acceptance become.”</p>
+<p>So I don’t just hand over content creation to models and publish them directly. A more appropriate division of labor is: the model is responsible for data verification, evidence organization, inventory duplication avoidance, preliminary structure, and metadata; The author decides what to write, what to delete, what to say first, and whether the article ultimately resembles themselves.</p>
+<h2 id="data-analysis-and-practical-testing-calculating-a-comparative-proportion-is-not-difficult-the-challenge-is-not-writing-the-proportion-as-causality">Data Analysis and Practical Testing: Calculating a Comparative Proportion Is Not Difficult; the Challenge Is Not Writing the Proportion as Causality</h2>
+<p>GPT-5.6 can accurately recalculate the proportion of CTR versus GA4 404, but due to the lack of detailed original access paths, it cannot replace the human brain in page-level attribution and causal derivation. Data analysis requires clear data boundaries; it can help calculate 86.4% of 404 errors occurring on the main page, but it must never be blindly attributed to specific routing changes.</p>
+<p>The most basic compound calculation is:</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">CTR = 16 ÷ 794 × 100%
+    = 2.0151%
+</code></pre>
+<p>After rounding, it is 2.02%. GPT5.6’s initial judgment is also reasonable: the website is not completely invisible to Google, but its overall ranking is still low, and the impressions it has received have not converted into clicks sufficiently.</p>
+<p><img alt="XBSTACK Analysis of Search Console Impressions, Clicks, CTR, and Weighted Average Ranking for the Past Three Months" loading="lazy" decoding="async" fetchpriority="auto" width="2633" height="1572" src="/_astro/06-xbstack-gsc-analysis.Bc6w4AOZ_6xkE1.webp" ></p>
+<p>However, it does not directly attribute the problem to “the title not being attractive enough.” A weighted average ranking of 34.19 means that many impressions occur in lower positions in the search results, which in itself lowers the CTR. A more prudent course of action should be to first break down the data by page and query, identify pages with an average ranking of 8–30 that already have a certain number of impressions, and then check the title, meta description, and search intent. Pages ranked beyond the thirtieth position with few impressions should not have their titles frequently changed solely because of low CTR.</p>
+<p>The second set of data comes from the GA4 “Page Titles and Screens” report from April 11 to July 9, 2026. Three clearly defined 404 page titles generated 523, 57, and 25 views respectively, totaling 605 views. Among them, the main current “No Man’s Land | 404 - XBSTACK” generated 523 views.</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">523 ÷ 605 × 100% = 86.4463%
+</code></pre>
+<p>Rounding up, it is 86.4%. This ratio only shows that among these three clear 404 page titles, most of the traffic is concentrated on the currently used 404 titles. It cannot prove that 86.4% of invalid addresses come from a certain type of URL, nor can it directly determine the proportion of <code>/tags/</code> paths.</p>
+<p><img alt="XBSTACK GA4 Three Clear 404 Page Titles Page View Overview " loading="lazy" decoding="async" fetchpriority="auto" width="2574" height="1498" src="/_astro/07-xbstack-ga4-404-overview.DJzN9R5J_Zr8dBp.webp" ></p>
+<p>What really tests the model here is not division, but whether it can stop at the data boundary in time. The current exports only have page titles and view counts, without triggering the original page path of 404, so it is impossible to further determine whether these visits come from tabs, historical article addresses, case values, URL encoding, or external old links. 605 is just the total number of views for three categories of 404 titles, not 605 unique visitors or 605 unique invalid URLs.</p>
+<p>After putting content inventory, GSC, and GA4 together, the sequence of actions becomes clearer: first supplement and export the original page path and source of 404, then handle the most concentrated dead addresses; At the same time, optimize pages that are already displayed and ranked close to the top two pages; Adding AI content raises the threshold for avoiding duplicates, and supplementing weaker sections such as outdoor, reading, and investment with real materials. The model didn’t decide the brand’s direction for me, but it separated “being able to draw conclusions” from “must keep collecting numbers.”</p>
+<h2 id="the-official-benchmark-scores-are-strong-but-they-cant-replace-my-own-results">The official benchmark scores are strong, but they can’t replace my own results</h2>
+<p>Even though GPT-5.6 scores significantly in official benchmarks like SWE-bench Pro, we still need to use local build success and data support accuracy as the sole acceptance criteria. Official benchmark scores can serve as a reference for model capability, but in real Astro construction and SEO push environments, whether a project can run smoothly is the real hard metric.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Review</th><th align="right">GPT5.6 Sol</th><th align="right">GPT5.6 Sol Ultra</th><th align="right">GPT-5.5</th></tr></thead><tbody><tr><td>Terminal-Bench 2.1</td><td align="right">88.8%</td><td align="right">91.9%</td><td align="right">85.6%</td></tr><tr><td>BrowseComp</td><td align="right">90.4%</td><td align="right">92.2%</td><td align="right">84.4%</td></tr><tr><td>OSWorld 2.0</td><td align="right">62.6%</td><td align="right">Not listed</td><td align="right">47.5%</td></tr><tr><td>SWE-Bench Pro</td><td align="right">64.6%</td><td align="right">Not listed</td><td align="right">59.4%</td></tr><tr><td>DeepSWE v1.1</td><td align="right">72.7%</td><td align="right">Not listed</td><td align="right">67.0%</td></tr></tbody></table>
+<p>These numbers align with this experience: when tasks include browsing, file reading, project understanding, tool calls, and continuous verification, GPT-5.6’s value is noticeably greater than that of ordinary single-round Q&#x26;A. It can continuously follow context and is more willing to continue building and checking after finishing the document.</p>
+<p>But the official form also shows that not every project is first. Some Claude models still perform higher on SWE-Bench Pro; Some reviews reflect specific tool environments and success criteria and cannot be directly mapped to every real project. My task did not strictly compare to GPT-5.5, so what could be written was “longer task continuity is more useful,” not “a certain percentage improvement in overall ability.”</p>
+<p>The role of Benchmark in this article is to explain why I feel change in multi-step tasks, rather than replacing real project evidence. For me, whether the build passes, whether the data caliber is written wrong, or whether the article requires extensive manual reorganization is more important than getting two extra points on a strange leaderboard.</p>
+<h2 id="pricing-and-model-routing-daily-work-doesnt-have-to-use-all-of-sol">Pricing and Model Routing: Daily work doesn’t have to use all of SOL</h2>
+<p>Based on GPT5.6’s cache discounts and unit price differences, it is reasonable to route simple tasks to Luna and daily tasks to Terra to maximize control over API operating costs. We must abandon the one-size-fits-all approach of using flagship models and instead use explicit prompt caches to reduce the overhead of long-text retrieval.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Model</th><th align="right">Enter</th><th align="right">Output</th></tr></thead><tbody><tr><td>GPT5.6 Sol</td><td align="right">5 USD</td><td align="right">$30</td></tr><tr><td>GPT5.6 Terra</td><td align="right">$2.5</td><td align="right">$15</td></tr><tr><td>GPT5.6 Luna</td><td align="right">1 USD</td><td align="right">6 USD</td></tr></tbody></table>
+<p>GPT-5.6 also supports explicit prompt cache breakpoints and a cache lifecycle of at least 30 minutes. Cache writes are charged at 1.25 times the input price of uncached inputs, while cache reads continue to enjoy a 90% discount on input prices. For workflows containing a large number of stable project rules, duplicate documents, or fixed tool descriptions, caching strategies directly affect costs.</p>
+<p>This test took place in the ChatGPT/Codex workflow, and I didn’t have a complete API token bill, so I couldn’t give “the exact amount cost to complete this article.” If there is no real billing record, only the API unit price is listed, without falsifying the cost per task.</p>
+<p>My actual route would be:</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">标签、分类、格式检查、简单抽取        → Luna
+普通文章整理、摘要、常规数据解释      → Terra
+复杂选题避重、跨文件修改、深度研究    → Sol
+单个复杂任务需要更多检查              → Sol + max
+任务能够拆成多个独立工作流            → ultra / multi-agent
+</code></pre>
+<p>Terra is more suitable as the default setting for daily use. Many content organization tasks, general development, and routine Agent tasks do not require paying Sol’s output price. Sol should be reserved for work with high failure costs, cross-file or cross-tool tasks, and results that need thorough review. Ultra is also not a free quality button; when tasks cannot be naturally divided, multiple Agents will repeatedly read materials, perform reasoning, and consume tokens.</p>
+<h2 id="problems-encountered-in-actual-use">Problems Encountered in Actual Use</h2>
+<p>In practice, if not properly restricted, GPT5.6 is prone to the following typical errors and execution pitfalls in Astro projects and data processing:</p>
+<ol>
+<li>
+<p>“Astro compile-time content.render deprecation error”:
+When handling the Astro 5 Content Layer API, if the model still applies the old render mode, the following error will be triggered:</p>
+<pre class="language-bash" data-language="bash"><code is:raw="" class="language-bash"><span class="token punctuation">[</span>astro<span class="token punctuation">]</span> entry.render is not a <span class="token keyword">function</span>
+at EntryLayout <span class="token punctuation">(</span>src/layouts/EntryLayout.astro:12:35<span class="token punctuation">)</span>
+</code></pre>
+<p><em>Pitfall Analysis</em>: It is necessary to explicitly inform the Astro 5 model that it needs to use the function exported by <code>astro:content</code> in <code>render(entry)</code> to obtain the compiled content, rather than directly calling <code>entry.render()</code>.</p>
+</li>
+<li>
+<p>“API Cache Configuration and Miss Overhead”:
+When Prompt Cache is enabled, if the size of the first package does not reach the 128KB threshold, or if the lifecycle has expired, additional charges will be incurred upon calling:</p>
+<pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"error"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"message"</span><span class="token operator">:</span> <span class="token string">"Prompt cache policy ignored: payload under 128KB threshold"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"invalid_request_error"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</li>
+<li>
+<p>‘Coding Agent Unauthorized Credential Search Error’:
+After granting the model autonomous shell execution rights, due to the lack of sandbox isolation, it will attempt to search for the local <code>.env</code> and throw an exception if it is missing:</p>
+<pre class="language-bash" data-language="bash"><code is:raw="" class="language-bash">Error: Process failed with <span class="token builtin class-name">exit</span> code <span class="token number">1</span>. stderr: <span class="token string">"cp: cnpmrc: Permission denied"</span>
+</code></pre>
+</li>
+</ol>
+<h2 id="greatest-risk-the-more-it-wants-to-get-things-done-the-more-it-needs-to-limit-what-it-can-do">Greatest Risk: The more it wants to get things done, the more it needs to limit what it can do</h2>
+<p>When GPT-5.6 attempts to achieve its goals or even overstep credentials, the strict three principles of ‘read-only default, manual approval, and log verification’ will be the bottom line for project security. The model’s obsession with task completion in a long logical chain can easily lead to accidental operations; we must establish physical defenses in the local execution environment and access channels.</p>
+<p>The problem isn’t that the model can’t do it at all, but that it wants to close the loop of tasks. When placed in Coding Agent or Computer Use scenarios, the risk expands from “the code may be written wrong” to “the code may be written correctly but did something not authorized.”</p>
+<p><img alt="GPT5.6 Coding Agent " loading="lazy" decoding="async" fetchpriority="auto" width="1586" height="992" src="/_astro/08-gpt56-permission-boundary.DMLJihAi_1HWQxp.webp" > from default read-only to permission control and manual approval processes for production deployment</p>
+<p>I will continue to keep these boundaries: read-only by default, write permissions temporarily open by directory; Separate authorization for deletion, overwrite, deployment, push, and database migration; Prohibit self-search for credentials and cross-environment token migration; Clarify the file scope before modification, then check the diff after modification; If you haven’t run the test, just state it as unverified; Production task logs, snapshots, rollback points, and manual approvals are retained; Child Agents inherit the permissions of the main Agent.</p>
+<p>Content tasks carry similar risks. It might keep adding chapters to “cover completely,” add too many keywords to “meet SEO,” or write correlation as causality to “form conclusions.” These behaviors are usually not obvious mistakes but rather over-execution of goals. The value of manual acceptance lies in judging at the final step: whether this matter should continue, to what extent, and whether the result meets real needs.</p>
+<h2 id="final-decision-i-will-use-it-more-often-but-i-wont-set-all-tasks-to-the-highest-level">Final decision: I will use it more often, but I won’t set all tasks to the highest level</h2>
+<p>My final decision was to establish a multi-tier automatic model routing mechanism and firmly lock all operations involved in production write and deployment within a sandbox of manual approval. We cannot allow agents to bypass manual review for code release and online release; reasonable routing of high- and low-end models will be key to balancing efficiency.</p>
+<p>In this test, it completed official data verification, project reading, content deduplication avoidance, inventory analysis, GSC and GA4 recalculation, SEO/GEO metadata, file writing, build, and final HTML check. What truly makes it valuable is that it connects these originally scattered steps, and most constraints are not lost midway.</p>
+<p>It has no replacement; it is the author’s judgment of content pacing, business priority, data caliber acceptance, and production permission decisions. 25 H2 failures indicate that a complete result does not necessarily mean the article is easy to read; The System Card case also shows that completing a task does not equal authorization for the action.</p>
+<p>So my way of using it won’t be “switch everything to Sol later.” Luna handles low-risk batch tasks, Terra handles most daily production, and Sol handles truly complex and costly jobs; Max is used for single-task depth checks, while Ultra is only enabled when tasks can be clearly split in parallel. Manual approval is always retained for production writes, deletions, deployment, credentials, and cloud resource management.</p>
+<p>GPT-5.6’s biggest advancement is that it gets things done more than planned.</p>
+<p>Where GPT-5.6 still needs people is to decide whether this should be done and whether the final results are truly usable.</p>
+<h2 id="faq">FAQ</h2>
+<h3 id="is-gpt56-good-for-content-creation">Is GPT5.6 good for content creation?</h3>
+<p>Suitable for data verification, content deduplication, structural organization, SEO metadata, internal links, and multiple rounds of revision. It tends to seek complete coverage, resulting in too many chapters and a more report-like reading pace. In authentic creation, original materials, prohibited expressions, target readers, and existing articles should be provided, and finally, the author should re-evaluate the information choices.</p>
+<h3 id="can-gpt56-analyze-search-console-and-ga4-data">Can GPT5.6 Analyze Search Console and GA4 Data?</h3>
+<p>It can perform indicator recalculation, proportional analysis, anomaly clustering, and action priority determination. This time, it correctly recalculated the CTR of <code>16/794=2.02%</code> and the composition of 404 page title views for <code>523/605=86.4%</code>. However, without page-by-page, query-by-query, or original 404 path details, it cannot provide page-level attribution or write correlations as causality.</p>
+<h3 id="how-to-choose-between-gpt56-sol-terra-and-luna">How to Choose Between GPT5.6 Sol, Terra, and Luna?</h3>
+<p>Complex research, cross-document development, long tasks, and high failure costs prioritize SOLs; Priority for daily development, content processing, and routine agents is Terra; Classification, extraction, routing, format conversion, and bulk light task priority Luna.</p>
+<h3 id="is-gpt56-ultra-a-more-powerful-standalone-model">Is GPT5.6 Ultra a More Powerful Standalone Model?</h3>
+<p>No. Ultra is a multi-agent parallel mode, with four Agents by default dividing tasks and then summarizing them. It can increase the upper limit and completion speed of complex tasks, but consumes more tokens; simple tasks are usually not worth activating.</p>
+<h3 id="how-much-faster-is-gpt-56-than-gpt-55">How Much Faster Is GPT-5.6 Than GPT-5.5?</h3>
+<p>This article did not conduct rigorous personal A/B testing, so it cannot provide speed multipliers. The token, latency, and success rate improvements announced by the official and partners can only be used as external references and cannot be directly equated with the actual performance of all projects.</p>
+<h3 id="is-gpt-56-suitable-for-directly-taking-over-production-projects">Is GPT-5.6 suitable for directly taking over production projects?</h3>
+<p>Unsupervised takeover is not suitable. A more reliable approach is to default read-only, show the plan first, restrict directories and tools, authorize step-by-step authorization, check diffs, run tests, and keep rollback points. Deletion, deployment, documentation, and production data writing must be approved separately.</p>
+<h3 id="will-the-geo-information-in-this-article-affect-the-reading-of-ordinary-users">Will the GEO information in this article affect the reading of ordinary users?</h3>
+<p>Machine query terms and structured summaries will not be additionally displayed. XBSTACK uses <code>hideStructuredBlocks: true</code> to disable automatically visible queries, summaries, and audience modules; TechArticle, FAQPage, Dataset, BreadcrumbList, keywords, and references are written into the page header via JSON-LD and Meta, but the main text still only has one set.</p>
+<h2 id="official-information">Official Information</h2>
+<ul>
+<li><a href="https://openai.com/index/gpt-5-6/" rel="nofollow noopener noreferrer" target="_blank">GPT5.6 Official Release Page </a></li>
+<li><a href="https://help.openai.com/en/articles/9624314-model-release-notes" rel="nofollow noopener noreferrer" target="_blank">OpenAI Model Release Notes</a></li>
+<li><a href="https://help.openai.com/en/articles/20001354" rel="nofollow noopener noreferrer" target="_blank">GPT5.6 in ChatGPT</a></li>
+<li><a href="https://deploymentsafety.openai.com/gpt-5-6" rel="nofollow noopener noreferrer" target="_blank">GPT5.6 System Card</a></li>
+</ul>
+<h2 id="keep-reading">Keep reading</h2>
+<ul>
+<li><a href="/en/ai/tools-lab/chatgpt-work-chat-codex-difference/">What are the differences between ChatGPT Work, Chat, and Codex? A complete workflow</a> for a real website task</li>
+<li><a href="/en/ai/tools-lab/">AI Tools Lab: Model and Tool Testing </a></li>
+<li><a href="/en/ai/model-updates/">Model Updates: Large Model Update Portal </a></li>
+<li><a href="/en/growth/">Growth Lab: SEO, GEO, Search Console, and Content Operations Experiment </a></li>
+<li><a href="/en/ai/tools-lab/claude-sonnet-5-astro-bundle-optimization/">Claude Sonnet 5 test: Astro chunk over-optimizes the entire process </a></li>
+<li><a href="/en/ai/xbstack-pre-release-data-support-audit/">Pre-release data quality inspection for personal websites: How to determine whether GSC, GA4, 404, and product evidence are sufficient?</a></li>
+<li><a href="/en/ai/search-console-ctr-title-fix/">Search Console exposed but not clicked, only then did I realize the issue wasn’t in indexing, but in the title and entry </a></li>
+<li><a href="/en/ai/xbstack-content-quality-audit-builder-log/">My personal website posted 160 articles, and only then did I realize the reason for the lack of traffic </a></li>
+<li><a href="/en/ai/ai-agent-production-governance/">AI Agent Production-Based Governance: Evaluation, Observability, Cost Control, and Closed-Loop Human Approval </a></li>
+</ul>  </div> <section class="mt-16 p-8 rounded-[32px] bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5"> <div class="flex items-center justify-between gap-4 mb-6"> <h2 class="text-xs font-black uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400"> Next Reading </h2> <a href="/en/ai/tools-lab/" class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400 hover:underline"> View Hub → </a> </div> <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> <a href="/en/ai/tools-lab/chatgpt-work-chat-codex-difference/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">tools-lab</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">What’s the Difference Between ChatGPT Work, Chat, and Codex? I Ran a Real Website Task to Find Out</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">How do ChatGPT Work, Chat, and Codex divide responsibilities? I ran a complete workflow on a real operational task for XBSTACK after it hadn’t been updated in three days, and reviewed why the first version—1,499 words long and technically built successfully—was still rejected.</p> </a><a href="/en/ai/tools-lab/claude-sonnet-5-astro-bundle-optimization/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">tools-lab</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Claude Sonnet 5 Hands-On: Full Process for Optimizing Oversized Astro Chunks</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">This article tests Claude Sonnet 5 on a real XBSTACK Astro project, using an AI coding agent to diagnose oversized chunks, the CompoundCalculator package size, and search component loading issues. It records what it can solve, where it misjudges, and whether it is suitable for independent developers to use for frontend performance optimization.</p> </a><a href="/en/ai/ai-agent-autogen-tutorial/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">agent</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">AutoGen Hands-On Tutorial: Multi-AI Agent Conversational Collaboration, Tool Invocation, and Production Deployment Boundaries</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Systematically deconstruct AutoGen&#39;s practical usage and production deployment boundaries in multi-agent conversational collaboration, covering AgentChat, GroupChat, Planner/Executor/Critic patterns, tool invocation, human-in-the-loop, conversation turn control, evaluation metrics, cost monitoring, and migration risks to the Microsoft Agent Framework.</p> </a><a href="/en/ai/ai-agent-full-handbook/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">agent</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">2026 AI Agent Development Handbook: Protocol Selection, Tool Calling, State Management, and Multi-Agent Deployment Checklist</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">A comprehensive guide for developers on implementing 2026 AI Agent projects, covering protocol selection, MCP, Function Calling, Tool Use, Memory, RAG, multi-agent collaboration, state management, evaluation, deployment, and a production checklist to help teams transition from demos to deployable systems.</p> </a> </div> </section> <div class="xl:hidden mt-10 space-y-4"> <section class="bg-white/85 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-sm rounded-[24px] p-5 sm:p-6" aria-label="Author profile"><a href="/about/" class="group flex items-center gap-4 text-left" aria-label="About Xiaobai &#38; XBSTACK →"><div class="rounded-full overflow-hidden border-2 border-white dark:border-slate-800 shadow-md relative shrink-0 w-16 h-16"><img src="/_astro/demo.BzDyfp9G_1hGUOO.webp" alt="小白 / Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div><div class="min-w-0"><h3 class="text-base font-black text-slate-950 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+小白 / Xiaobai
+</h3><p class="mt-1 text-[9px] font-black uppercase tracking-[0.22em] text-blue-500">Full-Stack AI Engineer</p></div></a><p class="font-bold text-slate-600 dark:text-slate-400 leading-relaxed mt-4 text-sm">Full-stack developer documenting AI engineering, indie products, investing reviews and outdoor practice.</p><a href="/about/" class="mt-4 block text-center text-[10px] font-black tracking-[0.12em] text-blue-600 dark:text-blue-400 hover:underline">About Xiaobai &amp; XBSTACK →</a><div class="my-4 h-px bg-slate-100 dark:bg-white/5"></div><ul class="flex items-center w-full gap-2"><li class="min-w-0 flex-1 w-full"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/xbstack-wechat-qr.webp" aria-label="WeChat · 贵州户外"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="WeChat · 贵州户外" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="truncate">WeChat · 贵州户外</span> </span>  </button> </a></li><li class="min-w-0 flex-1 w-full"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span>GitHub</span> </span>  </button> </a></li></ul></section>  </div>  <div class="mt-20 p-10 rounded-[40px] bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 shadow-2xl relative overflow-hidden group"> <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-600/5 dark:bg-blue-600/20 blur-[100px] rounded-full group-hover:bg-blue-600/10 transition-all duration-1000"></div> <div class="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-10 items-center"> <div class="md:col-span-8 space-y-6"> <h4 class="text-3xl font-black italic tracking-tighter uppercase text-slate-900 dark:text-white">Liked this article?<br>Join the newsletter</h4> <p class="text-slate-600 dark:text-slate-300 font-bold text-sm leading-relaxed max-w-xl"> Every week, I share practical AI engineering notes, product building insights, and investment reading logs from an independent developer&#39;s perspective. No fluff, only real experiments and reviewable decisions. </p> </div> <div class="md:col-span-4 flex flex-col gap-4"> <a href="/newsletter/" class="w-full py-4 rounded-full bg-blue-600 text-white text-center font-black uppercase text-[10px] tracking-[0.3em] hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20">JOIN NEWSLETTER →</a> <a href="/tools/" class="w-full py-4 rounded-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-center font-black uppercase text-[10px] tracking-[0.3em] hover:bg-slate-100 dark:hover:bg-white/10 transition-all">LAB TOOLBOX</a> </div> </div> </div> </div>  <div class="mt-12 ceramic-card p-6 md:p-12"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-8 flex items-center gap-4"> <span>Comments</span> <div class="h-[1px] flex-1 bg-zinc-200 dark:bg-white/5"></div> </div> <div id="tcomment" class="markdown-content"></div>  <script>(function(){const twikooEnvId = "https://comments.xbstack.com";
+
+  document.addEventListener("astro:page-load", () => {
+    function loadTwikoo() {
+      const commentsContainer = document.getElementById("tcomment");
+      if (commentsContainer) {
+        // 如果已经初始化，跳过
+        if (commentsContainer.dataset.initialized) return;
+        commentsContainer.dataset.initialized = 'true';
+
+        if (!twikooEnvId) {
+          showError("留言模块未加载，Twikoo envId 未配置。");
+          return;
+        }
+        const script = document.createElement("script");
+        script.src =
+          "https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.min.js";
+        script.async = true;
+        script.onload = () => {
+          const initScript = document.createElement("script");
+          initScript.innerHTML = `
+            twikoo.init({
+                envId: '${twikooEnvId}',
+                el: '#tcomment',
+                onCommentLoaded: function() {
+                   // Twikoo 加载后的清理逻辑 (双重保险)
+                   const trash = document.querySelectorAll('.tk-admin, .tk-submit-action-icon, [title*="管理"], [title*="Settings"]');
+                   trash.forEach(el => el.remove());
+                }
+            });
+          `;
+          document.body.appendChild(initScript);
+
+          // 开启一个长效观察器，专门销毁这些动态出现的按钮
+          const cleaner = new MutationObserver(() => {
+            const adminBtn = document.querySelector('.tk-admin, .tk-submit-action-icon[title*="管理"], .tk-submit-action-icon[title*="Settings"]');
+            if (adminBtn) adminBtn.remove();
+          });
+          cleaner.observe(commentsContainer, { childList: true, subtree: true });
+        };
+        document.body.appendChild(script);
+      }
+    }
+
+    // 使用 IntersectionObserver 实现懒加载
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(() => {
+        if (entries[0].isIntersecting) {
+          loadTwikoo();
+          observer.disconnect(); // 只执行一次
+        }
+      });
+    }, { rootMargin: '300px' }); // 提前 300px 开始加载
+
+    const target = document.getElementById("tcomment");
+    if (target) observer.observe(target);
+
+    function showError(msg){
+      const list = document.getElementById("tcomment");
+      if(!list) return;
+      list.removeAttribute('aria-busy');
+      list.innerHTML = `
+        <div class="py-4">
+          <div class="text-center text-red-600 dark:text-red-400">
+            ${msg || "评论获取失败，请稍后重试。"}
+          </div>
+        </div>
+      `;
+      const btn = document.getElementById("rc-retry-btn");
+      if(btn){ btn.addEventListener("click", load, { once: true }); }
+    }
+    loadTwikoo();
+  });
+})();</script> </div> </main>  <aside class="hidden xl:flex flex-col gap-6 sticky top-24 h-fit"> <div class="article-side-panel rounded-[24px] border p-5"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-4">On this page</div> <div class="liquid-glass-container "><div class="liquidGlass-wrapper dock !p-6"><div class="liquidGlass-effect-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-tint-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-shine  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-text  intersect:animate-fadeLeft transition-all duration-300 fast-slow"><div class="intersect:animate-fadeLeft" data-astro-cid-hop3l3kc><h2 class="text-2xl border-none mb-3" data-astro-cid-hop3l3kc>内容导航</h2><div class="max-h-96 overflow-y-auto" data-astro-cid-hop3l3kc><ul class="list-none m-0 space-y-1" data-astro-cid-hop3l3kc><li class="ml-0" data-astro-cid-hop3l3kc><a href="#this-test-mainly-answered-five-questions" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>This test mainly answered five questions</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#who-is-this-article-for" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Who is this article for?</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#to-give-you-the-conclusion-its-closer-to-completing-complex-tasks-but-it-cant-make-the-final-judgment-for-you" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>To give you the conclusion: it’s closer to completing complex tasks, but it can’t make the final judgment for you</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#how-i-tested-three-real-tasks-and-nothing-tested-this-time" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>How I Tested: Three Real Tasks, and Nothing Tested This Time</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#the-updates-that-truly-affect-usage-arent-the-increase-in-parameters" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>The updates that truly affect usage aren’t the increase in parameters</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#how-to-choose-sol-terra-and-luna" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>How to choose Sol, Terra, and Luna?</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#real-project-testing-does-it-read-the-rules-before-starting-to-modify-files" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Real Project Testing: Does it read the rules before starting to modify files?</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#content-creation-test-materials-can-be-well-organized-but-articles-tend-to-turn-into-project-reports" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Content Creation Test: Materials can be well organized, but articles tend to turn into project reports</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#data-analysis-and-practical-testing-calculating-a-comparative-proportion-is-not-difficult-the-challenge-is-not-writing-the-proportion-as-causality" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Data Analysis and Practical Testing: Calculating a Comparative Proportion Is Not Difficult; the Challenge Is Not Writing the Proportion as Causality</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#the-official-benchmark-scores-are-strong-but-they-cant-replace-my-own-results" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>The official benchmark scores are strong, but they can’t replace my own results</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#pricing-and-model-routing-daily-work-doesnt-have-to-use-all-of-sol" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Pricing and Model Routing: Daily work doesn’t have to use all of SOL</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#problems-encountered-in-actual-use" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Problems Encountered in Actual Use</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#greatest-risk-the-more-it-wants-to-get-things-done-the-more-it-needs-to-limit-what-it-can-do" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Greatest Risk: The more it wants to get things done, the more it needs to limit what it can do</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#final-decision-i-will-use-it-more-often-but-i-wont-set-all-tasks-to-the-highest-level" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Final decision: I will use it more often, but I won’t set all tasks to the highest level</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#faq" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>FAQ</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#is-gpt56-good-for-content-creation" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Is GPT5.6 good for content creation?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#can-gpt56-analyze-search-console-and-ga4-data" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Can GPT5.6 Analyze Search Console and GA4 Data?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#how-to-choose-between-gpt56-sol-terra-and-luna" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>How to Choose Between GPT5.6 Sol, Terra, and Luna?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#is-gpt56-ultra-a-more-powerful-standalone-model" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Is GPT5.6 Ultra a More Powerful Standalone Model?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#how-much-faster-is-gpt-56-than-gpt-55" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>How Much Faster Is GPT-5.6 Than GPT-5.5?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#is-gpt-56-suitable-for-directly-taking-over-production-projects" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Is GPT-5.6 suitable for directly taking over production projects?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#will-the-geo-information-in-this-article-affect-the-reading-of-ordinary-users" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Will the GEO information in this article affect the reading of ordinary users?</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#official-information" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Official Information</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#keep-reading" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Keep reading</a></li></ul></div></div></div></div></div> </div> <section class="bg-white/85 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-sm rounded-[24px] p-5 article-side-panel" aria-label="Author profile"><a href="/about/" class="group flex items-center flex-col gap-3 text-center" aria-label="About Xiaobai &#38; XBSTACK →"><div class="rounded-full overflow-hidden border-2 border-white dark:border-slate-800 shadow-md relative shrink-0 w-[72px] h-[72px]"><img src="/_astro/demo.BzDyfp9G_1hGUOO.webp" alt="小白 / Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div><div class="w-full"><h3 class="text-base font-black text-slate-950 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+小白 / Xiaobai
+</h3><p class="mt-1 text-[9px] font-black uppercase tracking-[0.22em] text-blue-500">Full-Stack AI Engineer</p></div></a><p class="font-bold text-slate-600 dark:text-slate-400 leading-relaxed mt-4 text-xs text-center">Full-stack developer documenting AI engineering, indie products, investing reviews and outdoor practice.</p><a href="/about/" class="mt-4 block text-center text-[10px] font-black tracking-[0.12em] text-blue-600 dark:text-blue-400 hover:underline">About Xiaobai &amp; XBSTACK →</a><div class="my-4 h-px bg-slate-100 dark:bg-white/5"></div><ul class="flex items-center w-full gap-2 flex-col"><li class="min-w-0 flex-1 w-full"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/xbstack-wechat-qr.webp" aria-label="WeChat · 贵州户外"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="WeChat · 贵州户外" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="truncate">WeChat · 贵州户外</span> </span>  </button> </a></li><li class="min-w-0 flex-1 w-full"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span>GitHub</span> </span>  </button> </a></li></ul></section>  </aside> </div> </main> <script>
+    function initProgress() {
+      const progressBar = document.getElementById('reading-progress');
+      if (!progressBar) return;
+      window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = scrolled + "%";
+      });
+    }
+    document.addEventListener('astro:page-load', initProgress);
+    initProgress();
+  </script>  </main> <footer class="container mx-auto mt-32 animate-fadeUp px-4 pb-16 lg:px-8"> <div class="group relative rounded-[60px] border border-slate-200 bg-white p-10 shadow-2xl transition-all dark:border-white/10 dark:bg-[#0B1020] md:p-16"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[60px] opacity-20 dark:opacity-40"> <div class="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px] transition-transform duration-1000 group-hover:scale-125"></div> <div class="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px] transition-transform duration-1000 group-hover:scale-125"></div> </div> <div class="relative z-10 grid grid-cols-1 gap-12 border-b border-slate-100 pb-16 text-left dark:border-white/5 md:grid-cols-2 xl:grid-cols-12"> <div class="flex flex-col justify-between space-y-8 xl:col-span-4"> <div> <div class="mb-8 flex items-center gap-4"> <div class="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 p-2 shadow-lg dark:border-white/10 dark:bg-white/5"> <img src="/favicon/favicon.svg" alt="XBSTACK" class="h-full w-full object-contain"> </div> <span class="font-brand text-2xl font-black uppercase italic leading-none tracking-tighter text-blue-500">XBSTACK</span> </div> <div class="space-y-6"> <p class="text-2xl font-bold italic leading-tight tracking-tight text-slate-900 dark:text-slate-50"> “Look High. Build Low.” </p> <p class="max-w-sm text-[13px] font-bold leading-relaxed text-slate-600 dark:text-slate-400"> An independent developer asset system covering AI engineering, product tools, investing decisions, reading systems and outdoor field notes. </p> </div> </div> <div class="flex items-center gap-4 pt-4"> <span class="rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 text-[11px] font-black uppercase tracking-widest text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-400"> Built by Xiaobai </span> </div> </div> <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 xl:col-span-5"> <div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">AI Engineering</h4> <ul class="space-y-4"> <li><a href="/en/ai/agent/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Agents</a></li><li><a href="/en/ai/langgraph/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">LangGraph</a></li><li><a href="/en/ai/mcp/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">MCP Protocols</a></li><li><a href="/en/ai/workflow/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Workflow</a></li> </ul> </div><div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">Product Tools</h4> <ul class="space-y-4"> <li><a href="/en/tools/compound-calculator/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Compound Calculator</a></li><li><a href="/en/tools/ai-finance/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">AI Finance</a></li><li><a href="/en/tools/utm-builder/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">UTM Builder</a></li><li><a href="/en/tools/lunest/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Lunest</a></li> </ul> </div><div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">Horizon</h4> <ul class="space-y-4"> <li><a href="/en/investing/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Investing</a></li><li><a href="/en/horizon/reading/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Reading</a></li><li><a href="/en/notes/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Thinking</a></li> </ul> </div><div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">Life &amp; Lens</h4> <ul class="space-y-4"> <li><a href="/en/life/hiking/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Hiking</a></li><li><a href="/en/life/photo/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Photography</a></li><li><a href="/en/life/gear/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Gear</a></li> </ul> </div> </div> <div class="space-y-8 xl:col-span-3"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-slate-400">Systems Connect</h4> <div class="flex flex-col gap-3"> <button type="button" data-wechat-qr="/assets/xbstack-wechat-qr.webp" class="wechat-trigger group/wechat flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left transition-all hover:border-blue-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="h-5 w-5 text-green-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg> <div class="flex flex-col"> <span class="text-[12px] font-black text-slate-900 dark:text-slate-200">WeChat: Guizhou Outdoor</span> <span class="text-[11px] font-bold leading-relaxed text-slate-600 dark:text-slate-300"> Chinese-language hiking routes and direct outdoor field reports from Guizhou. </span> </div> </button> <a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" class="group/github flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-all hover:border-blue-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="h-5 w-5 text-slate-900 dark:text-white" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> <div class="flex flex-col"><span class="text-[12px] font-black text-slate-900 dark:text-slate-200">GitHub: XBSTACK Lab</span><span class="text-[11px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">Source Code</span></div> </a> <a href="mailto:xbstack@163.com" class="group flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-all hover:border-sky-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="h-5 w-5 text-sky-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"></path></svg> <div class="flex flex-col"><span class="text-[12px] font-black text-slate-900 dark:text-slate-200">xbstack@163.com</span><span class="text-[11px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">Email</span></div> </a> </div> </div> </div> <div class="mt-12 flex flex-col items-start justify-between gap-10 lg:flex-row lg:items-center"> <div class="flex flex-wrap gap-8"> <div class="space-y-1"> <h5 class="text-[10px] font-black uppercase tracking-widest text-orange-700 dark:text-orange-500">Risk Notice</h5> <p class="text-[10px] font-bold italic text-slate-500">Content is informational and does not constitute investment advice.</p> </div> <div class="space-y-1"> <h5 class="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-500">Copyright</h5> <p class="text-[10px] font-bold text-slate-500">Original XBSTACK content may not be republished or scraped without permission.</p> </div> </div> <div class="flex w-full flex-col items-end gap-5 lg:w-auto"> <div class="flex flex-wrap justify-end gap-6"> <a href="/en/archive/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Archive</a><a href="/en/privacy/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Privacy</a><a href="/en/tos/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Terms</a><a href="/en/disclosure/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Disclosure</a><a href="/sitemap-index.xml" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Sitemap</a><a href="/llms.txt" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">AI Index</a> </div> <div class="flex flex-wrap justify-end gap-3">   <a href="/en/rss.xml" class="rounded-xl border border-blue-600/20 bg-blue-600/10 px-4 py-2 text-[10px] font-black text-blue-700 shadow-sm transition-all hover:bg-blue-500 hover:text-white dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400">English RSS</a> </div> </div> </div> <div class="mt-8 flex items-center justify-between border-t border-slate-100 pt-8 dark:border-white/5"> <div class="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 opacity-50">&copy; 2026 XBSTACK. LABS_ACTIVE_v6.6</div> <div class="flex items-center gap-2"><span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500"></span><span class="text-[9px] font-black uppercase italic tracking-widest text-emerald-600/60">Built Independently</span></div> </div> </div> </footer> <!-- 桌面悬停卡：由全局脚本定位到当前公众号入口附近 --><div id="wechat-hover-card" class="fixed z-[9998] hidden w-[300px] pointer-events-none opacity-0 translate-y-2 transition-all duration-200" aria-hidden="true"> <div class="rounded-[30px] border border-white/15 bg-[#0d1728]/95 p-5 text-white shadow-[0_28px_80px_rgba(2,6,23,0.48)] backdrop-blur-2xl"> <div class="text-[9px] font-black uppercase tracking-[0.34em] text-orange-400">Join the Journey</div> <div class="mt-2 text-xl font-black tracking-tight">一起探索 · 一起成长</div> <div class="mt-1 text-[11px] font-bold tracking-[0.12em] text-slate-400">户外探索 · 独立开发 · 投资思考</div> <div class="mt-4 grid grid-cols-[112px_1fr] items-center gap-4"> <div class="rounded-[20px] border border-white/10 bg-[#060b14] p-2.5 shadow-inner"> <img id="wechat-hover-qr" src="/assets/xbstack-wechat-qr.webp" width="360" height="360" alt="微信公众号贵州户外二维码" class="block aspect-square w-full rounded-xl bg-white object-contain"> </div> <div class="space-y-2 text-[11px] font-bold leading-relaxed text-slate-300"> <p>贵州徒步与路线实测</p> <p>AI 工具与独立产品</p> <p>投资体系与长期复盘</p> </div> </div> <div class="mt-4 border-t border-white/10 pt-3 text-center text-[11px] font-black text-slate-300">
+点击查看完整名片
+</div> </div> </div> <!-- 全局点击弹窗 --> <div id="wechat-modal" class="fixed inset-0 z-[10000] hidden items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="wechat-modal-title" aria-hidden="true"> <button id="wechat-modal-backdrop" type="button" aria-label="关闭公众号弹窗" class="absolute inset-0 cursor-default bg-slate-950/86 backdrop-blur-xl"></button> <div id="wechat-modal-content" class="relative max-h-[94vh] w-full max-w-[460px] scale-95 overflow-y-auto rounded-[38px] border border-slate-500/45 bg-[#0d1728] text-white opacity-0 shadow-[0_40px_140px_rgba(0,0,0,0.68)] transition-all duration-300 sm:rounded-[50px]"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"> <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px]"></div> <div class="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-orange-500/10 blur-[80px]"></div> </div> <button id="wechat-modal-close" type="button" aria-label="关闭微信公众号弹窗" class="absolute right-5 top-5 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 transition hover:bg-white/10 hover:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg> </button> <div class="relative z-10 px-6 pb-6 pt-10 sm:px-10 sm:pb-9 sm:pt-12"> <header class="text-center"> <div class="text-[10px] font-black uppercase tracking-[0.44em] text-orange-400 sm:text-xs">Join the Journey</div> <h2 id="wechat-modal-title" class="mt-4 text-3xl font-black tracking-tight text-white sm:text-[38px]" style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;">一起探索 · 一起成长</h2> <p class="mt-3 text-sm font-bold tracking-[0.16em] text-slate-400 sm:text-base">户外探索 ｜ 独立开发 ｜ 投资思考</p> </header> <div class="mx-auto mt-7 max-w-[300px] rounded-[34px] border border-white/10 bg-[#070d17] p-5 shadow-inner sm:mt-8"> <div class="rounded-[24px] bg-white p-3"> <img id="wechat-modal-qr" src="/assets/xbstack-wechat-qr.webp" width="360" height="360" decoding="async" alt="微信公众号贵州户外二维码" class="block aspect-square w-full object-contain"> </div> </div> <div class="mt-7 divide-y divide-white/10 sm:mt-8"> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M634.92 462.7l-288-448C341.03 5.54 330.89 0 320 0s-21.03 5.54-26.92 14.7l-288 448a32.001 32.001 0 0 0-1.17 32.64A32.004 32.004 0 0 0 32 512h576c11.71 0 22.48-6.39 28.09-16.67a31.983 31.983 0 0 0-1.17-32.63zM320 91.18L405.39 224H320l-64 64-38.06-38.06L320 91.18z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">户外徒步 · 贵州路线实探与分享</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">记录每一次出发，提供真实路况、补给、风险和下撤信息。</p> </div> </div> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M278.9 511.5l-61-17.7c-6.4-1.8-10-8.5-8.2-14.9L346.2 8.7c1.8-6.4 8.5-10 14.9-8.2l61 17.7c6.4 1.8 10 8.5 8.2 14.9L293.8 503.3c-1.9 6.4-8.5 10.1-14.9 8.2zm-114-112.2l43.5-46.4c4.6-4.9 4.3-12.7-.8-17.2L117 256l90.6-79.7c5.1-4.5 5.5-12.3.8-17.2l-43.5-46.4c-4.5-4.8-12.1-5.1-17-.5L3.8 247.2c-5.1 4.7-5.1 12.8 0 17.5l144.1 135.1c4.9 4.6 12.5 4.4 17-.5zm327.2.6l144.1-135.1c5.1-4.7 5.1-12.8 0-17.5L492.1 112.1c-4.8-4.5-12.4-4.3-17 .5L431.6 159c-4.6 4.9-4.3 12.7.8 17.2L523 256l-90.6 79.7c-5.1 4.5-5.5 12.3-.8 17.2l43.5 46.4c4.5 4.9 12.1 5.1 17 .6z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">独立开发 · AI、工具与产品实战</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">从真实需求到上线复盘，持续构建可长期积累的数字产品。</p> </div> </div> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16zM464 96H345.94c-21.38 0-32.09 25.85-16.97 40.97l32.4 32.4L288 242.75l-73.37-73.37c-12.5-12.5-32.76-12.5-45.25 0l-68.69 68.69c-6.25 6.25-6.25 16.38 0 22.63l22.62 22.62c6.25 6.25 16.38 6.25 22.63 0L192 237.25l73.37 73.37c12.5 12.5 32.76 12.5 45.25 0l96-96 32.4 32.4c15.12 15.12 40.97 4.41 40.97-16.97V112c.01-8.84-7.15-16-15.99-16z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">投资思考 · 复利、风险与长期主义</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">分享投资体系、市场观察和个人决策复盘，不构成投资建议。</p> </div> </div> </div> <div class="mt-6 text-center text-sm font-black leading-relaxed text-slate-300">
+扫码关注微信公众号 <span class="text-orange-400">“贵州户外”</span> <p class="mt-1 text-xs font-bold text-slate-500">获取户外路线、独立开发与投资复盘的最新内容</p> </div> <button id="wechat-modal-confirm" type="button" class="mt-7 w-full rounded-[24px] bg-white px-6 py-4 text-sm font-black tracking-[0.12em] text-slate-950 shadow-xl transition hover:-translate-y-0.5 hover:bg-slate-100 active:translate-y-0">
+知道了 / CLOSE
+</button> </div> </div> </div> <script type="module">const b="/assets/xbstack-wechat-qr.webp";function f(){const t=document.getElementById("wechat-modal"),y=document.getElementById("wechat-modal-backdrop"),a=document.getElementById("wechat-modal-content"),w=document.getElementById("wechat-modal-close"),E=document.getElementById("wechat-modal-confirm"),c=document.getElementById("wechat-modal-qr"),s=document.getElementById("wechat-hover-card"),i=document.getElementById("wechat-hover-qr");if(!t||!a||!s)return;let l=0;const p=window.matchMedia("(hover: hover) and (pointer: fine)"),u=e=>{const n=e.dataset.wechatQr||b;c&&c.src!==new URL(n,window.location.href).href&&(c.src=n),i&&i.src!==new URL(n,window.location.href).href&&(i.src=n)},o=()=>{window.clearTimeout(l),s.classList.add("opacity-0","translate-y-2"),l=window.setTimeout(()=>s.classList.add("hidden"),180)},v=e=>{if(!p.matches||!t.classList.contains("hidden"))return;window.clearTimeout(l),u(e),s.classList.remove("hidden");const n=e.getBoundingClientRect(),L=300,B=250,r=12;let m=n.left+n.width/2-L/2;m=Math.max(r,Math.min(m,window.innerWidth-L-r));let h=n.top-B-12;h<r&&(h=n.bottom+12),s.style.left=`${m}px`,s.style.top=`${h}px`,requestAnimationFrame(()=>s.classList.remove("opacity-0","translate-y-2"))},I=e=>{o(),u(e),t.classList.remove("hidden"),t.classList.add("flex"),t.setAttribute("aria-hidden","false"),document.body.style.overflow="hidden",requestAnimationFrame(()=>{a.classList.remove("scale-95","opacity-0"),a.classList.add("scale-100","opacity-100"),w?.focus()})},d=()=>{a.classList.remove("scale-100","opacity-100"),a.classList.add("scale-95","opacity-0"),window.setTimeout(()=>{t.classList.add("hidden"),t.classList.remove("flex"),t.setAttribute("aria-hidden","true"),document.body.style.overflow=""},260)};document.querySelectorAll(".wechat-trigger").forEach(e=>{e.dataset.wechatInitialized!=="true"&&(e.dataset.wechatInitialized="true",e.addEventListener("mouseenter",()=>v(e)),e.addEventListener("mouseleave",o),e.addEventListener("focus",()=>v(e)),e.addEventListener("blur",o),e.addEventListener("click",n=>{n.preventDefault(),I(e)}))}),t.dataset.wechatInitialized!=="true"&&(t.dataset.wechatInitialized="true",w?.addEventListener("click",d),E?.addEventListener("click",d),y?.addEventListener("click",d),document.addEventListener("keydown",e=>{e.key==="Escape"&&!t.classList.contains("hidden")&&d()}),window.addEventListener("scroll",o,{passive:!0}),window.addEventListener("resize",o))}f();document.addEventListener("astro:page-load",f);</script> <script>
+      const showLanguageSwitchNotice = () => {
+        let payload = null;
+        try {
+          const raw = sessionStorage.getItem('xbstack_language_notice');
+          if (!raw) return;
+          payload = JSON.parse(raw);
+          sessionStorage.removeItem('xbstack_language_notice');
+        } catch (error) {
+          return;
+        }
+
+        const notice = document.getElementById('language-switch-notice');
+        if (!notice) return;
+
+        const targetIsEnglish = String(payload?.language || '').toLowerCase().startsWith('en');
+        notice.textContent = targetIsEnglish
+          ? 'This page does not have an English version yet. You have been taken to the English home page.'
+          : '当前页面暂未提供中文版本，已为你打开中文首页。';
+        notice.classList.remove('hidden');
+        window.setTimeout(() => notice.classList.add('hidden'), 4800);
+      };
+
+      document.addEventListener('astro:page-load', showLanguageSwitchNotice);
+      showLanguageSwitchNotice();
+    </script> </body> </html>
