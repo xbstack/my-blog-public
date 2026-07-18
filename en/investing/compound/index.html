@@ -313,7 +313,7 @@ const languageAlternates = [{"lang":"zh-CN","href":"https://www.xbstack.com/inve
             ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
               window.addEventListener(eventName, window.startGA4Tracking, { once: true, passive: true });
             });
-            window.setTimeout(window.startGA4Tracking, 8000);
+            window.setTimeout(window.startGA4Tracking, 3000);
 
             document.addEventListener("astro:page-load", () => {
               if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
