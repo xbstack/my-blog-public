@@ -19,13 +19,13 @@
 
 ---
 
-### ✍️ 最新圣经级教程 (Latest Bibles)
+### ✍️ Latest Reviewed Engineering Notes
 
 <!-- BLOG-POST-LIST:START -->
-- [How to Build an AI Expense Approval Agent (Day 15 新增)](https://xbstack.com/ai/how-to-build-an-ai-expense-approval-agent/)
-- [AI Sales Assistant vs AI Lead Scoring Agent (Day 15 新增)](https://xbstack.com/ai/ai-sales-assistant-vs-lead-scoring/)
-- [The AI Agent Complete Guide (2026 行业圣经)](https://xbstack.com/ai/ai-agent-complete-guide/)
-- [How to Build an AI Trading Agent (金融级实战)](https://xbstack.com/ai/how-to-build-ai-trading-agent/)
+- [Kimi K3 on a Real Astro Project: July 20 Product Update and Engineering Boundaries](https://www.xbstack.com/en/ai/tools-lab/kimi-k3-real-astro-project-test/?utm_source=github&utm_medium=repository&utm_campaign=kimi_k3_update&utm_content=public_repo_readme&ref=github)
+- [AI Agent Framework Guide 2026: LangGraph, AI SDK 7, Google ADK, and Microsoft Agent Framework](https://www.xbstack.com/en/ai/ai-agent-framework-comparison/?utm_source=github&utm_medium=repository&utm_campaign=agent_framework_2026&utm_content=public_repo_readme&ref=github)
+- [MCP -32700 Parse Error: 30-Second stdout/stderr Diagnostics](https://www.xbstack.com/en/ai/mcp-json-rpc-parse-error/?utm_source=github&utm_medium=repository&utm_campaign=mcp_parse_error&utm_content=public_repo_readme&ref=github)
+- [AI Engineering Resource Hub](https://www.xbstack.com/en/ai/?utm_source=github&utm_medium=repository&utm_campaign=english_ai_hub&utm_content=public_repo_readme&ref=github)
 <!-- BLOG-POST-LIST:END -->
 
 ---
