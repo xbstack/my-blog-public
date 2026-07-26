@@ -1,0 +1,963 @@
+<!DOCTYPE html><html lang="zh-CN" class="dark" data-analytics="ga4-baidu"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script>
+      const applyTheme = () => {
+        const theme = localStorage.getItem("theme");
+        const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      };
+      applyTheme();
+      document.addEventListener("astro:page-load", applyTheme);
+    </script><script>(function(){const currentLanguage = "zh-CN";
+const languageAlternates = [{"lang":"zh-CN","href":"https://www.xbstack.com/ai/multi-agent-systems/"},{"lang":"en","href":"https://www.xbstack.com/en/ai/multi-agent-systems/"},{"lang":"x-default","href":"https://www.xbstack.com/ai/multi-agent-systems/"}];
+
+      (() => {
+        const normalizeLanguage = (value) => String(value || '').toLowerCase().startsWith('en') ? 'en' : 'zh-CN';
+        const readCookie = (name) => {
+          const prefix = `${name}=`;
+          const item = document.cookie.split(';').map((part) => part.trim()).find((part) => part.startsWith(prefix));
+          return item ? decodeURIComponent(item.slice(prefix.length)) : '';
+        };
+
+        let preferredLanguage = readCookie('xbstack_lang');
+        if (!preferredLanguage) {
+          try {
+            preferredLanguage = localStorage.getItem('xbstack_lang') || '';
+          } catch (error) {}
+        }
+
+        if (!preferredLanguage) {
+          const browserLanguage = Array.isArray(navigator.languages) && navigator.languages.length
+            ? navigator.languages[0]
+            : navigator.language;
+          preferredLanguage = normalizeLanguage(browserLanguage);
+          document.cookie = `xbstack_lang=${encodeURIComponent(preferredLanguage)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+          try {
+            localStorage.setItem('xbstack_lang', preferredLanguage);
+          } catch (error) {}
+        }
+
+        const preferred = normalizeLanguage(preferredLanguage);
+        const current = normalizeLanguage(currentLanguage);
+        const target = (languageAlternates || []).find((item) => normalizeLanguage(item.lang) === preferred);
+        const redirectKey = `xbstack_auto_lang:${window.location.pathname}:${preferred}`;
+
+        if (target && preferred !== current && !sessionStorage.getItem(redirectKey)) {
+          const targetUrl = new URL(target.href, window.location.origin);
+          if (targetUrl.pathname !== window.location.pathname) {
+            sessionStorage.setItem(redirectKey, '1');
+            window.location.replace(targetUrl.href);
+          }
+        }
+      })();
+    })();</script><title>Multi-Agent Systems 实战：多智能体协作系统的架构边界、状态交接与失败控制 | AI - XBSTACK</title><meta name="description" content="系统拆解 Multi-Agent Systems 的生产级架构设计，覆盖 Supervisor-Worker、Planner-Executor、Critic-Reviewer、Agent Handoff、状态交接、失败传播、评估指标与可观测性，帮助开发者判断什么时候该用多智能体，什么时候不该用。"><meta name="keywords" content="Multi-Agent Systems, 多智能体系统, AI 多智能体协作, Multi-Agent Architecture, Supervisor Agent, Worker Agent, Planner Executor, Agent Handoff, Agent Collaboration, Multi-Agent Evaluation, LangGraph Multi-Agent, AutoGen Multi-Agent"><meta name="theme-color" content="#050608"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://www.xbstack.com/ai/multi-agent-systems/"><meta property="og:title" content="Multi-Agent Systems 实战：多智能体协作系统的架构边界、状态交接与失败控制 | AI - XBSTACK"><meta property="og:description" content="系统拆解 Multi-Agent Systems 的生产级架构设计，覆盖 Supervisor-Worker、Planner-Executor、Critic-Reviewer、Agent Handoff、状态交接、失败传播、评估指标与可观测性，帮助开发者判断什么时候该用多智能体，什么时候不该用。"><meta property="og:image" content="https://www.xbstack.com/_astro/cogview4-cad35af5.Dx2lS8PS.png"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/ai/multi-agent-systems/"><meta property="twitter:title" content="Multi-Agent Systems 实战：多智能体协作系统的架构边界、状态交接与失败控制 | AI - XBSTACK"><meta property="twitter:description" content="系统拆解 Multi-Agent Systems 的生产级架构设计，覆盖 Supervisor-Worker、Planner-Executor、Critic-Reviewer、Agent Handoff、状态交接、失败传播、评估指标与可观测性，帮助开发者判断什么时候该用多智能体，什么时候不该用。"><meta property="twitter:image" content="https://www.xbstack.com/_astro/cogview4-cad35af5.Dx2lS8PS.png"><link rel="canonical" href="https://www.xbstack.com/ai/multi-agent-systems/"><link rel="alternate" hreflang="zh-CN" href="https://www.xbstack.com/ai/multi-agent-systems/"><link rel="alternate" hreflang="en" href="https://www.xbstack.com/en/ai/multi-agent-systems/"><link rel="alternate" hreflang="x-default" href="https://www.xbstack.com/ai/multi-agent-systems/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Precision Tools","description":"AI finance analyzer, compound calculator, Lunest and practical product tools.","url":"https://www.xbstack.com/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Thinking","description":"Investing notes, reading system, decision system and long-term thinking.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Photography and Gear","description":"Guizhou outdoor field notes, photography, gear lab and real-life trust assets.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"About Xiaobai, the XBSTACK asset system and the slogan 在高处看世界，在底层堆资产.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","additionalType":"https://schema.org/TechArticle","headline":"Multi-Agent Systems 实战：多智能体协作系统的架构边界、状态交接与失败控制","description":"系统拆解 Multi-Agent Systems 的生产级架构设计，覆盖 Supervisor-Worker、Planner-Executor、Critic-Reviewer、Agent Handoff、状态交接、失败传播、评估指标与可观测性，帮助开发者判断什么时候该用多智能体，什么时候不该用。","inLanguage":"zh-CN","image":"https://www.xbstack.com/_astro/cogview4-cad35af5.Dx2lS8PS.png","datePublished":"2026-04-24T00:00:00.000Z","author":{"@id":"https://www.xbstack.com/about/#person"},"publisher":{"@type":"Organization","name":"XBSTACK","logo":{"@type":"ImageObject","url":"https://www.xbstack.com/favicon/favicon.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.xbstack.com/ai/multi-agent-systems/"},"articleSection":"ai","keywords":["Multi-Agent Systems","多智能体系统","AI 多智能体协作","Multi-Agent Architecture","Supervisor Agent","Worker Agent","Planner Executor","Agent Handoff","Agent Collaboration","Multi-Agent Evaluation","LangGraph Multi-Agent","AutoGen Multi-Agent"],"about":[{"@type":"Thing","name":"AI Agent"},{"@type":"Thing","name":"Multi-Agent"},{"@type":"Thing","name":"协作系统"},{"@type":"Thing","name":"系统架构"},{"@type":"Thing","name":"开发者工具"}],"speakable":{"@type":"SpeakableSpecification","cssSelector":[".markdown-content h2",".markdown-content p:first-of-type"]}},{"@type":"Person","@id":"https://www.xbstack.com/about/#person","name":"小白","alternateName":["Xiaobai"],"url":"https://www.xbstack.com/about/","image":"https://www.xbstack.com/_astro/demo.BzDyfp9G.webp","jobTitle":"Full-Stack AI Engineer","worksFor":{"@type":"Organization","name":"XBSTACK","url":"https://www.xbstack.com"},"sameAs":["https://github.com/xbstack"],"knowsAbout":["AI Agents","LangGraph","Model Context Protocol","AI Workflows","Product Engineering"]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"构建 Multi-Agent Systems 一定要用非常昂贵的闭源大模型吗？","acceptedAnswer":{"@type":"Answer","text":"不需要。多智能体系统最大的架构优势就是可以实现混合模型路由。你可以使用最贵、推理能力最强的大模型（如 Claude 3.5 Sonnet）来担任 Supervisor（路由编排）和 Reviewer（结果审计）角色，而让低成本的开源模型（如 Llama-3 或 GPT-4o-mini）来担任具体的 Worker 执行角色。这样能确保在控制边际推理成本的前提下，输出工业级的业务质量。"}},{"@type":"Question","name":"当 Agent 之间存在循环协作时，如何防止它们陷入语义客套或死锁循环？","acceptedAnswer":{"@type":"Answer","text":"必须在多智能体编排层配置物理跳数限制（Max Hop Limit）和状态语义哈希比对。当 Agent A 与 Agent B 之间的信息交接次数超过 5 次，或者它们在连续 3 轮交互中生成的响应内容余弦相似度高于 0.98，系统必须强制中断当前路由，自动降级并触发人在回路（Human-in-the-loop）拦截，通知人工客服接入。"}},{"@type":"Question","name":"使用多代里框架（如 AutoGen、LangGraph）时，如何选择适合自己业务的工具？","acceptedAnswer":{"@type":"Answer","text":"这取决于你对控制权和确定性的要求。如果你需要严格的基于图的状态跳转、强类型的状态共享和百分之百的流程可控性，首选 LangGraph；如果你的场景是多角色博弈、模拟讨论会或长任务自主外交委派，AutoGen 的消息驱动 Actor 模型会更加适合。不要盲目追求新框架，简单的确定性工作流往往比自发协作的多 Agent 更可靠。"}}]}]}</script><meta property="article:published_time" content="Fri Apr 24 2026 08:00:00 GMT+0800 (China Standard Time)"><meta name="abstract" content="系统拆解 Multi-Agent Systems 的生产级架构设计，覆盖 Supervisor-Worker、Planner-Executor、Critic-Reviewer、Agent Handoff、状态交接、失败传播、评估指标与可观测性，帮助开发者判断什么时候该用多智能体，什么时候不该用。"><meta name="speakable-selector" content=".markdown-content h2, .markdown-content p"><meta name="ai-content-access" content="allowed"><meta name="geo-optimized" content="true"><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
+
+          const productionAnalyticsHosts = new Set(['www.xbstack.com', 'xbstack.com']);
+          const automationUserAgent = /HeadlessChrome|PhantomJS|Playwright|Puppeteer|Selenium|Lighthouse|PageSpeed|bot\b|crawler|spider|slurp|curl|wget|python-requests|axios|node-fetch|facebookexternalhit|Twitterbot|LinkedInBot|Bytespider|GPTBot|ClaudeBot|PerplexityBot/i;
+          const shouldTrackAnalytics =
+            productionAnalyticsHosts.has(window.location.hostname.toLowerCase()) &&
+            navigator.webdriver !== true &&
+            !automationUserAgent.test(navigator.userAgent || '');
+
+          if (!shouldTrackAnalytics) {
+            window.__analytics_suppressed = true;
+          } else if (!window.__ga4_initialized) {
+            const ga4Script = document.createElement('script');
+            ga4Script.async = true;
+            ga4Script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(googleAnalyticsId)}`;
+            document.head.appendChild(ga4Script);
+
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_id', 'utm_term', 'utm_content'];
+            const UTM_ALIASES = {
+              utmsource: 'utm_source',
+              utmmedium: 'utm_medium',
+              utmcampaign: 'utm_campaign',
+              utmcontent: 'utm_content',
+              utmterm: 'utm_term',
+              utmid: 'utm_id',
+            };
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.normalizeUtmAliases = () => {
+              try {
+                const url = new URL(window.location.href);
+                let changed = false;
+                Object.entries(UTM_ALIASES).forEach(([alias, canonical]) => {
+                  const aliasValue = url.searchParams.get(alias);
+                  if (aliasValue && !url.searchParams.get(canonical)) {
+                    url.searchParams.set(canonical, aliasValue);
+                    changed = true;
+                  }
+                  if (url.searchParams.has(alias)) {
+                    url.searchParams.delete(alias);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.normalizeUtmAliases();
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function() {
+              window.dataLayer.push(arguments);
+            };
+            window.gtag('js', new Date());
+            window.gtag('config', googleAnalyticsId, { send_page_view: false });
+
+            window.__ga4_initialized = true;
+            window.__lastGA4PageKey = "";
+            window.__lastGA4PageLocation = document.referrer || "";
+            window.__scroll50Reported = false;
+            window.__scroll90Reported = false;
+
+            const getReferrerHost = () => {
+              try {
+                return document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+              } catch (err) {
+                return '';
+              }
+            };
+
+            const inferSourceHint = () => {
+              const refHost = getReferrerHost();
+              if (!refHost) return '';
+              if (refHost.includes('zhihu')) return 'zhihu_referrer';
+              if (refHost.includes('juejin')) return 'juejin_referrer';
+              if (refHost.includes('csdn')) return 'csdn_referrer';
+              if (refHost.includes('weixin') || refHost.includes('wechat')) return 'wechat_referrer';
+              if (refHost.includes('google')) return 'google_referrer';
+              if (refHost.includes('baidu')) return 'baidu_referrer';
+              return refHost;
+            };
+
+            const getAttributionPayload = () => {
+              const params = new URLSearchParams(window.location.search);
+              const current = {};
+              UTM_KEYS.forEach((key) => {
+                const value = params.get(key);
+                if (value) current[key] = value;
+              });
+
+              const referrerHost = getReferrerHost();
+              const currentHost = window.location.hostname.replace(/^www\./, '');
+              const sourceHint = inferSourceHint();
+              const hasExternalReferrer = Boolean(referrerHost && referrerHost !== currentHost);
+
+              let stored = {};
+              try {
+                stored = JSON.parse(sessionStorage.getItem('xbstack_attribution') || '{}');
+              } catch (err) {
+                stored = {};
+              }
+
+              if (Object.keys(current).length) {
+                stored = {
+                  ...stored,
+                  ...current,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: current.utm_source ? `utm:${current.utm_source}` : sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              } else if (hasExternalReferrer && !stored.captured_at) {
+                // Preserve first-touch referral attribution even when the platform strips UTM parameters.
+                stored = {
+                  ...stored,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              }
+
+              if (stored.captured_at) {
+                try {
+                  sessionStorage.setItem('xbstack_attribution', JSON.stringify(stored));
+                } catch (err) {}
+              }
+
+              return {
+                utm_source: stored.utm_source || '',
+                utm_medium: stored.utm_medium || '',
+                utm_campaign: stored.utm_campaign || '',
+                utm_id: stored.utm_id || '',
+                utm_term: stored.utm_term || '',
+                utm_content: stored.utm_content || '',
+                attribution_landing_page: stored.landing_page || '',
+                referrer_host: stored.referrer_host || referrerHost,
+                source_hint: stored.source_hint || (stored.utm_source ? `utm:${stored.utm_source}` : sourceHint),
+              };
+            };
+
+            window.xbTrackEvent = (eventName, payload = {}) => {
+              if (typeof window.gtag !== 'function' || !googleAnalyticsId || !eventName) return;
+              window.gtag('event', eventName, {
+                transport_type: 'beacon',
+                page_path: window.location.pathname,
+                page_title: document.title || '',
+                ...getAttributionPayload(),
+                ...payload,
+              });
+            };
+
+            window.sendGA4PageView = () => {
+              if (typeof window.gtag !== 'function' || !googleAnalyticsId) return;
+
+              const pageLocation = window.location.href;
+              const pageTitle = document.title || '';
+              const pageKey = `${pageLocation}|${pageTitle}`;
+
+              if (pageKey === window.__lastGA4PageKey) return;
+              const pageReferrer = window.__lastGA4PageLocation;
+              window.__lastGA4PageKey = pageKey;
+              window.__lastGA4PageLocation = pageLocation;
+              window.__scroll50Reported = false;
+              window.__scroll90Reported = false;
+
+              window.gtag('event', 'page_view', {
+                page_title: pageTitle,
+                page_location: pageLocation,
+                page_path: window.location.pathname,
+                page_search: window.location.search,
+                page_referrer: pageReferrer,
+                ...getAttributionPayload(),
+              });
+            };
+
+            window.initGA4Tracking = () => {
+              if (typeof window.gtag !== 'function') return;
+              if (window.__ga4_events_bound) return;
+              window.__ga4_events_bound = true;
+
+              // 1. 页面滚动深度上报
+              const handleScroll = () => {
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const progress = (scrollTop / scrollHeight) * 100;
+
+                if (progress >= 50 && !window.__scroll50Reported) {
+                  window.xbTrackEvent('scroll_50', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll50Reported = true;
+                }
+                if (progress >= 90 && !window.__scroll90Reported) {
+                  window.xbTrackEvent('scroll_90', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll90Reported = true;
+                }
+              };
+
+              window.addEventListener('scroll', handleScroll, { passive: true });
+
+              // 2. 完整链接与按钮点击上报。link_click 是统一事实表，旧事件继续保留用于历史对比。
+              const inferLinkArea = (target) => {
+                const explicitArea = target.closest('[data-analytics-area]')?.getAttribute('data-analytics-area');
+                if (explicitArea) return explicitArea.slice(0, 60);
+                if (target.closest('header, nav, [role="navigation"]')) return 'navigation';
+                if (target.closest('footer')) return 'footer';
+                if (target.closest('[class*="related"], [class*="recommend"], [class*="next-reading"]')) return 'related_content';
+                if (target.closest('[class*="sidebar"], aside')) return 'sidebar';
+                if (target.closest('.markdown-content, article')) return 'article_body';
+                if (target.closest('[class*="card"], [class*="grid"]')) return 'content_card';
+                return 'page_other';
+              };
+
+              const classifyLink = (target, url, linkArea) => {
+                const rawHref = String(target.getAttribute('href') || '');
+                const protocol = String(url.protocol || '').toLowerCase();
+                const path = String(url.pathname || '/');
+                const host = String(url.hostname || '').replace(/^www\./, '').toLowerCase();
+                const isHttp = protocol === 'http:' || protocol === 'https:';
+                const isExternal = isHttp && url.origin !== window.location.origin;
+                const isDownload =
+                  target.hasAttribute('download') ||
+                  /\.(pdf|zip|gz|tar|csv|xlsx?|docx?|pptx?|json|ya?ml|mp3|mp4|mov|webm)(?:$|[?#])/i.test(rawHref);
+
+                if (protocol === 'mailto:' || protocol === 'tel:') return 'contact';
+                if (isDownload) return 'download';
+                if (isExternal && host === 'github.com') return 'github';
+                if (isExternal) return 'external';
+                if (path.startsWith('/go/')) return 'affiliate';
+                if (path.startsWith('/tools/') || path.startsWith('/compound-interest/')) return 'tool';
+                if (path.startsWith('/newsletter/')) return 'newsletter';
+                if (url.origin === window.location.origin && path === window.location.pathname && url.hash) return 'anchor';
+                if (linkArea === 'related_content') return 'related_article';
+                if (linkArea === 'article_body') return 'internal_article';
+                return 'internal';
+              };
+
+              const handleClick = (e) => {
+                const target = e.target.closest('a,button');
+                if (!target) return;
+
+                const label = (target.getAttribute('aria-label') || target.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 100);
+                if (target.tagName === 'BUTTON') {
+                  window.xbTrackEvent('click_button', {
+                    event_category: 'engagement',
+                    event_label: label,
+                    link_area: inferLinkArea(target),
+                    source_page_path: window.location.pathname,
+                  });
+                  return;
+                }
+
+                const rawHref = String(target.getAttribute('href') || '').trim();
+                if (!rawHref || rawHref.toLowerCase().startsWith('javascript:')) return;
+
+                try {
+                  const url = new URL(rawHref, window.location.href);
+                  const linkArea = inferLinkArea(target);
+                  const linkType = classifyLink(target, url, linkArea);
+                  const isExternalHttp =
+                    (url.protocol === 'http:' || url.protocol === 'https:') &&
+                    url.origin !== window.location.origin;
+                  const payload = {
+                    event_category:
+                      ['affiliate', 'tool', 'newsletter'].includes(linkType)
+                        ? 'conversion'
+                        : isExternalHttp
+                          ? 'outbound'
+                          : 'navigation',
+                    event_label: url.href,
+                    link_text: label,
+                    link_url: url.href,
+                    link_domain: url.hostname.replace(/^www\./, ''),
+                    link_id: target.id || '',
+                    link_classes: String(target.className || '').slice(0, 120),
+                    outbound: isExternalHttp,
+                    link_type: linkType,
+                    link_area: linkArea,
+                    source_page_path: window.location.pathname,
+                    target_page_path: url.pathname || '',
+                  };
+
+                  // 所有真实链接统一进入 link_click，运营报表以该事件为准。
+                  window.xbTrackEvent('link_click', payload);
+
+                  if (linkType === 'external' || linkType === 'github') {
+                    window.xbTrackEvent('click_external', payload);
+                  }
+                  if (linkType === 'github') {
+                    window.xbTrackEvent('github_click', payload);
+                  }
+                  if (linkType === 'download') {
+                    window.xbTrackEvent('download_click', payload);
+                  }
+                  if (linkType === 'affiliate') {
+                    window.xbTrackEvent('affiliate_click', {
+                      ...payload,
+                      affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                    });
+                  }
+                  if (linkType === 'tool') {
+                    window.xbTrackEvent('click_tool', payload);
+                  }
+                  if (linkType === 'newsletter') {
+                    window.xbTrackEvent('newsletter_click', payload);
+                  }
+                  if (linkType === 'related_article') {
+                    window.xbTrackEvent('related_article_click', payload);
+                  }
+                  if (['internal', 'internal_article', 'related_article', 'anchor'].includes(linkType)) {
+                    window.xbTrackEvent('internal_link_click', payload);
+                  }
+                  if (
+                    !isExternalHttp &&
+                    ['/ai/', '/newsletter/', '/search/', '/life/', '/investing/'].some((prefix) => url.pathname.startsWith(prefix))
+                  ) {
+                    window.xbTrackEvent('click_internal_entry', payload);
+                  }
+                } catch (err) {}
+              };
+
+              const handleSubmit = (e) => {
+                const form = e.target;
+                if (!form || form.tagName !== 'FORM') return;
+                const action = form.getAttribute('action') || '';
+                const formType = form.getAttribute('data-analytics-form') || '';
+                const formData = new FormData(form);
+                const searchTerm = String(formData.get('q') || '').trim();
+
+                if (action.includes('/search') || formType === 'site-search') {
+                  window.xbTrackEvent('view_search_results', {
+                    event_category: 'site_search',
+                    search_term: searchTerm,
+                  });
+                }
+
+                if (action.includes('buttondown.email') || formType === 'newsletter') {
+                  const provider = action.includes('buttondown.email') ? 'buttondown' : 'xbstack_api';
+                  window.xbTrackEvent('newsletter_subscribe_attempt', {
+                    event_category: 'conversion',
+                    event_label: window.location.pathname,
+                    newsletter_provider: provider,
+                  });
+                  window.xbTrackEvent('newsletter_subscribe', {
+                    event_category: 'conversion',
+                    event_label: 'submitted',
+                    newsletter_provider: provider,
+                    confirmation_status: 'submitted',
+                  });
+                }
+              };
+
+              document.addEventListener('click', handleClick);
+              document.addEventListener('submit', handleSubmit, true);
+            };
+
+            // 只有出现真实交互，或页面持续打开 8 秒后，才启动 GA4。
+            // 这样可以过滤大量快速扫页、零互动的普通 Chrome 自动化访问。
+            window.__ga4_tracking_started = false;
+            window.startGA4Tracking = () => {
+              if (window.__ga4_tracking_started) return;
+              window.__ga4_tracking_started = true;
+              window.sendGA4PageView();
+              window.initGA4Tracking();
+            };
+
+            ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(eventName, window.startGA4Tracking, { once: true, passive: true });
+            });
+            window.setTimeout(window.startGA4Tracking, 8000);
+
+            document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+              if (window.__ga4_tracking_started) {
+                window.sendGA4PageView();
+                window.initGA4Tracking();
+              }
+            });
+          } else {
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+            if (window.__ga4_tracking_started && typeof window.sendGA4PageView === 'function') {
+              window.sendGA4PageView();
+            }
+          }
+        })();</script><script data-baidu-id="c7bfaf645bfc8974405a85c2a55573a0">
+          const baiduId = document.currentScript?.dataset.baiduId || '';
+          if (!window.__baidu_analytics_initialized) {
+            window._hmt = window._hmt || [];
+            window.__baidu_analytics_initialized = true;
+            window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+
+            const loadBaiduAnalytics = () => {
+              if (window.__baidu_script_loaded || !baiduId) return;
+              window.__baidu_script_loaded = true;
+              const hm = document.createElement('script');
+              hm.async = true;
+              hm.src = "https://hm.baidu.com/hm.js?" + baiduId;
+              document.head.appendChild(hm);
+              window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+            };
+
+            // 百度统计不是首屏渲染依赖：首次交互时加载，若用户未交互则 12 秒后加载。
+            ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(eventName, loadBaiduAnalytics, { once: true, passive: true });
+            });
+            window.setTimeout(loadBaiduAnalytics, 12000);
+
+            document.addEventListener('astro:page-load', () => {
+              const pageKey = window.location.pathname + window.location.search;
+              if (!window.__baidu_script_loaded || pageKey === window.__lastBaiduPageKey) return;
+              window.__lastBaiduPageKey = pageKey;
+              window._hmt.push(['_trackPageview', pageKey]);
+            });
+          }
+        </script><link rel="stylesheet" href="/_astro/index.lWVcUEql.css">
+<link rel="stylesheet" href="/_astro/_slug_.CC0BVq8u.css">
+<style>.language-switcher-summary[data-astro-cid-iemtoba4]::-webkit-details-marker{display:none}.language-switcher-details[data-astro-cid-iemtoba4][open] .language-switcher-summary[data-astro-cid-iemtoba4]{border-color:#93c5fde6;background:#eff6ffe6;color:#2563eb}.language-switcher-details[data-astro-cid-iemtoba4][open] .language-chevron[data-astro-cid-iemtoba4]{transform:rotate(180deg)}.dark .language-switcher-details[data-astro-cid-iemtoba4][open] .language-switcher-summary[data-astro-cid-iemtoba4]{border-color:#60a5fa80;background:#3b82f61a;color:#60a5fa}.header-main-bg{background-color:#ffffffb3;backdrop-filter:blur(25px) saturate(180%)}.dark .header-main-bg{background-color:#0b1020cc}.submenu-list{background-color:#fff!important;backdrop-filter:blur(30px);box-shadow:0 25px 50px -12px #0000001a}.submenu-list a{color:#475569!important}.submenu-list a:hover{color:#2563eb!important;background-color:#2563eb0d}.dark .submenu-list{background-color:#0b1020!important;border:1px solid rgba(255,255,255,.1)}.dark .submenu-list a{color:#94a3b8!important}.dark .submenu-list a:hover{color:#60a5fa!important;background-color:#60a5fa0d}
+</style>
+<link rel="stylesheet" href="/_astro/vendor-media.DSulWsr7.css">
+<style>.glass-button[data-astro-cid-xwnkcw7l]{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:var(--sizeGap);padding:var(--sizePadding);background:var(--variantBase);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--variantBorder);border-radius:var(--sizeBorderRadius);font-size:var(--sizeFontSize);font-weight:500;color:var(--variantColor);cursor:pointer;transition:all .3s cubic-bezier(.175,.885,.32,2.2);box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d;-webkit-user-select:none;-moz-user-select:none;user-select:none;overflow:hidden;text-decoration:none;white-space:nowrap}.glass-button[data-astro-cid-xwnkcw7l]:before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,var(--variantGradient),transparent);transition:left .6s cubic-bezier(.25,.46,.45,.94);pointer-events:none;opacity:0}.glass-button[data-astro-cid-xwnkcw7l]:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);transform:translateY(-4px) scale(1.03);box-shadow:0 20px 25px -5px var(--variantShadow),0 15px 15px -5px #0000004d,inset 1px 1px 4px #ffffff80;filter:brightness(1.2) saturate(1.3)}.glass-button[data-astro-cid-xwnkcw7l]:hover:before{left:100%;opacity:1}.glass-button[data-astro-cid-xwnkcw7l]:active{transform:translateY(-1px) scale(.98);box-shadow:0 2px 6px var(--variantShadow)}.glass-button[data-astro-cid-xwnkcw7l]:disabled{cursor:not-allowed;opacity:.6;transform:none;pointer-events:none}.glass-button[data-astro-cid-xwnkcw7l]:disabled:hover{transform:none;box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d}.glass-button__icon[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;justify-content:center;width:var(--sizeIconSize);height:var(--sizeIconSize);transition:all .3s cubic-bezier(.175,.885,.32,2.2)}.glass-button__icon[data-astro-cid-xwnkcw7l] svg{width:100%;height:100%}.glass-button[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{transform:scale(1.2) rotate(-5deg);filter:drop-shadow(0 0 4px var(--variantShadow))}.glass-button__content[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;transition:all .3s ease}.glass-button__spinner[data-astro-cid-xwnkcw7l]{width:var(--sizeIconSize);height:var(--sizeIconSize);animation:spin 1s linear infinite}.dark[data-astro-cid-xwnkcw7l]{.glass-button{background:#37373799;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-color:#ffffff26;color:#e5e7eb;box-shadow:0 4px 8px #0006,inset 1px 1px 3px #ffffff26}.glass-button:before{background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}.glass-button:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);box-shadow:0 6px 14px var(--variantShadow),inset 1px 1px 4px #fff3;filter:brightness(1.2) saturate(1.3)}}@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.glass-button--primary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--secondary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(37,99,235,.5))}.glass-button--success[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(22,163,74,.5))}.glass-button--warning[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(217,119,6,.5))}.glass-button--danger[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--info[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(99,102,241,.5))}
+</style></head> <body class="bg-white dark:bg-[#050608] text-slate-950 dark:text-white selection:bg-orange-500/20 selection:text-orange-500 overflow-x-hidden"> <style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value=="object"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};"requestIdleCallback"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event("astro:idle"));})();</script><script>(()=>{var A=Object.defineProperty;var g=(i,o,a)=>o in i?A(i,o,{enumerable:!0,configurable:!0,writable:!0,value:a}):i[o]=a;var d=(i,o,a)=>g(i,typeof o!="symbol"?o+"":o,a);{let i={0:t=>m(t),1:t=>a(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(a(t)),5:t=>new Set(a(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t),11:t=>1/0*t},o=t=>{let[l,e]=t;return l in i?i[l](e):void 0},a=t=>t.map(o),m=t=>typeof t!="object"||t===null?t:Object.fromEntries(Object.entries(t).map(([l,e])=>[l,o(e)]));class y extends HTMLElement{constructor(){super(...arguments);d(this,"Component");d(this,"hydrator");d(this,"hydrate",async()=>{var b;if(!this.hydrator||!this.isConnected)return;let e=(b=this.parentElement)==null?void 0:b.closest("astro-island[ssr]");if(e){e.addEventListener("astro:hydrate",this.hydrate,{once:!0});return}let c=this.querySelectorAll("astro-slot"),n={},h=this.querySelectorAll("template[data-astro-template]");for(let r of h){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("data-astro-template")||"default"]=r.innerHTML,r.remove())}for(let r of c){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("name")||"default"]=r.innerHTML)}let p;try{p=this.hasAttribute("props")?m(JSON.parse(this.getAttribute("props"))):{}}catch(r){let s=this.getAttribute("component-url")||"<unknown>",v=this.getAttribute("component-export");throw v&&(s+=` (export ${v})`),console.error(`[hydrate] Error parsing props for component ${s}`,this.getAttribute("props"),r),r}let u;await this.hydrator(this)(this.Component,p,n,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),this.dispatchEvent(new CustomEvent("astro:hydrate"))});d(this,"unmount",()=>{this.isConnected||this.dispatchEvent(new CustomEvent("astro:unmount"))})}disconnectedCallback(){document.removeEventListener("astro:after-swap",this.unmount),document.addEventListener("astro:after-swap",this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute("await-children")||document.readyState==="interactive"||document.readyState==="complete")this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener("DOMContentLoaded",e),c.disconnect(),this.childrenConnectedCallback()},c=new MutationObserver(()=>{var n;((n=this.lastChild)==null?void 0:n.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue==="astro:end"&&(this.lastChild.remove(),e())});c.observe(this,{childList:!0}),document.addEventListener("DOMContentLoaded",e)}}async childrenConnectedCallback(){let e=this.getAttribute("before-hydration-url");e&&await import(e),this.start()}async start(){let e=JSON.parse(this.getAttribute("opts")),c=this.getAttribute("client");if(Astro[c]===void 0){window.addEventListener(`astro:${c}`,()=>this.start(),{once:!0});return}try{await Astro[c](async()=>{let n=this.getAttribute("renderer-url"),[h,{default:p}]=await Promise.all([import(this.getAttribute("component-url")),n?import(n):()=>()=>{}]),u=this.getAttribute("component-export")||"default";if(!u.includes("."))this.Component=h[u];else{this.Component=h;for(let f of u.split("."))this.Component=this.Component[f]}return this.hydrator=p,this.hydrate},e,this)}catch(n){console.error(`[astro-island] Error hydrating ${this.getAttribute("component-url")}`,n)}}attributeChangedCallback(){this.hydrate()}}d(y,"observedAttributes",["props"]),customElements.get("astro-island")||customElements.define("astro-island",y)}})();</script><astro-island uid="ZWjsVO" prefix="r45" component-url="/_astro/GlobalLightbox.CqZePd56.js" component-export="default" renderer-url="/_astro/client.CJCcxmqC.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;GlobalLightbox&quot;,&quot;value&quot;:true}"></astro-island> <astro-island uid="2nwVdo" prefix="r46" component-url="/_astro/AffiliatePopup.BTLEl7EH.js" component-export="default" renderer-url="/_astro/client.CJCcxmqC.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;AffiliatePopup&quot;,&quot;value&quot;:true}"></astro-island> <astro-island uid="Z2uLlnx" prefix="r47" component-url="/_astro/SearchBoot.TYQhfg-n.js" component-export="default" renderer-url="/_astro/client.CJCcxmqC.js" props="{&quot;lang&quot;:[0,&quot;zh-CN&quot;]}" ssr client="idle" opts="{&quot;name&quot;:&quot;SearchBoot&quot;,&quot;value&quot;:true}"></astro-island> <div id="app-background" class="fixed inset-0 z-[-1] h-full w-full pointer-events-none bg-slate-50 dark:bg-slate-950 transition-colors duration-500"> <div id="app-background-image" class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-500" data-day="/_astro/macos2.hYF-Pyun.webp" data-night="/_astro/macos2-night.DwJ7amhx.webp" aria-hidden="true"></div> <div class="absolute inset-0 bg-[#DFE1E6]/90 dark:bg-transparent backdrop-blur-[6px] pointer-events-none"></div> <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b82f611,transparent_50%)] dark:hidden pointer-events-none"></div> <div class="absolute inset-0 opacity-[0.08] dark:opacity-[0.03] pointer-events-none mix-blend-multiply" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+');"></div> </div> <script>
+  (() => {
+    const bindBackground = () => {
+      const root = document.documentElement;
+      const background = document.getElementById('app-background-image');
+      if (!background || background.dataset.themeObserverBound === 'true') return;
+
+      const applyBackground = () => {
+        const source = root.classList.contains('dark') ? background.dataset.night : background.dataset.day;
+        if (!source) return;
+        const nextValue = `url("${source}")`;
+        if (background.style.backgroundImage !== nextValue) {
+          background.style.backgroundImage = nextValue;
+        }
+      };
+
+      applyBackground();
+      const observer = new MutationObserver(applyBackground);
+      observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+      background.dataset.themeObserverBound = 'true';
+    };
+
+    bindBackground();
+    document.addEventListener('astro:page-load', bindBackground);
+  })();
+</script> <header class="w-full z-[500] sticky top-0"> <div class="container px-3 lg:px-8 max-w-[1440px] mx-auto py-4 md:py-6"> <div class="header-main relative group transition-all duration-500"> <div class="absolute inset-0 rounded-[35px] header-main-bg shadow-sm dark:shadow-[0_8px_50px_rgba(0,0,0,0.5)] border border-slate-200/50 dark:border-white/10"></div> <nav class="relative z-10 p-2 flex items-center min-h-[64px]"> <!-- Logo (旋转 & 呼吸灯) --> <div class="ml-4 flex-shrink-0"> <a href="/" class="flex items-center group/logo"> <div class="relative flex-none isolate w-10 h-10"> <img src="/favicon/favicon.svg" alt="XBSTACK" class="relative z-10 object-contain w-full h-full group-hover/logo:rotate-[360deg] transition-all duration-700"> <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-slate-900 z-20 animate-pulse"></div> </div> <div class="flex flex-col ml-3 text-left"> <span class="text-xl font-black italic tracking-tighter bg-gradient-to-r from-slate-900 via-sky-800 to-slate-900 dark:from-white dark:via-sky-400 dark:to-white bg-clip-text text-transparent uppercase font-brand leading-none">XBSTACK</span> <span class="text-[8px] font-mono font-bold text-green-500/70 uppercase tracking-widest leading-none mt-1">System Status: Online</span> </div> </a> </div> <!-- 桌面端导航 (新 IA 架构) --> <ul class="hidden xl:flex items-center gap-1 ml-10"> <li class="relative group/item"> <a href="/ai/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-blue-600 dark:text-blue-400 bg-blue-500/5"> AI <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="group-hover/item:rotate-180 transition-transform duration-300 opacity-30" height="8" width="8" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a> <div class="submenu-container absolute top-full left-1/2 -translate-x-1/2 pt-4 invisible opacity-0 translate-y-4 group-hover/item:visible group-hover/item:opacity-100 group-hover/item:translate-y-0 transition-all duration-500 z-[300]"> <ul class="submenu-list flex flex-col gap-1 p-2 rounded-[24px] border border-slate-200 dark:border-white/10 backdrop-blur-xl w-max min-w-[200px] shadow-2xl bg-white/90 dark:bg-[#0B1020]/90"> <li><a href="/ai/agent/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Agents</a></li><li><a href="/ai/langgraph/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">LangGraph</a></li><li><a href="/ai/mcp/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">MCP</a></li><li><a href="/ai/workflow/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Workflow</a></li> </ul> </div> </li><li class="relative group/item"> <a href="/tools/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Tools <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="group-hover/item:rotate-180 transition-transform duration-300 opacity-30" height="8" width="8" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a> <div class="submenu-container absolute top-full left-1/2 -translate-x-1/2 pt-4 invisible opacity-0 translate-y-4 group-hover/item:visible group-hover/item:opacity-100 group-hover/item:translate-y-0 transition-all duration-500 z-[300]"> <ul class="submenu-list flex flex-col gap-1 p-2 rounded-[24px] border border-slate-200 dark:border-white/10 backdrop-blur-xl w-max min-w-[200px] shadow-2xl bg-white/90 dark:bg-[#0B1020]/90"> <li><a href="/tools/compound-calculator/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Compound Calculator</a></li><li><a href="/tools/ai-finance/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">AI Finance Analyzer</a></li><li><a href="/tools/lunest/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Lunest</a></li> </ul> </div> </li><li class="relative group/item"> <a href="/horizon/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Horizon <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="group-hover/item:rotate-180 transition-transform duration-300 opacity-30" height="8" width="8" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a> <div class="submenu-container absolute top-full left-1/2 -translate-x-1/2 pt-4 invisible opacity-0 translate-y-4 group-hover/item:visible group-hover/item:opacity-100 group-hover/item:translate-y-0 transition-all duration-500 z-[300]"> <ul class="submenu-list flex flex-col gap-1 p-2 rounded-[24px] border border-slate-200 dark:border-white/10 backdrop-blur-xl w-max min-w-[200px] shadow-2xl bg-white/90 dark:bg-[#0B1020]/90"> <li><a href="/investing/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Investing</a></li><li><a href="/horizon/reading/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Reading</a></li><li><a href="/investing/thoughts/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Thinking</a></li> </ul> </div> </li><li class="relative group/item"> <a href="/life/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Lens <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="group-hover/item:rotate-180 transition-transform duration-300 opacity-30" height="8" width="8" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a> <div class="submenu-container absolute top-full left-1/2 -translate-x-1/2 pt-4 invisible opacity-0 translate-y-4 group-hover/item:visible group-hover/item:opacity-100 group-hover/item:translate-y-0 transition-all duration-500 z-[300]"> <ul class="submenu-list flex flex-col gap-1 p-2 rounded-[24px] border border-slate-200 dark:border-white/10 backdrop-blur-xl w-max min-w-[200px] shadow-2xl bg-white/90 dark:bg-[#0B1020]/90"> <li><a href="/life/hiking/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Outdoor</a></li><li><a href="/life/photo/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Photography</a></li><li><a href="/life/gear/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Gear Lab</a></li> </ul> </div> </li><li class="relative group/item"> <a href="/about/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> About  </a>  </li> </ul> <!-- 功能区域 (时钟 & 搜索) --> <div class="flex items-center gap-3 ml-auto pr-4 relative z-[110]"> <div class="hidden 2xl:flex items-center gap-4 mr-4 border-r border-slate-200 dark:border-white/10 pr-6 text-right transition-all"> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-slate-400 uppercase">NYC</span><time id="clock-nyc" class="text-[9px] font-mono text-slate-500 font-bold" aria-label="New York time">10:31</time></div> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-slate-400 uppercase">LDN</span><time id="clock-ldn" class="text-[9px] font-mono text-slate-500 font-bold" aria-label="London time">15:31</time></div> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-blue-500 uppercase italic">GY</span><time id="clock-gy" class="text-[9px] font-mono text-slate-900 dark:text-white font-bold" aria-label="Guiyang time">22:31</time></div> </div> <div class="hidden sm:block"> <details class="language-switcher-details relative" data-language-switcher-details data-astro-cid-iemtoba4><summary class="language-switcher-summary flex h-10 min-w-[88px] cursor-pointer list-none items-center justify-center gap-2 rounded-full border border-slate-200/60 bg-white/50 px-3 text-[12px] font-bold text-slate-600 shadow-sm backdrop-blur-md transition-all hover:border-blue-300 hover:bg-blue-50/80 hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-blue-400/50 dark:hover:bg-blue-500/10 dark:hover:text-blue-400 dark:focus-visible:ring-offset-slate-950" aria-label="选择语言" title="选择语言" data-astro-cid-iemtoba4><svg aria-hidden="true" viewBox="0 0 24 24" class="h-3.5 w-3.5 flex-none" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4><circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle><path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path></svg><span class="whitespace-nowrap" data-astro-cid-iemtoba4>中文</span><svg aria-hidden="true" viewBox="0 0 20 20" class="language-chevron h-3 w-3 flex-none text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-iemtoba4><path d="m5 7.5 5 5 5-5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path></svg></summary><div class="language-switcher-menu absolute right-0 top-[calc(100%+0.65rem)] z-[520] w-44 overflow-hidden rounded-2xl border border-slate-200/80 bg-white/95 p-2 shadow-[0_18px_50px_-18px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0B1020]/95" role="menu" aria-label="选择语言" data-astro-cid-iemtoba4><div class="px-3 pb-1.5 pt-1 text-[9px] font-black uppercase tracking-[0.22em] text-slate-400 dark:text-slate-500" data-astro-cid-iemtoba4>语言</div><a href="https://www.xbstack.com/ai/multi-agent-systems/" data-language-choice="zh-CN" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" role="menuitemradio" aria-checked="true" title="当前语言：中文" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors cursor-default bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" data-astro-cid-iemtoba4><span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4><svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" data-astro-cid-iemtoba4><path d="m4.5 10 3.2 3.2 7.8-7.8" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path></svg></span><span class="flex-1" data-astro-cid-iemtoba4>中文</span><span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>ZH</span></a><a href="https://www.xbstack.com/en/ai/multi-agent-systems/" data-language-choice="en" data-language-current="false" data-language-available="true" role="menuitemradio" aria-checked="false" title="Switch to the English version" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors text-slate-600 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-blue-400" data-astro-cid-iemtoba4><span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4><span class="h-1.5 w-1.5 rounded-full bg-slate-300 dark:bg-slate-700" data-astro-cid-iemtoba4></span></span><span class="flex-1" data-astro-cid-iemtoba4>English</span><span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>EN</span></a></div></details><script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> <div class="flex items-center gap-1.5"> <button id="global-search-trigger" type="button" aria-label="打开站内搜索" class="w-10 h-10 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-blue-500 bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 rounded-full transition-all shadow-sm backdrop-blur-md cursor-pointer"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.81 173.81 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.81 173.81 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3zM97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8z"></path></svg></button> <div class="w-10 h-10 flex items-center justify-center bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 rounded-full hover:border-blue-500 transition-all"><div class="relative flex items-center justify-center w-full h-full"> <input class="sr-only" id="theme-switcher" data-theme-switcher type="checkbox"> <label class="flex items-center justify-center cursor-pointer w-full h-full group/theme" for="theme-switcher" aria-label="切换主题">  <svg class="w-5 h-5 transition-all duration-500 scale-100 dark:scale-0 opacity-100 dark:opacity-0 absolute text-orange-500 group-hover/theme:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg>  <svg class="w-5 h-5 transition-all duration-500 scale-0 dark:scale-100 opacity-0 dark:opacity-100 absolute text-sky-400 group-hover/theme:-rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </label> </div> <script>
+  // 立即执行以防止闪烁
+  (function() {
+    const theme = localStorage.getItem("theme");
+    const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  })();
+
+  // 页面加载和切换后的初始化逻辑
+  function initTheme() {
+    const themeSwitchers = document.querySelectorAll("[data-theme-switcher]");
+    const isDark = document.documentElement.classList.contains("dark");
+
+    // 同步所有切换按钮的状态
+    themeSwitchers.forEach((el) => {
+      el.checked = isDark;
+      
+      // 移除旧的监听器（如果存在），防止重复绑定
+      // 由于是匿名函数难以移除，我们采用 cloneNode 或者简单的标志位
+      // Astro 的 View Transitions 会重新运行脚本，所以只需确保不累积
+      // 最简单的方式是直接覆盖 onclick 或 onchange，但这里用 addEventListener
+      // 我们可以给元素加个标记
+      if (el.dataset.initialized) return;
+      
+      el.addEventListener("change", (e) => {
+        const checked = e.target.checked;
+        if (checked) {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        }
+        
+        // 同步其他可能存在的切换按钮（例如移动端和桌面端各有一个）
+        document.querySelectorAll("[data-theme-switcher]").forEach(other => {
+            if (other !== el) other.checked = checked;
+        });
+      });
+      
+      el.dataset.initialized = "true";
+    });
+  }
+
+  // 绑定事件
+  document.addEventListener("DOMContentLoaded", initTheme);
+  document.addEventListener("astro:page-load", initTheme);
+  document.addEventListener("astro:after-swap", initTheme);
+</script></div> </div> </div> <!-- 移动端 Toggle --> <div class="xl:hidden flex items-center ml-2"> <button id="mobile-menu-trigger" type="button" aria-label="打开导航菜单" aria-controls="mobile-menu" aria-expanded="false" class="w-10 h-10 flex items-center justify-center bg-white/20 dark:bg-black/20 rounded-full border border-slate-200/50 dark:border-white/10 text-slate-700 dark:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path></svg> </button> </div> </nav> </div> </div>  <div id="mobile-menu" class="fixed inset-0 z-[600] pointer-events-none invisible"> <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-500"></div> <aside id="mobile-menu-panel" class="absolute top-0 right-0 bottom-0 w-[300px] bg-white dark:bg-[#0B1020] border-l border-slate-200 dark:border-white/10 translate-x-full transition-transform duration-500 flex flex-col"> <div class="h-[72px] flex items-center justify-between px-6 border-b border-slate-100 dark:border-white/5"> <span class="text-xs font-black uppercase tracking-[0.3em] text-blue-500">系统菜单</span> <button id="mobile-menu-close" type="button" aria-label="关闭导航菜单" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg></button> </div> <div class="border-b border-slate-100 px-6 py-4 dark:border-white/5 sm:hidden"> <div class="flex w-full items-center justify-between gap-4" aria-label="选择语言" data-astro-cid-iemtoba4><div class="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300" data-astro-cid-iemtoba4><svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4><circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle><path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path></svg><span data-astro-cid-iemtoba4>语言</span></div><div class="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 p-1 dark:border-white/10 dark:bg-white/5" data-astro-cid-iemtoba4><a href="https://www.xbstack.com/ai/multi-agent-systems/" data-language-choice="zh-CN" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="当前语言：中文" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all cursor-default bg-white text-blue-600 shadow-sm dark:bg-blue-500/15 dark:text-blue-400" data-astro-cid-iemtoba4>中文</a><a href="https://www.xbstack.com/en/ai/multi-agent-systems/" data-language-choice="en" data-language-current="false" data-language-available="true" title="Switch to the English version" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400" data-astro-cid-iemtoba4>English</a></div></div><script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> <nav class="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-1"> <div class="space-y-1"> <a href="/ai/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-blue-500 bg-blue-500/5"> AI <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="opacity-30" height="10" width="10" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a> <div class="pl-8 flex flex-col gap-1"> <a href="/ai/agent/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Agents</a><a href="/ai/langgraph/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">LangGraph</a><a href="/ai/mcp/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">MCP</a><a href="/ai/workflow/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Workflow</a> </div> </div><div class="space-y-1"> <a href="/tools/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Tools <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="opacity-30" height="10" width="10" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a> <div class="pl-8 flex flex-col gap-1"> <a href="/tools/compound-calculator/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Compound Calculator</a><a href="/tools/ai-finance/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">AI Finance Analyzer</a><a href="/tools/lunest/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Lunest</a> </div> </div><div class="space-y-1"> <a href="/horizon/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Horizon <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="opacity-30" height="10" width="10" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a> <div class="pl-8 flex flex-col gap-1"> <a href="/investing/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Investing</a><a href="/horizon/reading/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Reading</a><a href="/investing/thoughts/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Thinking</a> </div> </div><div class="space-y-1"> <a href="/life/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Lens <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="opacity-30" height="10" width="10" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a> <div class="pl-8 flex flex-col gap-1"> <a href="/life/hiking/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Outdoor</a><a href="/life/photo/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Photography</a><a href="/life/gear/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Gear Lab</a> </div> </div><div class="space-y-1"> <a href="/about/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> About  </a>  </div> </nav> </aside> </div>  <script>
+    function updateClocks() {
+      const now = new Date();
+      const format = (tz) => now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: tz });
+      if (document.getElementById('clock-nyc')) document.getElementById('clock-nyc').innerText = format('America/New_York');
+      if (document.getElementById('clock-ldn')) document.getElementById('clock-ldn').innerText = format('Europe/London');
+      if (document.getElementById('clock-gy')) document.getElementById('clock-gy').innerText = format('Asia/Shanghai');
+    }
+    document.addEventListener('astro:page-load', () => { 
+      updateClocks(); 
+      setInterval(updateClocks, 60000);
+      const searchTrigger = document.getElementById('global-search-trigger');
+      if (searchTrigger) {
+        searchTrigger.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.dispatchEvent(new CustomEvent('xbstack:open-search'));
+        });
+      }
+      // Mobile Logic
+      const trigger = document.getElementById('mobile-menu-trigger');
+      const close = document.getElementById('mobile-menu-close');
+      const menu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const panel = document.getElementById('mobile-menu-panel');
+      const toggleMenu = (open) => {
+        if (!menu || !overlay || !panel) return;
+        trigger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        const englishUi = document.documentElement.lang.toLowerCase().startsWith('en');
+        trigger?.setAttribute('aria-label', open
+          ? (englishUi ? 'Close navigation menu' : '关闭导航菜单')
+          : (englishUi ? 'Open navigation menu' : '打开导航菜单'));
+        if (open) {
+          menu.classList.remove('invisible', 'pointer-events-none');
+          overlay.classList.add('opacity-100');
+          panel.classList.remove('translate-x-full');
+          document.body.style.overflow = 'hidden';
+          close?.focus();
+        } else {
+          overlay.classList.remove('opacity-100');
+          panel.classList.add('translate-x-full');
+          document.body.style.overflow = '';
+          setTimeout(() => { menu.classList.add('invisible', 'pointer-events-none'); }, 500);
+          trigger?.focus();
+        }
+      };
+      if (trigger) trigger.addEventListener('click', () => toggleMenu(true));
+      if (close) close.addEventListener('click', () => toggleMenu(false));
+      if (overlay) overlay.addEventListener('click', () => toggleMenu(false));
+    });
+    updateClocks();
+  </script> </header> <div id="language-switch-notice" class="pointer-events-none fixed left-1/2 top-24 z-[700] hidden max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/95 px-5 py-3 text-center text-sm font-bold text-slate-700 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 dark:text-slate-200" role="status" aria-live="polite"></div> <main id="main-content" class="flex-1">  <div id="reading-progress" class="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 z-[110] transition-all duration-300 w-0 shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div> <main class="pt-24 md:pt-32 pb-20"> <script type="module" src="/_astro/Comment.astro_astro_type_script_index_0_lang.B2IVUdQa.js"></script><script type="module">function g(){const t=document.querySelector("header");return t?t.offsetHeight+32:140}function a(){document.querySelectorAll("[data-toc-link]").forEach(e=>{const n=e.cloneNode(!0);e.parentNode?.replaceChild(n,e),n.addEventListener("click",function(o){o.preventDefault();const r=o.currentTarget.getAttribute("href");if(!r)return;const c=r.substring(1),d=document.getElementById(c);if(d){const s=d.getBoundingClientRect(),i=window.pageYOffset||document.documentElement.scrollTop,u=g(),l=i+s.top-u;window.scrollTo({top:Math.max(0,l),behavior:"smooth"}),history.pushState(null,"",`#${c}`)}})})}document.addEventListener("DOMContentLoaded",a);document.addEventListener("astro:page-load",a);</script><div class="grid grid-cols-1 xl:grid-cols-[minmax(190px,230px)_minmax(0,860px)_minmax(190px,230px)] gap-6 xl:gap-8 2xl:gap-10 max-w-[1600px] justify-center mx-auto w-full px-4 md:px-6 xl:px-8">  <aside class="hidden xl:flex flex-col gap-8 sticky top-24 h-fit"> <div class="article-side-panel rounded-[24px] border p-6 flex flex-col gap-4"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">元数据</div> <div class="flex flex-col gap-2"> <span class="text-xs font-mono text-zinc-500"> 2026/4/24 </span> <div class="flex flex-wrap gap-2 mt-2"> <span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#AI Agent </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#Multi-Agent </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#协作系统 </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#系统架构 </span><span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 font-mono">
+#开发者工具 </span> </div> </div> </div>  <div class="flex flex-col gap-4"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 px-2">相关文章</div> <div class="flex flex-col gap-3"> <a href="/ai/ai-agent-autogen-tutorial/" class="ceramic-card-hover p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5"> <h4 class="text-xs font-bold line-clamp-2 text-zinc-800 dark:text-zinc-200">AutoGen 实战教程：多智能体对话协作、工具调用与生产化边界</h4> </a><a href="/ai/openai-agents-sdk-runstate-approval-resume/" class="ceramic-card-hover p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5"> <h4 class="text-xs font-bold line-clamp-2 text-zinc-800 dark:text-zinc-200">OpenAI Agents SDK RunState 实战：Tool Approval 如何跨进程恢复？</h4> </a> </div> </div> </aside>  <main class="min-w-0 w-full max-w-[920px] mx-auto xl:max-w-none"> <div class="article-paper rounded-[32px] md:rounded-[44px] border p-5 sm:p-7 md:p-10 xl:p-12"> <div class="entry-header-root animate-fadeUp mb-16" data-astro-cid-wy6pnlvm> <div class="relative" data-astro-cid-wy6pnlvm>  <div class="w-full aspect-[40/21] rounded-[28px] md:rounded-[36px] overflow-hidden shadow-2xl mb-10 md:mb-12 relative group " data-astro-cid-wy6pnlvm> <img src="/_astro/cogview4-cad35af5.Dx2lS8PS_Z1aDh9v.png" alt="Multi-Agent Systems 实战：多智能体协作系统的架构边界、状态交接与失败控制 - XBSTACK" sizes="(min-width: 1280px) 860px, (min-width: 768px) 900px, calc(100vw - 32px)" loading="eager" fetchpriority="high" data-astro-cid-wy6pnlvm="true" decoding="async" width="1200" height="630" class="w-full h-full transition-transform duration-1000 group-hover:scale-105 object-cover">  <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" data-astro-cid-wy6pnlvm></div> </div> <div class="px-1 sm:px-3 md:px-5 xl:px-6" data-astro-cid-wy6pnlvm>  <div class="flex flex-wrap gap-3 mb-8" data-astro-cid-wy6pnlvm> <a href="/ai/agent/" class="liquid-capsule text-orange-700 dark:text-white border-orange-500/20 dark:border-white/10 whitespace-nowrap inline-flex items-center shrink-0" data-astro-cid-wy6pnlvm> <div class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse shrink-0" data-astro-cid-wy6pnlvm></div> <span class="ml-2 font-black" data-astro-cid-wy6pnlvm>Ai</span> </a> </div>  <h1 class="entry-title text-4xl sm:text-5xl xl:text-[3.5rem] not-italic font-black mb-8 md:mb-10 leading-[1.08] tracking-tighter text-balance" data-astro-cid-wy6pnlvm>Multi-Agent Systems 实战：多智能体协作系统的架构边界、状态交接与失败控制</h1>  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12" data-astro-cid-wy6pnlvm> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-orange-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-orange-600 dark:text-orange-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Release Date</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-4 h-4 text-orange-600/50 dark:text-orange-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm>2026-04-24</div> </div> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-blue-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-blue-600 dark:text-blue-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Reading Time</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="w-4 h-4 text-blue-600/50 dark:text-blue-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm> 16分钟 </div> </div> <div class="p-6 rounded-[32px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group/card hover:border-emerald-500/30 transition-all duration-300" data-astro-cid-wy6pnlvm> <div class="flex items-center justify-between mb-3" data-astro-cid-wy6pnlvm> <div class="text-[10px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-widest" data-astro-cid-wy6pnlvm>Content Size</div> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 384 512" class="w-4 h-4 text-emerald-600/50 dark:text-emerald-500/50 group-hover/card:scale-110 transition-transform" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M288 248v28c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-28c0-6.6 5.4-12 12-12h168c6.6 0 12 5.4 12 12zm-12 72H108c-6.6 0-12 5.4-12 12v28c0 6.6 5.4 12 12 12h168c6.6 0 12-5.4 12-12v-28c0-6.6-5.4-12-12-12zm108-188.1V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V48C0 21.5 21.5 0 48 0h204.1C264.8 0 277 5.1 286 14.1L369.9 98c9 8.9 14.1 21.2 14.1 33.9zm-128-80V128h76.1L256 51.9zM336 464V176H232c-13.3 0-24-10.7-24-24V48H48v416h288z"></path></svg> </div> <div class="text-xl font-mono text-slate-900 dark:text-white" data-astro-cid-wy6pnlvm> 7,238 chars
+</div> </div> </div>  <div class="flex flex-wrap items-center gap-2" data-astro-cid-wy6pnlvm> <div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>AI Agent</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>Multi-Agent</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>协作系统</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>系统架构</span> </div><div class="px-4 py-2 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 inline-flex items-center gap-2 whitespace-nowrap shrink-0 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300" data-astro-cid-wy6pnlvm> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-3.5 h-3.5 opacity-80 shrink-0" data-astro-cid-wy6pnlvm="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M440.667 182.109l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l14.623-81.891C377.123 38.754 371.468 32 363.997 32h-40.632a12 12 0 0 0-11.813 9.891L296.175 128H197.54l14.623-81.891C213.477 38.754 207.822 32 200.35 32h-40.632a12 12 0 0 0-11.813 9.891L132.528 128H53.432a12 12 0 0 0-11.813 9.891l-7.143 40C33.163 185.246 38.818 192 46.289 192h74.81L98.242 320H19.146a12 12 0 0 0-11.813 9.891l-7.143 40C-1.123 377.246 4.532 384 12.003 384h74.81L72.19 465.891C70.877 473.246 76.532 480 84.003 480h40.632a12 12 0 0 0 11.813-9.891L151.826 384h98.634l-14.623 81.891C234.523 473.246 240.178 480 247.65 480h40.632a12 12 0 0 0 11.813-9.891L315.472 384h79.096a12 12 0 0 0 11.813-9.891l7.143-40c1.313-7.355-4.342-14.109-11.813-14.109h-74.81l22.857-128h79.096a12 12 0 0 0 11.813-9.891zM261.889 320h-98.634l22.857-128h98.634l-22.857 128z"></path></svg> <span class="text-[10px] font-black uppercase tracking-wider" data-astro-cid-wy6pnlvm>开发者工具</span> </div> </div> </div> </div> </div>   <div class="mb-12 p-8 rounded-[32px] bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 relative overflow-hidden group"> <div class="absolute top-0 left-0 w-1.5 h-full bg-blue-500"></div> <div class="flex flex-col gap-4"> <div class="flex items-center gap-2"> <span class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500">Xiaobai&#39;s Note / 实验室笔记</span> </div> <p class="text-lg font-bold text-slate-700 dark:text-slate-300 italic leading-relaxed"> 这篇文章记录了我在贵阳实验室的实战过程。我坚信，在技术下行的时代，程序员唯一的护城河就是通过 AI 建立属于自己的数字资产。 </p> </div> </div>  <div class="mb-12 grid grid-cols-1 md:grid-cols-2 gap-5"> <section class="p-6 rounded-[28px] bg-emerald-500/5 border border-emerald-500/10"> <h2 class="text-xs font-black uppercase tracking-[0.3em] text-emerald-600 dark:text-emerald-400 mb-4 flex items-center gap-2"> <div class="w-1 h-3 bg-emerald-500 rounded-full"></div> 先给结论 </h2> <ul class="space-y-3"> <li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-emerald-500 mt-0.5">✓</span> <span>系统拆解 Multi-Agent Systems 的生产级架构设计，覆盖 Supervisor-Worker、Planner-Executor、Critic-Reviewer、Agent Handoff、状态交接、失败传播、评估指标与可观测性，帮助开发者判断什么时候该用多智能体，什么时候不该用。</span> </li> </ul> </section> <section class="p-6 rounded-[28px] bg-orange-500/5 border border-orange-500/10"> <h2 class="text-xs font-black uppercase tracking-[0.3em] text-orange-600 dark:text-orange-400 mb-4 flex items-center gap-2"> <div class="w-1 h-3 bg-orange-500 rounded-full"></div> 适合谁读 </h2> <ul class="space-y-3"> <li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-orange-500 mt-0.5">●</span> <span>正在把 AI Agent / Multi-Agent / 协作系统 / 系统架构 落到真实项目里的开发者。</span> </li><li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-orange-500 mt-0.5">●</span> <span>不想只看概念，希望知道取舍、边界、风险和下一步怎么做的独立开发者。</span> </li><li class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed flex gap-3"> <span class="text-orange-500 mt-0.5">●</span> <span>正在做技术选型、工具链治理、自动化工作流或个人数字资产建设的读者。</span> </li> </ul> </section> </div>  <div class="mb-12 p-8 rounded-[32px] bg-blue-500/5 border border-blue-500/10"> <h2 class="text-xs font-black uppercase tracking-[0.3em] text-blue-500 mb-6 flex items-center gap-2"> <div class="w-1 h-3 bg-blue-500 rounded-full"></div> 本文解决的问题 </h2> <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4"> <li class="flex items-start gap-3 text-sm font-bold text-slate-600 dark:text-slate-400 italic"> <span class="text-blue-500 mt-1">●</span> 多智能体系统是否默认比单智能体更强，如何评估引入多智能体协作后的通信与延迟成本？ </li><li class="flex items-start gap-3 text-sm font-bold text-slate-600 dark:text-slate-400 italic"> <span class="text-blue-500 mt-1">●</span> 在长链条的复杂任务中，不同 Agent 之间如何以结构化的数据格式进行状态交接，防范上下文信息丢失？ </li><li class="flex items-start gap-3 text-sm font-bold text-slate-600 dark:text-slate-400 italic"> <span class="text-blue-500 mt-1">●</span> 面对多角色博弈和任务委派，如何拦截失败传播，防止局部错误导致整个智能体集群崩塌？ </li><li class="flex items-start gap-3 text-sm font-bold text-slate-600 dark:text-slate-400 italic"> <span class="text-blue-500 mt-1">●</span> 生产级多智能体系统有哪些可量化的评估指标，如何追踪各个子节点的贡献率与幻觉发生率？ </li> </ul> </div> <div class="prose prose-tech markdown-content">   <h2 id="适合谁读">适合谁读</h2>
+<ul>
+<li>正在从单 Agent 工作流转向复杂多 Agent 协同体系的系统架构师。</li>
+<li>关注多智能体在分布式环境中通信时延、网络开销与调试日志的一线开发人员。</li>
+<li>需要评估多智能体应用在具体垂直业务场景下落地价值与成本消耗的技术决策者。</li>
+</ul>
+<h2 id="一-架构抉择不要为了多智能体而多智能体">一、 架构抉择：不要为了多智能体而多智能体</h2>
+<p>多智能体架构的引入应当是应对任务复杂度与模型注意力熵增的防御性手段，而非默认的先进技术选型。</p>
+<p>在多智能体系统（Multi-Agent Systems，简称 MAS）概念爆火的今天，很多开发者陷入了一个误区：觉得智能体数量越多系统就越聪明。他们试图用一个包含了 Planner、Coder、Tester 和 Reviewer 的复杂多智能体集群，去处理一个原本只需要单智能体配合几个 Python 工具就能轻松搞定的简单任务。</p>
+<p>事实上，多智能体系统并不是免费的午餐。在真实的生产环境里，多一个 Agent，你的系统就成倍地多出了一层网络调用延迟、Token 消耗成本、上下文维护开销以及难以调试的状态同步熵增。如果你能用单 Agent 调用结构化函数稳定解决问题，就绝对不要拆分角色；如果你的业务逻辑非常清晰，直接使用确定性的代码工作流（Workflow）编排大模型才是成本最低、最健壮的做法。</p>
+<p>多智能体系统的价值，在于当我们的任务复杂度超出了单模型的注意力极限时，通过将不同的推理域进行物理隔离，来对抗单模型的“注意熵增”。</p>
+<h2 id="二-场景对齐什么时候适合引入-multi-agent-systems">二、 场景对齐：什么时候适合引入 Multi-Agent Systems？</h2>
+<p>多智能体系统最适合用于任务需要独立角色分工、双向审查、以及跨物理系统协作的复杂场景，而非线性流水线。</p>
+<p>在决定是否重构系统为多智能体架构之前，我通常会在我的贵阳本地开发环境里，对业务场景进行以下两类指标的比对过滤：</p>
+<h3 id="1-强力推荐引入-mas-的场景">1. 强力推荐引入 MAS 的场景</h3>
+<ul>
+<li>复杂开放式研究：例如需要实时搜索海量网页、归纳技术趋势、生成竞品报告。这需要一个 Searcher Agent 过滤信噪比，一个 Writer Agent 撰写初稿，以及一个 Critic Agent 根据独立证据线挑错和审计。</li>
+<li>高风险决策审查：例如法务合同审计或者财务报表核算。为了防止模型自我妥协，必须设置生成 Agent 与独立审查 Agent 进行博弈和交叉质询。</li>
+<li>跨组织与跨工具链协同：当不同系统的 Agent 由不同的外包团队或不同的框架（如 Java 与 Python）编写，它们必须在独立的沙箱中运行并进行业务委派时，A2A 多智能体协作是唯一的选择。</li>
+</ul>
+<h3 id="2-严禁使用多智能体的场景">2. 严禁使用多智能体的场景</h3>
+<ul>
+<li>单轮或低频问答：例如简单的企业内网 FAQ 知识库，直接使用 RAG + 提示词即可。</li>
+<li>确定性强审批流程：例如请假审批或者报销额度自动扣减。这类规则明确的逻辑应当直接使用传统 CRUD 和条件分支代码实现，不要浪费昂贵的 LLM 推理算力。</li>
+<li>简单单工具调用：如果智能体仅仅需要根据指令查询一次天气或者读取一下数据库，单 Agent 加 Function Calling 是最高效的做法。</li>
+</ul>
+<h2 id="三-五种核心协作架构模式及其实战风险">三、 五种核心协作架构模式及其实战风险</h2>
+<p>生产级多智能体的协作模式必须在清晰界定各节点职责的前提下进行，防范因逻辑边界重叠而引发的运行内卷。</p>
+<p>在工业级 MAS 的设计中，我们常用的协作编排模式可以归纳为以下五种，每一种都对应着不同的物理分工逻辑与边界风险：</p>
+<h3 id="1-supervisor-worker-模式-管理员与执行者">1. Supervisor-Worker 模式 (管理员与执行者)</h3>
+<ul>
+<li>结构：主控 Supervisor 负责接收用户任务、拆解分配给下属的专业 Workers，并对 Workers 回传的结果进行格式化汇总与质量兜底。</li>
+<li>适合场景：多渠道智能客服分流、跨领域文档分析。</li>
+<li>物理风险：Supervisor 成了单一故障点。如果 Supervisor 在任务判定阶段产生了幻觉（例如把法务退款请求分流到了 FAQ 问答 Worker），整条链路就会彻底跑偏，且下层的 Worker 无法自愈。</li>
+</ul>
+<h3 id="2-planner-executor-模式-规划器与执行器">2. Planner-Executor 模式 (规划器与执行器)</h3>
+<ul>
+<li>结构：Planner 仅负责长链条任务的分解与阶段计划制定，并将具体的执行指令下发给 Executor。Executor 执行完毕后将物理结果回传给 Planner，Planner 评估后决定是进行下一步还是重规划。</li>
+<li>适合场景：复杂的自动化软件部署、多步骤数据清洗。</li>
+<li>物理风险：如果 Planner 拆解的计划粒度过细，会产生高昂的 Token 通信开销；若拆解过粗，Executor 在调用本地工具时极易因入参不足而频繁抛出错误日志。</li>
+</ul>
+<h3 id="3-researcher-writer-reviewer-模式-研究撰写与审计">3. Researcher-Writer-Reviewer 模式 (研究、撰写与审计)</h3>
+<ul>
+<li>结构：这是经典的内容生产铁三角。Researcher 负责调用检索工具搜集物理事实；Writer 负责基于事实组装文本；Reviewer 扮演严苛的审核官，核对 Writer 生成的每一句话是否在 Researcher 收集的文档中有原文支持。</li>
+<li>适合场景：行业研报生成、技术文档自动校对。</li>
+<li>物理风险：Reviewer 容易发生审美妥协。如果不加约束，Reviewer 会倾向于只阅读 Writer 生成的摘要，而不是去核对原始的 Research 证据链，从而让幻觉事实轻易过关。</li>
+</ul>
+<h3 id="4-debate--critic-模式-双角色辩论博弈">4. Debate / Critic 模式 (双角色辩论博弈)</h3>
+<ul>
+<li>结构：两个模型实力相当的 Agent 针对同一个方案（如一份代码架构设计或者一个投资标的选择）从正反两个维度进行多轮语义博弈，互相寻找漏洞，直至达成共识或达到跳数上限。</li>
+<li>适合场景：高风险金融投资草案评估、自动化安全漏洞挖掘。</li>
+<li>物理风险：无意义的客套与字数膨胀。在没有外部强物理事实约束的情况下，辩论极易退化为无意义的废话循环，白白烧掉大量的 Token。</li>
+</ul>
+<h3 id="5-agent-handoff-模式-智能体交接路由">5. Agent Handoff 模式 (智能体交接路由)</h3>
+<ul>
+<li>结构：每个 Agent 各司其职，当 FAQ Agent 识别到用户提出退款诉求时，它像接力棒一样将当前会话的历史上下文、状态变量物理转交给专职的 Refund Agent。</li>
+<li>适合场景：复杂的分布式多功能业务系统。</li>
+<li>物理风险：上下文丢失。在交接瞬间，如果两个 Agent 共享的进程内存或状态持久化层没有正确传递用户会话中的关键变量（如已经识别的 order_id），接管的 Agent 就会重新追问用户，导致体验严重割裂。</li>
+</ul>
+<h2 id="四-状态交接从自然语言过渡到强类型结构化数据">四、 状态交接：从自然语言过渡到强类型结构化数据</h2>
+<p>不同 Agent 之间的状态传递必须基于版本化的强类型 JSON 字典，严禁依靠模糊的自然语言总结作为交接上下文。</p>
+<p>在开发多智能体系统时，最致命的工程设计就是让 Agent 之间仅靠传递一段段口语化的自然语言来进行工作交接。大模型在阅读上一个 Agent 总结的自然语言时，很容易遗漏里面的技术细节（如具体的 ID 编号、执行时间、参数哈希）。</p>
+<p>为了保证多代里协作的高确定性，我们必须设计一套统一的、版本化的强类型状态交接字典。</p>
+<p>以下是我在 Python 协作网关中定义的一个结构化交接状态数据类示例，它确保了数据流在不同节点跳转时的物理完整性：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Dict<span class="token punctuation">,</span> List<span class="token punctuation">,</span> Any<span class="token punctuation">,</span> Optional
+<span class="token keyword">from</span> pydantic <span class="token keyword">import</span> BaseModel<span class="token punctuation">,</span> Field
+
+<span class="token keyword">class</span> <span class="token class-name">AgentState</span><span class="token punctuation">(</span>BaseModel<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    task_id<span class="token punctuation">:</span> <span class="token builtin">str</span> <span class="token operator">=</span> Field<span class="token punctuation">(</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">,</span> description<span class="token operator">=</span><span class="token string">"全局唯一任务标识 ID"</span><span class="token punctuation">)</span>
+    parent_trace_id<span class="token punctuation">:</span> <span class="token builtin">str</span> <span class="token operator">=</span> Field<span class="token punctuation">(</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">,</span> description<span class="token operator">=</span><span class="token string">"用于全链路监控追踪的 Trace ID"</span><span class="token punctuation">)</span>
+    current_agent<span class="token punctuation">:</span> <span class="token builtin">str</span> <span class="token operator">=</span> Field<span class="token punctuation">(</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">,</span> description<span class="token operator">=</span><span class="token string">"当前持有控制权的 Agent 节点名称"</span><span class="token punctuation">)</span>
+    target_agent<span class="token punctuation">:</span> <span class="token builtin">str</span> <span class="token operator">=</span> Field<span class="token punctuation">(</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">,</span> description<span class="token operator">=</span><span class="token string">"准备转交的下一个目标 Agent 节点名称"</span><span class="token punctuation">)</span>
+    
+    <span class="token comment"># 业务上下文与状态数据</span>
+    user_goal<span class="token punctuation">:</span> <span class="token builtin">str</span> <span class="token operator">=</span> Field<span class="token punctuation">(</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">,</span> description<span class="token operator">=</span><span class="token string">"用户的最终输入意图"</span><span class="token punctuation">)</span>
+    task_context<span class="token punctuation">:</span> Dict<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> Any<span class="token punctuation">]</span> <span class="token operator">=</span> Field<span class="token punctuation">(</span>default_factory<span class="token operator">=</span><span class="token builtin">dict</span><span class="token punctuation">,</span> description<span class="token operator">=</span><span class="token string">"业务状态上下文 KV"</span><span class="token punctuation">)</span>
+    
+    <span class="token comment"># 执行流水线追踪</span>
+    completed_steps<span class="token punctuation">:</span> List<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span> <span class="token operator">=</span> Field<span class="token punctuation">(</span>default_factory<span class="token operator">=</span><span class="token builtin">list</span><span class="token punctuation">,</span> description<span class="token operator">=</span><span class="token string">"已经成功完成的子步骤列表"</span><span class="token punctuation">)</span>
+    tool_results<span class="token punctuation">:</span> Dict<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">]</span> <span class="token operator">=</span> Field<span class="token punctuation">(</span>default_factory<span class="token operator">=</span><span class="token builtin">dict</span><span class="token punctuation">,</span> description<span class="token operator">=</span><span class="token string">"工具调用的历史原始结果"</span><span class="token punctuation">)</span>
+    
+    <span class="token comment"># 状态判定与异常指标</span>
+    confidence<span class="token punctuation">:</span> <span class="token builtin">float</span> <span class="token operator">=</span> Field<span class="token punctuation">(</span><span class="token number">1.0</span><span class="token punctuation">,</span> ge<span class="token operator">=</span><span class="token number">0.0</span><span class="token punctuation">,</span> le<span class="token operator">=</span><span class="token number">1.0</span><span class="token punctuation">,</span> description<span class="token operator">=</span><span class="token string">"当前步骤的置信度评分"</span><span class="token punctuation">)</span>
+    failure_reason<span class="token punctuation">:</span> Optional<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span> <span class="token operator">=</span> Field<span class="token punctuation">(</span><span class="token boolean">None</span><span class="token punctuation">,</span> description<span class="token operator">=</span><span class="token string">"如果发生异常，记录的具体错误文本"</span><span class="token punctuation">)</span>
+    handoff_reason<span class="token punctuation">:</span> <span class="token builtin">str</span> <span class="token operator">=</span> Field<span class="token punctuation">(</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">,</span> description<span class="token operator">=</span><span class="token string">"触发任务跳转的语义依据描述"</span><span class="token punctuation">)</span>
+</code></pre>
+<p>在系统运行中，当 Coder Agent 完成代码编写，需要将状态路由给 Reviewer Agent 时，它输出的必须是经过序列化的 <code>AgentState</code> 强类型 JSON。Reviewer 节点的底层包装器解析该 JSON，直接将 <code>task_context</code> 注入自己的推理上下文，同时核对 <code>tool_results</code> 中的物理执行日志。这种基于结构化协议的设计，能将多 Agent 之间的状态丢失率物理性压缩到 0%。</p>
+<h2 id="五-通信开销与延迟多角色博弈背后的物理代价">五、 通信开销与延迟：多角色博弈背后的物理代价</h2>
+<p>多角色分工在提升输出准确率的同时，会带来 Token 消耗、网络调用时延以及状态同步熵增等显著的物理成本。</p>
+<p>在我的工程实践中，我做过一次严密的对比测试：使用单 Agent 配合工具查询数据库，完成一次财务对账平均耗时 8 秒，消耗 Token 约 3000 个；而引入 Planner-Executor-Reviewer 三智能体协同系统后，由于 Agent 之间反复确认、调用审计工具、以及 Planner 进行计划调整，单次对账的平均耗时暴涨到了 42 秒，消耗 Token 达到了 45000 个。</p>
+<p>这就是多智能体协作背后的物理代价。在决策是否使用 MAS 时，我们必须将以下成本指标纳入考虑：</p>
+<ul>
+<li>Token 成本放大系数：多智能体协作中，通信 Token 往往占到了大头。如果你的业务对边际利润要求极高，高昂的 Token 费用会迅速稀释你的毛利。</li>
+<li>交互时延 (P95 Latency)：多轮 API 握手意味着时延的层层累加。对于要求秒级响应的实时聊天或者在线下单场景，MAS 的高时延是灾难性的。</li>
+<li>状态一致性开销：如果 Workers 在分布式环境下并行执行，向同一个物理存储写入数据时，你需要引入复杂的 Actor 消息通道或者分布式锁来防止状态冲突，这极大地增加了后端代码的开发难度。</li>
+</ul>
+<h2 id="六-失败传播局部崩溃在多-agent-集群中的链式反应">六、 失败传播：局部崩溃在多 Agent 集群中的链式反应</h2>
+<p>多智能体系统的主要风险点在于上游错误在下游的无级放大，必须在关键节点建立物理拦截与回滚自愈机制。</p>
+<p>在 MAS 中，错误是会“传染”的。如果不加干预，一个微小的局部错误很快会演变成全局性的逻辑灾难。</p>
+<p>经典的失败传播链路如下：</p>
+<ol>
+<li>第一阶段（Planner 发生偏离）。用户要查询 2026 年第一季度的研发预算，Planner 发生幻觉，在计划中把时间拆解成了 2025 年第一季度。</li>
+<li>第二阶段（Worker 盲目执行）。负责执行 SQL 的 Worker Agent 接收到了 2025 年的指令，它忠实地在数据库里查询出了 2025 年的数据并回传。</li>
+<li>第三阶段（Reviewer 虚假过关）。负责审核的 Reviewer 仅比对了 Worker 的 SQL 和 Planner 的计划，发现两者都是 2025 年，一致性校验通过，判定结果合格。</li>
+<li>第四阶段（结果汇总返回）。最终，用户收到了一份格式极其优美、逻辑结构非常完整，但里面的事实核心数据全部错误的预算报告。</li>
+</ol>
+<p>为了物理切断这种错误放大链条，我们必须在多代里架构中建立两道硬性防线：
+第一，不允许 Reviewer 仅看最终摘要。审核节点必须有权限调用底层 MCP 工具直接拉取原始输入数据（如用户最初的提问），比对 Worker 的输出与用户原始意图是否一致，进行端到端的语义闭环校验。
+第二，引入关键节点状态回滚（Rollback）。当 Reviewer 判定 Worker 输出不合格时，不能只让 Worker 原地重试，而是必须给 Planner 发送带有报错 Error Log 的重置指令，强制 Planner 将执行指针回滚至上一步，重新拆解计划。</p>
+<h2 id="七-评估指标体系如何衡量多-agent-协作的健康度">七、 评估指标体系：如何衡量多 Agent 协作的健康度？</h2>
+<p>多智能体的评估绝不能仅看最终输出的相似度得分，而必须拆解监控每个子节点的调用频率、交接成功率与资源边际贡献。</p>
+<p>如果我们在评估多智能体系统时，仅仅使用简单的 LLM-as-a-judge 去给最终的文章或报告打分，我们根本无法判断各个 Agent 角色分工的有效性。我们可能会陷入花了几十倍的 Token 成本、引入了 5 个 Agent，最终效果却和单 Agent 没区别的窘境。</p>
+<p>为了实现生产级的质量监控，我们必须在开发环境中建立一套细分评估指标体系：</p>
+<h3 id="1-协作与性能指标-technical-metrics">1. 协作与性能指标 (Technical Metrics)</h3>
+<ul>
+<li>智能体跳转成功率 (agent_handoff_success_rate)：统计 Agent 之间在进行状态交接时，由于解析失败或上下文丢失导致的超时和死锁比例。</li>
+<li>任务平均执行步数 (avg_steps_per_task)：衡量系统执行效率的关键。如果该指标持续攀升，说明 Agent 集群陷入了低效率的语义死循环。</li>
+<li>通信 Token 占比：即 Agent 之间互相确认所消耗的 Token 占单次任务总 Token 消耗的比例，用于评估冗余沟通成本。</li>
+<li>局部重试成功率 (retry_rate)：统计当 Reviewer 发起退回重试时，Worker 成功修复输出的比例，以此衡量 Worker 节点的自愈能力。</li>
+</ul>
+<h3 id="2-真实业务贡献指标-business-metrics">2. 真实业务贡献指标 (Business Metrics)</h3>
+<ul>
+<li>边际准确提升率：对比多智能体系统与单智能体系统在处理相同评估集时的准确率差值，若该差值低于 2%，说明应当立刻将系统降级回单 Agent 架构，节约推理成本。</li>
+<li>人工干预接管率 (human_escalation_rate)：进入人工复核队列的任务在总任务中的占比，用以监控系统的自主闭环健康度。</li>
+<li>单任务成功边际成本 (cost_per_successful_task)：计算每成功解决一个真实业务任务所消耗的平均美元金额。</li>
+</ul>
+<h2 id="八-最小可上线版本建议">八、 最小可上线版本建议</h2>
+<p>初次上线多智能体应用时，应当将 Agent 角色数量控制在三个以内，并无条件拒绝全自动的闭环执行。</p>
+<p>在构建首个上线的 MAS 系统（MVP）时，切忌设计过于宏大的自治生态。我强力建议你遵守以下开发约束：</p>
+<ul>
+<li>角色限制：系统中的独立 Agent 数量绝对不要超过 3 个。最经典的组合是：一个路由编排的 Supervisor，一个执行具体工具的 Worker，以及一个独立核对证据链的 Reviewer。</li>
+<li>边界清晰：每个 Agent 挂载的工具集必须是物理互斥的。例如，FAQ 查询工具和订单退款工具必须分属于不同的 Agent 容器，严禁将所有工具全局挂载，否则会引发严重的工具幻觉。</li>
+<li>强制人在回路：对于涉及到核心业务状态修改的动作（如发送对外通知、发起支付等），不要让 Agent 自主闭环，必须在任务队列中强制加入人工审核步骤，由人在控制面板点击通过后才能执行。</li>
+</ul>
+<h2 id="九-常见设计误区与报错排查-error-logs">九、 常见设计误区与报错排查 (Error Logs)</h2>
+<p>设计不当的多智能体集群极易产生通信死循环、状态锁死以及幻觉放大等典型报错，需要针对性拦截。</p>
+<p>在我们将 MAS 架构推向生产环境的过程中，最常遇到的物理错误有以下三种，我将其报错文本和排查对策整理如下：</p>
+<h3 id="1-infinite-a2a-loop-智能体通信死循环">1. Infinite A2A Loop (智能体通信死循环)</h3>
+<ul>
+<li>现象：两个 Agent 在一个细微的拼写错误或者状态确认上无限制地互相客套、争论，Token 消耗量瞬间打爆。</li>
+<li>报错文本：
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Fatal: [MAS_COMMUNICATION_DEADLOCK] Infinite interaction loop detected between 'agent_code_developer' and 'agent_code_reviewer'. Session ID: sess_998877. Interchanged turns exceeded 8.
+</code></pre>
+</li>
+<li>根本原因：缺少全局的跳数监控，且 Reviewer 在退回修改时没有给出具体的代码修改指令，导致 Worker 只能猜测修改，Reviewer 继续报错退回。</li>
+<li>排查对策：在协作网关中全局配置 <code>Max_Turns = 5</code>。当两个节点之间的消息交换次数达到上限时，强制终止会话，将其抛入人工复核通道。同时，强制 Reviewer 的报错格式为 JSON，必须包含 <code>expected_format</code> 和 <code>failing_segments</code> 等明确的审计反馈。</li>
+</ul>
+<h3 id="2-state-synchronization-lag-状态并发冲突">2. State Synchronization Lag (状态并发冲突)</h3>
+<ul>
+<li>现象：多智能体并发读取同一个文件并更新状态时，后完成的 Agent 将先完成的 Agent 的数据直接覆盖，发生数据损坏。</li>
+<li>报错文本：
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Error: [STATE_VERSION_CONFLICT] Optimistic lock check failed for entity 'task_state_992'. Expected version: 4, found: 5. Active agent: 'agent_document_writer'.
+</code></pre>
+</li>
+<li>根本原因：多个并发执行的子 Worker 共享同一个内存状态，且未在数据库或持久化层引入乐观锁机制。</li>
+<li>排查对策：在底层 State DB 中引入版本号（version）控制。每一次更新状态字典时，执行 <code>WHERE version = current_version</code> 的乐观锁判断；若写入冲突，捕获该异常并触发指数退避（Exponential Backoff）重试，解耦并发冲突。</li>
+</ul>
+<h3 id="3-latency-explosion-响应延迟雪崩">3. Latency Explosion (响应延迟雪崩)</h3>
+<ul>
+<li>现象：前端用户反应系统完全挂起，控制台显示 HTTP 连接在运行 60 秒后因网关超时自动断开。</li>
+<li>报错文本：
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Error: [HTTP_GATEWAY_TIMEOUT] Upstream multi-agent task execution did not complete within the gateway window of 60000ms. Active trace: trace_223344.
+</code></pre>
+</li>
+<li>根本原因：系统采用了同步等待模式处理多 Agent 的多步规划，上游任一模型响应变慢即引发多米诺骨牌式的延迟雪崩。</li>
+<li>排查对策：无条件将任务执行切换为基于异步任务队列的发布订阅（Pub/Sub）机制。前端提交请求后立即断开连接并返回任务凭证，使用 Celery / BullMQ 等异步任务框架在后台分工执行，通过推送通知或长轮询实时拉取进度。</li>
+</ul>
+<h2 id="十-继续阅读">十、 继续阅读</h2>
+<p>要在生产中落地高可信度的智能体，你需要进一步学习如何在各个流程层级引入健壮的治理规范。</p>
+<ul>
+<li>👉 <a href="/ai/ai-agent-architecture/">AI Agent Architecture 实战：从 Prompt 到生产级智能体系统的架构设计</a></li>
+<li>👉 <a href="/ai/ai-agent-tool-use/">AI Agent Tool Use：智能体工具调用与接口集成实战指南</a></li>
+<li>👉 <a href="/ai/ai-agent-observability/">AI Agent Observability：打开智能体执行黑盒的可观测性指南</a></li>
+<li>👉 <a href="/ai/ai-agent-deployment/">AI Agent Deployment：生产级智能体部署架构与高并发扩展指南</a></li>
+<li>👉 <a href="/ai/ai-agent-evaluation-guide/">AI Agent Evaluation：量化智能体性能的 4 个核心维度与评估实战</a></li>
+<li>👉 <a href="/ai/ai-agent-planning/">AI Agent Planning：大模型规划能力在智能体系统中的落地实战</a></li>
+<li>👉 <a href="/ai/multi-agent-planning/">Multi-Agent Planning：多智能体协作中的 Planning 策略深度解析</a></li>
+<li>👉 <a href="/ai/ai-agent-framework-comparison/">AI Agent 框架深度横评：LangChain vs AutoGen vs CrewAI</a></li>
+<li>👉 <a href="/ai/ai-agent-autogen-tutorial/">Microsoft AutoGen 智能体实战：构建多代理由浅入深开发指南</a></li>
+<li>👉 <a href="/ai/ai-agent-protocol-ecosystem/">MCP vs A2A vs Function Calling：AI Agent 协议选型与系统集成指南</a></li>
+<li>👉 <a href="/ai/ai-agent-complete-guide/">AI Agent 全栈指南 (2026)：构建工业级智能体系统的 10 万字实战手册</a></li>
+</ul>
+<p>站外参考：</p>
+<ul>
+<li><a href="https://langchainai.github.io/langgraph/concepts/multi_agent/" rel="nofollow noopener noreferrer" target="_blank">LangGraph Multi-Agent Architecture and state management</a></li>
+<li><a href="https://microsoft.github.io/autogen/" rel="nofollow noopener noreferrer" target="_blank">Microsoft AutoGen Multi-agent conversational patterns</a></li>
+<li><a href="https://docs.crewai.com/" rel="nofollow noopener noreferrer" target="_blank">CrewAI Role-Playing and Process SOP configurations</a></li>
+<li><a href="https://github.com/openai/swarm" rel="nofollow noopener noreferrer" target="_blank">OpenAI Swarm multi-agent orchestration standard</a></li>
+</ul>  <section class="mt-16 rounded-[34px] border border-orange-500/20 bg-orange-500/[0.06] p-7 md:p-9 not-prose"> <div class="text-[10px] font-black uppercase tracking-[0.28em] text-orange-500 mb-4">专题入口 / AI Agent Hub</div> <h2 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-4">从单个 Agent 问题继续进入完整生产体系</h2> <p class="text-sm font-bold leading-7 text-slate-600 dark:text-slate-400 max-w-3xl">AI Agent 专题统一组织架构、记忆、工具调用、评测、安全、部署和多智能体协作，让每篇文章都回到明确的主题主页面。</p> <div class="mt-7 flex flex-wrap gap-3"> <a href="/ai/agent/" class="rounded-full bg-orange-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-white hover:bg-orange-600 transition-colors">进入 AI Agent 专题 →</a> <a href="/ai/ai-agent-architecture/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">查看架构指南</a> <a href="/newsletter/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">订阅更新</a> </div> </section> </div> <section class="mt-16 p-8 rounded-[32px] bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5"> <div class="flex items-center justify-between gap-4 mb-6"> <h2 class="text-xs font-black uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400"> 下一步阅读 </h2> <a href="/ai/agent/" class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400 hover:underline"> 返回专题入口 → </a> </div> <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> <a href="/ai/ai-agent-autogen-tutorial/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">agent</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">AutoGen 实战教程：多智能体对话协作、工具调用与生产化边界</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">系统拆解 AutoGen 在多智能体对话协作中的实战用法与生产化边界，覆盖 AgentChat、GroupChat、Planner / Executor / Critic 模式、工具调用、Human-in-the-loop、对话轮次控制、评估指标、成本监控和 Microsoft Agent Framework 迁移风险。</p> </a><a href="/ai/openai-agents-sdk-runstate-approval-resume/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">agent</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">OpenAI Agents SDK RunState 实战：Tool Approval 如何跨进程恢复？</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">基于 openai-agents 0.18.3 的可复现实验，完整验证 Tool Approval 暂停、RunState 序列化、跨进程批准/拒绝与 Worker 恢复，并复现重复投递导致工具执行两次、Context 泄漏秘密和状态版本漂移等生产边界。</p> </a><a href="/ai/ai-agent-memory-architecture/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">agent</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">AI Agent Memory Retrieval 实战：混合检索、重排、时效性与冲突消解</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">系统拆解 AI Agent 记忆召回链路，覆盖身份与作用域过滤、结构化查询、向量召回、混合检索、多信号重排、时效性、冲突消解、Prompt 预算、可观测性与回归测试。</p> </a><a href="/ai/ai-agent-production-governance/" class="group p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 hover:border-blue-500/40 transition-all"> <div class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">agent</div> <h3 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">AI Agent 生产化治理：评估、可观测性、部署、成本控制与人工审批闭环</h3> <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">系统拆解 AI Agent 从 Demo 走向生产环境所需的治理能力，覆盖任务评估、Trace 可观测性、工具调用审计、状态管理、部署架构、任务队列、模型路由、成本控制、人工审批、灰度发布和回滚机制，帮助开发者构建可上线、可监控、可复盘的智能体系统。</p> </a> </div> </section> <div class="xl:hidden mt-10 space-y-4"> <section class="bg-white/85 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-sm rounded-[24px] p-5 sm:p-6" aria-label="作者名片"><a href="/about/" class="group flex items-center gap-4 text-left" aria-label="了解小白与 XBSTACK →"><div class="rounded-full overflow-hidden border-2 border-white dark:border-slate-800 shadow-md relative shrink-0 w-16 h-16"><img src="/_astro/demo.BzDyfp9G_t3upI.webp" alt="小白" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div><div class="min-w-0"><h3 class="text-base font-black text-slate-950 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">小白</h3><p class="mt-1 text-[9px] font-black uppercase tracking-[0.22em] text-blue-500">Full-Stack AI Engineer</p></div></a><p class="font-bold text-slate-600 dark:text-slate-400 leading-relaxed mt-4 text-sm">小白，全栈 AI 工程师，持续构建生产级 Agent 系统、产品工具与独立软件资产。</p><a href="/about/" class="mt-4 block text-center text-[10px] font-black tracking-[0.12em] text-blue-600 dark:text-blue-400 hover:underline">了解小白与 XBSTACK →</a><div class="my-4 h-px bg-slate-100 dark:bg-white/5"></div><ul class="flex items-center w-full gap-2"><li class="min-w-0 flex-1 w-full"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/xbstack-wechat-qr.webp" aria-label="公众号：贵州户外"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="公众号：贵州户外" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="truncate">公众号：贵州户外</span> </span>  </button> </a></li><li class="min-w-0 flex-1 w-full"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span>GitHub</span> </span>  </button> </a></li></ul></section>  </div>  <div class="mt-20 p-10 rounded-[40px] bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 shadow-2xl relative overflow-hidden group"> <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-600/5 dark:bg-blue-600/20 blur-[100px] rounded-full group-hover:bg-blue-600/10 transition-all duration-1000"></div> <div class="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-10 items-center"> <div class="md:col-span-8 space-y-6"> <h4 class="text-3xl font-black italic tracking-tighter uppercase text-slate-900 dark:text-white">喜欢这篇文章？<br>加入小白实验室的周刊</h4> <p class="text-slate-600 dark:text-slate-300 font-bold text-sm leading-relaxed max-w-xl"> 每期只整理 AI 工程变化、真实故障、可复现实验、值得尝试的工具和 XBSTACK 新资产，不做泛新闻汇总，也不为周更凑数。 </p> </div> <div class="md:col-span-4 flex flex-col gap-4"> <a href="/newsletter/" class="w-full py-4 rounded-full bg-blue-600 text-white text-center font-black uppercase text-[10px] tracking-[0.3em] hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20">订阅周报 →</a> <a href="/tools/" class="w-full py-4 rounded-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-center font-black uppercase text-[10px] tracking-[0.3em] hover:bg-slate-100 dark:hover:bg-white/10 transition-all">产品工具</a> </div> </div> </div> </div>  <div class="mt-12 ceramic-card p-6 md:p-12"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-8 flex items-center gap-4"> <span>Comments</span> <div class="h-[1px] flex-1 bg-zinc-200 dark:bg-white/5"></div> </div> <section class="xbstack-comments" data-xbstack-waline data-server-url="https://comments.xbstack.com" data-comment-path="/ai/multi-agent-systems/" data-comment-lang="zh-CN" aria-labelledby="xbstack-comments-title"> <div class="xbstack-comments__header"> <div> <p class="xbstack-comments__eyebrow">参与讨论</p> <h2 id="xbstack-comments-title"> 问题、验证与勘误 </h2> <p class="xbstack-comments__description"> 登录后可发表评论。所有新评论先进入审核；审核期间仅评论者本人和管理员可见，通过后才公开。 </p> </div> <div class="xbstack-comments__policy" aria-label="评论规则"> <span>登录评论</span> <span>审核后公开</span> </div> </div> <div class="xbstack-comments__status" data-waline-status role="status" aria-live="polite"> <span class="xbstack-comments__spinner" aria-hidden="true"></span> <span>正在加载评论区…</span> </div> <div id="waline" class="xbstack-comments__mount" data-waline-mount></div> <noscript> <p class="xbstack-comments__noscript"> 评论区需要启用 JavaScript 才能查看和发布评论。 </p> </noscript> </section>  </div> </main>  <aside class="hidden xl:flex flex-col gap-6 sticky top-24 h-fit"> <div class="article-side-panel rounded-[24px] border p-5"> <div class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-4">本文目录</div> <div class="liquid-glass-container "><div class="liquidGlass-wrapper dock !p-6"><div class="liquidGlass-effect-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-tint-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-shine  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-text  intersect:animate-fadeLeft transition-all duration-300 fast-slow"><div class="intersect:animate-fadeLeft" data-astro-cid-hop3l3kc><h2 class="text-2xl border-none mb-3" data-astro-cid-hop3l3kc>内容导航</h2><div class="max-h-96 overflow-y-auto" data-astro-cid-hop3l3kc><ul class="list-none m-0 space-y-1" data-astro-cid-hop3l3kc><li class="ml-0" data-astro-cid-hop3l3kc><a href="#适合谁读" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>适合谁读</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#一-架构抉择不要为了多智能体而多智能体" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>一、 架构抉择：不要为了多智能体而多智能体</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#二-场景对齐什么时候适合引入-multi-agent-systems" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>二、 场景对齐：什么时候适合引入 Multi-Agent Systems？</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#1-强力推荐引入-mas-的场景" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>1. 强力推荐引入 MAS 的场景</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#2-严禁使用多智能体的场景" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>2. 严禁使用多智能体的场景</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#三-五种核心协作架构模式及其实战风险" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>三、 五种核心协作架构模式及其实战风险</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#1-supervisor-worker-模式-管理员与执行者" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>1. Supervisor-Worker 模式 (管理员与执行者)</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#2-planner-executor-模式-规划器与执行器" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>2. Planner-Executor 模式 (规划器与执行器)</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#3-researcher-writer-reviewer-模式-研究撰写与审计" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>3. Researcher-Writer-Reviewer 模式 (研究、撰写与审计)</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#4-debate--critic-模式-双角色辩论博弈" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>4. Debate / Critic 模式 (双角色辩论博弈)</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#5-agent-handoff-模式-智能体交接路由" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>5. Agent Handoff 模式 (智能体交接路由)</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#四-状态交接从自然语言过渡到强类型结构化数据" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>四、 状态交接：从自然语言过渡到强类型结构化数据</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#五-通信开销与延迟多角色博弈背后的物理代价" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>五、 通信开销与延迟：多角色博弈背后的物理代价</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#六-失败传播局部崩溃在多-agent-集群中的链式反应" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>六、 失败传播：局部崩溃在多 Agent 集群中的链式反应</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#七-评估指标体系如何衡量多-agent-协作的健康度" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>七、 评估指标体系：如何衡量多 Agent 协作的健康度？</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#1-协作与性能指标-technical-metrics" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>1. 协作与性能指标 (Technical Metrics)</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#2-真实业务贡献指标-business-metrics" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>2. 真实业务贡献指标 (Business Metrics)</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#八-最小可上线版本建议" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>八、 最小可上线版本建议</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#九-常见设计误区与报错排查-error-logs" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>九、 常见设计误区与报错排查 (Error Logs)</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#1-infinite-a2a-loop-智能体通信死循环" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>1. Infinite A2A Loop (智能体通信死循环)</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#2-state-synchronization-lag-状态并发冲突" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>2. State Synchronization Lag (状态并发冲突)</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#3-latency-explosion-响应延迟雪崩" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>3. Latency Explosion (响应延迟雪崩)</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#十-继续阅读" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>十、 继续阅读</a></li></ul></div></div></div></div></div> </div> <section class="bg-white/85 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-sm rounded-[24px] p-5 article-side-panel" aria-label="作者名片"><a href="/about/" class="group flex items-center flex-col gap-3 text-center" aria-label="了解小白与 XBSTACK →"><div class="rounded-full overflow-hidden border-2 border-white dark:border-slate-800 shadow-md relative shrink-0 w-[72px] h-[72px]"><img src="/_astro/demo.BzDyfp9G_t3upI.webp" alt="小白" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div><div class="w-full"><h3 class="text-base font-black text-slate-950 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">小白</h3><p class="mt-1 text-[9px] font-black uppercase tracking-[0.22em] text-blue-500">Full-Stack AI Engineer</p></div></a><p class="font-bold text-slate-600 dark:text-slate-400 leading-relaxed mt-4 text-xs text-center">小白，全栈 AI 工程师，持续构建生产级 Agent 系统、产品工具与独立软件资产。</p><a href="/about/" class="mt-4 block text-center text-[10px] font-black tracking-[0.12em] text-blue-600 dark:text-blue-400 hover:underline">了解小白与 XBSTACK →</a><div class="my-4 h-px bg-slate-100 dark:bg-white/5"></div><ul class="flex items-center w-full gap-2 flex-col"><li class="min-w-0 flex-1 w-full"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/xbstack-wechat-qr.webp" aria-label="公众号：贵州户外"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="公众号：贵州户外" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="truncate">公众号：贵州户外</span> </span>  </button> </a></li><li class="min-w-0 flex-1 w-full"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none w-full min-w-0 justify-center gap-2 px-3 text-xs font-black " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span>GitHub</span> </span>  </button> </a></li></ul></section>  </aside> </div> </main> <script>
+    function initProgress() {
+      const progressBar = document.getElementById('reading-progress');
+      if (!progressBar) return;
+      window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = scrolled + "%";
+      });
+    }
+    document.addEventListener('astro:page-load', initProgress);
+    initProgress();
+  </script>  </main> <footer class="container mx-auto mt-32 animate-fadeUp px-4 pb-16 lg:px-8"> <div class="group relative rounded-[60px] border border-slate-200 bg-white p-10 shadow-2xl transition-all dark:border-white/10 dark:bg-[#0B1020] md:p-16"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[60px] opacity-20 dark:opacity-40"> <div class="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px] transition-transform duration-1000 group-hover:scale-125"></div> <div class="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px] transition-transform duration-1000 group-hover:scale-125"></div> </div> <div class="relative z-10 grid grid-cols-1 gap-12 border-b border-slate-100 pb-16 text-left dark:border-white/5 md:grid-cols-2 xl:grid-cols-12"> <div class="flex flex-col justify-between space-y-8 xl:col-span-4"> <div> <div class="mb-8 flex items-center gap-4"> <div class="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 p-2 shadow-lg dark:border-white/10 dark:bg-white/5"> <img src="/favicon/favicon.svg" alt="XBSTACK" class="h-full w-full object-contain"> </div> <span class="font-brand text-2xl font-black uppercase italic leading-none tracking-tighter text-blue-500">XBSTACK</span> </div> <div class="space-y-6"> <p class="text-2xl font-bold italic leading-tight tracking-tight text-slate-900 dark:text-slate-50"> “在高处看世界，在底层堆资产。” </p> <p class="max-w-sm text-[13px] font-bold leading-relaxed text-slate-600 dark:text-slate-400"> 这是一个由全栈开发者与理性投资者构建的数字主权实验场。记录不被时间侵蚀的硬核逻辑与实战记录。 </p> </div> </div> <div class="flex items-center gap-4 pt-4"> <span class="rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 text-[11px] font-black uppercase tracking-widest text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-400"> 主理人：小白 </span> </div> </div> <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 xl:col-span-5"> <div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">AI</h4> <ul class="space-y-4"> <li><a href="/ai/agent/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Agents</a></li><li><a href="/ai/langgraph/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">LangGraph</a></li><li><a href="/ai/mcp/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">MCP</a></li><li><a href="/ai/workflow/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Workflow</a></li> </ul> </div><div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">Tools</h4> <ul class="space-y-4"> <li><a href="/tools/compound-calculator/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Compound Calculator</a></li><li><a href="/tools/ai-finance/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">AI Finance Analyzer</a></li><li><a href="/tools/lunest/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Lunest</a></li> </ul> </div><div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">Horizon</h4> <ul class="space-y-4"> <li><a href="/investing/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Investing</a></li><li><a href="/horizon/reading/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Reading</a></li><li><a href="/investing/thoughts/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Thinking</a></li> </ul> </div><div class="space-y-6"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-blue-600 dark:text-blue-500">Lens</h4> <ul class="space-y-4"> <li><a href="/life/hiking/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Outdoor</a></li><li><a href="/life/photo/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Photography</a></li><li><a href="/life/gear/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Gear Lab</a></li> </ul> </div> </div> <div class="space-y-8 xl:col-span-3"> <h4 class="text-[10px] font-black uppercase italic tracking-[0.4em] text-slate-400">Systems Connect</h4> <div class="flex flex-col gap-3"> <button type="button" data-wechat-qr="/assets/xbstack-wechat-qr.webp" class="wechat-trigger group/wechat flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left transition-all hover:border-blue-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="h-5 w-5 text-green-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg> <div class="flex flex-col"> <span class="text-[12px] font-black text-slate-900 dark:text-slate-200">公众号：XBSTACK（目前名称：贵州户外）</span> <span class="text-[11px] font-bold leading-relaxed text-slate-600 dark:text-slate-300"> 记录贵州徒步、夜爬、路线实测和小白的真实户外经历；AI 开发、工具产品与投资复盘主要发布在 XBSTACK 网站。 </span> </div> </button> <a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" class="group/github flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-all hover:border-blue-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="h-5 w-5 text-slate-900 dark:text-white" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> <div class="flex flex-col"><span class="text-[12px] font-black text-slate-900 dark:text-slate-200">GitHub: XBSTACK Lab</span><span class="text-[11px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">Source Code</span></div> </a> <a href="mailto:xbstack@163.com" class="group flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-all hover:border-sky-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="h-5 w-5 text-sky-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"></path></svg> <div class="flex flex-col"><span class="text-[12px] font-black text-slate-900 dark:text-slate-200">xbstack@163.com</span><span class="text-[11px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">Email</span></div> </a> </div> </div> </div> <div class="mt-12 flex flex-col items-start justify-between gap-10 lg:flex-row lg:items-center"> <div class="flex flex-wrap gap-8"> <div class="space-y-1"> <h5 class="text-[10px] font-black uppercase tracking-widest text-orange-700 dark:text-orange-500">风险声明</h5> <p class="text-[10px] font-bold italic text-slate-500">内容不构成投资建议。投资有风险，入市需谨慎。</p> </div> <div class="space-y-1"> <h5 class="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-500">版权保护</h5> <p class="text-[10px] font-bold text-slate-500">内容版权归 XBSTACK 所有。禁止非法采集。</p> </div> </div> <div class="flex w-full flex-col items-end gap-5 lg:w-auto"> <div class="flex flex-wrap justify-end gap-6"> <a href="/archive/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">文章归档</a><a href="/privacy/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">隐私政策</a><a href="/tos/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">服务条款</a><a href="/disclosure/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">免责声明</a><a href="/sitemap-index.xml" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">网站地图</a><a href="/llms.txt" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">AI 索引</a> </div> <div class="flex flex-wrap justify-end gap-3"> <a href="https://www.foreverblog.cn/go.html" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-slate-100 px-4 py-2 text-[10px] font-black uppercase italic text-slate-500 transition-all hover:text-orange-500 dark:border-white/10 dark:bg-white/5">十年之约</a> <a href="https://www.travellings.cn/go.html" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-slate-100 px-4 py-2 text-[10px] font-black uppercase italic text-slate-500 transition-all hover:text-orange-500 dark:border-white/10 dark:bg-white/5">开往</a> <a href="/rss.xml" class="rounded-xl border border-blue-600/20 bg-blue-600/10 px-4 py-2 text-[10px] font-black text-blue-700 shadow-sm transition-all hover:bg-blue-500 hover:text-white dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400">RSS 订阅</a> </div> </div> </div> <div class="mt-8 flex items-center justify-between border-t border-slate-100 pt-8 dark:border-white/5"> <div class="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 opacity-50">&copy; 2026 XBSTACK. LABS_ACTIVE_v6.6</div> <div class="flex items-center gap-2"><span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500"></span><span class="text-[9px] font-black uppercase italic tracking-widest text-emerald-600/60">Built Independently</span></div> </div> </div> </footer> <!-- 桌面悬停卡：由全局脚本定位到当前公众号入口附近 --><div id="wechat-hover-card" class="fixed z-[9998] hidden w-[300px] pointer-events-none opacity-0 translate-y-2 transition-all duration-200" aria-hidden="true"> <div class="rounded-[30px] border border-white/15 bg-[#0d1728]/95 p-5 text-white shadow-[0_28px_80px_rgba(2,6,23,0.48)] backdrop-blur-2xl"> <div class="text-[9px] font-black uppercase tracking-[0.34em] text-orange-400">Join the Journey</div> <div class="mt-2 text-xl font-black tracking-tight">一起探索 · 一起成长</div> <div class="mt-1 text-[11px] font-bold tracking-[0.12em] text-slate-400">户外探索 · 独立开发 · 投资思考</div> <div class="mt-4 grid grid-cols-[112px_1fr] items-center gap-4"> <div class="rounded-[20px] border border-white/10 bg-[#060b14] p-2.5 shadow-inner"> <img id="wechat-hover-qr" src="/assets/xbstack-wechat-qr.webp" width="360" height="360" alt="微信公众号贵州户外二维码" class="block aspect-square w-full rounded-xl bg-white object-contain"> </div> <div class="space-y-2 text-[11px] font-bold leading-relaxed text-slate-300"> <p>贵州徒步与路线实测</p> <p>AI 工具与独立产品</p> <p>投资体系与长期复盘</p> </div> </div> <div class="mt-4 border-t border-white/10 pt-3 text-center text-[11px] font-black text-slate-300"> 点击查看完整名片 </div> </div> </div> <!-- 全局点击弹窗 --> <div id="wechat-modal" class="fixed inset-0 z-[10000] hidden items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="wechat-modal-title" aria-hidden="true"> <button id="wechat-modal-backdrop" type="button" aria-label="关闭微信公众号弹窗" class="absolute inset-0 cursor-default bg-slate-950/86 backdrop-blur-xl"></button> <div id="wechat-modal-content" class="relative max-h-[94vh] w-full max-w-[460px] scale-95 overflow-y-auto rounded-[38px] border border-slate-500/45 bg-[#0d1728] text-white opacity-0 shadow-[0_40px_140px_rgba(0,0,0,0.68)] transition-all duration-300 sm:rounded-[50px]"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"> <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px]"></div> <div class="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-orange-500/10 blur-[80px]"></div> </div> <button id="wechat-modal-close" type="button" aria-label="关闭微信公众号弹窗" class="absolute right-5 top-5 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 transition hover:bg-white/10 hover:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg> </button> <div class="relative z-10 px-6 pb-6 pt-10 sm:px-10 sm:pb-9 sm:pt-12"> <header class="text-center"> <div class="text-[10px] font-black uppercase tracking-[0.44em] text-orange-400 sm:text-xs">Join the Journey</div> <h2 id="wechat-modal-title" class="mt-4 text-3xl font-black tracking-tight text-white sm:text-[38px]" style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;">一起探索 · 一起成长</h2> <p class="mt-3 text-sm font-bold tracking-[0.16em] text-slate-400 sm:text-base">户外探索 · 独立开发 · 投资思考</p> </header> <div class="mx-auto mt-7 max-w-[300px] rounded-[34px] border border-white/10 bg-[#070d17] p-5 shadow-inner sm:mt-8"> <div class="rounded-[24px] bg-white p-3"> <img id="wechat-modal-qr" src="/assets/xbstack-wechat-qr.webp" width="360" height="360" decoding="async" alt="微信公众号贵州户外二维码" class="block aspect-square w-full object-contain"> </div> </div> <div class="mt-7 divide-y divide-white/10 sm:mt-8"> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M634.92 462.7l-288-448C341.03 5.54 330.89 0 320 0s-21.03 5.54-26.92 14.7l-288 448a32.001 32.001 0 0 0-1.17 32.64A32.004 32.004 0 0 0 32 512h576c11.71 0 22.48-6.39 28.09-16.67a31.983 31.983 0 0 0-1.17-32.63zM320 91.18L405.39 224H320l-64 64-38.06-38.06L320 91.18z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">户外徒步 · 贵州路线实探与分享</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">记录每一次出发，提供真实路况、补给、风险和下撤信息。</p> </div> </div> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M278.9 511.5l-61-17.7c-6.4-1.8-10-8.5-8.2-14.9L346.2 8.7c1.8-6.4 8.5-10 14.9-8.2l61 17.7c6.4 1.8 10 8.5 8.2 14.9L293.8 503.3c-1.9 6.4-8.5 10.1-14.9 8.2zm-114-112.2l43.5-46.4c4.6-4.9 4.3-12.7-.8-17.2L117 256l90.6-79.7c5.1-4.5 5.5-12.3.8-17.2l-43.5-46.4c-4.5-4.8-12.1-5.1-17-.5L3.8 247.2c-5.1 4.7-5.1 12.8 0 17.5l144.1 135.1c4.9 4.6 12.5 4.4 17-.5zm327.2.6l144.1-135.1c5.1-4.7 5.1-12.8 0-17.5L492.1 112.1c-4.8-4.5-12.4-4.3-17 .5L431.6 159c-4.6 4.9-4.3 12.7.8 17.2L523 256l-90.6 79.7c-5.1 4.5-5.5 12.3-.8 17.2l43.5 46.4c4.5 4.9 12.1 5.1 17 .6z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">独立开发 · AI、工具与产品实战</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">从真实需求到上线复盘，持续构建可长期积累的数字产品。</p> </div> </div> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16zM464 96H345.94c-21.38 0-32.09 25.85-16.97 40.97l32.4 32.4L288 242.75l-73.37-73.37c-12.5-12.5-32.76-12.5-45.25 0l-68.69 68.69c-6.25 6.25-6.25 16.38 0 22.63l22.62 22.62c6.25 6.25 16.38 6.25 22.63 0L192 237.25l73.37 73.37c12.5 12.5 32.76 12.5 45.25 0l96-96 32.4 32.4c15.12 15.12 40.97 4.41 40.97-16.97V112c.01-8.84-7.15-16-15.99-16z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">投资思考 · 复利、风险与长期主义</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">分享投资体系、市场观察和个人决策复盘，不构成投资建议。</p> </div> </div> </div> <div class="mt-6 text-center text-sm font-black leading-relaxed text-slate-300"> 扫码关注微信公众号 <span class="text-orange-400">“贵州户外”</span> <p class="mt-1 text-xs font-bold text-slate-500">获取户外路线、独立开发与投资复盘的最新内容</p> </div> <button id="wechat-modal-confirm" type="button" class="mt-7 w-full rounded-[24px] bg-white px-6 py-4 text-sm font-black tracking-[0.12em] text-slate-950 shadow-xl transition hover:-translate-y-0.5 hover:bg-slate-100 active:translate-y-0"> 知道了 / CLOSE </button> </div> </div> </div> <script type="module">const b="/assets/xbstack-wechat-qr.webp";function f(){const t=document.getElementById("wechat-modal"),y=document.getElementById("wechat-modal-backdrop"),a=document.getElementById("wechat-modal-content"),w=document.getElementById("wechat-modal-close"),E=document.getElementById("wechat-modal-confirm"),c=document.getElementById("wechat-modal-qr"),s=document.getElementById("wechat-hover-card"),i=document.getElementById("wechat-hover-qr");if(!t||!a||!s)return;let l=0;const p=window.matchMedia("(hover: hover) and (pointer: fine)"),u=e=>{const n=e.dataset.wechatQr||b;c&&c.src!==new URL(n,window.location.href).href&&(c.src=n),i&&i.src!==new URL(n,window.location.href).href&&(i.src=n)},o=()=>{window.clearTimeout(l),s.classList.add("opacity-0","translate-y-2"),l=window.setTimeout(()=>s.classList.add("hidden"),180)},v=e=>{if(!p.matches||!t.classList.contains("hidden"))return;window.clearTimeout(l),u(e),s.classList.remove("hidden");const n=e.getBoundingClientRect(),L=300,B=250,r=12;let m=n.left+n.width/2-L/2;m=Math.max(r,Math.min(m,window.innerWidth-L-r));let h=n.top-B-12;h<r&&(h=n.bottom+12),s.style.left=`${m}px`,s.style.top=`${h}px`,requestAnimationFrame(()=>s.classList.remove("opacity-0","translate-y-2"))},I=e=>{o(),u(e),t.classList.remove("hidden"),t.classList.add("flex"),t.setAttribute("aria-hidden","false"),document.body.style.overflow="hidden",requestAnimationFrame(()=>{a.classList.remove("scale-95","opacity-0"),a.classList.add("scale-100","opacity-100"),w?.focus()})},d=()=>{a.classList.remove("scale-100","opacity-100"),a.classList.add("scale-95","opacity-0"),window.setTimeout(()=>{t.classList.add("hidden"),t.classList.remove("flex"),t.setAttribute("aria-hidden","true"),document.body.style.overflow=""},260)};document.querySelectorAll(".wechat-trigger").forEach(e=>{e.dataset.wechatInitialized!=="true"&&(e.dataset.wechatInitialized="true",e.addEventListener("mouseenter",()=>v(e)),e.addEventListener("mouseleave",o),e.addEventListener("focus",()=>v(e)),e.addEventListener("blur",o),e.addEventListener("click",n=>{n.preventDefault(),I(e)}))}),t.dataset.wechatInitialized!=="true"&&(t.dataset.wechatInitialized="true",w?.addEventListener("click",d),E?.addEventListener("click",d),y?.addEventListener("click",d),document.addEventListener("keydown",e=>{e.key==="Escape"&&!t.classList.contains("hidden")&&d()}),window.addEventListener("scroll",o,{passive:!0}),window.addEventListener("resize",o))}f();document.addEventListener("astro:page-load",f);</script> <script>
+      const showLanguageSwitchNotice = () => {
+        let payload = null;
+        try {
+          const raw = sessionStorage.getItem('xbstack_language_notice');
+          if (!raw) return;
+          payload = JSON.parse(raw);
+          sessionStorage.removeItem('xbstack_language_notice');
+        } catch (error) {
+          return;
+        }
+
+        const notice = document.getElementById('language-switch-notice');
+        if (!notice) return;
+
+        const targetIsEnglish = String(payload?.language || '').toLowerCase().startsWith('en');
+        notice.textContent = targetIsEnglish
+          ? 'This page does not have an English version yet. You have been taken to the English home page.'
+          : '当前页面暂未提供中文版本，已为你打开中文首页。';
+        notice.classList.remove('hidden');
+        window.setTimeout(() => notice.classList.add('hidden'), 4800);
+      };
+
+      document.addEventListener('astro:page-load', showLanguageSwitchNotice);
+      showLanguageSwitchNotice();
+    </script> </body> </html>
