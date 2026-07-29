@@ -1,0 +1,38 @@
+{
+  "package": "mcp",
+  "version": "2.0.0b2",
+  "top_level_modules": [
+    "cli",
+    "client",
+    "os",
+    "server",
+    "shared"
+  ],
+  "server_modules": [
+    "__main__",
+    "_otel",
+    "_streamable_http_modern",
+    "apps",
+    "auth",
+    "caching",
+    "connection",
+    "context",
+    "elicitation",
+    "extension",
+    "lowlevel",
+    "mcpserver",
+    "models",
+    "request_state",
+    "runner",
+    "session",
+    "sse",
+    "stdio",
+    "streamable_http",
+    "streamable_http_manager",
+    "subscriptions",
+    "transport_security",
+    "validation"
+  ],
+  "legacy_fastmcp_import_available": false,
+  "note": "Import smoke only; not a conformance or production readiness test."
+}
