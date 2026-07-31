@@ -12,6 +12,19 @@
 /assets/*
   Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
 
+# Search indexes: versioned by deploy, cached at the edge and revalidated in browsers
+/search-index.json
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800
+
+/search-index-zh.json
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800
+
+/search-index-en.json
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800
+
 # XML Sitemaps: Fresh but with correct content type
 /*.xml
   Content-Type: application/xml; charset=utf-8
