@@ -1,6 +1,6 @@
 {
   "experiment": "mcp-2026-07-28-stateless-migration-demo",
-  "generated_at": "2026-07-29T05:29:07Z",
+  "generated_at": "2026-08-05T02:26:57Z",
   "environment": {
     "python": "3.10.2",
     "platform": "macOS-26.5.2-arm64-arm-64bit",
@@ -31,7 +31,7 @@
       "details": {
         "initialize_status": 200,
         "call_status": 200,
-        "session_id": "session_legacy-a_1a7e8354",
+        "session_id": "session_legacy-a_fd4c5143",
         "served_by": "legacy-a"
       }
     },
@@ -43,12 +43,12 @@
         "initialize_replica": "legacy-a",
         "call_status": 400,
         "call_replica": "legacy-b",
-        "session_id": "session_legacy-a_386f0067",
+        "session_id": "session_legacy-a_5f45860d",
         "error": {
           "code": -32001,
           "data": {
             "replica": "legacy-b",
-            "session_id": "session_legacy-a_386f0067"
+            "session_id": "session_legacy-a_5f45860d"
           },
           "message": "Unknown MCP session"
         }
@@ -70,9 +70,9 @@
       "details": {
         "create_replica": "draft-a",
         "add_replica": "draft-b",
-        "basket_id": "basket_4e0b623525c2",
+        "basket_id": "basket_3f8840deb208",
         "final_state": {
-          "basket_id": "basket_4e0b623525c2",
+          "basket_id": "basket_3f8840deb208",
           "items": [
             "mcp-book"
           ],
@@ -89,7 +89,7 @@
         "stale_error": {
           "code": -32602,
           "data": {
-            "basket_id": "basket_4e0b623525c2",
+            "basket_id": "basket_3f8840deb208",
             "served_by": "draft-b"
           },
           "message": "Invalid or expired application handle"
@@ -142,19 +142,19 @@
   ],
   "route_history": {
     "legacy_proxy": [
-      "127.0.0.1:53677",
-      "127.0.0.1:53678"
+      "127.0.0.1:57520",
+      "127.0.0.1:57521"
     ],
     "draft_proxy": [
-      "127.0.0.1:53679",
-      "127.0.0.1:53680",
-      "127.0.0.1:53679",
-      "127.0.0.1:53680",
-      "127.0.0.1:53679",
-      "127.0.0.1:53680",
-      "127.0.0.1:53679",
-      "127.0.0.1:53680",
-      "127.0.0.1:53679"
+      "127.0.0.1:57522",
+      "127.0.0.1:57523",
+      "127.0.0.1:57522",
+      "127.0.0.1:57523",
+      "127.0.0.1:57522",
+      "127.0.0.1:57523",
+      "127.0.0.1:57522",
+      "127.0.0.1:57523",
+      "127.0.0.1:57522"
     ]
   },
   "exchanges": [
@@ -164,7 +164,7 @@
       "replica": "legacy-a",
       "method": "initialize",
       "status": 200,
-      "session_id": "session_legacy-a_1a7e8354",
+      "session_id": "session_legacy-a_fd4c5143",
       "note": null
     },
     {
@@ -173,7 +173,7 @@
       "replica": "legacy-a",
       "method": "tools/call",
       "status": 200,
-      "session_id": "session_legacy-a_1a7e8354",
+      "session_id": "session_legacy-a_fd4c5143",
       "note": null
     },
     {
@@ -182,7 +182,7 @@
       "replica": "legacy-a",
       "method": "initialize",
       "status": 200,
-      "session_id": "session_legacy-a_386f0067",
+      "session_id": "session_legacy-a_5f45860d",
       "note": null
     },
     {
@@ -191,7 +191,7 @@
       "replica": "legacy-b",
       "method": "tools/call",
       "status": 400,
-      "session_id": "session_legacy-a_386f0067",
+      "session_id": "session_legacy-a_5f45860d",
       "note": "unknown session on this replica"
     },
     {
@@ -263,7 +263,7 @@
       "replica": "legacy-a",
       "method": "initialize",
       "status": 200,
-      "session_id": "session_legacy-a_5bd3c21c",
+      "session_id": "session_legacy-a_43d2b0b7",
       "note": null
     },
     {
@@ -272,7 +272,7 @@
       "replica": "legacy-a",
       "method": "tools/call",
       "status": 200,
-      "session_id": "session_legacy-a_5bd3c21c",
+      "session_id": "session_legacy-a_43d2b0b7",
       "note": null
     },
     {
@@ -308,5 +308,5 @@
     "total": 6,
     "all_passed": true
   },
-  "sha256": "f5f1d6caf9a2cfb9d70a7c6546a8304585592dab43671b4b58ca9d18b3122be3"
+  "sha256": "c9e9be51d394512dff3cc97438c1a10a68161af4d102cf85226679b34254ae9b"
 }
