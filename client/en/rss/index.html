@@ -1,0 +1,853 @@
+<!DOCTYPE html><html lang="en" class="dark" data-analytics="ga4-baidu"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script>
+      const applyTheme = () => {
+        const theme = localStorage.getItem("theme");
+        const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      };
+      applyTheme();
+      document.addEventListener("astro:page-load", applyTheme);
+    </script><title>XBSTACK RSS Feeds</title><meta name="description" content="RSS entry points for following XBSTACK updates outside algorithmic feeds."><meta http-equiv="content-language" content="en"><meta name="theme-color" content="#050608"><meta name="robots" content="noindex,follow"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="https://www.xbstack.com/en/rss/"><meta property="og:title" content="XBSTACK RSS Feeds"><meta property="og:description" content="RSS entry points for following XBSTACK updates outside algorithmic feeds."><meta property="og:image" content="https://www.xbstack.com/favicon/favicon.svg"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/en/rss/"><meta property="twitter:title" content="XBSTACK RSS Feeds"><meta property="twitter:description" content="RSS entry points for following XBSTACK updates outside algorithmic feeds."><meta property="twitter:image" content="https://www.xbstack.com/favicon/favicon.svg"><link rel="canonical" href="https://www.xbstack.com/en/rss/"><link rel="alternate" hreflang="zh-CN" href="https://www.xbstack.com/rss/"><link rel="alternate" hreflang="en" href="https://www.xbstack.com/en/rss/"><link rel="alternate" hreflang="x-default" href="https://www.xbstack.com/rss/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/en/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Precision Tools","description":"AI finance analyzer, compound calculator, Lunest and practical product tools.","url":"https://www.xbstack.com/en/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Thinking","description":"Investing notes, reading system, decision system and long-term thinking.","url":"https://www.xbstack.com/en/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Photography and Gear","description":"Guizhou outdoor field notes, photography, gear lab and real-life trust assets.","url":"https://www.xbstack.com/en/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"About Xiaobai, the XBSTACK asset system and the slogan 在高处看世界，在底层堆资产.","url":"https://www.xbstack.com/en/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","name":"XBSTACK RSS Feeds","url":"https://www.xbstack.com/en/rss/","description":"RSS entry points for following XBSTACK updates outside algorithmic feeds.","inLanguage":"en"}]}</script><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
+
+          const productionAnalyticsHosts = new Set(['www.xbstack.com', 'xbstack.com']);
+          const automationUserAgent = /HeadlessChrome|PhantomJS|Playwright|Puppeteer|Selenium|Lighthouse|PageSpeed|bot\b|crawler|spider|slurp|curl|wget|python-requests|axios|node-fetch|facebookexternalhit|Twitterbot|LinkedInBot|Bytespider|GPTBot|ClaudeBot|PerplexityBot/i;
+          const analyticsUrl = new URL(window.location.href);
+          const analyticsSource = String(analyticsUrl.searchParams.get('utm_source') || '').toLowerCase();
+          const analyticsCampaign = String(analyticsUrl.searchParams.get('utm_campaign') || '').toLowerCase();
+          const internalAnalyticsAudit =
+            analyticsUrl.searchParams.has('ga4_audit') ||
+            analyticsUrl.searchParams.has('analytics_test') ||
+            ['internal', 'internal_test', 'qa', 'test'].includes(analyticsSource) ||
+            analyticsCampaign.includes('ga4_audit') ||
+            analyticsCampaign.includes('internal_test');
+          const shouldTrackAnalytics =
+            Boolean(googleAnalyticsId) &&
+            productionAnalyticsHosts.has(window.location.hostname.toLowerCase()) &&
+            navigator.webdriver !== true &&
+            !automationUserAgent.test(navigator.userAgent || '') &&
+            !internalAnalyticsAudit;
+
+          if (!shouldTrackAnalytics) {
+            window.__analytics_suppressed = true;
+            window.__analytics_suppression_reason = internalAnalyticsAudit ? 'internal_test' : 'environment_or_automation';
+          } else if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_id', 'utm_term', 'utm_content'];
+            const UTM_ALIASES = {
+              utmsource: 'utm_source',
+              utmmedium: 'utm_medium',
+              utmcampaign: 'utm_campaign',
+              utmcontent: 'utm_content',
+              utmterm: 'utm_term',
+              utmid: 'utm_id',
+            };
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.normalizeUtmAliases = () => {
+              try {
+                const url = new URL(window.location.href);
+                let changed = false;
+                Object.entries(UTM_ALIASES).forEach(([alias, canonical]) => {
+                  const aliasValue = url.searchParams.get(alias);
+                  if (aliasValue && !url.searchParams.get(canonical)) {
+                    url.searchParams.set(canonical, aliasValue);
+                    changed = true;
+                  }
+                  if (url.searchParams.has(alias)) {
+                    url.searchParams.delete(alias);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.normalizeUtmAliases();
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
+            window.__ga4_initialized = true;
+            window.__ga4_client_loaded = false;
+            window.__ga4_tracking_started = false;
+            window.__ga4_human_verified = false;
+            window.__ga4_session_class = '';
+            window.__lastGA4PageKey = "";
+            window.__lastGA4PageLocation = document.referrer || "";
+            window.__ga4_tracking_start_reason = '';
+            window.__scroll50Reported = false;
+            window.__scroll90Reported = false;
+
+            const getReferrerHost = () => {
+              try {
+                return document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+              } catch (err) {
+                return '';
+              }
+            };
+
+            const inferSourceHint = () => {
+              const refHost = getReferrerHost();
+              if (!refHost) return '';
+              if (refHost.includes('zhihu')) return 'zhihu_referrer';
+              if (refHost.includes('juejin')) return 'juejin_referrer';
+              if (refHost.includes('csdn')) return 'csdn_referrer';
+              if (refHost.includes('weixin') || refHost.includes('wechat')) return 'wechat_referrer';
+              if (refHost.includes('google')) return 'google_referrer';
+              if (refHost.includes('baidu')) return 'baidu_referrer';
+              return refHost;
+            };
+
+            const getAttributionPayload = () => {
+              const params = new URLSearchParams(window.location.search);
+              const current = {};
+              UTM_KEYS.forEach((key) => {
+                const value = params.get(key);
+                if (value) current[key] = value;
+              });
+
+              const referrerHost = getReferrerHost();
+              const currentHost = window.location.hostname.replace(/^www\./, '');
+              const sourceHint = inferSourceHint();
+              const hasExternalReferrer = Boolean(referrerHost && referrerHost !== currentHost);
+
+              let stored = {};
+              try {
+                stored = JSON.parse(sessionStorage.getItem('xbstack_attribution') || '{}');
+              } catch (err) {
+                stored = {};
+              }
+
+              if (Object.keys(current).length) {
+                stored = {
+                  ...stored,
+                  ...current,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: current.utm_source ? `utm:${current.utm_source}` : sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              } else if (hasExternalReferrer && !stored.captured_at) {
+                // Preserve first-touch referral attribution even when the platform strips UTM parameters.
+                stored = {
+                  ...stored,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              }
+
+              if (stored.captured_at) {
+                try {
+                  sessionStorage.setItem('xbstack_attribution', JSON.stringify(stored));
+                } catch (err) {}
+              }
+
+              return {
+                utm_source: stored.utm_source || '',
+                utm_medium: stored.utm_medium || '',
+                utm_campaign: stored.utm_campaign || '',
+                utm_id: stored.utm_id || '',
+                utm_term: stored.utm_term || '',
+                utm_content: stored.utm_content || '',
+                attribution_landing_page: stored.landing_page || '',
+                referrer_host: stored.referrer_host || referrerHost,
+                source_hint: stored.source_hint || (stored.utm_source ? `utm:${stored.utm_source}` : sourceHint),
+              };
+            };
+
+            const getAnalyticsPageContext = () => {
+              const url = new URL(window.location.href);
+              const isCompoundCalculator = [
+                '/tools/compound-calculator/',
+                '/en/tools/compound-calculator/',
+              ].includes(url.pathname);
+
+              if (isCompoundCalculator) {
+                ['scenario', 'principal', 'monthly', 'rate', 'years', 'volatility', 'inflation', 'm2_drag', 'target', 'compare_rate'].forEach((key) => {
+                  url.searchParams.delete(key);
+                });
+              }
+
+              return {
+                pagePath: url.pathname,
+                pageLocation: url.href,
+                pageSearch: url.search,
+              };
+            };
+
+            window.xbTrackEvent = (eventName, payload = {}) => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !eventName ||
+                !window.__ga4_tracking_started ||
+                !window.__ga4_human_verified
+              ) return;
+              const analyticsPage = getAnalyticsPageContext();
+              window.gtag('event', eventName, {
+                transport_type: 'beacon',
+                page_path: analyticsPage.pagePath,
+                page_title: document.title || '',
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+                ...payload,
+              });
+            };
+
+            window.sendGA4PageView = () => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !window.__ga4_tracking_started
+              ) return;
+
+              const analyticsPage = getAnalyticsPageContext();
+              const pageLocation = analyticsPage.pageLocation;
+              const pageTitle = document.title || '';
+              const pageKey = `${pageLocation}|${pageTitle}`;
+
+              if (pageKey === window.__lastGA4PageKey) return;
+              const pageReferrer = window.__lastGA4PageLocation;
+              window.__lastGA4PageKey = pageKey;
+              window.__lastGA4PageLocation = pageLocation;
+              window.__scroll50Reported = false;
+              window.__scroll90Reported = false;
+
+              window.gtag('event', 'page_view', {
+                page_title: pageTitle,
+                page_location: pageLocation,
+                page_path: analyticsPage.pagePath,
+                page_search: analyticsPage.pageSearch,
+                page_referrer: pageReferrer,
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+              });
+            };
+
+            window.initGA4Tracking = () => {
+              if (typeof window.gtag !== 'function') return;
+              if (window.__ga4_events_bound) return;
+              window.__ga4_events_bound = true;
+
+              // 1. 页面滚动深度上报
+              const handleScroll = (event) => {
+                if (!event?.isTrusted || !window.__ga4_human_verified) return;
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const progress = (scrollTop / scrollHeight) * 100;
+
+                if (progress >= 50 && !window.__scroll50Reported) {
+                  window.xbTrackEvent('scroll_50', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll50Reported = true;
+                }
+                if (progress >= 90 && !window.__scroll90Reported) {
+                  window.xbTrackEvent('scroll_90', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll90Reported = true;
+                }
+              };
+
+              window.addEventListener('scroll', handleScroll, { passive: true });
+
+              // 2. 完整链接与按钮点击上报。link_click 是统一事实表，旧事件继续保留用于历史对比。
+              const inferLinkArea = (target) => {
+                const explicitArea = target.closest('[data-analytics-area]')?.getAttribute('data-analytics-area');
+                if (explicitArea) return explicitArea.slice(0, 60);
+                if (target.closest('header, nav, [role="navigation"]')) return 'navigation';
+                if (target.closest('footer')) return 'footer';
+                if (target.closest('[class*="related"], [class*="recommend"], [class*="next-reading"]')) return 'related_content';
+                if (target.closest('[class*="sidebar"], aside')) return 'sidebar';
+                if (target.closest('.markdown-content, article')) return 'article_body';
+                if (target.closest('[class*="card"], [class*="grid"]')) return 'content_card';
+                return 'page_other';
+              };
+
+              const classifyLink = (target, url, linkArea) => {
+                const rawHref = String(target.getAttribute('href') || '');
+                const protocol = String(url.protocol || '').toLowerCase();
+                const path = String(url.pathname || '/');
+                const host = String(url.hostname || '').replace(/^www\./, '').toLowerCase();
+                const isHttp = protocol === 'http:' || protocol === 'https:';
+                const isExternal = isHttp && url.origin !== window.location.origin;
+                const isDownload =
+                  target.hasAttribute('download') ||
+                  /\.(pdf|zip|gz|tar|csv|xlsx?|docx?|pptx?|json|ya?ml|mp3|mp4|mov|webm)(?:$|[?#])/i.test(rawHref);
+
+                if (protocol === 'mailto:' || protocol === 'tel:') return 'contact';
+                if (isDownload) return 'download';
+                if (isExternal && host === 'github.com') return 'github';
+                if (isExternal) return 'external';
+                if (path.startsWith('/go/')) return 'affiliate';
+                if (path.startsWith('/tools/') || path.startsWith('/compound-interest/')) return 'tool';
+                if (path.startsWith('/newsletter/')) return 'newsletter';
+                if (url.origin === window.location.origin && path === window.location.pathname && url.hash) return 'anchor';
+                if (linkArea === 'related_content') return 'related_article';
+                if (linkArea === 'article_body') return 'internal_article';
+                return 'internal';
+              };
+
+              const handleClick = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const target = e.target.closest('a,button');
+                if (!target) return;
+
+                const label = (target.getAttribute('aria-label') || target.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 100);
+                if (target.tagName === 'BUTTON') {
+                  window.xbTrackEvent('click_button', {
+                    event_category: 'engagement',
+                    event_label: label,
+                    link_area: inferLinkArea(target),
+                    link_position: inferLinkArea(target),
+                    source_page_path: window.location.pathname,
+                  });
+                  return;
+                }
+
+                const rawHref = String(target.getAttribute('href') || '').trim();
+                if (!rawHref || rawHref.toLowerCase().startsWith('javascript:')) return;
+
+                try {
+                  const url = new URL(rawHref, window.location.href);
+                  const linkArea = inferLinkArea(target);
+                  const linkType = classifyLink(target, url, linkArea);
+                  const isExternalHttp =
+                    (url.protocol === 'http:' || url.protocol === 'https:') &&
+                    url.origin !== window.location.origin;
+                  const payload = {
+                    event_category:
+                      ['affiliate', 'tool', 'newsletter'].includes(linkType)
+                        ? 'conversion'
+                        : isExternalHttp
+                          ? 'outbound'
+                          : 'navigation',
+                    event_label: url.href,
+                    link_text: label,
+                    link_url: url.href,
+                    link_domain: url.hostname.replace(/^www\./, ''),
+                    link_id: target.id || '',
+                    link_classes: String(target.className || '').slice(0, 120),
+                    outbound: isExternalHttp,
+                    link_type: linkType,
+                    link_area: linkArea,
+                    link_position: linkArea,
+                    source_page_path: window.location.pathname,
+                    target_page_path: url.pathname || '',
+                  };
+
+                  // 所有真实链接统一进入 link_click，运营报表以该事件为准。
+                  window.xbTrackEvent('link_click', payload);
+
+                  if (linkType === 'external' || linkType === 'github') {
+                    window.xbTrackEvent('click_external', payload);
+                  }
+                  if (linkType === 'github') {
+                    window.xbTrackEvent('github_click', payload);
+                  }
+                  if (linkType === 'download') {
+                    window.xbTrackEvent('download_click', payload);
+                  }
+                  if (linkType === 'affiliate') {
+                    window.xbTrackEvent('affiliate_click', {
+                      ...payload,
+                      affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                    });
+                  }
+                  if (linkType === 'tool') {
+                    window.xbTrackEvent('click_tool', payload);
+                  }
+                  if (linkType === 'newsletter') {
+                    window.xbTrackEvent('newsletter_click', payload);
+                  }
+                  if (linkType === 'related_article') {
+                    window.xbTrackEvent('related_article_click', payload);
+                  }
+                  if (['internal', 'internal_article', 'related_article', 'anchor'].includes(linkType)) {
+                    window.xbTrackEvent('internal_link_click', payload);
+                  }
+                  if (
+                    !isExternalHttp &&
+                    ['/ai/', '/newsletter/', '/search/', '/life/', '/investing/'].some((prefix) => url.pathname.startsWith(prefix))
+                  ) {
+                    window.xbTrackEvent('click_internal_entry', payload);
+                  }
+                } catch (err) {}
+              };
+
+              const handleSubmit = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const form = e.target;
+                if (!form || form.tagName !== 'FORM') return;
+                const action = form.getAttribute('action') || '';
+                const formType = form.getAttribute('data-analytics-form') || '';
+                const formData = new FormData(form);
+                const searchTerm = String(formData.get('q') || '').trim();
+
+                if (action.includes('/search') || formType === 'site-search') {
+                  window.xbTrackEvent('view_search_results', {
+                    event_category: 'site_search',
+                    search_term: searchTerm,
+                  });
+                }
+
+                if (action.includes('buttondown.email') || formType === 'newsletter') {
+                  const provider = action.includes('buttondown.email') ? 'buttondown' : 'xbstack_api';
+                  window.xbTrackEvent('newsletter_subscribe_attempt', {
+                    event_category: 'conversion',
+                    event_label: window.location.pathname,
+                    newsletter_provider: provider,
+                  });
+                  window.xbTrackEvent('newsletter_subscribe', {
+                    event_category: 'conversion',
+                    event_label: 'submitted',
+                    newsletter_provider: provider,
+                    confirmation_status: 'submitted',
+                  });
+                }
+              };
+
+              document.addEventListener('click', handleClick);
+              document.addEventListener('submit', handleSubmit, true);
+            };
+
+            // 原始访问先进入 GA4，再通过 traffic_verification 区分未验证访问与真人互动。
+            // 这样既保留完整 page_view / session_start 基线，也能在报表层排除低质量流量。
+            window.loadGA4Client = () => {
+              if (window.__ga4_client_loaded) return;
+              window.__ga4_client_loaded = true;
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = function() {
+                window.dataLayer.push(arguments);
+              };
+
+              const ga4Script = document.createElement('script');
+              ga4Script.async = true;
+              ga4Script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(googleAnalyticsId)}`;
+              document.head.appendChild(ga4Script);
+
+              window.gtag('js', new Date());
+              window.gtag('config', googleAnalyticsId, {
+                send_page_view: false,
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+              });
+            };
+
+            window.startGA4Tracking = (
+              reason = 'page_load',
+              sessionClass = 'unverified_session',
+              humanVerified = false,
+            ) => {
+              if (window.__ga4_tracking_started) {
+                if (humanVerified && !window.__ga4_human_verified) {
+                  window.verifyGA4Human(reason, sessionClass);
+                }
+                return;
+              }
+              window.__ga4_tracking_start_reason = String(reason || 'page_load').slice(0, 60);
+              window.__ga4_session_class = String(sessionClass || 'unverified_session').slice(0, 40);
+              window.__ga4_human_verified = Boolean(humanVerified);
+              window.__ga4_tracking_started = true;
+              window.loadGA4Client();
+              window.sendGA4PageView();
+              window.initGA4Tracking();
+            };
+
+            window.verifyGA4Human = (reason = 'interaction', sessionClass = 'human_interaction') => {
+              if (!window.__ga4_tracking_started) {
+                window.startGA4Tracking(reason, sessionClass, true);
+                return;
+              }
+              if (window.__ga4_human_verified) return;
+
+              const previousClass = window.__ga4_session_class || 'unverified_session';
+              window.__ga4_human_verified = true;
+              window.__ga4_session_class = String(sessionClass || 'human_interaction').slice(0, 40);
+              window.__ga4_tracking_start_reason = String(reason || 'interaction').slice(0, 60);
+              window.gtag('event', 'traffic_verified', {
+                transport_type: 'beacon',
+                traffic_verification: window.__ga4_session_class,
+                previous_traffic_verification: previousClass,
+                verification_reason: window.__ga4_tracking_start_reason,
+                page_path: window.location.pathname,
+                page_title: document.title || '',
+              });
+            };
+
+            ['pointerdown', 'keydown', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(
+                eventName,
+                (event) => {
+                  if (!event?.isTrusted) return;
+                  window.verifyGA4Human(`interaction:${eventName}`, 'human_interaction');
+                },
+                { once: true, passive: true },
+              );
+            });
+
+            let pointerMoveCount = 0;
+            let pointerMoveDistance = 0;
+            let lastPointerX = null;
+            let lastPointerY = null;
+            const handleHumanPointerMove = (event) => {
+              if (
+                window.__ga4_human_verified ||
+                !event?.isTrusted ||
+                event.pointerType === 'touch'
+              ) return;
+              if (lastPointerX !== null && lastPointerY !== null) {
+                pointerMoveDistance += Math.hypot(event.clientX - lastPointerX, event.clientY - lastPointerY);
+              }
+              lastPointerX = event.clientX;
+              lastPointerY = event.clientY;
+              pointerMoveCount += 1;
+              if (pointerMoveCount >= 3 && pointerMoveDistance >= 120) {
+                window.removeEventListener('pointermove', handleHumanPointerMove);
+                window.verifyGA4Human('interaction:pointermove', 'human_interaction');
+              }
+            };
+            window.addEventListener('pointermove', handleHumanPointerMove, { passive: true });
+
+            // 放宽采集：所有可见前台页面都记录原始访问；真人互动后再升级质量标签。
+            window.setTimeout(() => {
+              if (
+                window.__ga4_tracking_started ||
+                document.visibilityState !== 'visible'
+              ) return;
+              window.startGA4Tracking('page_load:visible_800ms', 'unverified_session', false);
+            }, 800);
+
+            document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+              if (window.__ga4_tracking_started) {
+                window.sendGA4PageView();
+                window.initGA4Tracking();
+              }
+            });
+          } else {
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+            if (window.__ga4_tracking_started && typeof window.sendGA4PageView === 'function') {
+              window.sendGA4PageView();
+            }
+          }
+        })();</script><script data-baidu-id="c7bfaf645bfc8974405a85c2a55573a0">
+          const baiduId = document.currentScript?.dataset.baiduId || '';
+          if (!window.__baidu_analytics_initialized) {
+            window._hmt = window._hmt || [];
+            window.__baidu_analytics_initialized = true;
+            window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+
+            const loadBaiduAnalytics = () => {
+              if (window.__baidu_script_loaded || !baiduId) return;
+              window.__baidu_script_loaded = true;
+              const hm = document.createElement('script');
+              hm.async = true;
+              hm.src = "https://hm.baidu.com/hm.js?" + baiduId;
+              document.head.appendChild(hm);
+              window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+            };
+
+            // 百度统计不是首屏渲染依赖：首次交互时加载，若用户未交互则 12 秒后加载。
+            ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(eventName, loadBaiduAnalytics, { once: true, passive: true });
+            });
+            window.setTimeout(loadBaiduAnalytics, 12000);
+
+            document.addEventListener('astro:page-load', () => {
+              const pageKey = window.location.pathname + window.location.search;
+              if (!window.__baidu_script_loaded || pageKey === window.__lastBaiduPageKey) return;
+              window.__lastBaiduPageKey = pageKey;
+              window._hmt.push(['_trackPageview', pageKey]);
+            });
+          }
+        </script><link rel="stylesheet" href="/_astro/archive.D8ouFLAS.css">
+<style>.language-switcher-summary[data-astro-cid-iemtoba4]::-webkit-details-marker{display:none}.language-switcher-details[data-astro-cid-iemtoba4][open] .language-switcher-summary[data-astro-cid-iemtoba4]{border-color:#93c5fde6;background:#eff6ffe6;color:#2563eb}.language-switcher-details[data-astro-cid-iemtoba4][open] .language-chevron[data-astro-cid-iemtoba4]{transform:rotate(180deg)}.dark .language-switcher-details[data-astro-cid-iemtoba4][open] .language-switcher-summary[data-astro-cid-iemtoba4]{border-color:#60a5fa80;background:#3b82f61a;color:#60a5fa}.header-main-bg{background-color:#ffffffb3;backdrop-filter:blur(25px) saturate(180%)}.dark .header-main-bg{background-color:#0b1020cc}.submenu-list{background-color:#fff!important;backdrop-filter:blur(30px);box-shadow:0 25px 50px -12px #0000001a}.submenu-list a{color:#475569!important}.submenu-list a:hover{color:#2563eb!important;background-color:#2563eb0d}.dark .submenu-list{background-color:#0b1020!important;border:1px solid rgba(255,255,255,.1)}.dark .submenu-list a{color:#94a3b8!important}.dark .submenu-list a:hover{color:#60a5fa!important;background-color:#60a5fa0d}
+</style>
+<link rel="stylesheet" href="/_astro/vendor-media.DSulWsr7.css">
+<style>.glass-button[data-astro-cid-xwnkcw7l]{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:var(--sizeGap);padding:var(--sizePadding);background:var(--variantBase);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--variantBorder);border-radius:var(--sizeBorderRadius);font-size:var(--sizeFontSize);font-weight:500;color:var(--variantColor);cursor:pointer;transition:all .3s cubic-bezier(.175,.885,.32,2.2);box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d;-webkit-user-select:none;-moz-user-select:none;user-select:none;overflow:hidden;text-decoration:none;white-space:nowrap}.glass-button[data-astro-cid-xwnkcw7l]:before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,var(--variantGradient),transparent);transition:left .6s cubic-bezier(.25,.46,.45,.94);pointer-events:none;opacity:0}.glass-button[data-astro-cid-xwnkcw7l]:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);transform:translateY(-4px) scale(1.03);box-shadow:0 20px 25px -5px var(--variantShadow),0 15px 15px -5px #0000004d,inset 1px 1px 4px #ffffff80;filter:brightness(1.2) saturate(1.3)}.glass-button[data-astro-cid-xwnkcw7l]:hover:before{left:100%;opacity:1}.glass-button[data-astro-cid-xwnkcw7l]:active{transform:translateY(-1px) scale(.98);box-shadow:0 2px 6px var(--variantShadow)}.glass-button[data-astro-cid-xwnkcw7l]:disabled{cursor:not-allowed;opacity:.6;transform:none;pointer-events:none}.glass-button[data-astro-cid-xwnkcw7l]:disabled:hover{transform:none;box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d}.glass-button__icon[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;justify-content:center;width:var(--sizeIconSize);height:var(--sizeIconSize);transition:all .3s cubic-bezier(.175,.885,.32,2.2)}.glass-button__icon[data-astro-cid-xwnkcw7l] svg{width:100%;height:100%}.glass-button[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{transform:scale(1.2) rotate(-5deg);filter:drop-shadow(0 0 4px var(--variantShadow))}.glass-button__content[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;transition:all .3s ease}.glass-button__spinner[data-astro-cid-xwnkcw7l]{width:var(--sizeIconSize);height:var(--sizeIconSize);animation:spin 1s linear infinite}.dark[data-astro-cid-xwnkcw7l]{.glass-button{background:#37373799;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-color:#ffffff26;color:#e5e7eb;box-shadow:0 4px 8px #0006,inset 1px 1px 3px #ffffff26}.glass-button:before{background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}.glass-button:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);box-shadow:0 6px 14px var(--variantShadow),inset 1px 1px 4px #fff3;filter:brightness(1.2) saturate(1.3)}}@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.glass-button--primary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--secondary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(37,99,235,.5))}.glass-button--success[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(22,163,74,.5))}.glass-button--warning[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(217,119,6,.5))}.glass-button--danger[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--info[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(99,102,241,.5))}
+.aqua-pill[data-astro-cid-hs6yaznx]{background:#0ea5e91a;backdrop-filter:blur(8px)}
+</style></head> <body class="bg-white dark:bg-[#050608] text-slate-950 dark:text-white selection:bg-orange-500/20 selection:text-orange-500 overflow-x-hidden"> <style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value=="object"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};"requestIdleCallback"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event("astro:idle"));})();</script><script>(()=>{var A=Object.defineProperty;var g=(i,o,a)=>o in i?A(i,o,{enumerable:!0,configurable:!0,writable:!0,value:a}):i[o]=a;var d=(i,o,a)=>g(i,typeof o!="symbol"?o+"":o,a);{let i={0:t=>m(t),1:t=>a(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(a(t)),5:t=>new Set(a(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t),11:t=>1/0*t},o=t=>{let[l,e]=t;return l in i?i[l](e):void 0},a=t=>t.map(o),m=t=>typeof t!="object"||t===null?t:Object.fromEntries(Object.entries(t).map(([l,e])=>[l,o(e)]));class y extends HTMLElement{constructor(){super(...arguments);d(this,"Component");d(this,"hydrator");d(this,"hydrate",async()=>{var b;if(!this.hydrator||!this.isConnected)return;let e=(b=this.parentElement)==null?void 0:b.closest("astro-island[ssr]");if(e){e.addEventListener("astro:hydrate",this.hydrate,{once:!0});return}let c=this.querySelectorAll("astro-slot"),n={},h=this.querySelectorAll("template[data-astro-template]");for(let r of h){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("data-astro-template")||"default"]=r.innerHTML,r.remove())}for(let r of c){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("name")||"default"]=r.innerHTML)}let p;try{p=this.hasAttribute("props")?m(JSON.parse(this.getAttribute("props"))):{}}catch(r){let s=this.getAttribute("component-url")||"<unknown>",v=this.getAttribute("component-export");throw v&&(s+=` (export ${v})`),console.error(`[hydrate] Error parsing props for component ${s}`,this.getAttribute("props"),r),r}let u;await this.hydrator(this)(this.Component,p,n,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),this.dispatchEvent(new CustomEvent("astro:hydrate"))});d(this,"unmount",()=>{this.isConnected||this.dispatchEvent(new CustomEvent("astro:unmount"))})}disconnectedCallback(){document.removeEventListener("astro:after-swap",this.unmount),document.addEventListener("astro:after-swap",this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute("await-children")||document.readyState==="interactive"||document.readyState==="complete")this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener("DOMContentLoaded",e),c.disconnect(),this.childrenConnectedCallback()},c=new MutationObserver(()=>{var n;((n=this.lastChild)==null?void 0:n.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue==="astro:end"&&(this.lastChild.remove(),e())});c.observe(this,{childList:!0}),document.addEventListener("DOMContentLoaded",e)}}async childrenConnectedCallback(){let e=this.getAttribute("before-hydration-url");e&&await import(e),this.start()}async start(){let e=JSON.parse(this.getAttribute("opts")),c=this.getAttribute("client");if(Astro[c]===void 0){window.addEventListener(`astro:${c}`,()=>this.start(),{once:!0});return}try{await Astro[c](async()=>{let n=this.getAttribute("renderer-url"),[h,{default:p}]=await Promise.all([import(this.getAttribute("component-url")),n?import(n):()=>()=>{}]),u=this.getAttribute("component-export")||"default";if(!u.includes("."))this.Component=h[u];else{this.Component=h;for(let f of u.split("."))this.Component=this.Component[f]}return this.hydrator=p,this.hydrate},e,this)}catch(n){console.error(`[astro-island] Error hydrating ${this.getAttribute("component-url")}`,n)}}attributeChangedCallback(){this.hydrate()}}d(y,"observedAttributes",["props"]),customElements.get("astro-island")||customElements.define("astro-island",y)}})();</script><astro-island uid="ZWjsVO" prefix="r23" component-url="/_astro/GlobalLightbox.CqZePd56.js" component-export="default" renderer-url="/_astro/client.DPSb9UvF.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;GlobalLightbox&quot;,&quot;value&quot;:true}"></astro-island> <astro-island uid="2nwVdo" prefix="r24" component-url="/_astro/AffiliatePopup.Ccod29r7.js" component-export="default" renderer-url="/_astro/client.DPSb9UvF.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;AffiliatePopup&quot;,&quot;value&quot;:true}"></astro-island> <astro-island uid="Z1FWnUA" prefix="r25" component-url="/_astro/SearchBoot.DU5UFvRd.js" component-export="default" renderer-url="/_astro/client.DPSb9UvF.js" props="{&quot;lang&quot;:[0,&quot;en&quot;]}" ssr client="idle" opts="{&quot;name&quot;:&quot;SearchBoot&quot;,&quot;value&quot;:true}"></astro-island> <div id="app-background" class="fixed inset-0 z-[-1] h-full w-full pointer-events-none bg-slate-50 dark:bg-slate-950 transition-colors duration-500"> <div id="app-background-image" class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-500" data-day="/_astro/macos2.hYF-Pyun.webp" data-night="/_astro/macos2-night.DwJ7amhx.webp" aria-hidden="true"></div> <div class="absolute inset-0 bg-[#DFE1E6]/90 dark:bg-transparent backdrop-blur-[6px] pointer-events-none"></div> <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b82f611,transparent_50%)] dark:hidden pointer-events-none"></div> <div class="absolute inset-0 opacity-[0.08] dark:opacity-[0.03] pointer-events-none mix-blend-multiply" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+');"></div> </div> <script>
+  (() => {
+    const bindBackground = () => {
+      const root = document.documentElement;
+      const background = document.getElementById('app-background-image');
+      if (!background || background.dataset.themeObserverBound === 'true') return;
+
+      const applyBackground = () => {
+        const source = root.classList.contains('dark') ? background.dataset.night : background.dataset.day;
+        if (!source) return;
+        const nextValue = `url("${source}")`;
+        if (background.style.backgroundImage !== nextValue) {
+          background.style.backgroundImage = nextValue;
+        }
+      };
+
+      applyBackground();
+      const observer = new MutationObserver(applyBackground);
+      observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+      background.dataset.themeObserverBound = 'true';
+    };
+
+    bindBackground();
+    document.addEventListener('astro:page-load', bindBackground);
+  })();
+</script> <header class="w-full z-[500] sticky top-0"> <div class="container px-3 lg:px-8 max-w-[1440px] mx-auto py-4 md:py-6"> <div class="header-main relative group transition-all duration-500"> <div class="absolute inset-0 rounded-[35px] header-main-bg shadow-sm dark:shadow-[0_8px_50px_rgba(0,0,0,0.5)] border border-slate-200/50 dark:border-white/10"></div> <nav class="relative z-10 p-2 flex items-center min-h-[64px]"> <!-- Logo (旋转 & 呼吸灯) --> <div class="ml-4 flex-shrink-0"> <a href="/en/" class="flex items-center group/logo"> <div class="relative flex-none isolate w-10 h-10"> <img src="/favicon/favicon.svg" alt="XBSTACK" width="40" height="40" decoding="async" class="relative z-10 object-contain w-full h-full group-hover/logo:rotate-[360deg] transition-all duration-700"> <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-slate-900 z-20 animate-pulse"></div> </div> <div class="flex flex-col ml-3 text-left"> <span class="text-xl font-black italic tracking-tighter bg-gradient-to-r from-slate-900 via-sky-800 to-slate-900 dark:from-white dark:via-sky-400 dark:to-white bg-clip-text text-transparent uppercase font-brand leading-none">XBSTACK</span> <span class="text-[8px] font-mono font-bold text-green-500/70 uppercase tracking-widest leading-none mt-1">System Status: Online</span> </div> </a> </div> <!-- 桌面端导航 (新 IA 架构) --> <ul class="hidden xl:flex items-center gap-1 ml-10"> <li class="relative group/item"> <a href="/en/ai/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> AI <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="group-hover/item:rotate-180 transition-transform duration-300 opacity-30" height="8" width="8" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a> <div class="submenu-container absolute top-full left-1/2 -translate-x-1/2 pt-4 invisible opacity-0 translate-y-4 group-hover/item:visible group-hover/item:opacity-100 group-hover/item:translate-y-0 transition-all duration-500 z-[300]"> <ul class="submenu-list flex flex-col gap-1 p-2 rounded-[24px] border border-slate-200 dark:border-white/10 backdrop-blur-xl w-max min-w-[200px] shadow-2xl bg-white/90 dark:bg-[#0B1020]/90"> <li><a href="/en/ai/agent/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Agents</a></li><li><a href="/en/ai/langgraph/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">LangGraph</a></li><li><a href="/en/ai/mcp/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">MCP</a></li><li><a href="/en/ai/workflow/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Workflow</a></li> </ul> </div> </li><li class="relative group/item"> <a href="/en/tools/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Tools <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="group-hover/item:rotate-180 transition-transform duration-300 opacity-30" height="8" width="8" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a> <div class="submenu-container absolute top-full left-1/2 -translate-x-1/2 pt-4 invisible opacity-0 translate-y-4 group-hover/item:visible group-hover/item:opacity-100 group-hover/item:translate-y-0 transition-all duration-500 z-[300]"> <ul class="submenu-list flex flex-col gap-1 p-2 rounded-[24px] border border-slate-200 dark:border-white/10 backdrop-blur-xl w-max min-w-[200px] shadow-2xl bg-white/90 dark:bg-[#0B1020]/90"> <li><a href="/en/tools/compound-calculator/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Compound Calculator</a></li><li><a href="/en/tools/ai-finance/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">AI Finance Analyzer</a></li><li><a href="/en/tools/lunest/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Lunest</a></li> </ul> </div> </li><li class="relative group/item"> <a href="/en/horizon/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Horizon <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="group-hover/item:rotate-180 transition-transform duration-300 opacity-30" height="8" width="8" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a> <div class="submenu-container absolute top-full left-1/2 -translate-x-1/2 pt-4 invisible opacity-0 translate-y-4 group-hover/item:visible group-hover/item:opacity-100 group-hover/item:translate-y-0 transition-all duration-500 z-[300]"> <ul class="submenu-list flex flex-col gap-1 p-2 rounded-[24px] border border-slate-200 dark:border-white/10 backdrop-blur-xl w-max min-w-[200px] shadow-2xl bg-white/90 dark:bg-[#0B1020]/90"> <li><a href="/en/investing/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Investing</a></li><li><a href="/en/horizon/reading/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Reading</a></li><li><a href="/en/investing/thoughts/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Thinking</a></li> </ul> </div> </li><li class="relative group/item"> <a href="/en/life/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> Lens <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="group-hover/item:rotate-180 transition-transform duration-300 opacity-30" height="8" width="8" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a> <div class="submenu-container absolute top-full left-1/2 -translate-x-1/2 pt-4 invisible opacity-0 translate-y-4 group-hover/item:visible group-hover/item:opacity-100 group-hover/item:translate-y-0 transition-all duration-500 z-[300]"> <ul class="submenu-list flex flex-col gap-1 p-2 rounded-[24px] border border-slate-200 dark:border-white/10 backdrop-blur-xl w-max min-w-[200px] shadow-2xl bg-white/90 dark:bg-[#0B1020]/90"> <li><a href="/en/life/hiking/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Outdoor</a></li><li><a href="/en/life/photo/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Photography</a></li><li><a href="/en/life/gear/" class="block px-5 py-3 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-500 hover:bg-blue-500/5 transition-all italic">Gear Lab</a></li> </ul> </div> </li><li class="relative group/item"> <a href="/en/about/" class="nav-link px-5 py-2.5 rounded-full font-black text-[12px] tracking-[0.12em] uppercase transition-all duration-500 relative flex items-center gap-2 text-slate-900 dark:text-slate-400 hover:text-blue-500 hover:bg-white/5"> About  </a>  </li> </ul> <!-- 功能区域 (时钟 & 搜索) --> <div class="flex items-center gap-3 ml-auto pr-4 relative z-[110]"> <div class="hidden 2xl:flex items-center gap-4 mr-4 border-r border-slate-200 dark:border-white/10 pr-6 text-right transition-all"> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-slate-400 uppercase">NYC</span><time id="clock-nyc" class="text-[9px] font-mono text-slate-500 font-bold" aria-label="New York time">05:01</time></div> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-slate-400 uppercase">LDN</span><time id="clock-ldn" class="text-[9px] font-mono text-slate-500 font-bold" aria-label="London time">10:01</time></div> <div class="flex flex-col items-end"><span class="text-[7px] font-black text-blue-500 uppercase italic">GY</span><time id="clock-gy" class="text-[9px] font-mono text-slate-900 dark:text-white font-bold" aria-label="Guiyang time">17:01</time></div> </div> <div class="hidden sm:block"> <details class="language-switcher-details relative" data-language-switcher-details data-astro-cid-iemtoba4><summary class="language-switcher-summary flex h-10 min-w-[88px] cursor-pointer list-none items-center justify-center gap-2 rounded-full border border-slate-200/60 bg-white/50 px-3 text-[12px] font-bold text-slate-600 shadow-sm backdrop-blur-md transition-all hover:border-blue-300 hover:bg-blue-50/80 hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-blue-400/50 dark:hover:bg-blue-500/10 dark:hover:text-blue-400 dark:focus-visible:ring-offset-slate-950" aria-label="Select language" title="Select language" data-astro-cid-iemtoba4><svg aria-hidden="true" viewBox="0 0 24 24" class="h-3.5 w-3.5 flex-none" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4><circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle><path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path></svg><span class="whitespace-nowrap" data-astro-cid-iemtoba4>English</span><svg aria-hidden="true" viewBox="0 0 20 20" class="language-chevron h-3 w-3 flex-none text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-iemtoba4><path d="m5 7.5 5 5 5-5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path></svg></summary><div class="language-switcher-menu absolute right-0 top-[calc(100%+0.65rem)] z-[520] w-44 overflow-hidden rounded-2xl border border-slate-200/80 bg-white/95 p-2 shadow-[0_18px_50px_-18px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0B1020]/95" role="menu" aria-label="Select language" data-astro-cid-iemtoba4><div class="px-3 pb-1.5 pt-1 text-[9px] font-black uppercase tracking-[0.22em] text-slate-400 dark:text-slate-500" data-astro-cid-iemtoba4>Language</div><a href="https://www.xbstack.com/rss/" data-language-choice="zh-CN" data-language-current="false" data-language-available="true" role="menuitemradio" aria-checked="false" title="切换到中文版本" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors text-slate-600 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-blue-400" data-astro-cid-iemtoba4><span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4><span class="h-1.5 w-1.5 rounded-full bg-slate-300 dark:bg-slate-700" data-astro-cid-iemtoba4></span></span><span class="flex-1" data-astro-cid-iemtoba4>中文</span><span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>ZH</span></a><a href="https://www.xbstack.com/en/rss/" data-language-choice="en" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" role="menuitemradio" aria-checked="true" title="Current language: English" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors cursor-default bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" data-astro-cid-iemtoba4><span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4><svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" data-astro-cid-iemtoba4><path d="m4.5 10 3.2 3.2 7.8-7.8" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path></svg></span><span class="flex-1" data-astro-cid-iemtoba4>English</span><span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>EN</span></a></div></details><script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> <div class="flex items-center gap-1.5"> <button id="global-search-trigger" type="button" aria-label="Open site search" class="w-10 h-10 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-blue-500 bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 rounded-full transition-all shadow-sm backdrop-blur-md cursor-pointer"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.8 173.8 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.8 173.8 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3M97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8"></path></svg></button> <div class="w-10 h-10 flex items-center justify-center bg-white/50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 rounded-full hover:border-blue-500 transition-all"><div class="relative flex items-center justify-center w-full h-full"> <input class="sr-only" id="theme-switcher" data-theme-switcher type="checkbox"> <label class="flex items-center justify-center cursor-pointer w-full h-full group/theme" for="theme-switcher" aria-label="切换主题">  <svg class="w-5 h-5 transition-all duration-500 scale-100 dark:scale-0 opacity-100 dark:opacity-0 absolute text-orange-500 group-hover/theme:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg>  <svg class="w-5 h-5 transition-all duration-500 scale-0 dark:scale-100 opacity-0 dark:opacity-100 absolute text-sky-400 group-hover/theme:-rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </label> </div> <script>
+  // 立即执行以防止闪烁
+  (function() {
+    const theme = localStorage.getItem("theme");
+    const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  })();
+
+  // 页面加载和切换后的初始化逻辑
+  function initTheme() {
+    const themeSwitchers = document.querySelectorAll("[data-theme-switcher]");
+    const isDark = document.documentElement.classList.contains("dark");
+
+    // 同步所有切换按钮的状态
+    themeSwitchers.forEach((el) => {
+      el.checked = isDark;
+      
+      // 移除旧的监听器（如果存在），防止重复绑定
+      // 由于是匿名函数难以移除，我们采用 cloneNode 或者简单的标志位
+      // Astro 的 View Transitions 会重新运行脚本，所以只需确保不累积
+      // 最简单的方式是直接覆盖 onclick 或 onchange，但这里用 addEventListener
+      // 我们可以给元素加个标记
+      if (el.dataset.initialized) return;
+      
+      el.addEventListener("change", (e) => {
+        const checked = e.target.checked;
+        if (checked) {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        }
+        
+        // 同步其他可能存在的切换按钮（例如移动端和桌面端各有一个）
+        document.querySelectorAll("[data-theme-switcher]").forEach(other => {
+            if (other !== el) other.checked = checked;
+        });
+      });
+      
+      el.dataset.initialized = "true";
+    });
+  }
+
+  // 绑定事件
+  document.addEventListener("DOMContentLoaded", initTheme);
+  document.addEventListener("astro:page-load", initTheme);
+  document.addEventListener("astro:after-swap", initTheme);
+</script></div> </div> </div> <!-- 移动端 Toggle --> <div class="xl:hidden flex items-center ml-2"> <button id="mobile-menu-trigger" type="button" aria-label="Open navigation menu" aria-controls="mobile-menu" aria-expanded="false" class="w-10 h-10 flex items-center justify-center bg-white/20 dark:bg-black/20 rounded-full border border-slate-200/50 dark:border-white/10 text-slate-700 dark:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path></svg> </button> </div> </nav> </div> </div>  <div id="mobile-menu" class="fixed inset-0 z-[600] pointer-events-none invisible"> <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-500"></div> <aside id="mobile-menu-panel" class="absolute top-0 right-0 bottom-0 w-[300px] bg-white dark:bg-[#0B1020] border-l border-slate-200 dark:border-white/10 translate-x-full transition-transform duration-500 flex flex-col"> <div class="h-[72px] flex items-center justify-between px-6 border-b border-slate-100 dark:border-white/5"> <span class="text-xs font-black uppercase tracking-[0.3em] text-blue-500">Systems Menu</span> <button id="mobile-menu-close" type="button" aria-label="Close navigation menu" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg></button> </div> <div class="border-b border-slate-100 px-6 py-4 dark:border-white/5 sm:hidden"> <div class="flex w-full items-center justify-between gap-4" aria-label="Select language" data-astro-cid-iemtoba4><div class="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300" data-astro-cid-iemtoba4><svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4><circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle><path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path></svg><span data-astro-cid-iemtoba4>Language</span></div><div class="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 p-1 dark:border-white/10 dark:bg-white/5" data-astro-cid-iemtoba4><a href="https://www.xbstack.com/rss/" data-language-choice="zh-CN" data-language-current="false" data-language-available="true" title="切换到中文版本" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400" data-astro-cid-iemtoba4>中文</a><a href="https://www.xbstack.com/en/rss/" data-language-choice="en" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="Current language: English" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all cursor-default bg-white text-blue-600 shadow-sm dark:bg-blue-500/15 dark:text-blue-400" data-astro-cid-iemtoba4>English</a></div></div><script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> <nav class="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-1"> <div class="space-y-1"> <a href="/en/ai/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> AI <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="opacity-30" height="10" width="10" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a> <div class="pl-8 flex flex-col gap-1"> <a href="/en/ai/agent/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Agents</a><a href="/en/ai/langgraph/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">LangGraph</a><a href="/en/ai/mcp/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">MCP</a><a href="/en/ai/workflow/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Workflow</a> </div> </div><div class="space-y-1"> <a href="/en/tools/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Tools <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="opacity-30" height="10" width="10" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a> <div class="pl-8 flex flex-col gap-1"> <a href="/en/tools/compound-calculator/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Compound Calculator</a><a href="/en/tools/ai-finance/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">AI Finance Analyzer</a><a href="/en/tools/lunest/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Lunest</a> </div> </div><div class="space-y-1"> <a href="/en/horizon/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Horizon <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="opacity-30" height="10" width="10" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a> <div class="pl-8 flex flex-col gap-1"> <a href="/en/investing/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Investing</a><a href="/en/horizon/reading/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Reading</a><a href="/en/investing/thoughts/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Thinking</a> </div> </div><div class="space-y-1"> <a href="/en/life/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> Lens <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="opacity-30" height="10" width="10" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a> <div class="pl-8 flex flex-col gap-1"> <a href="/en/life/hiking/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Outdoor</a><a href="/en/life/photo/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Photography</a><a href="/en/life/gear/" class="px-6 py-3 rounded-xl text-sm font-bold italic text-slate-500 dark:text-slate-500 hover:text-blue-400 transition-colors uppercase tracking-tight">Gear Lab</a> </div> </div><div class="space-y-1"> <a href="/en/about/" class="px-6 py-4 rounded-2xl text-lg font-black tracking-tight italic uppercase transition-all flex items-center justify-between text-slate-700 dark:text-slate-300 hover:text-blue-500 dark:hover:text-white"> About  </a>  </div> </nav> </aside> </div>  <script>
+    function updateClocks() {
+      const now = new Date();
+      const format = (tz) => now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: tz });
+      if (document.getElementById('clock-nyc')) document.getElementById('clock-nyc').innerText = format('America/New_York');
+      if (document.getElementById('clock-ldn')) document.getElementById('clock-ldn').innerText = format('Europe/London');
+      if (document.getElementById('clock-gy')) document.getElementById('clock-gy').innerText = format('Asia/Shanghai');
+    }
+    document.addEventListener('astro:page-load', () => { 
+      updateClocks(); 
+      setInterval(updateClocks, 60000);
+      const searchTrigger = document.getElementById('global-search-trigger');
+      if (searchTrigger) {
+        searchTrigger.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.dispatchEvent(new CustomEvent('xbstack:open-search'));
+        });
+      }
+      // Mobile Logic
+      const trigger = document.getElementById('mobile-menu-trigger');
+      const close = document.getElementById('mobile-menu-close');
+      const menu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const panel = document.getElementById('mobile-menu-panel');
+      const toggleMenu = (open) => {
+        if (!menu || !overlay || !panel) return;
+        trigger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        const englishUi = document.documentElement.lang.toLowerCase().startsWith('en');
+        trigger?.setAttribute('aria-label', open
+          ? (englishUi ? 'Close navigation menu' : '关闭导航菜单')
+          : (englishUi ? 'Open navigation menu' : '打开导航菜单'));
+        if (open) {
+          menu.classList.remove('invisible', 'pointer-events-none');
+          overlay.classList.add('opacity-100');
+          panel.classList.remove('translate-x-full');
+          document.body.style.overflow = 'hidden';
+          close?.focus();
+        } else {
+          overlay.classList.remove('opacity-100');
+          panel.classList.add('translate-x-full');
+          document.body.style.overflow = '';
+          setTimeout(() => { menu.classList.add('invisible', 'pointer-events-none'); }, 500);
+          trigger?.focus();
+        }
+      };
+      if (trigger) trigger.addEventListener('click', () => toggleMenu(true));
+      if (close) close.addEventListener('click', () => toggleMenu(false));
+      if (overlay) overlay.addEventListener('click', () => toggleMenu(false));
+    });
+    updateClocks();
+  </script> </header> <div id="language-switch-notice" class="pointer-events-none fixed left-1/2 top-24 z-[700] hidden max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/95 px-5 py-3 text-center text-sm font-bold text-slate-700 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 dark:text-slate-200" role="status" aria-live="polite"></div> <main id="main-content" class="flex-1">  <div class="fixed inset-0 -z-50 overflow-hidden"><div class="absolute inset-0 bg-white/95 dark:bg-[#020617]/90 backdrop-blur-[15px]"></div><div class="absolute inset-0 bg-[radial-gradient(#80808033_1px,transparent_1px)] bg-[size:40px_40px] opacity-40"></div></div> <main class="relative z-10 pt-36 pb-24 min-h-screen" data-layout-contract="xbstack-static-hub-v1"> <section class="container mx-auto px-6 max-w-6xl" data-layout-section="hero"> <nav class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500 mb-12"><a href="/en/" class="hover:text-blue-500 transition-colors">Home</a><span class="opacity-30">/</span><a href="/en/" class="hover:opacity-80 text-blue-500">Home</a><span class="opacity-30">/</span><span>Follow Updates</span></nav> <header class="grid grid-cols-1 lg:grid-cols-[1.08fr_0.92fr] gap-12 items-end border-b border-slate-200 dark:border-white/10 pb-16 mb-16"> <div><p class="text-xs font-black uppercase tracking-[0.35em] text-blue-500 mb-6">XBSTACK / RSS</p><h1 class="text-5xl md:text-7xl font-black tracking-tight italic uppercase leading-[0.92] text-slate-950 dark:text-white">Follow Updates<br><span class="text-blue-500">Without a Recommendation Feed</span></h1></div> <div><p class="text-lg md:text-xl font-black leading-relaxed text-slate-700 dark:text-slate-300 border-l-8 border-current pl-7">RSS provides a chronological way to follow new content. English feeds will include reviewed English pages rather than machine-draft translations.</p></div> </header> </section> <section class="container mx-auto px-6 max-w-6xl mb-16" data-layout-section="quick-paths"> <div class="p-8 md:p-10 rounded-[40px] bg-blue-500/5 border border-blue-500/20"> <div class="flex flex-col md:flex-row justify-between gap-6 mb-8"><div><p class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500 mb-3">XBSTACK SYSTEM</p><h2 class="text-3xl font-black tracking-tight text-slate-950 dark:text-white">Choose the next useful path</h2></div><a href="/en/" class="text-[10px] font-black uppercase tracking-[0.28em] text-blue-500">Open parent hub →</a></div> <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"><a href="/en/ai/" class="p-5 rounded-[24px] bg-white dark:bg-white/[0.035] border border-slate-200 dark:border-white/10 hover:border-current transition-colors text-sm font-black text-slate-800 dark:text-slate-200">AI Engineering →</a><a href="/en/tools/" class="p-5 rounded-[24px] bg-white dark:bg-white/[0.035] border border-slate-200 dark:border-white/10 hover:border-current transition-colors text-sm font-black text-slate-800 dark:text-slate-200">Product Tools →</a><a href="/en/horizon/" class="p-5 rounded-[24px] bg-white dark:bg-white/[0.035] border border-slate-200 dark:border-white/10 hover:border-current transition-colors text-sm font-black text-slate-800 dark:text-slate-200">Horizon →</a><a href="/en/life/" class="p-5 rounded-[24px] bg-white dark:bg-white/[0.035] border border-slate-200 dark:border-white/10 hover:border-current transition-colors text-sm font-black text-slate-800 dark:text-slate-200">Lens →</a></div> </div> </section> <section class="container mx-auto px-6 max-w-6xl mb-20" data-layout-section="page-content"><div class="grid grid-cols-1 lg:grid-cols-4 gap-12"> <div class="lg:col-span-3 space-y-10"> <section><div class="flex items-center gap-6 mb-7"><h2 class="text-sm font-black uppercase tracking-[0.35em] italic text-slate-900 dark:text-white">Primary Entry Points</h2><div class="h-px flex-1 bg-slate-200 dark:bg-white/10"></div></div><div class="grid grid-cols-1 md:grid-cols-2 gap-5"><a href="/en/rss.xml" class="group p-7 rounded-[32px] bg-slate-50 dark:bg-white/[0.035] border border-slate-200 dark:border-white/10 hover:border-current transition-colors"><h3 class="text-xl font-black text-slate-950 dark:text-white group-hover:opacity-70 transition-opacity">English RSS Feed</h3><p class="mt-3 text-sm font-bold leading-relaxed text-slate-600 dark:text-slate-400">Follow reviewed English articles in a compatible reader.</p><div class="mt-5 text-[10px] font-black uppercase tracking-[0.25em] text-blue-500">Open path →</div></a><a href="/en/" class="group p-7 rounded-[32px] bg-slate-50 dark:bg-white/[0.035] border border-slate-200 dark:border-white/10 hover:border-current transition-colors"><h3 class="text-xl font-black text-slate-950 dark:text-white group-hover:opacity-70 transition-opacity">English Home</h3><p class="mt-3 text-sm font-bold leading-relaxed text-slate-600 dark:text-slate-400">Browse reviewed English pages.</p><div class="mt-5 text-[10px] font-black uppercase tracking-[0.25em] text-blue-500">Open path →</div></a></div></section>  </div> <aside class="lg:col-span-1"><div class="sticky top-32"><div class="p-8 rounded-[40px] bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm sticky top-32"><div class="flex flex-col items-center text-center space-y-6"><a href="/en/about/" class="w-32 h-32 rounded-full overflow-hidden border-4 border-white dark:border-slate-800 shadow-xl relative group" aria-label="About Xiaobai &#38; XBSTACK →"><img src="/_astro/avatar.BzDyfp9G_ZzAEsA.webp" alt="Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"><div class="absolute inset-0 bg-gradient-to-t from-orange-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div></a><a href="/en/about/" class="group"><h3 class="text-2xl font-black text-slate-950 dark:text-white uppercase italic tracking-tighter group-hover:text-orange-500 transition-colors">Xiaobai</h3><p class="text-[10px] font-black uppercase tracking-[0.4em] text-orange-500 mt-2">Full-Stack AI Engineer</p></a><p class="text-sm font-bold text-slate-600 dark:text-slate-400 leading-relaxed italic">
+" Build autonomous assets. Own your stack. Master the logic. "
+</p><div class="w-full h-px bg-slate-100 dark:bg-white/5 my-4"></div><ul class="flex items-center py-2"><li class="inline-block px-1 intersect:animate-fade opacity-0"><a href="mailto:xbstack@163.com" aria-label="Email"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="Email" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="w-5 h-5 shrink-0 dark:hover:text-yellow-300 hover:text-yellow-500 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"></path></svg><span class="sr-only">Email</span> </span>  </button> </a></li><li class="inline-block px-1 intersect:animate-fade opacity-0"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span class="sr-only">GitHub</span> </span>  </button> </a></li></ul></div></div></div></aside> </div></section>  </main>  </main> <footer class="container mx-auto mt-32 animate-fadeUp px-4 pb-16 lg:px-8"> <div class="group relative rounded-[60px] border border-slate-200 bg-white p-10 shadow-2xl transition-all dark:border-white/10 dark:bg-[#0B1020] md:p-16"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[60px] opacity-20 dark:opacity-40"> <div class="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px] transition-transform duration-1000 group-hover:scale-125"></div> <div class="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px] transition-transform duration-1000 group-hover:scale-125"></div> </div> <div class="relative z-10 grid grid-cols-1 gap-12 border-b border-slate-100 pb-16 text-left dark:border-white/5 md:grid-cols-2 xl:grid-cols-12"> <div class="flex flex-col justify-between space-y-8 xl:col-span-4"> <div> <div class="mb-8 flex items-center gap-4"> <div class="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 p-2 shadow-lg dark:border-white/10 dark:bg-white/5"> <img src="/favicon/favicon.svg" alt="XBSTACK" width="48" height="48" loading="lazy" decoding="async" class="h-full w-full object-contain"> </div> <span class="font-brand text-2xl font-black uppercase italic leading-none tracking-tighter text-blue-500">XBSTACK</span> </div> <div class="space-y-6"> <p class="text-2xl font-bold italic leading-tight tracking-tight text-slate-900 dark:text-slate-50"> “Look High. Build Low.” </p> <p class="max-w-sm text-[13px] font-bold leading-relaxed text-slate-600 dark:text-slate-400"> An independent developer asset system covering AI engineering, product tools, investing decisions, reading systems and outdoor field notes. </p> </div> </div> <div class="flex items-center gap-4 pt-4"> <span class="rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 text-[11px] font-black uppercase tracking-widest text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-400"> Built by Xiaobai </span> </div> </div> <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 xl:col-span-5"> <div class="space-y-6"> <p class="text-xs font-black uppercase italic tracking-[0.3em] text-blue-600 dark:text-blue-500">AI</p> <ul class="space-y-4"> <li><a href="/en/ai/agent/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Agents</a></li><li><a href="/en/ai/langgraph/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">LangGraph</a></li><li><a href="/en/ai/mcp/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">MCP</a></li><li><a href="/en/ai/workflow/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Workflow</a></li> </ul> </div><div class="space-y-6"> <p class="text-xs font-black uppercase italic tracking-[0.3em] text-blue-600 dark:text-blue-500">Tools</p> <ul class="space-y-4"> <li><a href="/en/tools/compound-calculator/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Compound Calculator</a></li><li><a href="/en/tools/ai-finance/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">AI Finance Analyzer</a></li><li><a href="/en/tools/lunest/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Lunest</a></li> </ul> </div><div class="space-y-6"> <p class="text-xs font-black uppercase italic tracking-[0.3em] text-blue-600 dark:text-blue-500">Horizon</p> <ul class="space-y-4"> <li><a href="/en/investing/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Investing</a></li><li><a href="/en/horizon/reading/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Reading</a></li><li><a href="/en/investing/thoughts/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Thinking</a></li> </ul> </div><div class="space-y-6"> <p class="text-xs font-black uppercase italic tracking-[0.3em] text-blue-600 dark:text-blue-500">Lens</p> <ul class="space-y-4"> <li><a href="/en/life/hiking/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Outdoor</a></li><li><a href="/en/life/photo/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Photography</a></li><li><a href="/en/life/gear/" class="text-[13px] font-black uppercase italic tracking-wider text-slate-800 transition-colors hover:text-blue-500 dark:text-slate-400">Gear Lab</a></li> </ul> </div> </div> <div class="space-y-8 xl:col-span-3"> <p class="text-xs font-black uppercase italic tracking-[0.3em] text-slate-500 dark:text-slate-400">Systems Connect</p> <div class="flex flex-col gap-3"> <button type="button" data-wechat-qr="/assets/xbstack-wechat-qr.webp" class="wechat-trigger group/wechat flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left transition-all hover:border-blue-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="h-5 w-5 text-green-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg> <div class="flex flex-col"> <span class="text-[12px] font-black text-slate-900 dark:text-slate-200">WeChat: Guizhou Outdoor</span> <span class="text-[11px] font-bold leading-relaxed text-slate-600 dark:text-slate-300"> Chinese-language hiking routes and direct outdoor field reports from Guizhou. </span> </div> </button> <a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" class="group/github flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-all hover:border-blue-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="h-5 w-5 text-slate-900 dark:text-white" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> <div class="flex flex-col"><span class="text-[12px] font-black text-slate-900 dark:text-slate-200">GitHub: XBSTACK Lab</span><span class="text-[11px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">Source Code</span></div> </a> <a href="mailto:xbstack@163.com" class="group flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-all hover:border-sky-500 dark:border-white/5 dark:bg-white/5"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="h-5 w-5 text-sky-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"></path></svg> <div class="flex flex-col"><span class="text-[12px] font-black text-slate-900 dark:text-slate-200">xbstack@163.com</span><span class="text-[11px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">Email</span></div> </a> </div> </div> </div> <div class="mt-12 flex flex-col items-start justify-between gap-10 lg:flex-row lg:items-center"> <div class="flex flex-wrap gap-8"> <div class="space-y-1"> <p class="text-xs font-black uppercase tracking-widest text-orange-700 dark:text-orange-500">Risk Notice</p> <p class="text-[10px] font-bold italic text-slate-500">Content is informational and does not constitute investment advice.</p> </div> <div class="space-y-1"> <p class="text-xs font-black uppercase tracking-widest text-blue-600 dark:text-blue-500">Copyright</p> <p class="text-[10px] font-bold text-slate-500">Original XBSTACK content may not be republished or scraped without permission.</p> </div> </div> <div class="flex w-full flex-col items-end gap-5 lg:w-auto"> <div class="flex flex-wrap justify-end gap-6"> <a href="/en/archive/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Archive</a><a href="/en/privacy/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Privacy</a><a href="/en/tos/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Terms</a><a href="/en/disclosure/" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Disclosure</a><a href="/sitemap-index.xml" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">Sitemap</a><a href="/llms.txt" class="text-[11px] font-black uppercase italic text-slate-500 underline decoration-dotted transition-colors hover:text-blue-500">AI Index</a> </div> <div class="flex flex-wrap justify-end gap-3">   <a href="/en/rss.xml" class="rounded-xl border border-blue-600/20 bg-blue-600/10 px-4 py-2 text-[10px] font-black text-blue-700 shadow-sm transition-all hover:bg-blue-500 hover:text-white dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400">English RSS</a> </div> </div> </div> <div class="mt-8 flex items-center justify-between border-t border-slate-100 pt-8 dark:border-white/5"> <div class="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 opacity-50">&copy; 2026 XBSTACK. LABS_ACTIVE_v6.6</div> <div class="flex items-center gap-2"><span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500"></span><span class="text-[9px] font-black uppercase italic tracking-widest text-emerald-600/60">Built Independently</span></div> </div> </div> </footer> <!-- 桌面悬停卡：由全局脚本定位到当前公众号入口附近 --><div id="wechat-hover-card" class="fixed z-[9998] hidden w-[300px] pointer-events-none opacity-0 translate-y-2 transition-all duration-200" aria-hidden="true"> <div class="rounded-[30px] border border-white/15 bg-[#0d1728]/95 p-5 text-white shadow-[0_28px_80px_rgba(2,6,23,0.48)] backdrop-blur-2xl"> <div class="text-[9px] font-black uppercase tracking-[0.34em] text-orange-400">Join the Journey</div> <div class="mt-2 text-xl font-black tracking-tight">Explore Further · Build for the Long Term</div> <div class="mt-1 text-[11px] font-bold tracking-[0.12em] text-slate-400">Outdoor Field Notes · Independent Development · Investing Systems</div> <div class="mt-4 grid grid-cols-[112px_1fr] items-center gap-4"> <div class="rounded-[20px] border border-white/10 bg-[#060b14] p-2.5 shadow-inner"> <img id="wechat-hover-qr" src="/assets/xbstack-wechat-qr.webp" width="360" height="360" alt="QR code for the Guizhou Outdoor WeChat public account" class="block aspect-square w-full rounded-xl bg-white object-contain"> </div> <div class="space-y-2 text-[11px] font-bold leading-relaxed text-slate-300"> <p>Field-tested Guizhou hiking routes</p> <p>AI tools and independent products</p> <p>Investing systems and long-term reviews</p> </div> </div> <div class="mt-4 border-t border-white/10 pt-3 text-center text-[11px] font-black text-slate-300"> Open the full profile </div> </div> </div> <!-- 全局点击弹窗 --> <div id="wechat-modal" class="fixed inset-0 z-[10000] hidden items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="wechat-modal-title" aria-hidden="true"> <button id="wechat-modal-backdrop" type="button" aria-label="Close WeChat public-account dialog" class="absolute inset-0 cursor-default bg-slate-950/86 backdrop-blur-xl"></button> <div id="wechat-modal-content" class="relative max-h-[94vh] w-full max-w-[460px] scale-95 overflow-y-auto rounded-[38px] border border-slate-500/45 bg-[#0d1728] text-white opacity-0 shadow-[0_40px_140px_rgba(0,0,0,0.68)] transition-all duration-300 sm:rounded-[50px]"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"> <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px]"></div> <div class="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-orange-500/10 blur-[80px]"></div> </div> <button id="wechat-modal-close" type="button" aria-label="Close WeChat public-account dialog" class="absolute right-5 top-5 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 transition hover:bg-white/10 hover:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg> </button> <div class="relative z-10 px-6 pb-6 pt-10 sm:px-10 sm:pb-9 sm:pt-12"> <header class="text-center"> <div class="text-[10px] font-black uppercase tracking-[0.44em] text-orange-400 sm:text-xs">Join the Journey</div> <h2 id="wechat-modal-title" class="mt-4 text-3xl font-black tracking-tight text-white sm:text-[38px]" style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;">Explore Further · Build for the Long Term</h2> <p class="mt-3 text-sm font-bold tracking-[0.16em] text-slate-400 sm:text-base">Outdoor Field Notes · Independent Development · Investing Systems</p> </header> <div class="mx-auto mt-7 max-w-[300px] rounded-[34px] border border-white/10 bg-[#070d17] p-5 shadow-inner sm:mt-8"> <div class="rounded-[24px] bg-white p-3"> <img id="wechat-modal-qr" src="/assets/xbstack-wechat-qr.webp" width="360" height="360" decoding="async" alt="QR code for the Guizhou Outdoor WeChat public account" class="block aspect-square w-full object-contain"> </div> </div> <div class="mt-7 divide-y divide-white/10 sm:mt-8"> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M634.92 462.7l-288-448C341.03 5.54 330.89 0 320 0s-21.03 5.54-26.92 14.7l-288 448a32.001 32.001 0 0 0-1.17 32.64A32.004 32.004 0 0 0 32 512h576c11.71 0 22.48-6.39 28.09-16.67a31.983 31.983 0 0 0-1.17-32.63zM320 91.18L405.39 224H320l-64 64-38.06-38.06L320 91.18z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">Outdoor · Field-tested Guizhou routes</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">Practical notes on trail conditions, supplies, risks, and exit options.</p> </div> </div> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M278.9 511.5l-61-17.7c-6.4-1.8-10-8.5-8.2-14.9L346.2 8.7c1.8-6.4 8.5-10 14.9-8.2l61 17.7c6.4 1.8 10 8.5 8.2 14.9L293.8 503.3c-1.9 6.4-8.5 10.1-14.9 8.2zm-114-112.2l43.5-46.4c4.6-4.9 4.3-12.7-.8-17.2L117 256l90.6-79.7c5.1-4.5 5.5-12.3.8-17.2l-43.5-46.4c-4.5-4.8-12.1-5.1-17-.5L3.8 247.2c-5.1 4.7-5.1 12.8 0 17.5l144.1 135.1c4.9 4.6 12.5 4.4 17-.5zm327.2.6l144.1-135.1c5.1-4.7 5.1-12.8 0-17.5L492.1 112.1c-4.8-4.5-12.4-4.3-17 .5L431.6 159c-4.6 4.9-4.3 12.7.8 17.2L523 256l-90.6 79.7c-5.1 4.5-5.5 12.3-.8 17.2l43.5 46.4c4.5 4.9 12.1 5.1 17 .6z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">Independent Development · AI tools and products</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">From real user needs to launch reviews and durable digital products.</p> </div> </div> <div class="grid grid-cols-[42px_1fr] gap-3 py-3.5"> <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-lg text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16zM464 96H345.94c-21.38 0-32.09 25.85-16.97 40.97l32.4 32.4L288 242.75l-73.37-73.37c-12.5-12.5-32.76-12.5-45.25 0l-68.69 68.69c-6.25 6.25-6.25 16.38 0 22.63l22.62 22.62c6.25 6.25 16.38 6.25 22.63 0L192 237.25l73.37 73.37c12.5 12.5 32.76 12.5 45.25 0l96-96 32.4 32.4c15.12 15.12 40.97 4.41 40.97-16.97V112c.01-8.84-7.15-16-15.99-16z"></path></svg></div> <div> <div class="text-sm font-black sm:text-base">Investing · Compounding, risk, and long-term thinking</div> <p class="mt-1 text-xs font-bold leading-relaxed text-slate-400">Investment systems, market observations, and decision reviews—not financial advice.</p> </div> </div> </div> <div class="mt-6 text-center text-sm font-black leading-relaxed text-slate-300"> Scan to follow the WeChat public account <span class="text-orange-400">“贵州户外 (Guizhou Outdoor)”</span> <p class="mt-1 text-xs font-bold text-slate-500">Get new field routes, independent-development notes, and investing reviews.</p> </div> <button id="wechat-modal-confirm" type="button" class="mt-7 w-full rounded-[24px] bg-white px-6 py-4 text-sm font-black tracking-[0.12em] text-slate-950 shadow-xl transition hover:-translate-y-0.5 hover:bg-slate-100 active:translate-y-0"> CLOSE </button> </div> </div> </div> <script type="module">const b="/assets/xbstack-wechat-qr.webp";function f(){const t=document.getElementById("wechat-modal"),y=document.getElementById("wechat-modal-backdrop"),a=document.getElementById("wechat-modal-content"),w=document.getElementById("wechat-modal-close"),E=document.getElementById("wechat-modal-confirm"),c=document.getElementById("wechat-modal-qr"),s=document.getElementById("wechat-hover-card"),i=document.getElementById("wechat-hover-qr");if(!t||!a||!s)return;let l=0;const p=window.matchMedia("(hover: hover) and (pointer: fine)"),u=e=>{const n=e.dataset.wechatQr||b;c&&c.src!==new URL(n,window.location.href).href&&(c.src=n),i&&i.src!==new URL(n,window.location.href).href&&(i.src=n)},o=()=>{window.clearTimeout(l),s.classList.add("opacity-0","translate-y-2"),l=window.setTimeout(()=>s.classList.add("hidden"),180)},v=e=>{if(!p.matches||!t.classList.contains("hidden"))return;window.clearTimeout(l),u(e),s.classList.remove("hidden");const n=e.getBoundingClientRect(),L=300,B=250,r=12;let m=n.left+n.width/2-L/2;m=Math.max(r,Math.min(m,window.innerWidth-L-r));let h=n.top-B-12;h<r&&(h=n.bottom+12),s.style.left=`${m}px`,s.style.top=`${h}px`,requestAnimationFrame(()=>s.classList.remove("opacity-0","translate-y-2"))},I=e=>{o(),u(e),t.classList.remove("hidden"),t.classList.add("flex"),t.setAttribute("aria-hidden","false"),document.body.style.overflow="hidden",requestAnimationFrame(()=>{a.classList.remove("scale-95","opacity-0"),a.classList.add("scale-100","opacity-100"),w?.focus()})},d=()=>{a.classList.remove("scale-100","opacity-100"),a.classList.add("scale-95","opacity-0"),window.setTimeout(()=>{t.classList.add("hidden"),t.classList.remove("flex"),t.setAttribute("aria-hidden","true"),document.body.style.overflow=""},260)};document.querySelectorAll(".wechat-trigger").forEach(e=>{e.dataset.wechatInitialized!=="true"&&(e.dataset.wechatInitialized="true",e.addEventListener("mouseenter",()=>v(e)),e.addEventListener("mouseleave",o),e.addEventListener("focus",()=>v(e)),e.addEventListener("blur",o),e.addEventListener("click",n=>{n.preventDefault(),I(e)}))}),t.dataset.wechatInitialized!=="true"&&(t.dataset.wechatInitialized="true",w?.addEventListener("click",d),E?.addEventListener("click",d),y?.addEventListener("click",d),document.addEventListener("keydown",e=>{e.key==="Escape"&&!t.classList.contains("hidden")&&d()}),window.addEventListener("scroll",o,{passive:!0}),window.addEventListener("resize",o))}f();document.addEventListener("astro:page-load",f);</script> <script>
+      const showLanguageSwitchNotice = () => {
+        let payload = null;
+        try {
+          const raw = sessionStorage.getItem('xbstack_language_notice');
+          if (!raw) return;
+          payload = JSON.parse(raw);
+          sessionStorage.removeItem('xbstack_language_notice');
+        } catch (error) {
+          return;
+        }
+
+        const notice = document.getElementById('language-switch-notice');
+        if (!notice) return;
+
+        const targetIsEnglish = String(payload?.language || '').toLowerCase().startsWith('en');
+        notice.textContent = targetIsEnglish
+          ? 'This page does not have an English version yet. You have been taken to the English home page.'
+          : '当前页面暂未提供中文版本，已为你打开中文首页。';
+        notice.classList.remove('hidden');
+        window.setTimeout(() => notice.classList.add('hidden'), 4800);
+      };
+
+      document.addEventListener('astro:page-load', showLanguageSwitchNotice);
+      showLanguageSwitchNotice();
+    </script> </body> </html>

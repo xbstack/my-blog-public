@@ -1,0 +1,64 @@
+import { e as createAstro, c as createComponent, b as renderComponent, r as renderTemplate, m as maybeRenderHead, d as addAttribute } from '../chunks/astro/server_CVKVJgiO.mjs';
+import 'piccolore';
+import { $ as $$BaseLayout } from '../chunks/BaseLayout_qQA58Esh.mjs';
+export { renderers } from '../renderers.mjs';
+
+const $$Astro = createAstro("https://www.xbstack.com");
+const $$Growth = createComponent(($$result, $$props, $$slots) => {
+  const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
+  Astro2.self = $$Growth;
+  const title = "Growth Lab\uFF1AXBSTACK \u7F51\u7AD9\u589E\u957F\u5B9E\u9A8C\u5BA4\uFF0CSEO\u3001GEO\u3001Search Console \u4E0E\u7AD9\u5916\u5206\u53D1";
+  const description = "XBSTACK Growth Lab \u662F\u7F51\u7AD9\u589E\u957F\u5B9E\u9A8C\u5BA4\uFF0C\u8BB0\u5F55 SEO\u3001GEO\u3001Search Console\u3001Analytics\u3001Astro\u3001Cloudflare\u3001404 \u56DE\u6536\u3001UTM \u5206\u53D1\u548C\u5185\u5BB9\u8FD0\u8425\u5B9E\u9A8C\uFF0C\u76EE\u6807\u662F\u771F\u4EBA\u6D41\u91CF\u3001\u771F\u5B9E\u70B9\u51FB\u548C\u5DE5\u5177\u8F6C\u5316\u3002";
+  const keywords = "XBSTACK Growth Lab, \u7F51\u7AD9\u589E\u957F\u5B9E\u9A8C\u5BA4, SEO, GEO, Search Console, Analytics, Astro, Cloudflare, 404 Recovery, UTM, \u5185\u5BB9\u8FD0\u8425, \u7AD9\u5916\u5206\u53D1, \u771F\u4EBA\u6D41\u91CF";
+  const canonical = "https://www.xbstack.com/growth/";
+  const pillars = [
+    { title: "GPT5.6 \u5B9E\u6D4B\u6848\u4F8B", label: "Live Growth Case", desc: "\u7528\u771F\u5B9E Astro \u9879\u76EE\u3001218 \u7BC7\u5185\u5BB9\u5E93\u5B58\u3001Search Console \u548C GA4 \u6570\u636E\u9A8C\u8BC1\u6A21\u578B\u5206\u6790\u80FD\u529B\u4E0E\u6570\u636E\u8FB9\u754C\u3002", href: "/ai/tools-lab/gpt56-test/" },
+    { title: "Search Console", label: "Query Data", desc: "\u4F18\u5148\u5904\u7406\u6709\u5C55\u793A\u6CA1\u70B9\u51FB\u3001\u5E73\u5747\u6392\u540D 8-30\u3001CTR \u504F\u4F4E\u548C\u65E7\u6587\u53EF\u66F4\u65B0\u9875\u9762\u3002", href: "/ai/search-console-ctr-title-fix/" },
+    { title: "GEO / AI Search", label: "Machine-readable", desc: "\u901A\u8FC7 JSON-LD\u3001FAQ\u3001llms.txt\u3001sitemap \u548C\u5F00\u5934\u76F4\u63A5\u7B54\u6848\u670D\u52A1 AI \u641C\u7D22\u5F15\u7528\uFF0C\u4F46\u4E0D\u7834\u574F\u771F\u4EBA\u9605\u8BFB\u3002", href: "/ai/xbstack-content-quality-audit-builder-log/" },
+    { title: "404 Recovery", label: "Traffic Rescue", desc: "\u628A\u5386\u53F2\u5916\u94FE\u3001\u65E7\u680F\u76EE\u3001\u622A\u65AD slug \u548C\u9519\u8BEF\u8DEF\u5F84\u6536\u655B\u5230\u6709\u6548\u9875\u9762\uFF0C\u51CF\u5C11\u65E0\u6548\u6D41\u5931\u3002", href: "/ai/xbstack-404-cloudflare-astro-route-fix/" },
+    { title: "UTM Distribution", label: "Off-site Clicks", desc: "\u4E2D\u6587\u5E73\u53F0\u4E0E\u5168\u7403\u82F1\u6587\u5E73\u53F0\u7684\u56DE\u7AD9\u94FE\u63A5\u7EDF\u4E00\u4F7F\u7528 UTM\uFF0C\u5224\u65AD\u54EA\u4E2A\u6E20\u9053\u771F\u6B63\u5E26\u6765\u7528\u6237\u3002", href: "/tools/utm-builder/" },
+    { title: "Astro / Cloudflare", label: "Technical SEO", desc: "\u56F4\u7ED5 Astro SSR\u3001\u9759\u6001\u5316\u3001Pagefind\u3001Cloudflare Pages\u3001robots \u548C sitemap \u505A\u6280\u672F\u8FD0\u8425\u3002", href: "/ai/web/" },
+    { title: "Content Operations", label: "Publishing System", desc: "\u628A\u9009\u9898\u3001TDK\u3001\u5185\u94FE\u3001\u7AD9\u5916\u5206\u53D1\u548C\u5DE5\u5177\u627F\u63A5\u7EDF\u4E00\u6210\u53EF\u590D\u76D8\u7684\u53D1\u5E03\u6D41\u7A0B\u3002", href: "/tools/templates/" }
+  ];
+  const workflow = [
+    "\u5148\u770B Search Console\uFF1A\u5C55\u793A\u3001\u70B9\u51FB\u3001CTR\u3001\u5E73\u5747\u6392\u540D\u548C\u67E5\u8BE2\u8BCD\u3002",
+    "\u518D\u5224\u65AD\u9875\u9762\u52A8\u4F5C\uFF1A\u6539\u6807\u9898\u3001\u8865\u5F00\u5934\u76F4\u63A5\u7B54\u6848\u3001\u589E\u5F3A FAQ\u3001\u66F4\u65B0\u65E7\u6587\u6216\u65B0\u5EFA\u4E13\u9898\u3002",
+    "\u7ED9\u6BCF\u7BC7\u91CD\u70B9\u6587\u7AE0\u6307\u5B9A\u627F\u63A5\u9875\uFF1AAI Tools Lab\u3001UTM Builder\u3001Templates\u3001AI Finance\u3001Lunest \u6216\u590D\u5229\u8BA1\u7B97\u5668\u3002",
+    "\u7AD9\u5916\u5206\u53D1\u5FC5\u987B\u5E26 UTM\uFF0C\u5E76\u8BB0\u5F55\u6807\u9898\u7248\u672C\u3001\u5E73\u53F0\u3001\u53D1\u5E03\u65F6\u95F4\u548C\u540E\u7EED\u8BBF\u95EE\u3002",
+    "\u6BCF\u5468\u56DE\u770B\u6392\u540D 8-30 \u7684\u9875\u9762\u548C 404 \u6765\u6E90\uFF0C\u4E0D\u505A\u65E0\u4F9D\u636E\u7684\u5185\u5BB9\u5806\u91CF\u3002"
+  ];
+  const faqs = [
+    { question: "Growth Lab \u4E3A\u4EC0\u4E48\u4E0D\u653E\u8FDB\u9876\u90E8\u4E00\u7EA7\u5BFC\u822A\uFF1F", answer: "\u5B83\u662F\u7F51\u7AD9\u589E\u957F\u4E2D\u67A2\uFF0C\u4F46\u4E0D\u662F\u65B0\u7528\u6237\u7B2C\u4E00\u5FC3\u667A\u3002\u9876\u90E8\u5BFC\u822A\u4FDD\u6301 AI\u3001Tools\u3001Horizon\u3001Lens\uFF0CGrowth Lab \u901A\u8FC7\u9996\u9875\u6A21\u5757\u3001Footer\u3001\u6587\u7AE0\u5E95\u90E8\u3001sitemap \u548C llms.txt \u627F\u63A5\u3002" },
+    { question: "Growth Lab \u548C AI Web Builder Log \u6709\u4EC0\u4E48\u533A\u522B\uFF1F", answer: "Web Builder Log \u66F4\u504F\u5177\u4F53\u6539\u9020\u590D\u76D8\uFF0CGrowth Lab \u662F\u66F4\u9AD8\u5C42\u7684\u7F51\u7AD9\u589E\u957F\u5165\u53E3\uFF0C\u7528\u6765\u7EC4\u7EC7 SEO\u3001GEO\u3001Search Console\u3001404\u3001UTM \u548C\u5185\u5BB9\u8FD0\u8425\u65B9\u6CD5\u3002" },
+    { question: "\u8FD9\u91CC\u8FFD\u6C42 AI Bot \u6D41\u91CF\u5417\uFF1F", answer: "\u4E0D\u8FFD\u6C42\u3002GEO\u3001llms.txt \u548C\u7ED3\u6784\u5316\u6570\u636E\u53EA\u662F\u5E2E\u52A9 AI \u641C\u7D22\u7406\u89E3\u548C\u5F15\u7528\uFF0C\u6700\u7EC8\u76EE\u6807\u4ECD\u7136\u662F\u771F\u4EBA\u70B9\u51FB\u3001\u505C\u7559\u3001\u4FE1\u4EFB\u548C\u5DE5\u5177\u8F6C\u5316\u3002" }
+  ];
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "CollectionPage", "@id": `${canonical}#collection`, name: title, url: canonical, description, inLanguage: "zh-CN" },
+      { "@type": "BreadcrumbList", "@id": `${canonical}#breadcrumb`, itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://www.xbstack.com/" },
+        { "@type": "ListItem", position: 2, name: "Growth Lab", item: canonical }
+      ] },
+      { "@type": "ItemList", "@id": `${canonical}#pillars`, name: "XBSTACK Growth Lab pillars", itemListElement: pillars.map((item, index) => ({ "@type": "ListItem", position: index + 1, name: item.title, url: `https://www.xbstack.com${item.href}` })) },
+      { "@type": "FAQPage", "@id": `${canonical}#faq`, mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.question, acceptedAnswer: { "@type": "Answer", text: faq.answer } })) }
+    ]
+  };
+  return renderTemplate`${renderComponent($$result, "BaseLayout", $$BaseLayout, { "title": title, "description": description, "keywords": keywords, "canonical": canonical, "schemaJsonLd": schema }, { "default": ($$result2) => renderTemplate` ${maybeRenderHead()}<main class="relative z-10 min-h-screen pt-32 pb-24 text-slate-900 dark:text-white"> <section class="container mx-auto px-6 max-w-6xl"> <nav class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500 mb-12"> <a href="/" class="hover:text-blue-500 transition-colors">首页</a> <span class="opacity-30">/</span> <span class="text-blue-500">Growth Lab</span> </nav> <header class="grid grid-cols-1 lg:grid-cols-[1.08fr_0.92fr] gap-12 items-end border-b border-slate-200 dark:border-white/10 pb-16 mb-16"> <div> <p class="text-xs font-black uppercase tracking-[0.35em] text-blue-500 mb-6">Growth Lab / Real Human Traffic</p> <h1 class="text-5xl md:text-7xl font-black tracking-tight italic leading-none mb-8">网站增长实验室</h1> <p class="text-xl md:text-2xl font-black leading-relaxed text-slate-700 dark:text-slate-300 border-l-8 border-blue-500 pl-7">
+不为了爬虫堆页面，只围绕真人搜索、站外点击、工具使用和长期转化做增长实验。
+</p> </div> <aside data-theme-surface="adaptive-growth-rule" class="p-7 rounded-[38px] bg-blue-50/70 text-slate-950 border border-blue-200 shadow-sm dark:bg-white/[0.04] dark:text-white dark:border-white/10"> <p class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600 dark:text-blue-300 mb-4">Operating Rule</p> <h2 class="text-2xl font-black italic uppercase text-slate-950 dark:text-white mb-4">Growth 不进顶部导航</h2> <p class="text-sm font-bold leading-relaxed text-slate-600 dark:text-slate-400">它通过首页模块、Footer、文章内链、sitemap、llms.txt 和工具页承接存在。顶部继续保持 AI / Tools / Horizon / Lens 四个主入口，避免用户第一眼分散。</p> </aside> </header> <section class="mb-20 p-8 md:p-10 rounded-[42px] bg-slate-50 dark:bg-white/[0.035] border border-slate-200 dark:border-white/10"> <div class="max-w-3xl mb-8"> <p class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500 mb-3">Growth Pillars</p> <h2 class="text-3xl font-black tracking-tight text-slate-950 dark:text-white mb-4">增长承接位</h2> <p class="text-sm font-bold leading-relaxed text-slate-600 dark:text-slate-400">Growth Lab 把网站运营相关内容集中起来，但不抢一级导航。这里的每个入口都要能回到真实数据、真实页面和真实转化动作。</p> </div> <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"> ${pillars.map((item) => renderTemplate`<a${addAttribute(item.href, "href")} class="group p-6 rounded-[30px] bg-white dark:bg-slate-950/30 border border-slate-200 dark:border-white/10 hover:border-blue-500/50 transition-colors block"> <div class="text-[9px] font-black uppercase tracking-[0.25em] text-blue-500 mb-3">${item.label}</div> <h3 class="text-2xl font-black italic uppercase text-slate-950 dark:text-white mb-4 group-hover:text-blue-500 transition-colors">${item.title}</h3> <p class="text-xs font-bold leading-relaxed text-slate-500 dark:text-slate-400">${item.desc}</p> <div class="mt-6 text-[10px] font-black uppercase tracking-[0.25em] text-blue-500">进入相关页面 →</div> </a>`)} </div> </section> <section class="mb-20 grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-8"> <article data-theme-surface="adaptive-growth-loop" class="p-8 rounded-[42px] bg-slate-50 text-slate-950 border border-slate-200 shadow-sm dark:bg-white/[0.04] dark:text-white dark:border-white/10"> <p class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600 dark:text-blue-300 mb-4">Weekly Loop</p> <h2 class="text-3xl font-black italic uppercase text-slate-950 dark:text-white mb-6">每周增长回路</h2> <div class="space-y-4"> ${workflow.map((item, index) => renderTemplate`<div class="flex gap-4"> <div class="shrink-0 w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-[10px] font-black dark:bg-blue-500/20 dark:text-blue-200">${index + 1}</div> <p class="text-sm font-bold leading-relaxed text-slate-600 dark:text-slate-400">${item}</p> </div>`)} </div> </article> <article class="p-8 rounded-[42px] bg-blue-500/5 border border-blue-500/10"> <p class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500 mb-4">Tool Hand-off</p> <h2 class="text-3xl font-black italic uppercase text-slate-950 dark:text-white mb-6">增长内容必须有工具承接</h2> <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> <a href="/tools/utm-builder/" class="p-5 rounded-[24px] bg-white dark:bg-white/[0.035] border border-slate-200 dark:border-white/10 font-black hover:border-blue-500/50 transition-colors">UTM Builder →</a> <a href="/tools/templates/" class="p-5 rounded-[24px] bg-white dark:bg-white/[0.035] border border-slate-200 dark:border-white/10 font-black hover:border-blue-500/50 transition-colors">Templates →</a> <a href="/ai/tools-lab/" class="p-5 rounded-[24px] bg-white dark:bg-white/[0.035] border border-slate-200 dark:border-white/10 font-black hover:border-blue-500/50 transition-colors">AI Tools Lab →</a> <a href="/ai/local-ai/" class="p-5 rounded-[24px] bg-white dark:bg-white/[0.035] border border-slate-200 dark:border-white/10 font-black hover:border-blue-500/50 transition-colors">Local AI →</a> </div> </article> </section> <section id="faq" class="p-8 md:p-10 rounded-[42px] bg-white dark:bg-white/[0.035] border border-slate-200 dark:border-white/10"> <p class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500 mb-3">FAQ</p> <h2 class="text-3xl font-black tracking-tight text-slate-950 dark:text-white mb-8">关于 Growth Lab</h2> <div class="grid grid-cols-1 md:grid-cols-3 gap-4"> ${faqs.map((faq) => renderTemplate`<article class="p-5 rounded-[24px] bg-slate-50 dark:bg-slate-950/30 border border-slate-200 dark:border-white/10"> <h3 class="text-base font-black text-slate-950 dark:text-white mb-2">${faq.question}</h3> <p class="text-sm font-bold leading-relaxed text-slate-600 dark:text-slate-400">${faq.answer}</p> </article>`)} </div> </section> </section> </main> ` })}`;
+}, "/Users/beijingchaoyang/MyWeb/blog/src/pages/growth.astro", void 0);
+
+const $$file = "/Users/beijingchaoyang/MyWeb/blog/src/pages/growth.astro";
+const $$url = "/growth/";
+
+const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: $$Growth,
+  file: $$file,
+  url: $$url
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const page = () => _page;
+
+export { page };
