@@ -1,1 +1,0 @@
-const w={success:o=>{typeof window<"u"&&window.showToast&&window.showToast(o,"success")},error:o=>{typeof window<"u"&&window.showToast&&window.showToast(o,"error")},info:o=>{typeof window<"u"&&window.showToast&&window.showToast(o,"info")}};export{w as t};
