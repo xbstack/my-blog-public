@@ -1,0 +1,36 @@
+import { c as createComponent, a as renderComponent, r as renderTemplate } from '../../chunks/astro/server_CuadZCs7.mjs';
+import 'piccolore';
+import { g as getCollection } from '../../chunks/_astro_content_jbBoyPXF.mjs';
+import { $ as $$SearchHubPage } from '../../chunks/SearchHubPage_JUDoSfyB.mjs';
+import { r as resolveEntryUrl } from '../../chunks/content-route_Id4Hifd6.mjs';
+export { renderers } from '../../renderers.mjs';
+
+const $$ModelUpdates = createComponent(async ($$result, $$props, $$slots) => {
+  const updateTags = ["\u6A21\u578B\u66F4\u65B0\u5B9E\u6D4B", "AI Model Review", "Model Review", "model-update-test", "GPT \u5B9E\u6D4B", "Gemini \u5B9E\u6D4B", "Claude \u5B9E\u6D4B", "Qwen \u5B9E\u6D4B", "DeepSeek \u5B9E\u6D4B", "Kimi \u5B9E\u6D4B"];
+  const posts = (await getCollection("ai", ({ data }) => !data.draft && data.lang !== "en" && (data.test_type === "model-update" || data.series === "model-update-test" || data.subcategory === "model-review" || (data.tags || []).some((tag) => updateTags.includes(tag))))).sort((a, b) => new Date(b.data.createdAt || 0).valueOf() - new Date(a.data.createdAt || 0).valueOf());
+  const latest = posts.slice(0, 10).map((entry) => ({ title: entry.data.title, href: resolveEntryUrl(entry), image: typeof entry.data.image === "string" ? entry.data.image : entry.data.image?.src || "", meta: entry.data.createdAt ? new Date(entry.data.createdAt).toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" }) : "" }));
+  const areas = [
+    { title: "\u56FD\u9645\u901A\u7528\u6A21\u578B\u66F4\u65B0", href: "/ai/model-updates/", desc: "GPT\u3001Gemini\u3001Claude\u3001Llama\u3001Grok \u7B49\u6A21\u578B\u66F4\u65B0\u540E\u7684\u771F\u5B9E\u5F00\u53D1\u4E0E\u63A8\u7406\u4EFB\u52A1\u9A8C\u8BC1\u3002", links: [{ title: "GPT / OpenAI", href: "/ai/tools-lab/gpt56-test/" }, { title: "Claude", href: "/ai/tools-lab/claude-sonnet-5-astro-bundle-optimization/" }] },
+    { title: "\u4E2D\u6587\u6A21\u578B\u751F\u6001\u66F4\u65B0", href: "/ai/model-updates/", desc: "Qwen\u3001DeepSeek\u3001Kimi\u3001GLM\u3001\u8C46\u5305\u3001\u6DF7\u5143\u7B49\u4E2D\u6587\u6A21\u578B\u7684\u80FD\u529B\u3001\u9650\u5236\u4E0E\u4F7F\u7528\u5224\u65AD\u3002", links: [{ title: "Kimi K3 \u5B9E\u6D4B", href: "/ai/tools-lab/kimi-k3-real-astro-project-test/" }] },
+    { title: "\u4EE3\u7801\u4E0E\u771F\u5B9E\u9879\u76EE\u4EFB\u52A1", href: "/ai/tools-lab/", desc: "\u4EE3\u7801\u7406\u89E3\u3001\u8DE8\u6587\u4EF6\u4FEE\u6539\u3001\u6545\u969C\u5B9A\u4F4D\u3001\u957F\u4E0A\u4E0B\u6587\u548C\u5DE5\u7A0B\u7EA6\u675F\uFF0C\u4E0D\u4F7F\u7528\u8131\u79BB\u9879\u76EE\u7684\u73A9\u5177\u9898\u66FF\u4EE3\u3002", links: [{ title: "AI Tools Lab", href: "/ai/tools-lab/" }] },
+    { title: "\u5185\u5BB9\u3001\u641C\u7D22\u4E0E\u7814\u7A76\u4EFB\u52A1", href: "/growth/", desc: "\u957F\u6587\u3001\u641C\u7D22\u95EE\u7B54\u3001\u5F15\u7528\u3001SEO/GEO\u3001\u8D44\u6599\u7814\u7A76\u548C\u5185\u5BB9\u8FD0\u8425\u4EFB\u52A1\u3002", links: [{ title: "Growth Lab", href: "/growth/" }, { title: "\u7AD9\u5185\u641C\u7D22", href: "/search/" }] },
+    { title: "Agent \u4E0E\u5DE5\u5177\u8C03\u7528\u4EFB\u52A1", href: "/ai/agent/", desc: "\u89C4\u5212\u3001Tool Use\u3001\u7ED3\u6784\u5316\u8F93\u51FA\u3001\u6743\u9650\u548C\u5931\u8D25\u6062\u590D\uFF0C\u5224\u65AD\u6A21\u578B\u662F\u5426\u9002\u5408\u8FDB\u5165 Agent Runtime\u3002", links: [{ title: "AI Agent", href: "/ai/agent/" }, { title: "Evaluation", href: "/ai/ai-agent-evaluation-guide/" }] },
+    { title: "\u4EF7\u683C\u3001\u6743\u9650\u4E0E\u4F7F\u7528\u8FB9\u754C", href: "/ai/model-updates/", desc: "\u8D26\u53F7\u3001\u5730\u533A\u3001API\u3001\u4EF7\u683C\u3001\u4E0A\u4E0B\u6587\u3001\u901F\u7387\u9650\u5236\u548C\u6682\u672A\u5F00\u653E\u80FD\u529B\u90FD\u5FC5\u987B\u5199\u6E05\u695A\u3002", links: [{ title: "\u5168\u90E8\u66F4\u65B0", href: "/ai/model-updates/" }] }
+  ];
+  const description = "XBSTACK \u5927\u6A21\u578B\u66F4\u65B0\u4E0E\u771F\u5B9E\u4EFB\u52A1\u8BC4\u6D4B\uFF0C\u8986\u76D6 GPT\u3001Gemini\u3001Claude\u3001Qwen\u3001DeepSeek\u3001Kimi\u3001GLM \u7B49\u6A21\u578B\u66F4\u65B0\u540E\u7684\u771F\u5B9E\u9879\u76EE\u6D4B\u8BD5\u3001\u4F7F\u7528\u6761\u4EF6\u3001\u5931\u8D25\u9650\u5236\u4E0E\u843D\u5730\u4EF7\u503C\u3002";
+  return renderTemplate`${renderComponent($$result, "SearchHubPage", $$SearchHubPage, { "seoTitle": "\u5927\u6A21\u578B\u66F4\u65B0\u4E0E\u771F\u5B9E\u4EFB\u52A1\u8BC4\u6D4B | XBSTACK", "description": description, "keywords": "Model Updates, GPT \u5B9E\u6D4B, Gemini \u5B9E\u6D4B, Claude \u5B9E\u6D4B, Qwen, DeepSeek, Kimi, \u5927\u6A21\u578B\u8BC4\u6D4B", "hubTitle": "\u5927\u6A21\u578B\u66F4\u65B0\u4E0E\u771F\u5B9E\u4EFB\u52A1\u8BC4\u6D4B", "eyebrow": "Model Updates & Real-task Evaluation", "intro": "\u4E0D\u642C\u8FD0\u53D1\u5E03\u4F1A\uFF0C\u4E0D\u628A\u5B98\u65B9 Benchmark \u5F53\u4F5C\u81EA\u5DF1\u7684\u5B9E\u6D4B\u3002\u6BCF\u6B21\u6A21\u578B\u66F4\u65B0\u90FD\u56DE\u5230\u771F\u5B9E\u4EFB\u52A1\uFF1A\u600E\u4E48\u5F00\u542F\u3001\u600E\u4E48\u7528\u3001\u6210\u529F\u5728\u54EA\u91CC\u3001\u5931\u8D25\u5728\u54EA\u91CC\u3001\u6210\u672C\u591A\u5C11\uFF0C\u4EE5\u53CA\u5B83\u662F\u5426\u503C\u5F97\u8FDB\u5165\u957F\u671F\u5DE5\u4F5C\u6D41\u3002", "searchPlaceholder": "\u641C\u7D22\u6A21\u578B\u3001\u7248\u672C\u3001\u771F\u5B9E\u4EFB\u52A1\u3001\u6743\u9650\u3001\u4EF7\u683C\u6216\u5931\u8D25\u6848\u4F8B\u2026", "popularTopics": [{ title: "GPT", href: "/ai/tools-lab/gpt56-test/" }, { title: "Claude", href: "/ai/tools-lab/" }, { title: "Gemini", href: "/ai/model-updates/" }, { title: "Kimi", href: "/ai/tools-lab/kimi-k3-real-astro-project-test/" }, { title: "Coding", href: "/ai/tools-lab/" }, { title: "Agent", href: "/ai/agent/" }], "areas": areas, "featured": latest.slice(0, 6), "latest": latest, "sidebars": [{ title: "\u76F8\u5173\u5165\u53E3", links: [{ title: "AI Tools Lab", href: "/ai/tools-lab/" }, { title: "Agent Evaluation", href: "/ai/ai-agent-evaluation-guide/" }, { title: "Local AI", href: "/ai/local-ai/" }, { title: "AI \u5DE5\u7A0B\u603B\u5165\u53E3", href: "/ai/" }] }, { title: "\u4F7F\u7528\u539F\u5219", links: [{ title: "\u80FD\u5B9E\u6D4B\u624D\u5199\u5B9E\u6D4B", href: "/ai/tools-lab/" }, { title: "\u5931\u8D25\u6837\u4F8B\u5FC5\u987B\u4FDD\u7559", href: "/ai/tools-lab/" }, { title: "\u5B98\u65B9\u4FE1\u606F\u4E0E\u4E2A\u4EBA\u5B9E\u6D4B\u5206\u5F00", href: "/ai/tools-lab/" }] }], "summary": "\u6A21\u578B\u66F4\u65B0\u9875\u53EA\u8BB0\u5F55\u80FD\u591F\u6539\u53D8\u5B9E\u9645\u5DE5\u4F5C\u6D41\u7684\u53D8\u5316\u3002\u529F\u80FD\u5C1A\u672A\u5F00\u653E\u65F6\u660E\u786E\u5199\u2018\u6682\u672A\u5B9E\u6D4B\u2019\uFF0C\u4E0D\u80FD\u7F16\u9020\u6743\u9650\u3001\u4E0D\u80FD\u628A\u4E8C\u624B\u65B0\u95FB\u5305\u88C5\u6210\u4F7F\u7528\u4F53\u9A8C\u3002", "canonical": "https://www.xbstack.com/ai/model-updates/", "lang": "zh-CN" })}`;
+}, "/Users/beijingchaoyang/MyWeb/blog/src/pages/ai/model-updates.astro", void 0);
+
+const $$file = "/Users/beijingchaoyang/MyWeb/blog/src/pages/ai/model-updates.astro";
+const $$url = "/ai/model-updates/";
+
+const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+	__proto__: null,
+	default: $$ModelUpdates,
+	file: $$file,
+	url: $$url
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const page = () => _page;
+
+export { page };

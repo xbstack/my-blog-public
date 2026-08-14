@@ -1,0 +1,164 @@
+{
+  "name": "XBSTACK n8n Error Retry Workflow Template",
+  "version": "1.0.0",
+  "updated_at": "2026-07-29",
+  "usage_note": "Review credentials, endpoint, retry policy and error destination before importing into production.",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [-620, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map((item, index) => ({ json: { ...item.json, request_id: item.json.request_id || `req-${Date.now()}-${index}`, retry_count: Number(item.json.retry_count || 0), max_retries: Number(item.json.max_retries || 3) } }));"
+      },
+      "id": "prepare-request",
+      "name": "Prepare Request Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-400, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://example.com/api/replace-me",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "X-Request-ID", "value": "={{ $json.request_id }}" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify($json) }}",
+        "options": {
+          "timeout": 30000,
+          "response": { "response": { "neverError": true, "responseFormat": "json" } }
+        }
+      },
+      "id": "http-request",
+      "name": "Call Downstream API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-160, 0],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "success-condition",
+              "leftValue": "={{ Number($json.statusCode || 0) }}",
+              "rightValue": 200,
+              "operator": { "type": "number", "operation": "gte" }
+            },
+            {
+              "id": "success-upper-bound",
+              "leftValue": "={{ Number($json.statusCode || 0) }}",
+              "rightValue": 300,
+              "operator": { "type": "number", "operation": "lt" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "success-check",
+      "name": "Request Succeeded?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [80, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => ({ json: { ...item.json, completed_at: new Date().toISOString(), workflow_status: 'success' } }));"
+      },
+      "id": "success-output",
+      "name": "Success Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [340, -120]
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => { const retryCount = Number(item.json.retry_count || 0) + 1; return { json: { ...item.json, retry_count: retryCount, should_retry: retryCount <= Number(item.json.max_retries || 3), retry_delay_seconds: Math.min(60, Math.pow(2, retryCount) * 2), last_error_at: new Date().toISOString() } }; });"
+      },
+      "id": "retry-context",
+      "name": "Build Retry Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [320, 100]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "retry-condition",
+              "leftValue": "={{ $json.should_retry }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "retry-check",
+      "name": "Retry Allowed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [560, 100]
+    },
+    {
+      "parameters": {
+        "amount": "={{ $json.retry_delay_seconds }}",
+        "unit": "seconds"
+      },
+      "id": "wait-retry",
+      "name": "Exponential Backoff",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [800, 20]
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => ({ json: { ...item.json, workflow_status: 'dead_letter', failed_at: new Date().toISOString(), action_required: 'Send this payload to Slack, email, database, queue or incident system.' } }));"
+      },
+      "id": "dead-letter",
+      "name": "Dead Letter Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 200]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": { "main": [[{ "node": "Prepare Request Context", "type": "main", "index": 0 }]] },
+    "Prepare Request Context": { "main": [[{ "node": "Call Downstream API", "type": "main", "index": 0 }]] },
+    "Call Downstream API": { "main": [[{ "node": "Request Succeeded?", "type": "main", "index": 0 }]] },
+    "Request Succeeded?": {
+      "main": [
+        [{ "node": "Success Output", "type": "main", "index": 0 }],
+        [{ "node": "Build Retry Context", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build Retry Context": { "main": [[{ "node": "Retry Allowed?", "type": "main", "index": 0 }]] },
+    "Retry Allowed?": {
+      "main": [
+        [{ "node": "Exponential Backoff", "type": "main", "index": 0 }],
+        [{ "node": "Dead Letter Output", "type": "main", "index": 0 }]
+      ]
+    },
+    "Exponential Backoff": { "main": [[{ "node": "Call Downstream API", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1", "saveManualExecutions": true },
+  "active": false,
+  "tags": ["xbstack", "retry", "error-handling"]
+}

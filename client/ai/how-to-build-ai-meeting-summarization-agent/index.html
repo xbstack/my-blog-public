@@ -1,0 +1,1029 @@
+<!DOCTYPE html><html lang="zh-CN" class="dark" data-analytics="ga4-baidu"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script>
+      const applyTheme = () => {
+        const theme = localStorage.getItem("theme");
+        const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      };
+      applyTheme();
+      document.addEventListener("astro:page-load", applyTheme);
+    </script><title>AI 会议纪要 Agent：转写、Action Items 与 Notion 同步 | AI - XBSTACK</title><meta name="description" content="AI 会议纪要 Agent 怎么做？拆解转写、speaker diarization、身份映射、Action Items、人工确认、Notion 429 Retry-After 与幂等同步。"><meta http-equiv="content-language" content="zh-CN"><meta name="keywords" content="AI 会议纪要 Agent，AI 会议纪要智能体，AI Meeting Summarization Agent，会议纪要自动化，faster-whisper，pyannote.audio，speaker diarization，Action Items，Notion API 429，Retry-After，Notion 自动化，任务分配"><meta name="theme-color" content="#050608"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://www.xbstack.com/ai/how-to-build-ai-meeting-summarization-agent/"><meta property="og:title" content="AI 会议纪要 Agent：转写、Action Items 与 Notion 同步 | AI - XBSTACK"><meta property="og:description" content="AI 会议纪要 Agent 怎么做？拆解转写、speaker diarization、身份映射、Action Items、人工确认、Notion 429 Retry-After 与幂等同步。"><meta property="og:image" content="https://www.xbstack.com/_astro/cogview4-271aad59-9977af95-1200x630.CCcKVceC.webp"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/ai/how-to-build-ai-meeting-summarization-agent/"><meta property="twitter:title" content="AI 会议纪要 Agent：转写、Action Items 与 Notion 同步 | AI - XBSTACK"><meta property="twitter:description" content="AI 会议纪要 Agent 怎么做？拆解转写、speaker diarization、身份映射、Action Items、人工确认、Notion 429 Retry-After 与幂等同步。"><meta property="twitter:image" content="https://www.xbstack.com/_astro/cogview4-271aad59-9977af95-1200x630.CCcKVceC.webp"><link rel="canonical" href="https://www.xbstack.com/ai/how-to-build-ai-meeting-summarization-agent/"><link rel="alternate" hreflang="zh-CN" href="https://www.xbstack.com/ai/how-to-build-ai-meeting-summarization-agent/"><link rel="alternate" hreflang="en" href="https://www.xbstack.com/en/ai/how-to-build-ai-meeting-summarization-agent/"><link rel="alternate" hreflang="x-default" href="https://www.xbstack.com/ai/how-to-build-ai-meeting-summarization-agent/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Tools and Products","description":"AI Finance, compound calculator, Lunest and a small set of practical tools and reusable resources.","url":"https://www.xbstack.com/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Long-term Thinking","description":"Investment research, reading notes and long-term thinking with evidence, outcomes and decision reviews.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Travel, Photography and Gear","description":"Field notes from real hiking, travel, photography and gear use, with Guizhou as a core but not exclusive focus.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"Xiaobai's profile, current products, long-term research themes, working principles and the XBSTACK public asset system.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","additionalType":"https://schema.org/TechArticle","headline":"AI 会议纪要 Agent 怎么做？转写、Action Items、负责人和 Notion 同步","description":"AI 会议纪要 Agent 怎么做？拆解转写、speaker diarization、身份映射、Action Items、人工确认、Notion 429 Retry-After 与幂等同步。","inLanguage":"zh-CN","image":"https://www.xbstack.com/_astro/cogview4-271aad59-9977af95-1200x630.CCcKVceC.webp","datePublished":"2026-05-09T00:00:00.000Z","author":{"@id":"https://www.xbstack.com/about/#person"},"publisher":{"@type":"Organization","name":"XBSTACK","logo":{"@type":"ImageObject","url":"https://www.xbstack.com/favicon/favicon.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.xbstack.com/ai/how-to-build-ai-meeting-summarization-agent/"},"articleSection":"ai","keywords":["AI 会议纪要 Agent，AI 会议纪要智能体，AI Meeting Summarization Agent，会议纪要自动化，faster-whisper，pyannote.audio，speaker diarization，Action Items，Notion API 429，Retry-After，Notion 自动化，任务分配"],"abstract":"AI 会议纪要 Agent 用于把会议录音或转写整理为可追溯的决策、行动项、负责人、截止日期和可同步任务。生产设计需要将转写、speaker diarization、身份映射、结构化提取、人工确认和 Notion/Jira 写入拆开；当前 pyannote.audio community-1 使用匿名 speaker labels 和 VBx clustering，faster-whisper 的 INT8 内存收益必须按实际硬件与模型验证，Notion 429 应遵守 Retry-After。","about":[{"@type":"Thing","name":"ai-meeting-summarization-agent"},{"@type":"Thing","name":"speech-to-text"},{"@type":"Thing","name":"speaker-diarization"},{"@type":"Thing","name":"action-items"},{"@type":"Thing","name":"AI Meeting Notes Agent"},{"@type":"Thing","name":"faster-whisper"},{"@type":"Thing","name":"CTranslate2"},{"@type":"Thing","name":"pyannote.audio"},{"@type":"Thing","name":"speaker-diarization-community-1"},{"@type":"Thing","name":"Speaker Diarization"},{"@type":"Thing","name":"Action Items"},{"@type":"Thing","name":"Notion API"},{"@type":"Thing","name":"Jira"},{"@type":"Thing","name":"Human-in-the-Loop"}],"citation":["https://github.com/pyannote/pyannote-audio","https://github.com/pyannote/pyannote-audio/blob/main/src/pyannote/audio/pipelines/speaker_diarization.py","https://github.com/SYSTRAN/faster-whisper","https://developers.notion.com/reference/request-limits"],"speakable":{"@type":"SpeakableSpecification","cssSelector":[".markdown-content h2",".markdown-content p:first-of-type"]}},{"@type":"Person","@id":"https://www.xbstack.com/about/#person","name":"小白","alternateName":["Xiaobai"],"url":"https://www.xbstack.com/about/","image":"https://www.xbstack.com/_astro/avatar.BzDyfp9G.webp","jobTitle":"Full-Stack AI Engineer","worksFor":{"@type":"Organization","name":"XBSTACK","url":"https://www.xbstack.com"},"sameAs":["https://github.com/xbstack"],"knowsAbout":["AI Agents","LangGraph","Model Context Protocol","AI Workflows","Product Engineering"]}]}</script><meta property="article:published_time" content="Sat May 09 2026 08:00:00 GMT+0800 (China Standard Time)"><meta name="abstract" content="AI 会议纪要 Agent 怎么做？拆解转写、speaker diarization、身份映射、Action Items、人工确认、Notion 429 Retry-After 与幂等同步。"><meta name="speakable-selector" content=".markdown-content h2, .markdown-content p"><meta name="ai-content-access" content="allowed"><meta name="geo-optimized" content="true"><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
+
+          const productionAnalyticsHosts = new Set(['www.xbstack.com', 'xbstack.com']);
+          const automationUserAgent = /HeadlessChrome|PhantomJS|Playwright|Puppeteer|Selenium|Lighthouse|PageSpeed|bot\b|crawler|spider|slurp|curl|wget|python-requests|axios|node-fetch|facebookexternalhit|Twitterbot|LinkedInBot|Bytespider|GPTBot|ClaudeBot|PerplexityBot/i;
+          const analyticsUrl = new URL(window.location.href);
+          const analyticsSource = String(analyticsUrl.searchParams.get('utm_source') || '').toLowerCase();
+          const analyticsCampaign = String(analyticsUrl.searchParams.get('utm_campaign') || '').toLowerCase();
+          const internalAnalyticsAudit =
+            analyticsUrl.searchParams.has('ga4_audit') ||
+            analyticsUrl.searchParams.has('analytics_test') ||
+            ['internal', 'internal_test', 'qa', 'test'].includes(analyticsSource) ||
+            analyticsCampaign.includes('ga4_audit') ||
+            analyticsCampaign.includes('internal_test');
+          const shouldTrackAnalytics =
+            Boolean(googleAnalyticsId) &&
+            productionAnalyticsHosts.has(window.location.hostname.toLowerCase()) &&
+            navigator.webdriver !== true &&
+            !automationUserAgent.test(navigator.userAgent || '') &&
+            !internalAnalyticsAudit;
+
+          if (!shouldTrackAnalytics) {
+            window.__analytics_suppressed = true;
+            window.__analytics_suppression_reason = internalAnalyticsAudit ? 'internal_test' : 'environment_or_automation';
+          } else if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_id', 'utm_term', 'utm_content'];
+            const UTM_ALIASES = {
+              utmsource: 'utm_source',
+              utmmedium: 'utm_medium',
+              utmcampaign: 'utm_campaign',
+              utmcontent: 'utm_content',
+              utmterm: 'utm_term',
+              utmid: 'utm_id',
+            };
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.normalizeUtmAliases = () => {
+              try {
+                const url = new URL(window.location.href);
+                let changed = false;
+                Object.entries(UTM_ALIASES).forEach(([alias, canonical]) => {
+                  const aliasValue = url.searchParams.get(alias);
+                  if (aliasValue && !url.searchParams.get(canonical)) {
+                    url.searchParams.set(canonical, aliasValue);
+                    changed = true;
+                  }
+                  if (url.searchParams.has(alias)) {
+                    url.searchParams.delete(alias);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.normalizeUtmAliases();
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
+            window.__ga4_initialized = true;
+            window.__ga4_client_loaded = false;
+            window.__ga4_tracking_started = false;
+            window.__ga4_human_verified = false;
+            window.__ga4_session_class = '';
+            window.__lastGA4PageKey = "";
+            window.__lastGA4PageLocation = document.referrer || "";
+            window.__ga4_tracking_start_reason = '';
+            window.__scroll50Reported = false;
+            window.__scroll90Reported = false;
+
+            const getReferrerHost = () => {
+              try {
+                return document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+              } catch (err) {
+                return '';
+              }
+            };
+
+            const inferSourceHint = () => {
+              const refHost = getReferrerHost();
+              if (!refHost) return '';
+              if (refHost.includes('zhihu')) return 'zhihu_referrer';
+              if (refHost.includes('juejin')) return 'juejin_referrer';
+              if (refHost.includes('csdn')) return 'csdn_referrer';
+              if (refHost.includes('weixin') || refHost.includes('wechat')) return 'wechat_referrer';
+              if (refHost.includes('google')) return 'google_referrer';
+              if (refHost.includes('baidu')) return 'baidu_referrer';
+              return refHost;
+            };
+
+            const getAttributionPayload = () => {
+              const params = new URLSearchParams(window.location.search);
+              const current = {};
+              UTM_KEYS.forEach((key) => {
+                const value = params.get(key);
+                if (value) current[key] = value;
+              });
+
+              const referrerHost = getReferrerHost();
+              const currentHost = window.location.hostname.replace(/^www\./, '');
+              const sourceHint = inferSourceHint();
+              const hasExternalReferrer = Boolean(referrerHost && referrerHost !== currentHost);
+
+              let stored = {};
+              try {
+                stored = JSON.parse(sessionStorage.getItem('xbstack_attribution') || '{}');
+              } catch (err) {
+                stored = {};
+              }
+
+              if (Object.keys(current).length) {
+                stored = {
+                  ...stored,
+                  ...current,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: current.utm_source ? `utm:${current.utm_source}` : sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              } else if (hasExternalReferrer && !stored.captured_at) {
+                // Preserve first-touch referral attribution even when the platform strips UTM parameters.
+                stored = {
+                  ...stored,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              }
+
+              if (stored.captured_at) {
+                try {
+                  sessionStorage.setItem('xbstack_attribution', JSON.stringify(stored));
+                } catch (err) {}
+              }
+
+              return {
+                utm_source: stored.utm_source || '',
+                utm_medium: stored.utm_medium || '',
+                utm_campaign: stored.utm_campaign || '',
+                utm_id: stored.utm_id || '',
+                utm_term: stored.utm_term || '',
+                utm_content: stored.utm_content || '',
+                attribution_landing_page: stored.landing_page || '',
+                referrer_host: stored.referrer_host || referrerHost,
+                source_hint: stored.source_hint || (stored.utm_source ? `utm:${stored.utm_source}` : sourceHint),
+              };
+            };
+
+            const getAnalyticsPageContext = () => {
+              const url = new URL(window.location.href);
+              const isCompoundCalculator = [
+                '/tools/compound-calculator/',
+                '/en/tools/compound-calculator/',
+              ].includes(url.pathname);
+
+              if (isCompoundCalculator) {
+                ['scenario', 'principal', 'monthly', 'rate', 'years', 'volatility', 'inflation', 'm2_drag', 'target', 'compare_rate'].forEach((key) => {
+                  url.searchParams.delete(key);
+                });
+              }
+
+              return {
+                pagePath: url.pathname,
+                pageLocation: url.href,
+                pageSearch: url.search,
+              };
+            };
+
+            window.xbTrackEvent = (eventName, payload = {}) => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !eventName ||
+                !window.__ga4_tracking_started ||
+                !window.__ga4_human_verified
+              ) return;
+              const analyticsPage = getAnalyticsPageContext();
+              window.gtag('event', eventName, {
+                transport_type: 'beacon',
+                page_path: analyticsPage.pagePath,
+                page_title: document.title || '',
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+                ...payload,
+              });
+            };
+
+            window.sendGA4PageView = () => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !window.__ga4_tracking_started
+              ) return;
+
+              const analyticsPage = getAnalyticsPageContext();
+              const pageLocation = analyticsPage.pageLocation;
+              const pageTitle = document.title || '';
+              const pageKey = `${pageLocation}|${pageTitle}`;
+
+              if (pageKey === window.__lastGA4PageKey) return;
+              const pageReferrer = window.__lastGA4PageLocation;
+              window.__lastGA4PageKey = pageKey;
+              window.__lastGA4PageLocation = pageLocation;
+              window.__scroll50Reported = false;
+              window.__scroll90Reported = false;
+
+              window.gtag('event', 'page_view', {
+                page_title: pageTitle,
+                page_location: pageLocation,
+                page_path: analyticsPage.pagePath,
+                page_search: analyticsPage.pageSearch,
+                page_referrer: pageReferrer,
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+              });
+            };
+
+            window.initGA4Tracking = () => {
+              if (typeof window.gtag !== 'function') return;
+              if (window.__ga4_events_bound) return;
+              window.__ga4_events_bound = true;
+
+              // 1. 页面滚动深度上报
+              const handleScroll = (event) => {
+                if (!event?.isTrusted || !window.__ga4_human_verified) return;
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const progress = (scrollTop / scrollHeight) * 100;
+
+                if (progress >= 50 && !window.__scroll50Reported) {
+                  window.xbTrackEvent('scroll_50', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll50Reported = true;
+                }
+                if (progress >= 90 && !window.__scroll90Reported) {
+                  window.xbTrackEvent('scroll_90', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll90Reported = true;
+                }
+              };
+
+              window.addEventListener('scroll', handleScroll, { passive: true });
+
+              // 2. 完整链接与按钮点击上报。link_click 是统一事实表，旧事件继续保留用于历史对比。
+              const inferLinkArea = (target) => {
+                const explicitArea = target.closest('[data-analytics-area]')?.getAttribute('data-analytics-area');
+                if (explicitArea) return explicitArea.slice(0, 60);
+                if (target.closest('header, nav, [role="navigation"]')) return 'navigation';
+                if (target.closest('footer')) return 'footer';
+                if (target.closest('[class*="related"], [class*="recommend"], [class*="next-reading"]')) return 'related_content';
+                if (target.closest('[class*="sidebar"], aside')) return 'sidebar';
+                if (target.closest('.markdown-content, article')) return 'article_body';
+                if (target.closest('[class*="card"], [class*="grid"]')) return 'content_card';
+                return 'page_other';
+              };
+
+              const classifyLink = (target, url, linkArea) => {
+                const rawHref = String(target.getAttribute('href') || '');
+                const protocol = String(url.protocol || '').toLowerCase();
+                const path = String(url.pathname || '/');
+                const host = String(url.hostname || '').replace(/^www\./, '').toLowerCase();
+                const isHttp = protocol === 'http:' || protocol === 'https:';
+                const isExternal = isHttp && url.origin !== window.location.origin;
+                const isDownload =
+                  target.hasAttribute('download') ||
+                  /\.(pdf|zip|gz|tar|csv|xlsx?|docx?|pptx?|json|ya?ml|mp3|mp4|mov|webm)(?:$|[?#])/i.test(rawHref);
+
+                if (protocol === 'mailto:' || protocol === 'tel:') return 'contact';
+                if (isDownload) return 'download';
+                if (isExternal && host === 'github.com') return 'github';
+                if (isExternal) return 'external';
+                if (path.startsWith('/go/')) return 'affiliate';
+                if (path.startsWith('/tools/') || path.startsWith('/compound-interest/')) return 'tool';
+                if (path.startsWith('/newsletter/')) return 'newsletter';
+                if (url.origin === window.location.origin && path === window.location.pathname && url.hash) return 'anchor';
+                if (linkArea === 'related_content') return 'related_article';
+                if (linkArea === 'article_body') return 'internal_article';
+                return 'internal';
+              };
+
+              const handleClick = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const target = e.target.closest('a,button');
+                if (!target) return;
+
+                const label = (target.getAttribute('aria-label') || target.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 100);
+                if (target.tagName === 'BUTTON') {
+                  window.xbTrackEvent('click_button', {
+                    event_category: 'engagement',
+                    event_label: label,
+                    link_area: inferLinkArea(target),
+                    link_position: inferLinkArea(target),
+                    source_page_path: window.location.pathname,
+                  });
+                  return;
+                }
+
+                const rawHref = String(target.getAttribute('href') || '').trim();
+                if (!rawHref || rawHref.toLowerCase().startsWith('javascript:')) return;
+
+                try {
+                  const url = new URL(rawHref, window.location.href);
+                  const linkArea = inferLinkArea(target);
+                  const linkType = classifyLink(target, url, linkArea);
+                  const isExternalHttp =
+                    (url.protocol === 'http:' || url.protocol === 'https:') &&
+                    url.origin !== window.location.origin;
+                  const payload = {
+                    event_category:
+                      ['affiliate', 'tool', 'newsletter'].includes(linkType)
+                        ? 'conversion'
+                        : isExternalHttp
+                          ? 'outbound'
+                          : 'navigation',
+                    event_label: url.href,
+                    link_text: label,
+                    link_url: url.href,
+                    link_domain: url.hostname.replace(/^www\./, ''),
+                    link_id: target.id || '',
+                    link_classes: String(target.className || '').slice(0, 120),
+                    outbound: isExternalHttp,
+                    link_type: linkType,
+                    link_area: linkArea,
+                    link_position: linkArea,
+                    source_page_path: window.location.pathname,
+                    target_page_path: url.pathname || '',
+                  };
+
+                  // 所有真实链接统一进入 link_click，运营报表以该事件为准。
+                  window.xbTrackEvent('link_click', payload);
+
+                  if (linkType === 'external' || linkType === 'github') {
+                    window.xbTrackEvent('click_external', payload);
+                  }
+                  if (linkType === 'github') {
+                    window.xbTrackEvent('github_click', payload);
+                  }
+                  if (linkType === 'download') {
+                    window.xbTrackEvent('download_click', payload);
+                  }
+                  if (linkType === 'affiliate') {
+                    window.xbTrackEvent('affiliate_click', {
+                      ...payload,
+                      affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                    });
+                  }
+                  if (linkType === 'tool') {
+                    window.xbTrackEvent('click_tool', payload);
+                  }
+                  if (linkType === 'newsletter') {
+                    window.xbTrackEvent('newsletter_click', payload);
+                  }
+                  if (linkType === 'related_article') {
+                    window.xbTrackEvent('related_article_click', payload);
+                  }
+                  if (['internal', 'internal_article', 'related_article', 'anchor'].includes(linkType)) {
+                    window.xbTrackEvent('internal_link_click', payload);
+                  }
+                  if (
+                    !isExternalHttp &&
+                    ['/ai/', '/newsletter/', '/search/', '/life/', '/investing/'].some((prefix) => url.pathname.startsWith(prefix))
+                  ) {
+                    window.xbTrackEvent('click_internal_entry', payload);
+                  }
+                } catch (err) {}
+              };
+
+              const handleSubmit = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const form = e.target;
+                if (!form || form.tagName !== 'FORM') return;
+                const action = form.getAttribute('action') || '';
+                const formType = form.getAttribute('data-analytics-form') || '';
+                const formData = new FormData(form);
+                const searchTerm = String(formData.get('q') || '').trim();
+
+                if (action.includes('/search') || formType === 'site-search') {
+                  window.xbTrackEvent('view_search_results', {
+                    event_category: 'site_search',
+                    search_term: searchTerm,
+                  });
+                }
+
+                if (action.includes('buttondown.email') || formType === 'newsletter') {
+                  const provider = action.includes('buttondown.email') ? 'buttondown' : 'xbstack_api';
+                  window.xbTrackEvent('newsletter_subscribe_attempt', {
+                    event_category: 'conversion',
+                    event_label: window.location.pathname,
+                    newsletter_provider: provider,
+                  });
+                  window.xbTrackEvent('newsletter_subscribe', {
+                    event_category: 'conversion',
+                    event_label: 'submitted',
+                    newsletter_provider: provider,
+                    confirmation_status: 'submitted',
+                  });
+                }
+              };
+
+              document.addEventListener('click', handleClick);
+              document.addEventListener('submit', handleSubmit, true);
+            };
+
+            // 原始访问先进入 GA4，再通过 traffic_verification 区分未验证访问与真人互动。
+            // 这样既保留完整 page_view / session_start 基线，也能在报表层排除低质量流量。
+            window.loadGA4Client = () => {
+              if (window.__ga4_client_loaded) return;
+              window.__ga4_client_loaded = true;
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = function() {
+                window.dataLayer.push(arguments);
+              };
+
+              const ga4Script = document.createElement('script');
+              ga4Script.async = true;
+              ga4Script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(googleAnalyticsId)}`;
+              document.head.appendChild(ga4Script);
+
+              window.gtag('js', new Date());
+              window.gtag('config', googleAnalyticsId, {
+                send_page_view: false,
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+              });
+            };
+
+            window.startGA4Tracking = (
+              reason = 'page_load',
+              sessionClass = 'unverified_session',
+              humanVerified = false,
+            ) => {
+              if (window.__ga4_tracking_started) {
+                if (humanVerified && !window.__ga4_human_verified) {
+                  window.verifyGA4Human(reason, sessionClass);
+                }
+                return;
+              }
+              window.__ga4_tracking_start_reason = String(reason || 'page_load').slice(0, 60);
+              window.__ga4_session_class = String(sessionClass || 'unverified_session').slice(0, 40);
+              window.__ga4_human_verified = Boolean(humanVerified);
+              window.__ga4_tracking_started = true;
+              window.loadGA4Client();
+              window.sendGA4PageView();
+              window.initGA4Tracking();
+            };
+
+            window.verifyGA4Human = (reason = 'interaction', sessionClass = 'human_interaction') => {
+              if (!window.__ga4_tracking_started) {
+                window.startGA4Tracking(reason, sessionClass, true);
+                return;
+              }
+              if (window.__ga4_human_verified) return;
+
+              const previousClass = window.__ga4_session_class || 'unverified_session';
+              window.__ga4_human_verified = true;
+              window.__ga4_session_class = String(sessionClass || 'human_interaction').slice(0, 40);
+              window.__ga4_tracking_start_reason = String(reason || 'interaction').slice(0, 60);
+              window.gtag('event', 'traffic_verified', {
+                transport_type: 'beacon',
+                traffic_verification: window.__ga4_session_class,
+                previous_traffic_verification: previousClass,
+                verification_reason: window.__ga4_tracking_start_reason,
+                page_path: window.location.pathname,
+                page_title: document.title || '',
+              });
+            };
+
+            ['pointerdown', 'keydown', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(
+                eventName,
+                (event) => {
+                  if (!event?.isTrusted) return;
+                  window.verifyGA4Human(`interaction:${eventName}`, 'human_interaction');
+                },
+                { once: true, passive: true },
+              );
+            });
+
+            let pointerMoveCount = 0;
+            let pointerMoveDistance = 0;
+            let lastPointerX = null;
+            let lastPointerY = null;
+            const handleHumanPointerMove = (event) => {
+              if (
+                window.__ga4_human_verified ||
+                !event?.isTrusted ||
+                event.pointerType === 'touch'
+              ) return;
+              if (lastPointerX !== null && lastPointerY !== null) {
+                pointerMoveDistance += Math.hypot(event.clientX - lastPointerX, event.clientY - lastPointerY);
+              }
+              lastPointerX = event.clientX;
+              lastPointerY = event.clientY;
+              pointerMoveCount += 1;
+              if (pointerMoveCount >= 3 && pointerMoveDistance >= 120) {
+                window.removeEventListener('pointermove', handleHumanPointerMove);
+                window.verifyGA4Human('interaction:pointermove', 'human_interaction');
+              }
+            };
+            window.addEventListener('pointermove', handleHumanPointerMove, { passive: true });
+
+            // 放宽采集：所有可见前台页面都记录原始访问；真人互动后再升级质量标签。
+            window.setTimeout(() => {
+              if (
+                window.__ga4_tracking_started ||
+                document.visibilityState !== 'visible'
+              ) return;
+              window.startGA4Tracking('page_load:visible_800ms', 'unverified_session', false);
+            }, 800);
+
+            document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+              if (window.__ga4_tracking_started) {
+                window.sendGA4PageView();
+                window.initGA4Tracking();
+              }
+            });
+          } else {
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+            if (window.__ga4_tracking_started && typeof window.sendGA4PageView === 'function') {
+              window.sendGA4PageView();
+            }
+          }
+        })();</script><script data-baidu-id="c7bfaf645bfc8974405a85c2a55573a0">
+          const baiduId = document.currentScript?.dataset.baiduId || '';
+          if (!window.__baidu_analytics_initialized) {
+            window._hmt = window._hmt || [];
+            window.__baidu_analytics_initialized = true;
+            window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+
+            const loadBaiduAnalytics = () => {
+              if (window.__baidu_script_loaded || !baiduId) return;
+              window.__baidu_script_loaded = true;
+              const hm = document.createElement('script');
+              hm.async = true;
+              hm.src = "https://hm.baidu.com/hm.js?" + baiduId;
+              document.head.appendChild(hm);
+              window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+            };
+
+            // 百度统计不是首屏渲染依赖：首次交互时加载，若用户未交互则 12 秒后加载。
+            ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(eventName, loadBaiduAnalytics, { once: true, passive: true });
+            });
+            window.setTimeout(loadBaiduAnalytics, 12000);
+
+            document.addEventListener('astro:page-load', () => {
+              const pageKey = window.location.pathname + window.location.search;
+              if (!window.__baidu_script_loaded || pageKey === window.__lastBaiduPageKey) return;
+              window.__lastBaiduPageKey = pageKey;
+              window._hmt.push(['_trackPageview', pageKey]);
+            });
+          }
+        </script><link rel="stylesheet" href="/_astro/archive.DJ636BNq.css">
+<link rel="stylesheet" href="/_astro/archive.KSCYbzqj.css">
+<link rel="stylesheet" href="/_astro/_slug_.CRFvxpGR.css">
+<link rel="stylesheet" href="/_astro/_slug_.CeiCBDdi.css">
+<link rel="stylesheet" href="/_astro/vendor-media.DSulWsr7.css">
+<style>.glass-button[data-astro-cid-xwnkcw7l]{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:var(--sizeGap);padding:var(--sizePadding);background:var(--variantBase);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--variantBorder);border-radius:var(--sizeBorderRadius);font-size:var(--sizeFontSize);font-weight:500;color:var(--variantColor);cursor:pointer;transition:all .3s cubic-bezier(.175,.885,.32,2.2);box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d;-webkit-user-select:none;-moz-user-select:none;user-select:none;overflow:hidden;text-decoration:none;white-space:nowrap}.glass-button[data-astro-cid-xwnkcw7l]:before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,var(--variantGradient),transparent);transition:left .6s cubic-bezier(.25,.46,.45,.94);pointer-events:none;opacity:0}.glass-button[data-astro-cid-xwnkcw7l]:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);transform:translateY(-4px) scale(1.03);box-shadow:0 20px 25px -5px var(--variantShadow),0 15px 15px -5px #0000004d,inset 1px 1px 4px #ffffff80;filter:brightness(1.2) saturate(1.3)}.glass-button[data-astro-cid-xwnkcw7l]:hover:before{left:100%;opacity:1}.glass-button[data-astro-cid-xwnkcw7l]:active{transform:translateY(-1px) scale(.98);box-shadow:0 2px 6px var(--variantShadow)}.glass-button[data-astro-cid-xwnkcw7l]:disabled{cursor:not-allowed;opacity:.6;transform:none;pointer-events:none}.glass-button[data-astro-cid-xwnkcw7l]:disabled:hover{transform:none;box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d}.glass-button__icon[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;justify-content:center;width:var(--sizeIconSize);height:var(--sizeIconSize);transition:all .3s cubic-bezier(.175,.885,.32,2.2)}.glass-button__icon[data-astro-cid-xwnkcw7l] svg{width:100%;height:100%}.glass-button[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{transform:scale(1.2) rotate(-5deg);filter:drop-shadow(0 0 4px var(--variantShadow))}.glass-button__content[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;transition:all .3s ease}.glass-button__spinner[data-astro-cid-xwnkcw7l]{width:var(--sizeIconSize);height:var(--sizeIconSize);animation:spin 1s linear infinite}.dark[data-astro-cid-xwnkcw7l]{.glass-button{background:#37373799;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-color:#ffffff26;color:#e5e7eb;box-shadow:0 4px 8px #0006,inset 1px 1px 3px #ffffff26}.glass-button:before{background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}.glass-button:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);box-shadow:0 6px 14px var(--variantShadow),inset 1px 1px 4px #fff3;filter:brightness(1.2) saturate(1.3)}}@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.glass-button--primary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--secondary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(37,99,235,.5))}.glass-button--success[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(22,163,74,.5))}.glass-button--warning[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(217,119,6,.5))}.glass-button--danger[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--info[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(99,102,241,.5))}
+</style></head> <body class="bg-[var(--xb-bg)] text-[var(--xb-ink)] selection:bg-orange-500/20 selection:text-orange-500 overflow-x-hidden"> <style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value=="object"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};"requestIdleCallback"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event("astro:idle"));})();</script><script>(()=>{var A=Object.defineProperty;var g=(i,o,a)=>o in i?A(i,o,{enumerable:!0,configurable:!0,writable:!0,value:a}):i[o]=a;var d=(i,o,a)=>g(i,typeof o!="symbol"?o+"":o,a);{let i={0:t=>m(t),1:t=>a(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(a(t)),5:t=>new Set(a(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t),11:t=>1/0*t},o=t=>{let[l,e]=t;return l in i?i[l](e):void 0},a=t=>t.map(o),m=t=>typeof t!="object"||t===null?t:Object.fromEntries(Object.entries(t).map(([l,e])=>[l,o(e)]));class y extends HTMLElement{constructor(){super(...arguments);d(this,"Component");d(this,"hydrator");d(this,"hydrate",async()=>{var b;if(!this.hydrator||!this.isConnected)return;let e=(b=this.parentElement)==null?void 0:b.closest("astro-island[ssr]");if(e){e.addEventListener("astro:hydrate",this.hydrate,{once:!0});return}let c=this.querySelectorAll("astro-slot"),n={},h=this.querySelectorAll("template[data-astro-template]");for(let r of h){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("data-astro-template")||"default"]=r.innerHTML,r.remove())}for(let r of c){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("name")||"default"]=r.innerHTML)}let p;try{p=this.hasAttribute("props")?m(JSON.parse(this.getAttribute("props"))):{}}catch(r){let s=this.getAttribute("component-url")||"<unknown>",v=this.getAttribute("component-export");throw v&&(s+=` (export ${v})`),console.error(`[hydrate] Error parsing props for component ${s}`,this.getAttribute("props"),r),r}let u;await this.hydrator(this)(this.Component,p,n,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),this.dispatchEvent(new CustomEvent("astro:hydrate"))});d(this,"unmount",()=>{this.isConnected||this.dispatchEvent(new CustomEvent("astro:unmount"))})}disconnectedCallback(){document.removeEventListener("astro:after-swap",this.unmount),document.addEventListener("astro:after-swap",this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute("await-children")||document.readyState==="interactive"||document.readyState==="complete")this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener("DOMContentLoaded",e),c.disconnect(),this.childrenConnectedCallback()},c=new MutationObserver(()=>{var n;((n=this.lastChild)==null?void 0:n.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue==="astro:end"&&(this.lastChild.remove(),e())});c.observe(this,{childList:!0}),document.addEventListener("DOMContentLoaded",e)}}async childrenConnectedCallback(){let e=this.getAttribute("before-hydration-url");e&&await import(e),this.start()}async start(){let e=JSON.parse(this.getAttribute("opts")),c=this.getAttribute("client");if(Astro[c]===void 0){window.addEventListener(`astro:${c}`,()=>this.start(),{once:!0});return}try{await Astro[c](async()=>{let n=this.getAttribute("renderer-url"),[h,{default:p}]=await Promise.all([import(this.getAttribute("component-url")),n?import(n):()=>()=>{}]),u=this.getAttribute("component-export")||"default";if(!u.includes("."))this.Component=h[u];else{this.Component=h;for(let f of u.split("."))this.Component=this.Component[f]}return this.hydrator=p,this.hydrate},e,this)}catch(n){console.error(`[astro-island] Error hydrating ${this.getAttribute("component-url")}`,n)}}attributeChangedCallback(){this.hydrate()}}d(y,"observedAttributes",["props"]),customElements.get("astro-island")||customElements.define("astro-island",y)}})();</script><astro-island uid="ZWjsVO" prefix="r20" component-url="/_astro/GlobalLightbox.CqZePd56.js" component-export="default" renderer-url="/_astro/client.DPSb9UvF.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;GlobalLightbox&quot;,&quot;value&quot;:true}"></astro-island> <astro-island uid="2nwVdo" prefix="r21" component-url="/_astro/AffiliatePopup.C1KShLAm.js" component-export="default" renderer-url="/_astro/client.DPSb9UvF.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;AffiliatePopup&quot;,&quot;value&quot;:true}"></astro-island> <div id="app-background" class="fixed inset-0 z-[-1] h-full w-full pointer-events-none bg-slate-50 dark:bg-slate-950 transition-colors duration-500"> <div id="app-background-image" class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-500" data-day="/_astro/macos2.hYF-Pyun.webp" data-night="/_astro/macos2-night.DwJ7amhx.webp" aria-hidden="true"></div> <div class="absolute inset-0 bg-[#DFE1E6]/90 dark:bg-transparent backdrop-blur-[6px] pointer-events-none"></div> <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b82f611,transparent_50%)] dark:hidden pointer-events-none"></div> <div class="absolute inset-0 opacity-[0.08] dark:opacity-[0.03] pointer-events-none mix-blend-multiply" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+');"></div> </div> <script>
+  (() => {
+    const bindBackground = () => {
+      const root = document.documentElement;
+      const background = document.getElementById('app-background-image');
+      if (!background || background.dataset.themeObserverBound === 'true') return;
+
+      const applyBackground = () => {
+        const source = root.classList.contains('dark') ? background.dataset.night : background.dataset.day;
+        if (!source) return;
+        const nextValue = `url("${source}")`;
+        if (background.style.backgroundImage !== nextValue) {
+          background.style.backgroundImage = nextValue;
+        }
+      };
+
+      applyBackground();
+      const observer = new MutationObserver(applyBackground);
+      observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+      background.dataset.themeObserverBound = 'true';
+    };
+
+    bindBackground();
+    document.addEventListener('astro:page-load', bindBackground);
+  })();
+</script> <header class="sticky top-0 z-[500] border-b border-[var(--xb-line)] bg-[color:var(--xb-bg)]/95 backdrop-blur-xl"> <div class="xb-shell flex min-h-[66px] items-center gap-7"> <a href="/" class="flex shrink-0 items-center gap-2.5 font-black tracking-[-0.035em] text-[var(--xb-ink)]" aria-label="XBSTACK Home"> <img src="/favicon/favicon.svg" alt="XBSTACK" width="32" height="32" decoding="async" class="h-8 w-8 object-contain"> <span class="text-[17px]">XBSTACK</span> </a> <nav class="hidden items-center gap-1 lg:flex" aria-label="主导航"> <a href="/ai/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors bg-blue-500/[0.06] text-blue-600 dark:text-blue-400"> AI </a><a href="/tools/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Tools </a><a href="/horizon/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Horizon </a><a href="/life/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Lens </a><a href="/about/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> About </a> </nav> <div class="ml-auto flex items-center gap-2"> <a id="global-search-trigger" data-xbstack-search-trigger href="/search/" aria-label="打开站内搜索" class="hidden h-9 min-w-[190px] items-center gap-2 rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)] px-3 text-left text-[11px] text-[var(--xb-muted)] transition-colors hover:border-blue-400 md:flex"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="shrink-0" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.8 173.8 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.8 173.8 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3M97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8"></path></svg> <span class="truncate">搜索文章、工具、主题…</span> <kbd class="ml-auto rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[9px] text-[var(--xb-faint)]">⌘K</kbd> </a> <div class="hidden sm:block"> <nav data-visible-language-alternate aria-label="选择语言" data-astro-cid-iemtoba4> <details class="language-switcher-details relative" data-language-switcher-details data-astro-cid-iemtoba4> <summary class="language-switcher-summary flex h-10 min-w-[88px] cursor-pointer list-none items-center justify-center gap-2 rounded-full border border-slate-200/60 bg-white/50 px-3 text-[12px] font-bold text-slate-600 shadow-sm backdrop-blur-md transition-all hover:border-blue-300 hover:bg-blue-50/80 hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-blue-400/50 dark:hover:bg-blue-500/10 dark:hover:text-blue-400 dark:focus-visible:ring-offset-slate-950" aria-label="选择语言" title="选择语言" data-astro-cid-iemtoba4> <svg aria-hidden="true" viewBox="0 0 24 24" class="h-3.5 w-3.5 flex-none" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4> <circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle> <path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path> </svg> <span class="whitespace-nowrap" data-astro-cid-iemtoba4>中文</span> <svg aria-hidden="true" viewBox="0 0 20 20" class="language-chevron h-3 w-3 flex-none text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-iemtoba4> <path d="m5 7.5 5 5 5-5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path> </svg> </summary> <div class="language-switcher-menu absolute right-0 top-[calc(100%+0.65rem)] z-[520] w-44 overflow-hidden rounded-2xl border border-slate-200/80 bg-white/95 p-2 shadow-[0_18px_50px_-18px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0B1020]/95" role="menu" aria-label="选择语言" data-astro-cid-iemtoba4> <div class="px-3 pb-1.5 pt-1 text-[9px] font-black uppercase tracking-[0.22em] text-slate-400 dark:text-slate-500" data-astro-cid-iemtoba4> 语言 </div> <a href="/ai/how-to-build-ai-meeting-summarization-agent/" data-language-choice="zh-CN" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" role="menuitemradio" aria-checked="true" title="当前语言：中文" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors cursor-default bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" data-astro-cid-iemtoba4> <span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4> <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" data-astro-cid-iemtoba4> <path d="m4.5 10 3.2 3.2 7.8-7.8" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path> </svg> </span> <span class="flex-1" data-astro-cid-iemtoba4>中文</span> <span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>ZH</span> </a><a href="/en/ai/how-to-build-ai-meeting-summarization-agent/" data-language-choice="en" data-language-current="false" data-language-available="true" role="menuitemradio" aria-checked="false" title="Switch to the English version" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors text-slate-600 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-blue-400" data-astro-cid-iemtoba4> <span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4> <span class="h-1.5 w-1.5 rounded-full bg-slate-300 dark:bg-slate-700" data-astro-cid-iemtoba4></span> </span> <span class="flex-1" data-astro-cid-iemtoba4>English</span> <span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>EN</span> </a> </div> </details> </nav>  <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> <div class="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)]"> <div class="relative flex items-center justify-center w-full h-full"> <input class="sr-only" id="theme-switcher" data-theme-switcher type="checkbox"> <label class="flex items-center justify-center cursor-pointer w-full h-full group/theme" for="theme-switcher" aria-label="切换主题">  <svg class="w-5 h-5 transition-all duration-500 scale-100 dark:scale-0 opacity-100 dark:opacity-0 absolute text-orange-500 group-hover/theme:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg>  <svg class="w-5 h-5 transition-all duration-500 scale-0 dark:scale-100 opacity-0 dark:opacity-100 absolute text-sky-400 group-hover/theme:-rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </label> </div> <script>
+  // 立即执行以防止闪烁
+  (function() {
+    const theme = localStorage.getItem("theme");
+    const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  })();
+
+  // 页面加载和切换后的初始化逻辑
+  function initTheme() {
+    const themeSwitchers = document.querySelectorAll("[data-theme-switcher]");
+    const isDark = document.documentElement.classList.contains("dark");
+
+    // 同步所有切换按钮的状态
+    themeSwitchers.forEach((el) => {
+      el.checked = isDark;
+      
+      // 移除旧的监听器（如果存在），防止重复绑定
+      // 由于是匿名函数难以移除，我们采用 cloneNode 或者简单的标志位
+      // Astro 的 View Transitions 会重新运行脚本，所以只需确保不累积
+      // 最简单的方式是直接覆盖 onclick 或 onchange，但这里用 addEventListener
+      // 我们可以给元素加个标记
+      if (el.dataset.initialized) return;
+      
+      el.addEventListener("change", (e) => {
+        const checked = e.target.checked;
+        if (checked) {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        }
+        
+        // 同步其他可能存在的切换按钮（例如移动端和桌面端各有一个）
+        document.querySelectorAll("[data-theme-switcher]").forEach(other => {
+            if (other !== el) other.checked = checked;
+        });
+      });
+      
+      el.dataset.initialized = "true";
+    });
+  }
+
+  // 绑定事件
+  document.addEventListener("DOMContentLoaded", initTheme);
+  document.addEventListener("astro:page-load", initTheme);
+  document.addEventListener("astro:after-swap", initTheme);
+</script> </div> <button id="mobile-menu-trigger" type="button" aria-label="打开导航菜单" aria-controls="mobile-menu" aria-expanded="false" class="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)] text-[var(--xb-text)] lg:hidden"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path></svg></button> </div> </div> <div class="border-t border-[var(--xb-line)]/70"> <div class="xb-shell overflow-x-auto"> <nav class="flex min-w-max items-center gap-1 py-2" aria-label="AI 二级导航"> <a href="/ai/agent/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:text-[var(--xb-ink)]"> Agents </a><a href="/ai/langgraph/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:text-[var(--xb-ink)]"> LangGraph </a><a href="/ai/mcp/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:text-[var(--xb-ink)]"> MCP </a><a href="/ai/workflow/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:text-[var(--xb-ink)]"> Workflow </a> </nav> </div> </div> <div id="mobile-menu" class="invisible fixed inset-0 z-[600] pointer-events-none"> <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/50 opacity-0 backdrop-blur-sm transition-opacity"></div> <aside id="mobile-menu-panel" class="absolute right-0 top-0 flex h-full w-[300px] translate-x-full flex-col border-l border-[var(--xb-line)] bg-[var(--xb-surface)] transition-transform"> <div class="flex h-16 items-center justify-between border-b border-[var(--xb-line)] px-5"> <strong class="text-sm tracking-tight text-[var(--xb-ink)]">XBSTACK</strong> <button id="mobile-menu-close" type="button" aria-label="关闭导航菜单" class="text-[var(--xb-muted)]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg></button> </div> <div class="border-b border-[var(--xb-line)] p-4"> <a id="mobile-search-trigger" data-xbstack-search-trigger href="/search/" class="flex h-10 w-full items-center gap-2 rounded-lg border border-[var(--xb-line)] px-3 text-[12px] text-[var(--xb-muted)]"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.8 173.8 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.8 173.8 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3M97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8"></path></svg> 搜索 XBSTACK </a> </div> <nav class="flex flex-1 flex-col gap-2 overflow-y-auto p-4"> <div> <a href="/ai/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold bg-blue-500/[0.07] text-blue-600 dark:text-blue-400">AI</a> <div class="mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3 ml-4"> <a href="/ai/agent/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Agents</a><a href="/ai/langgraph/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">LangGraph</a><a href="/ai/mcp/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">MCP</a><a href="/ai/workflow/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Workflow</a> </div> </div><div> <a href="/tools/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">Tools</a> <div class="mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3 ml-4"> <a href="/tools/compound-calculator/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Compound Calculator</a><a href="/tools/ai-finance/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">AI Finance Analyzer</a><a href="/tools/lunest/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Lunest</a> </div> </div><div> <a href="/horizon/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">Horizon</a> <div class="mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3 ml-4"> <a href="/investing/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Investing</a><a href="/horizon/reading/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Reading</a><a href="/investing/thoughts/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Thinking</a> </div> </div><div> <a href="/life/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">Lens</a> <div class="mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3 ml-4"> <a href="/life/hiking/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Outdoor</a><a href="/life/road-trip/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Travel</a><a href="/life/photo/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Photography</a><a href="/life/gear/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Gear</a> </div> </div><div> <a href="/about/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">About</a>  </div> </nav> <div class="border-t border-[var(--xb-line)] p-4 sm:hidden"> <nav data-visible-language-alternate aria-label="选择语言" data-astro-cid-iemtoba4> <div class="flex w-full items-center justify-between gap-4" aria-label="选择语言" data-astro-cid-iemtoba4> <div class="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300" data-astro-cid-iemtoba4> <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4> <circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle> <path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path> </svg> <span data-astro-cid-iemtoba4>语言</span> </div> <div class="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 p-1 dark:border-white/10 dark:bg-white/5" data-astro-cid-iemtoba4> <a href="/ai/how-to-build-ai-meeting-summarization-agent/" data-language-choice="zh-CN" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="当前语言：中文" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all cursor-default bg-white text-blue-600 shadow-sm dark:bg-blue-500/15 dark:text-blue-400" data-astro-cid-iemtoba4> 中文 </a><a href="/en/ai/how-to-build-ai-meeting-summarization-agent/" data-language-choice="en" data-language-current="false" data-language-available="true" title="Switch to the English version" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400" data-astro-cid-iemtoba4> English </a> </div> </div> </nav>  <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> </aside> </div> <script>
+    if (!window.__xbstackSearchShortcutReady) {
+      window.__xbstackSearchShortcutReady = true;
+      window.addEventListener('keydown', (event) => {
+        const target = event.target;
+        const isTyping = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target?.isContentEditable;
+        const isCommandK = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
+        const isSlash = event.key === '/' && !isTyping;
+        if (!isCommandK && !isSlash) return;
+        event.preventDefault();
+        window.location.href = window.location.pathname.startsWith('/en/') ? '/en/search/' : '/search/';
+      });
+    }
+
+    const bindHeader = () => {
+      const trigger = document.getElementById('mobile-menu-trigger');
+      const close = document.getElementById('mobile-menu-close');
+      const menu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const panel = document.getElementById('mobile-menu-panel');
+      const setOpen = (open) => {
+        if (!menu || !overlay || !panel) return;
+        trigger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) {
+          menu.classList.remove('invisible', 'pointer-events-none');
+          overlay.classList.add('opacity-100');
+          panel.classList.remove('translate-x-full');
+          document.body.style.overflow = 'hidden';
+        } else {
+          overlay.classList.remove('opacity-100');
+          panel.classList.add('translate-x-full');
+          document.body.style.overflow = '';
+          setTimeout(() => menu.classList.add('invisible', 'pointer-events-none'), 220);
+        }
+      };
+      trigger?.addEventListener('click', () => setOpen(true));
+      close?.addEventListener('click', () => setOpen(false));
+      overlay?.addEventListener('click', () => setOpen(false));
+    };
+    document.addEventListener('astro:page-load', bindHeader);
+    bindHeader();
+  </script> </header> <div id="language-switch-notice" class="pointer-events-none fixed left-1/2 top-24 z-[700] hidden max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/95 px-5 py-3 text-center text-sm font-bold text-slate-700 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 dark:text-slate-200" role="status" aria-live="polite"></div> <main id="main-content" class="flex-1">  <div id="reading-progress" class="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 z-[110] transition-all duration-300 w-0 shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div> <main class="pt-24 md:pt-32 pb-20"> <script>(()=>{var a=(s,i,o)=>{let r=async()=>{await(await s())()},t=typeof i.value=="object"?i.value:void 0,c={rootMargin:t==null?void 0:t.rootMargin},n=new IntersectionObserver(e=>{for(let l of e)if(l.isIntersecting){n.disconnect(),r();break}},c);for(let e of o.children)n.observe(e)};(self.Astro||(self.Astro={})).visible=a;window.dispatchEvent(new Event("astro:visible"));})();</script><script type="module" src="/_astro/Comment.astro_astro_type_script_index_0_lang.DIUdttQg.js"></script><script type="module">function g(){const t=document.querySelector("header");return t?t.offsetHeight+32:140}function a(){document.querySelectorAll("[data-toc-link]").forEach(e=>{const n=e.cloneNode(!0);e.parentNode?.replaceChild(n,e),n.addEventListener("click",function(o){o.preventDefault();const r=o.currentTarget.getAttribute("href");if(!r)return;const c=r.substring(1),d=document.getElementById(c);if(d){const s=d.getBoundingClientRect(),i=window.pageYOffset||document.documentElement.scrollTop,u=g(),l=i+s.top-u;window.scrollTo({top:Math.max(0,l),behavior:"smooth"}),history.pushState(null,"",`#${c}`)}})})}document.addEventListener("DOMContentLoaded",a);document.addEventListener("astro:page-load",a);</script><div class="xb-article-grid py-8 md:py-10"> <aside class="xb-article-side"> <section class="border border-[var(--xb-line)] bg-[var(--xb-surface)] rounded-xl p-5 xb-article-panel !rounded-xl !shadow-none" aria-label="作者信息"> <a href="/about/" class="group flex flex-col items-center text-center"> <div class="overflow-hidden rounded-full border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] h-[72px] w-[72px]"> <img src="/_astro/avatar.BzDyfp9G_ZzAEsA.webp" alt="小白 / Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="h-full w-full object-cover"> </div> <div class="mt-3"> <h3 class="m-0 text-[14px] font-bold tracking-tight text-[var(--xb-ink)] group-hover:text-blue-600 dark:group-hover:text-blue-400">小白 / Xiaobai</h3> <p class="mt-1 text-[9px] font-bold tracking-wide text-blue-600 dark:text-blue-400">开发者 · 产品构建者</p> </div> </a> <p class="text-[10px] leading-5 text-[var(--xb-muted)] mt-4 text-center">持续构建 AI 工程系统、开发者工具与长期数字资产。</p> <a href="/about/" class="mt-3 block text-center text-[9px] font-bold text-blue-600 hover:underline dark:text-blue-400">关于作者与 XBSTACK →</a> <div class="my-3 h-px bg-[var(--xb-line)]"></div> <ul class="flex items-center py-2 justify-center"><li class="inline-block px-1 intersect:animate-fade opacity-0"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/qrcode_guizhou_outdoor.png" aria-label="微信公众号"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="微信公众号" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="sr-only">微信公众号</span> </span>  </button> </a></li><li class="inline-block px-1 intersect:animate-fade opacity-0"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span class="sr-only">GitHub</span> </span>  </button> </a></li></ul> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">文章信息</div> <dl class="space-y-3 text-[10px] leading-5 text-[var(--xb-muted)]"> <div><dt class="font-bold text-[var(--xb-ink)]">发布</dt><dd>2026/5/9</dd></div> <div><dt class="font-bold text-[var(--xb-ink)]">所属专题</dt><dd><a href="/ai/ai-document-intelligence-agents/" class="text-blue-600 dark:text-blue-400">agent</a></dd></div>  </dl> <div class="mt-4 flex flex-wrap gap-1.5"><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#ai-meeting-summarization-agent</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#speech-to-text</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#speaker-diarization</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#action-items</span></div> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">相关入口</div> <p class="text-[10px] leading-5 text-[var(--xb-muted)]">继续查看相关专题、工具与内容更新。</p> <div class="mt-3 grid gap-2 text-[10px] font-bold text-blue-600 dark:text-blue-400"><nav data-cluster-hub-link><a href="/ai/ai-document-intelligence-agents/">相关专题 →</a></nav><a href="/tools/">产品与工具 →</a><a href="/newsletter/">Newsletter →</a></div> </section> </aside> <main class="min-w-0"> <article class="xb-article-paper"> <div class="xl:hidden mb-6"><section class="border border-[var(--xb-line)] bg-[var(--xb-surface)] rounded-xl p-4 !rounded-xl !shadow-none" aria-label="作者信息"> <a href="/about/" class="group flex items-center gap-4"> <div class="overflow-hidden rounded-full border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] h-14 w-14 shrink-0"> <img src="/_astro/avatar.BzDyfp9G_ZzAEsA.webp" alt="小白 / Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="h-full w-full object-cover"> </div> <div class="min-w-0"> <h3 class="m-0 text-[14px] font-bold tracking-tight text-[var(--xb-ink)] group-hover:text-blue-600 dark:group-hover:text-blue-400">小白 / Xiaobai</h3> <p class="mt-1 text-[9px] font-bold tracking-wide text-blue-600 dark:text-blue-400">开发者 · 产品构建者</p> </div> </a> <p class="text-[10px] leading-5 text-[var(--xb-muted)] mt-3">持续构建 AI 工程系统、开发者工具与长期数字资产。</p> <a href="/about/" class="mt-3 block text-center text-[9px] font-bold text-blue-600 hover:underline dark:text-blue-400">关于作者与 XBSTACK →</a> <div class="my-3 h-px bg-[var(--xb-line)]"></div> <ul class="flex items-center py-2 justify-center"><li class="inline-block px-1 intersect:animate-fade opacity-0"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/qrcode_guizhou_outdoor.png" aria-label="微信公众号"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="微信公众号" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="sr-only">微信公众号</span> </span>  </button> </a></li><li class="inline-block px-1 intersect:animate-fade opacity-0"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span class="sr-only">GitHub</span> </span>  </button> </a></li></ul> </section></div> <header class="mb-10 border-b border-[var(--xb-line)] pb-8"><div class="mb-8 overflow-hidden rounded-xl border border-[var(--xb-line)] bg-[var(--xb-surface-soft)]"><img src="/_astro/cogview4-271aad59-9977af95-1200x630.CCcKVceC_Z10CJE8.webp" alt="AI 会议纪要智能体生产化实战：语音转写、决策提取、任务分配与 Notion 闭环" sizes="(min-width: 1280px) 860px, calc(100vw - 40px)" loading="eager" fetchpriority="high" decoding="async" width="1200" height="630" class="aspect-[40/21] w-full object-cover"></div><div class="mb-4 flex flex-wrap items-center gap-2"><a href="/ai/agent/" class="rounded-md border border-blue-500/15 bg-blue-500/[0.05] px-2.5 py-1 text-[10px] font-bold text-blue-600 dark:text-blue-400">ai</a></div><h1 class="m-0 text-[clamp(2rem,4vw,3.6rem)] font-black leading-[1.12] tracking-[-.045em] text-[var(--xb-ink)]">AI 会议纪要 Agent 怎么做？转写、Action Items、负责人和 Notion 同步</h1><p class="mt-5 max-w-[760px] text-[15px] leading-7 text-[var(--xb-text)]">AI 会议纪要 Agent 怎么做？从 faster-whisper 转写、pyannote.audio speaker diarization 到 Action Items、负责人确认和 Notion/Jira 安全同步，区分匿名说话人、真实身份、429 重试与幂等边界。</p><div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] text-[var(--xb-faint)]"><span>发布 · 2026-05-09</span><span>15 分钟阅读</span><span>XBSTACK 原创</span></div><div class="mt-4 flex flex-wrap gap-2"><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#ai-meeting-summarization-agent</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#speech-to-text</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#speaker-diarization</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#action-items</span></div></header> <nav class="mb-7 flex items-center justify-between gap-4 border-y border-[var(--xb-line)] py-3 text-[10px] text-[var(--xb-muted)]" aria-label="文章语言版本"> <span>当前 URL 为中文版本。</span> <a href="/en/ai/how-to-build-ai-meeting-summarization-agent/" hreflang="en" class="font-bold text-blue-600 dark:text-blue-400">Read this article in English →</a> </nav> <aside class="mb-8 border-l-2 border-blue-500 bg-blue-500/[0.04] px-4 py-3"> <div class="text-[9px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">小白的说明</div> <p class="mt-1 text-[12px] leading-6 text-[var(--xb-text)]">2026-08-14 复核：按当前 pyannote.audio community-1、faster-whisper 与 Notion API 官方资料修正 speaker diarization、INT8 内存和 429 重试边界。本文是生产架构与风险控制指南，不声称已完成跨数据集的通用准确率或显存基准；结构化 GEO 通过 hideStructuredBlocks 隐藏。</p> </aside>  <div class="prose prose-tech markdown-content max-w-none">  <aside class="mb-10 rounded-2xl border border-orange-500/20 bg-orange-500/[0.045] px-5 py-4 not-prose" data-analytics-area="article_body" aria-label="推荐下一步"> <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"> <div> <p class="text-xs font-black uppercase tracking-[0.18em] text-orange-600 dark:text-orange-400">专题入口 / AI Agent Hub</p> <p class="mt-1 text-sm font-bold leading-6 text-slate-700 dark:text-slate-300">从单个 Agent 问题继续进入完整生产体系</p> </div> <div class="flex shrink-0 flex-wrap gap-2"> <a href="/ai/agent/" class="rounded-full bg-orange-500 px-4 py-2 text-xs font-black text-white transition-colors hover:bg-orange-600">进入 AI Agent 专题 →</a> <a href="/ai/ai-agent-architecture/" class="rounded-full border border-slate-300 px-4 py-2 text-xs font-black text-slate-700 transition-colors hover:border-orange-500 hover:text-orange-500 dark:border-white/15 dark:text-slate-200">查看架构指南</a> </div> </div> </aside><p><strong>直接答案：AI 会议纪要 Agent 的生产目标不是“把会议总结得更漂亮”，而是把录音或转写可靠地转换成 <code>decision + action_item + owner + due_date + evidence</code>，经人工确认后再同步到 Notion、Jira 或飞书，并保留失败重试与审计记录。</strong> 如果负责人、截止日期或转写片段置信度不足，系统应该进入人工复核，而不是让模型自行补全。</p>
+<blockquote>
+<p>[!NOTE]
+适用场景：适用于会议录音转写文本的自动任务提取、责任人分派与行动项跟踪。
+本文已归档至「文档理解 Agents」专题。若需系统阅读智能体完整路径，请前往：<a href="/ai/ai-document-intelligence-agents/">文档理解 Agents</a>。</p>
+</blockquote>
+<h2 id="ai-会议纪要不是摘要工具而是执行闭环系统">AI 会议纪要不是摘要工具，而是执行闭环系统</h2>
+<p>生产级会议智能体的工程终点是打通任务分派与执行进度闭环，而不是生成一份排版漂亮的流水账纪要。</p>
+<p>许多企业在引入 AI 辅助办公时，首先想到的就是将会议录音丢给大模型去生成摘要。然而，传统的“录音转写一键摘要”工具对于真实团队的效率提升微乎其微。会议开完了，大模型吐出了一大段总结，但团队依然面临核心的执行断层：</p>
+<ul>
+<li>职责边界模糊：转写文本中充斥着“这件事你下周看一下”、“那我来跟进这个接口”等含糊用词，无法被系统自动匹配到具体的物理负责人。</li>
+<li>决策与讨论不分：模型经常把参会人员在脑暴阶段的发散性讨论、未采纳的建议，误判为“会议通过的正式决策”，导致输出大相径庭。</li>
+<li>待办任务流失：提取出的 TODO 任务静静躺在 Markdown 文件里，没有被物理分发并写入 Jira、Notion、或飞书日历等团队协作看板中，最终被淹没在信息深海中。</li>
+</ul>
+<p>一个可靠的 AI 会议纪要智能体，必须是一套“语音到任务（Voice-to-Task）的责任派单引擎”。它需要对转写文本执行声纹识别（谁在说话）、决策审计（达成一致的结论）、行动项提炼（谁在什么时间前要干什么），并通过人工一键确认，安全同步到项目系统，跟踪直到任务完成。</p>
+<h2 id="已有智能纪要产品还是自建-agent先看你要解决哪一层">已有智能纪要产品还是自建 Agent？先看你要解决哪一层</h2>
+<p>如果你的需求只是“把会议录音整理成摘要”，优先使用现成智能纪要产品通常更划算：它们已经把录音、转写、说话人区分、摘要和基础导出做成完整产品，团队不需要自己维护语音模型和任务编排。<strong>真正值得自建 Agent 的边界，是你需要把纪要继续变成企业内部动作</strong>——例如把 Action Items 映射到具体员工、校验负责人和截止日期、读取项目上下文、写入 Notion/Jira/飞书、等待人工审批、失败后重试，并留下可审计的证据链。</p>
+<p>可以按三层判断：第一层只有“听懂会议、生成摘要”，买成品；第二层需要“从摘要提取结构化 Decision / Action Item”，可以在现成转写能力上增加轻量 LLM 工作流；第三层需要“自动分派、跨系统写入、状态回写和权限控制”，才进入本文的生产级 Agent 架构。这样能避免为了一个摘要需求维护 Whisper、Diarization、任务队列和外部系统凭据，也能避免把真正需要闭环执行的场景误当成普通会议摘要工具可以解决的问题。</p>
+<h2 id="推荐架构从语音输入到-notion-任务派发的闭环工作流">推荐架构：从语音输入到 Notion 任务派发的闭环工作流</h2>
+<p>构建可靠的会议任务闭环必须将音频前处理、声纹识别、语境对齐、决策过滤、任务提取与外部同步模块化解耦。</p>
+<p>为了确保会议内容向物理任务无损转化，我设计了如下 Agent 执行架构：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">会议录音音频 (Audio file - M4A / MP3)
+  │
+  ▼
+流式音频切片器 (Audio Stream Slicer - 显存精细化管理)
+  │
+  ▼
+声纹聚类分离引擎 (Pyannote Diarization ──► 导入声纹特征库)
+  │                                        │
+  ▼                                        │
+语音转文字引擎 (Whisper-V3 - 获取 word_timestamps) ◄┘
+  │
+  ▼
+文本校对与噪声清洗 (Transcript Text Cleaner)
+  │
+  ▼
+会议上下文关联器 (Context Resolver - 绑定日历/项目/历史TODO)
+  │
+  ▼
+大模型决策与任务提取器 (LLM Extraction Engine - JSON Schema)
+  │
+  ├─► [置信度低 / 负责人不详] ──► 人工确认界面 (Escalate Queue)
+  ▼
+Notion / Jira API 同步网关 (Idempotent Committer)
+  │
+  ▼
+执行追踪器 (Follow-up Agent - 周期性提醒与回写状态)
+</code></pre>
+<p>在此流程中，每一段音频片段都通过 Speaker ID 标记归属，并且所有提取出的行动项（Action Items）都必须附带 source_quote（原始语音转写引用）以供责任溯源。</p>
+<h2 id="长音频转写先测-batchvad-和峰值显存不要把-empty_cache-当方案">长音频转写：先测 batch、VAD 和峰值显存，不要把 <code>empty_cache()</code> 当方案</h2>
+<p>长会议的转写确实需要控制内存和吞吐，但“所有音频必须手工切成 30 秒”以及“每个 chunk 都调用 <code>torch.cuda.empty_cache()</code>”都不是通用生产规则。不同实现对音频解码、分段、缓存和 GPU allocator 的处理不同；如果底层使用 CTranslate2，拿 PyTorch 的缓存清理当成固定流程尤其容易造成误导。</p>
+<p><a href="https://github.com/SYSTRAN/faster-whisper" rel="nofollow noopener noreferrer" target="_blank">faster-whisper</a> 当前直接提供普通 <code>WhisperModel.transcribe</code>、<code>BatchedInferencePipeline</code>、word-level timestamps 和 Silero VAD。<code>segments</code> 本身是生成器；批处理模式可以通过 <code>batch_size</code> 控制吞吐与峰值内存，VAD 可以过滤长静音。更稳妥的做法是先在目标硬件上固定模型和 <code>compute_type</code>，逐步调 batch size，并记录峰值显存、实时系数、转写质量和失败样本：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">from</span> faster_whisper <span class="token keyword">import</span> WhisperModel<span class="token punctuation">,</span> BatchedInferencePipeline
+
+model <span class="token operator">=</span> WhisperModel<span class="token punctuation">(</span>
+    <span class="token string">"turbo"</span><span class="token punctuation">,</span>
+    device<span class="token operator">=</span><span class="token string">"cuda"</span><span class="token punctuation">,</span>
+    compute_type<span class="token operator">=</span><span class="token string">"float16"</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span>
+
+pipeline <span class="token operator">=</span> BatchedInferencePipeline<span class="token punctuation">(</span>model<span class="token operator">=</span>model<span class="token punctuation">)</span>
+segments<span class="token punctuation">,</span> info <span class="token operator">=</span> pipeline<span class="token punctuation">.</span>transcribe<span class="token punctuation">(</span>
+    <span class="token string">"meeting.mp3"</span><span class="token punctuation">,</span>
+    batch_size<span class="token operator">=</span><span class="token number">8</span><span class="token punctuation">,</span>
+    vad_filter<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span>
+    word_timestamps<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">for</span> segment <span class="token keyword">in</span> segments<span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>segment<span class="token punctuation">.</span>start<span class="token punctuation">,</span> segment<span class="token punctuation">.</span>end<span class="token punctuation">,</span> segment<span class="token punctuation">.</span>text<span class="token punctuation">)</span>
+</code></pre>
+<p>如果目标 GPU 的峰值显存过高，应优先降低 batch size、评估 <code>int8_float16</code> / INT8、选择更小模型，或在业务层按议题/文件边界拆分任务，而不是依赖循环里的强制缓存清理。官方 README 给出的速度和内存数字都是<strong>具体 benchmark 配置的结果</strong>，不能概括成固定的“显存降低 60%”。</p>
+<h2 id="说话人分离与身份映射先回答哪一段是谁再回答这个人叫什么">说话人分离与身份映射：先回答“哪一段是谁”，再回答“这个人叫什么”</h2>
+<p>任务归属需要把**说话人分离（speaker diarization）<strong>和</strong>真实身份映射（speaker identification）**拆开。前者解决“这一段由哪个匿名 Speaker 说”，后者才解决 <code>SPEAKER_00</code> 对应团队里的谁；把两者混成“声纹识别”会让架构和评估口径都失真。</p>
+<p>“这件事我下周发版”。如果系统只拿到这句话，负责人字段仍然只是“我”。可以用 <a href="https://github.com/pyannote/pyannote-audio" rel="nofollow noopener noreferrer" target="_blank">pyannote.audio</a> 的 <code>speaker-diarization-community-1</code> 等管线先生成带时间区间的匿名 Speaker label，再与带 word timestamps 的转写结果对齐。当前 community-1 使用 VBx clustering，并不要求你在每场会议前预录一套 10 秒声纹库。</p>
+<p>真实姓名映射应该作为独立步骤：优先结合会议参会人列表、账号/麦克风通道、明确的身份匹配能力，必要时再使用 voiceprint 产品能力或人工确认。不能仅凭 diarization 输出和大模型上下文就把匿名 Speaker 自动认定为某个真实员工。随后再把 diarization 时间区间与转写时间戳进行合并：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">def</span> <span class="token function">merge_diarization_and_transcript</span><span class="token punctuation">(</span>diarization_segments<span class="token punctuation">,</span> whisper_words<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    merged_payload <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token comment"># 遍历 Pyannote 输出的说话人段落</span>
+    <span class="token keyword">for</span> speaker_seg <span class="token keyword">in</span> diarization_segments<span class="token punctuation">:</span>
+        speaker_id <span class="token operator">=</span> speaker_seg<span class="token punctuation">.</span>speaker_id <span class="token comment"># 例如 "SPEAKER_01"</span>
+        start_time <span class="token operator">=</span> speaker_seg<span class="token punctuation">.</span>start
+        end_time <span class="token operator">=</span> speaker_seg<span class="token punctuation">.</span>end
+        
+        <span class="token comment"># 筛选在这个时间段内 Whisper 输出的所有单词</span>
+        segment_words <span class="token operator">=</span> <span class="token punctuation">[</span>
+            word<span class="token punctuation">.</span>text <span class="token keyword">for</span> word <span class="token keyword">in</span> whisper_words
+            <span class="token keyword">if</span> word<span class="token punctuation">.</span>start <span class="token operator">>=</span> start_time <span class="token keyword">and</span> word<span class="token punctuation">.</span>end <span class="token operator">&#x3C;=</span> end_time
+        <span class="token punctuation">]</span>
+        
+        text <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span>segment_words<span class="token punctuation">)</span>
+        <span class="token keyword">if</span> text<span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            merged_payload<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">{</span>
+                <span class="token string">"speaker"</span><span class="token punctuation">:</span> speaker_id<span class="token punctuation">,</span>
+                <span class="token string">"text"</span><span class="token punctuation">:</span> text<span class="token punctuation">,</span>
+                <span class="token string">"timestamp"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>start_time<span class="token punctuation">,</span> end_time<span class="token punctuation">]</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span>
+            
+    <span class="token keyword">return</span> merged_payload
+</code></pre>
+<p>合并后的 payload 仍然只有匿名 Speaker ID。系统只有在存在可靠身份依据时，才应把 <code>SPEAKER_01</code> 映射到具体员工：例如独立声道、登录账号、已验证的身份匹配结果，或人工确认。日历参会人列表可以缩小候选范围，但不应单独作为自动认人的证据；如果身份无法可靠确定，就保留匿名 Speaker 并把 owner 字段送入人工复核。</p>
+<h2 id="决策提取与行动项过滤严格区分发散讨论与最终结论">决策提取与行动项过滤：严格区分发散讨论与最终结论</h2>
+<p>智能体提取决策时必须依据明确的语意达成断言，防止将脑暴过程中的推测意见转化为脏待办。</p>
+<p>在会议文本中，发言往往是极其混乱和发散的。一个人提出“我们是否可以换成 Milvus 向量库？”，另一个人说“那这样要改很多代码吧”，这属于讨论，而不是决策。</p>
+<p>我们在设计 Agent Task Extractor 时，在 Prompt 和解析层应施加硬性的状态机断言：</p>
+<ol>
+<li>决策（Decisions）：必须同时包含“提议”、“论据”以及参会多方“明确表达同意/确认的词汇”（如“好、就这么定、行、同意”）。发散讨论、疑问句或带有“可以考虑、建议”等弱断言的段落，一律过滤，禁止写入决策字典。</li>
+<li>行动项（Action Items）：行动项必须具备 4 维强校验：核心动作（Action）、负责人（Owner）、明确截止日期（Due Date，如果是“下周”则根据会议当天日期自动计算出具体时间戳）、以及对应的出处原句引用（Source Quote）。</li>
+</ol>
+<p>如果提取出的行动项缺失了负责人或由于口头表达不清导致 Due Date 无法推算，系统禁止自动生成任务卡片，必须将其标记为 Pending 挂起状态。</p>
+<h2 id="人工确认层防止幻觉与数据乱写的安全阀">人工确认层：防止幻觉与数据乱写的安全阀</h2>
+<p>引入人在回路的人工复核界面，是防范 AI 纪要智能体向企业 ERP 或 Notion 乱写脏数据的最终物理防线。</p>
+<p>即使使用更强的模型，复杂口音、多人重叠、转写错误和上下文歧义仍会带来<strong>非零且随数据集变化的提取错误率</strong>。这里不能拿一个没有本地评测支撑的固定“5%”当成通用结论。对于 Jira / Notion 这类会改变团队执行状态的写操作，应根据风险等级设置人工确认、字段校验和权限边界，并用自己的标注会议集测量 owner/due_date/action_item 的准确率和人工修正率。</p>
+<p>系统必须设计一个专用的“人工确认网关（Human Confirmation Portal）”：</p>
+<ul>
+<li>系统提取出的所有 Decision 与 Action Items 默认以草稿（Draft）形式保存在临时数据库中。</li>
+<li>系统向当前会议的负责人（如会议秘书或 PM）推送一条待确认提醒，进入白盒化的审核页面。</li>
+<li>确认页面中，AI 会展示：“推荐负责人：李雷（置信度 92%，源话：‘SPEAKER_01: 那后台这块接口由我来重写吧’）”。</li>
+<li>负责人可以一键修改负责人、修改截止期限、删除无效任务，在 Click 确认后，系统才调用写工具向外部 Notion 同步。</li>
+</ul>
+<p>这样可以把人工工作集中在高风险字段和异常样本上，但<strong>不能承诺 100% 准确或合规</strong>。发布前仍应记录人工修正率、错误类型、审批人和最终写入结果，并为高影响字段保留可追溯的 source_quote。</p>
+<h2 id="多平台自动同步重试幂等性与同步失败恢复设计">多平台自动同步：重试、幂等性与同步失败恢复设计</h2>
+<p>向外部 Notion 或 Jira 写入动作必须被封装在具备幂等校验与指数退避重试的工具调用层中。</p>
+<p>在任务确认通过后，智能体将发起工具调用，向 Notion 数据库或 Jira 系统同步创建卡片。此时最容易遇到网络波动、Notion API Rate Limit（请求限流）或 502 服务不可用。</p>
+<p>我们必须采取严格的失败自愈与幂等设计：</p>
+<ul>
+<li>全局唯一 ID 绑定（Idempotency Key）：在草稿生成时，系统为每个待办任务计算一个唯一的 <code>task_uuid</code>（基于会议 ID + 音频时间戳哈希）。在向 Notion 发起 POST 创建页面时，将此 UUID 作为自定义属性（Property）写入。</li>
+<li>限流重试：Notion 返回 <code>429 rate_limited</code> 时，优先读取并等待 <code>Retry-After</code> 指定的秒数，再把后续请求放入有上限的队列；对 502/503/504 或没有明确服务端等待时间的临时失败，再采用带抖动的指数退避。不要把固定 <code>2s / 4s / 8s</code> 写成 Notion 的通用协议。</li>
+<li>状态网关监控：重试次数和总等待时间必须有上限。超过阈值后将任务标记为 <code>sync_failed</code> 并支持人工 <code>resync</code>。<code>task_uuid</code>/业务唯一键用于查重和恢复，但仍要在重试前查询或核验已有写入结果；幂等设计的目标是降低重复创建风险，而不是承诺“绝不会重复”。</li>
+</ul>
+<h2 id="会议纪要与闭环智能体中的常见坑与报错诊断">会议纪要与闭环智能体中的常见坑与报错诊断</h2>
+<p>在构建多人会议语音到 Notion 任务的生产级自动化应用中，以下异常最为常见：</p>
+<h3 id="error-speaker-re-identification-collision-发言人重叠与声纹标识碰撞">Error: Speaker Re-identification Collision (发言人重叠与声纹标识碰撞)</h3>
+<ul>
+<li>现象：在两人或者多人激烈讨论、频繁抢话的音频段中，系统提取的任务负责人发生了颠倒，把本该指派给李雷的待办错误分配给了韩梅梅。</li>
+<li>归因：Pyannote 声纹分离模型在处理重叠音轨时，由于特征重叠，将多个人的声纹聚类到了同一个 Speaker ID 下，导致大模型识别上下文的主代词（如“我来”）时发生了语义指代碰撞。</li>
+<li>解决方案：使用 Word-level Timestamps（单词级时间戳）进行微细度切片。如果系统检测到某段音频的声纹重叠置信度低，触发重叠警报，对此段文字生成的任务强行加上 <code>needs_human_validation</code> 标记，退回人工复核页面。</li>
+</ul>
+<h3 id="error-ambiguous-deadline-and-over-schedule-不确定截止时间推断偏差">Error: Ambiguous Deadline and Over-schedule (不确定截止时间推断偏差)</h3>
+<ul>
+<li>现象：口头说“这个任务下下周发版前交给我”，智能体计算出的截止日期居然是 2099 年或者发生了严重的计算偏差。</li>
+<li>归因：口语中的相对日期（如“下下周五”、“发版前”）缺少锚定时间点，大模型在推理时因为不知道会议举办的真实物理日期，导致时间换算逻辑发生幻觉。</li>
+<li>解决方案：在 Prompt 构建阶段，必须将当前的物理时间戳（如 <code>current_date='2026-06-25'</code>）作为元数据，以硬编码形式拼入 System Prompt 的 Context 头部。强制要求大模型基于此锚定时间戳，调用 Python 的 <code>datetime</code> 工具，将口头相对日期严格推算为 <code>YYYY-MM-DD</code> 格式。</li>
+</ul>
+<h3 id="error-notion-page-sync-write-loop-notionjira-接口调用重试死循环">Error: Notion Page Sync Write Loop (Notion/Jira 接口调用重试死循环)</h3>
+<ul>
+<li>现象：在同步任务阶段，由于 Notion 接口偶发性的网络超时，Agent 不断触发自愈重试逻辑，在后台疯狂刷新接口，导致在 Notion 看板里瞬间创建了十几条一模一样的冗余任务卡片。</li>
+<li>归因：调用 Notion API 的工具本身没有实现幂等性校验。当第一次调用已经写入成功但返回超时报错（Timeout）时，Agent 误以为写入失败，带着相同的参数再次发起 POST，造成写操作膨胀。</li>
+<li>解决方案：向 Notion 同步前，先使用过滤条件 <code>UUID == task_uuid</code> 调用查询接口进行防重校验。如果 Notion 数据库中已经存在该 UUID，则说明之前虽发生超时但已写入成功，同步器应静默返回 <code>Success</code> 并终止重试。</li>
+</ul>
+<h2 id="常见问题解答">常见问题解答</h2>
+<h3 id="q-是否可以将长达数小时的整场会议录音直接喂给-claude-或-gpt-4o-生成纪要">Q: 是否可以将长达数小时的整场会议录音直接喂给 Claude 或 GPT-4o 生成纪要？</h3>
+<p>A: 不建议把超长会议录音或整份超长转写直接塞进一次模型调用。不同语音/模型 API 的上传大小和上下文限制并不相同，而且长输入还会增加成本并降低关键行动项被稳定提取的概率。更稳妥的流程是先做 VAD/分段转写，再按说话轮次或议题分块提取，最后用结构化字段汇总并保留原文时间戳。</p>
+<h3 id="q-离线声纹识别库对硬件的要求高吗">Q: 离线声纹识别库对硬件的要求高吗？</h3>
+<p>A: Pyannote.audio、faster-whisper 等组件可以本地运行，但实际速度取决于模型大小、量化方式、CPU/GPU、音频长度与并发量。上线前应在目标硬件上做实时因子（RTF）、显存/内存和并发基准。完全本地化可以减少音频发送到第三方云服务的范围，但仍要处理本地访问控制、日志、存储加密和数据保留等合规问题。</p>
+<h3 id="q-会议智能体如何处理那些没有参会的人员的任务派发">Q: 会议智能体如何处理那些没有参会的人员的任务派发？</h3>
+<p>A: 会议中经常会出现“李雷不在，但韩梅梅说让李雷下周去改一下代码”的情况。大模型在解析时，需要调用组织架构只读工具，校验“李雷”是否存在于公司员工数据库中。如果存在，系统将该任务标记为“待李雷确认”；如果在数据库中检索不到该名字，则强行将任务负责人回退为发言者韩梅梅，并加上“请指派给合适人选”的人工修改标记。</p>
+<h2 id="生产化防守与安全风险控制">生产化防守与安全风险控制</h2>
+<p>在将该智能体部署到真实生产环境时，小白建议必须硬编码以下物理防御机制，防止模型幻觉引发系统灾难：</p>
+<ul>
+<li>「权限隔离限制」：该 Agent 仅被赋予最小可行性 API 权限。所有写操作必须物理隔离在独立沙箱中进行，禁止赋予直接执行 SQL 的权限。</li>
+<li>「双重审批拦截」：对高危业务决策（如确认付款、删除文件、自动提交代码）强制接入 Human-in-the-loop 人机协同机制，非物理人类复核不可越权通过。</li>
+<li>「全面审计日志」：保留所有工具调用的入参、出参和模型的推理轨迹（Trace Log），在系统发生行为抖动时提供充足的对账凭证。</li>
+<li>「任务循环限额」：硬编码限制模型单次任务的最大循环轮次（如限制为 10 轮），防止模型在工具报错时陷入无限震荡死循环导致 Token 额度耗光。</li>
+</ul>
+<h2 id="继续阅读">继续阅读</h2>
+<ul>
+<li>👉 <a href="/ai/ai-agent-architecture/">AI Agent Architecture 实战：从 Prompt 到生产级智能体系统的架构设计</a></li>
+<li>👉 <a href="/ai/ai-agent-planning/">AI Agent Planning 实战：任务拆解、计划校验、重规划与失败恢复</a></li>
+<li>👉 <a href="/ai/ai-agent-tool-use/">AI Agent Tool Use 实战：工具注册、权限控制、参数校验与调用审计</a></li>
+<li>👉 <a href="/ai/ai-agent-evaluation-guide/">AI Agent Evaluation 实战：任务成功率、工具调用、失败恢复与回归测试体系</a></li>
+<li>👉 <a href="/ai/langgraph-observability-agent-trace/">LangGraph Observability 实战：如何追踪每个 Agent 的决策路径？</a></li>
+</ul>  <section class="mt-16 rounded-[34px] border border-orange-500/20 bg-orange-500/[0.06] p-7 md:p-9 not-prose"> <div class="text-[10px] font-black uppercase tracking-[0.28em] text-orange-500 mb-4">专题入口 / AI Agent Hub</div> <h2 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-4">从单个 Agent 问题继续进入完整生产体系</h2> <p class="text-sm font-bold leading-7 text-slate-600 dark:text-slate-400 max-w-3xl">AI Agent 专题统一组织架构、记忆、工具调用、评测、安全、部署和多智能体协作，让每篇文章都回到明确的主题主页面。</p> <div class="mt-7 flex flex-wrap gap-3"> <a href="/ai/agent/" class="rounded-full bg-orange-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-white hover:bg-orange-600 transition-colors">进入 AI Agent 专题 →</a> <a href="/ai/ai-agent-architecture/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">查看架构指南</a> <a href="/newsletter/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">订阅更新</a> </div> </section> </div> <section class="mt-14 border-t border-[var(--xb-line)] pt-7" data-related-reading> <div class="mb-4 flex items-center justify-between gap-4"><h2 class="m-0 text-[17px] font-bold text-[var(--xb-ink)]">下一步阅读</h2><a href="/ai/ai-document-intelligence-agents/" class="text-[10px] font-bold text-blue-600 dark:text-blue-400">返回专题 →</a></div> <div class="xb-article-related"><a href="/ai/ai-document-intelligence-agents/" data-related-link><span class="font-bold text-[var(--xb-ink)]">AI 文档理解 Agents：PDF 解析、RAG 知识库、合同审查、研究与审计证据链</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">AI 文档理解 Agents：系统拆解文档理解类 AI Agents 的生产化架构，覆盖 PDF 解析、OCR、表格抽取、RAG 入库、知识库问答、合同审查、论文研究、会议纪要、财务审计、引用定位、人工复核和评估指标，帮助团队构建可信的文档智能系统。</span></a><a href="/ai/ai-knowledge-base-agent/" data-related-link><span class="font-bold text-[var(--xb-ink)]">AI 知识库智能体生产化实战：知识治理、权限控制、引用审计与反馈闭环</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">AI 知识库智能体生产化实战：系统拆解 AI 知识库智能体的生产化设计方法，覆盖知识源治理、文档解析、权限控制、RAG 检索、引用审计、版本更新、反馈闭环、人工复核与答案质量评估，帮助团队构建可信的企业知识库 Agent。</span></a><a href="/ai/how-to-build-ai-contract-review-agent/" data-related-link><span class="font-bold text-[var(--xb-ink)]">AI 合同审查 Agent 怎么做？条款抽取、风险标注、版本比对与法务复核</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">AI 合同审查 Agent 应把 OCR/文档解析、条款抽取、模板比对、风险标注、版本差异和原文证据链交给 AI，把最终法律判断保留给法务。本文给出可追踪的 Human-in-the-loop 审查架构。</span></a><a href="/ai/ai-resume-screening-agent-tutorial/" data-related-link><span class="font-bold text-[var(--xb-ink)]">AI 简历筛选智能体生产化实战：语义评估、评分解释与人工复核流程</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">AI 简历筛选智能体生产化实战：系统拆解 AI 简历筛选智能体的生产化设计方法，覆盖 JD 解析、简历结构化、语义匹配、评分解释、候选人画像、偏差控制、人工复核与评估指标，帮助团队构建可审计、可复盘的招聘自动化系统。</span></a></div> </section> <section class="mt-10 border-t border-[var(--xb-line)] pt-7"> <div class="grid grid-cols-1 gap-4 md:grid-cols-[1fr_260px] md:items-center"><div><h2 class="m-0 text-[16px] font-bold text-[var(--xb-ink)]">AI 工程周报</h2><p class="mt-1 text-[10px] leading-5 text-[var(--xb-muted)]">只发真正改变工程判断的变化、故障、实验和新资产。</p></div><astro-island uid="ZNxmiM" prefix="r15" component-url="/_astro/NewsletterForm.D2u-Fqaq.js" component-export="default" renderer-url="/_astro/client.DPSb9UvF.js" props="{&quot;compact&quot;:[0,true],&quot;lang&quot;:[0,&quot;zh-CN&quot;]}" ssr client="visible" opts="{&quot;name&quot;:&quot;NewsletterForm&quot;,&quot;value&quot;:true}" await-children><div class="w-full "><form class="flex flex-col gap-2 sm:flex-row"><input type="email" placeholder="输入你的邮箱" class="h-11 min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3.5 text-[12px] font-semibold text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-950 dark:text-white" required="" value=""/><button type="submit" class="h-11 shrink-0 rounded-lg px-5 text-[11px] font-bold transition bg-blue-600 text-white hover:bg-blue-700">订阅</button></form></div><!--astro:end--></astro-island></div> </section> </article> <section class="xb-article-comments"> <div class="mb-5 flex items-center gap-3 text-[11px] font-bold text-[var(--xb-ink)]"><span>评论与补充证据</span><span class="h-px flex-1 bg-[var(--xb-line)]"></span></div> <section class="xbstack-comments" data-xbstack-waline data-server-url="https://comments.xbstack.com" data-comment-path="/ai/how-to-build-ai-meeting-summarization-agent/" data-comment-lang="zh-CN" aria-labelledby="xbstack-comments-title"> <div class="xbstack-comments__header"> <div> <p class="xbstack-comments__eyebrow">参与讨论</p> <h2 id="xbstack-comments-title"> 问题、验证与勘误 </h2> <p class="xbstack-comments__description"> 登录后可发表评论。所有新评论先进入审核；审核期间仅评论者本人和管理员可见，通过后才公开。 </p> </div> <div class="xbstack-comments__policy" aria-label="评论规则"> <span>登录评论</span> <span>审核后公开</span> </div> </div> <div class="xbstack-comments__status" data-waline-status role="status" aria-live="polite"> <span class="xbstack-comments__spinner" aria-hidden="true"></span> <span>正在加载评论区…</span> </div> <div id="waline" class="xbstack-comments__mount" data-waline-mount></div> <noscript> <p class="xbstack-comments__noscript"> 评论区需要启用 JavaScript 才能查看和发布评论。 </p> </noscript> </section>  </section> </main> <aside class="xb-article-side"> <section class="xb-article-panel"> <div class="xb-article-panel__title">本文目录</div> <div class="liquid-glass-container "><div class="liquidGlass-wrapper dock !p-6"><div class="liquidGlass-effect-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-tint-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-shine  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-text  intersect:animate-fadeLeft transition-all duration-300 fast-slow"><div class="intersect:animate-fadeLeft" data-astro-cid-hop3l3kc><h2 class="text-2xl border-none mb-3" data-astro-cid-hop3l3kc>内容导航</h2><div class="max-h-96 overflow-y-auto" data-astro-cid-hop3l3kc><ul class="list-none m-0 space-y-1" data-astro-cid-hop3l3kc><li class="ml-0" data-astro-cid-hop3l3kc><a href="#ai-会议纪要不是摘要工具而是执行闭环系统" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>AI 会议纪要不是摘要工具，而是执行闭环系统</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#已有智能纪要产品还是自建-agent先看你要解决哪一层" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>已有智能纪要产品还是自建 Agent？先看你要解决哪一层</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#推荐架构从语音输入到-notion-任务派发的闭环工作流" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>推荐架构：从语音输入到 Notion 任务派发的闭环工作流</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#长音频转写先测-batchvad-和峰值显存不要把-empty_cache-当方案" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>长音频转写：先测 batch、VAD 和峰值显存，不要把 empty_cache() 当方案</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#说话人分离与身份映射先回答哪一段是谁再回答这个人叫什么" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>说话人分离与身份映射：先回答“哪一段是谁”，再回答“这个人叫什么”</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#决策提取与行动项过滤严格区分发散讨论与最终结论" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>决策提取与行动项过滤：严格区分发散讨论与最终结论</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#人工确认层防止幻觉与数据乱写的安全阀" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>人工确认层：防止幻觉与数据乱写的安全阀</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#多平台自动同步重试幂等性与同步失败恢复设计" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>多平台自动同步：重试、幂等性与同步失败恢复设计</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#会议纪要与闭环智能体中的常见坑与报错诊断" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>会议纪要与闭环智能体中的常见坑与报错诊断</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#error-speaker-re-identification-collision-发言人重叠与声纹标识碰撞" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Error: Speaker Re-identification Collision (发言人重叠与声纹标识碰撞)</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#error-ambiguous-deadline-and-over-schedule-不确定截止时间推断偏差" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Error: Ambiguous Deadline and Over-schedule (不确定截止时间推断偏差)</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#error-notion-page-sync-write-loop-notionjira-接口调用重试死循环" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Error: Notion Page Sync Write Loop (Notion/Jira 接口调用重试死循环)</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#常见问题解答" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>常见问题解答</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#q-是否可以将长达数小时的整场会议录音直接喂给-claude-或-gpt-4o-生成纪要" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Q: 是否可以将长达数小时的整场会议录音直接喂给 Claude 或 GPT-4o 生成纪要？</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#q-离线声纹识别库对硬件的要求高吗" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Q: 离线声纹识别库对硬件的要求高吗？</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#q-会议智能体如何处理那些没有参会的人员的任务派发" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Q: 会议智能体如何处理那些没有参会的人员的任务派发？</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#生产化防守与安全风险控制" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>生产化防守与安全风险控制</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#继续阅读" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>继续阅读</a></li></ul></div></div></div></div></div> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">文章工具</div> <div class="grid gap-1 text-[10px] text-[var(--xb-text)]"> <button type="button" data-copy-article class="flex items-center justify-between border-b border-[var(--xb-line)] py-2 text-left"><span>复制链接</span><span>↗</span></button> <a href="/ai/ai-document-intelligence-agents/" class="flex items-center justify-between border-b border-[var(--xb-line)] py-2"><span>返回专题 Hub</span><span>→</span></a> <a href="/rss.xml" class="flex items-center justify-between border-b border-[var(--xb-line)] py-2"><span>RSS</span><span>→</span></a> <a href="/newsletter/" class="flex items-center justify-between py-2"><span>Newsletter</span><span>→</span></a> </div> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">相关文章</div> <div class="xb-article-related"><a href="/ai/ai-document-intelligence-agents/">AI 文档理解 Agents：PDF 解析、RAG 知识库、合同审查、研究与审计证据链</a><a href="/ai/ai-knowledge-base-agent/">AI 知识库智能体生产化实战：知识治理、权限控制、引用审计与反馈闭环</a><a href="/ai/how-to-build-ai-contract-review-agent/">AI 合同审查 Agent 怎么做？条款抽取、风险标注、版本比对与法务复核</a></div> </section>  </aside> </div> <script>
+  const bindArticleTools=()=>{document.querySelectorAll('[data-copy-article]').forEach((button)=>{if(button.dataset.ready)return;button.dataset.ready='1';button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(window.location.href);const original=button.querySelector('span')?.textContent;if(button.querySelector('span'))button.querySelector('span').textContent='已复制';setTimeout(()=>{if(button.querySelector('span'))button.querySelector('span').textContent=original||'复制链接'},1200)}catch{}})})};document.addEventListener('astro:page-load',bindArticleTools);bindArticleTools();
+</script> </main> <script>
+    function initProgress() {
+      const progressBar = document.getElementById('reading-progress');
+      if (!progressBar) return;
+      window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = scrolled + "%";
+      });
+    }
+    document.addEventListener('astro:page-load', initProgress);
+    initProgress();
+  </script>  </main> <footer class="mt-16 border-t border-[var(--xb-line)] bg-[var(--xb-surface)]"> <div class="xb-shell py-10 md:py-12"> <div class="grid gap-10 lg:grid-cols-[minmax(260px,0.9fr)_minmax(0,1.6fr)] lg:gap-16"> <div class="max-w-[430px]"> <a href="/" class="inline-flex items-center gap-2.5 font-black tracking-[-0.035em] text-[var(--xb-ink)]"> <img src="/favicon/favicon.svg" alt="XBSTACK" width="32" height="32" loading="lazy" decoding="async" class="h-8 w-8 object-contain"> <span class="text-[17px]">XBSTACK</span> </a> <p class="mt-5 text-[18px] font-bold leading-7 tracking-[-0.02em] text-[var(--xb-ink)]"> 在高处看世界，在底层堆资产。 </p> <p class="mt-3 text-[12px] leading-6 text-[var(--xb-muted)]"> 工程实践、可用产品、投资与阅读记录，以及旅行和户外现场。 </p> </div> <nav class="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-4" aria-label="页脚导航"> <div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">主题</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/ai/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">AI</a><a href="/tools/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Tools</a><a href="/horizon/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Horizon</a><a href="/life/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Lens</a><a href="/about/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">About</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">AI 工程</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/ai/agent/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Agents</a><a href="/ai/langgraph/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">LangGraph</a><a href="/ai/mcp/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">MCP</a><a href="/ai/workflow/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Workflow</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">资源</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/search/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">搜索</a><a href="/archive/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">归档</a><a href="/newsletter/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Newsletter</a><a href="/rss.xml" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">RSS</a><a href="https://github.com/xbstack" target="_blank" rel="noopener noreferrer" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">GitHub：@xbstack</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">联系</h2> <div class="flex flex-col items-start gap-2.5"> <a href="mailto:xbstack@163.com" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">邮箱：xbstack@163.com</a><a href="/wechat/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 wechat-trigger" data-wechat-qr="/assets/qrcode_guizhou_outdoor.png">微信公众号：贵州户外</a><a href="/contact/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">商务合作</a> </div> </div> </nav> </div> <div class="mt-9 flex flex-col gap-3 border-t border-[var(--xb-line)] pt-5 sm:flex-row sm:items-center sm:justify-between"> <div class="text-[10px] text-[var(--xb-faint)]">© 2026 XBSTACK. All rights reserved.</div> <div class="flex flex-wrap gap-x-4 gap-y-2"> <a href="/privacy/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">隐私政策</a><a href="/tos/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">服务条款</a><a href="/disclosure/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">免责声明</a><a href="/advertising/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">广告政策</a><a href="/cookies/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">Cookie 政策</a> </div> </div> </div> </footer> <!-- 桌面悬停卡：由全局脚本定位到当前公众号入口附近 --><div id="wechat-hover-card" class="fixed z-[9998] hidden w-[390px] pointer-events-none opacity-0 translate-y-2 transition-all duration-200" aria-hidden="true"> <div class="rounded-[30px] border border-white/15 bg-[#0d1728]/95 p-6 text-white shadow-[0_28px_80px_rgba(2,6,23,0.48)] backdrop-blur-2xl"> <div class="text-[10px] font-black uppercase tracking-[0.34em] text-orange-400">XBSTACK 微信公众号</div> <div class="mt-2 text-[24px] font-black tracking-tight">关注内容更新</div> <div class="mt-1 text-[12px] font-bold tracking-[0.12em] text-slate-400">AI 工程 · 产品构建 · 户外实践</div> <div class="mt-5 grid grid-cols-[148px_1fr] items-center gap-5"> <img id="wechat-hover-qr" src="/assets/qrcode_guizhou_outdoor.png" width="360" height="360" alt="微信公众号贵州户外二维码" class="block aspect-square w-full object-contain"> <div class="space-y-3 text-[13px] font-bold leading-relaxed text-slate-300"> <p>贵州徒步与路线实测</p> <p>AI 工具与独立产品</p> <p>投资体系与长期复盘</p> </div> </div> <div class="mt-5 border-t border-white/10 pt-4 text-center text-[12px] font-black text-slate-300"> 点击查看完整名片 </div> </div> </div> <!-- 全局点击弹窗 --> <div id="wechat-modal" class="fixed inset-0 z-[10000] hidden items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="wechat-modal-title" aria-hidden="true"> <button id="wechat-modal-backdrop" type="button" aria-label="关闭微信公众号弹窗" class="absolute inset-0 cursor-default bg-slate-950/86 backdrop-blur-xl"></button> <div id="wechat-modal-content" class="relative max-h-[94vh] w-full max-w-[620px] scale-95 overflow-y-auto rounded-[38px] border border-slate-500/45 bg-[#0d1728] text-white opacity-0 shadow-[0_40px_140px_rgba(0,0,0,0.68)] transition-all duration-300 sm:rounded-[50px]"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"> <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px]"></div> <div class="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-orange-500/10 blur-[80px]"></div> </div> <button id="wechat-modal-close" type="button" aria-label="关闭微信公众号弹窗" class="absolute right-5 top-5 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 transition hover:bg-white/10 hover:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg> </button> <div class="relative z-10 px-6 pb-6 pt-10 sm:px-10 sm:pb-9 sm:pt-12"> <header class="text-center"> <div class="text-[10px] font-black uppercase tracking-[0.44em] text-orange-400 sm:text-xs">XBSTACK 微信公众号</div> <h2 id="wechat-modal-title" class="mt-4 text-3xl font-black tracking-tight text-white sm:text-[38px]" style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;">关注内容更新</h2> <p class="mt-3 text-sm font-bold tracking-[0.16em] text-slate-400 sm:text-base">AI 工程 · 产品构建 · 户外实践</p> </header> <div class="mt-8 grid items-center gap-7 sm:grid-cols-[210px_1fr] sm:gap-8"> <img id="wechat-modal-qr" src="/assets/qrcode_guizhou_outdoor.png" width="360" height="360" decoding="async" alt="微信公众号贵州户外二维码" class="mx-auto block aspect-square w-full max-w-[210px] object-contain sm:max-w-none"> <div class="divide-y divide-white/10"> <div class="grid grid-cols-[38px_1fr] gap-3 py-3 first:pt-0"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M634.92 462.7l-288-448C341.03 5.54 330.89 0 320 0s-21.03 5.54-26.92 14.7l-288 448a32.001 32.001 0 0 0-1.17 32.64A32.004 32.004 0 0 0 32 512h576c11.71 0 22.48-6.39 28.09-16.67a31.983 31.983 0 0 0-1.17-32.63zM320 91.18L405.39 224H320l-64 64-38.06-38.06L320 91.18z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">户外徒步 · 贵州路线实探与分享</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">记录每一次出发，提供真实路况、补给、风险和下撤信息。</p> </div> </div> <div class="grid grid-cols-[38px_1fr] gap-3 py-3"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M278.9 511.5l-61-17.7c-6.4-1.8-10-8.5-8.2-14.9L346.2 8.7c1.8-6.4 8.5-10 14.9-8.2l61 17.7c6.4 1.8 10 8.5 8.2 14.9L293.8 503.3c-1.9 6.4-8.5 10.1-14.9 8.2zm-114-112.2l43.5-46.4c4.6-4.9 4.3-12.7-.8-17.2L117 256l90.6-79.7c5.1-4.5 5.5-12.3.8-17.2l-43.5-46.4c-4.5-4.8-12.1-5.1-17-.5L3.8 247.2c-5.1 4.7-5.1 12.8 0 17.5l144.1 135.1c4.9 4.6 12.5 4.4 17-.5zm327.2.6l144.1-135.1c5.1-4.7 5.1-12.8 0-17.5L492.1 112.1c-4.8-4.5-12.4-4.3-17 .5L431.6 159c-4.6 4.9-4.3 12.7.8 17.2L523 256l-90.6 79.7c-5.1 4.5-5.5 12.3-.8 17.2l43.5 46.4c4.5 4.9 12.1 5.1 17 .6z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">独立开发 · AI、工具与产品实战</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">从真实需求到上线复盘，持续构建可长期积累的数字产品。</p> </div> </div> <div class="grid grid-cols-[38px_1fr] gap-3 py-3 last:pb-0"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16zM464 96H345.94c-21.38 0-32.09 25.85-16.97 40.97l32.4 32.4L288 242.75l-73.37-73.37c-12.5-12.5-32.76-12.5-45.25 0l-68.69 68.69c-6.25 6.25-6.25 16.38 0 22.63l22.62 22.62c6.25 6.25 16.38 6.25 22.63 0L192 237.25l73.37 73.37c12.5 12.5 32.76 12.5 45.25 0l96-96 32.4 32.4c15.12 15.12 40.97 4.41 40.97-16.97V112c.01-8.84-7.15-16-15.99-16z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">投资思考 · 复利、风险与长期主义</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">分享投资体系、市场观察和个人决策复盘，不构成投资建议。</p> </div> </div> </div> </div> <div class="mt-6 text-center text-sm font-black leading-relaxed text-slate-300"> 扫码关注微信公众号 <span class="text-orange-400">“贵州户外”</span> <p class="mt-1 text-xs font-bold text-slate-500">获取户外路线、独立开发与投资复盘的最新内容</p> </div> <button id="wechat-modal-confirm" type="button" class="mt-7 w-full rounded-[24px] bg-white px-6 py-4 text-sm font-black tracking-[0.12em] text-slate-950 shadow-xl transition hover:-translate-y-0.5 hover:bg-slate-100 active:translate-y-0"> 知道了 / CLOSE </button> </div> </div> </div> <script type="module">const b="/assets/qrcode_guizhou_outdoor.png";function f(){const t=document.getElementById("wechat-modal"),y=document.getElementById("wechat-modal-backdrop"),d=document.getElementById("wechat-modal-content"),u=document.getElementById("wechat-modal-close"),E=document.getElementById("wechat-modal-confirm"),c=document.getElementById("wechat-modal-qr"),o=document.getElementById("wechat-hover-card"),i=document.getElementById("wechat-hover-qr");if(!t||!d||!o)return;let l=0;const p=window.matchMedia("(hover: hover) and (pointer: fine)"),w=e=>{const n=e.dataset.wechatQr||b;c&&c.src!==new URL(n,window.location.href).href&&(c.src=n),i&&i.src!==new URL(n,window.location.href).href&&(i.src=n)},s=()=>{window.clearTimeout(l),o.classList.add("opacity-0","translate-y-2"),l=window.setTimeout(()=>o.classList.add("hidden"),180)},v=e=>{if(!p.matches||!t.classList.contains("hidden"))return;window.clearTimeout(l),w(e),o.classList.remove("hidden");const n=e.getBoundingClientRect(),L=390,B=310,r=12;let m=n.left+n.width/2-L/2;m=Math.max(r,Math.min(m,window.innerWidth-L-r));let h=n.top-B-12;h<r&&(h=n.bottom+12),o.style.left=`${m}px`,o.style.top=`${h}px`,requestAnimationFrame(()=>o.classList.remove("opacity-0","translate-y-2"))},I=e=>{s(),w(e),t.classList.remove("hidden"),t.classList.add("flex"),t.setAttribute("aria-hidden","false"),document.body.style.overflow="hidden",requestAnimationFrame(()=>{d.classList.remove("scale-95","opacity-0"),d.classList.add("scale-100","opacity-100"),u?.focus()})},a=()=>{d.classList.remove("scale-100","opacity-100"),d.classList.add("scale-95","opacity-0"),window.setTimeout(()=>{t.classList.add("hidden"),t.classList.remove("flex"),t.setAttribute("aria-hidden","true"),document.body.style.overflow=""},260)};document.querySelectorAll(".wechat-trigger").forEach(e=>{e.dataset.wechatInitialized!=="true"&&(e.dataset.wechatInitialized="true",e.addEventListener("mouseenter",()=>v(e)),e.addEventListener("mouseleave",s),e.addEventListener("focus",()=>v(e)),e.addEventListener("blur",s),e.addEventListener("click",n=>{n.preventDefault(),I(e)}))}),t.dataset.wechatInitialized!=="true"&&(t.dataset.wechatInitialized="true",u?.addEventListener("click",a),E?.addEventListener("click",a),y?.addEventListener("click",a),document.addEventListener("keydown",e=>{e.key==="Escape"&&!t.classList.contains("hidden")&&a()}),window.addEventListener("scroll",s,{passive:!0}),window.addEventListener("resize",s))}f();document.addEventListener("astro:page-load",f);</script> <script>
+      const showLanguageSwitchNotice = () => {
+        let payload = null;
+        try {
+          const raw = sessionStorage.getItem('xbstack_language_notice');
+          if (!raw) return;
+          payload = JSON.parse(raw);
+          sessionStorage.removeItem('xbstack_language_notice');
+        } catch (error) {
+          return;
+        }
+
+        const notice = document.getElementById('language-switch-notice');
+        if (!notice) return;
+
+        const targetIsEnglish = String(payload?.language || '').toLowerCase().startsWith('en');
+        notice.textContent = targetIsEnglish
+          ? 'This page does not have an English version yet. You have been taken to the English home page.'
+          : '当前页面暂未提供中文版本，已为你打开中文首页。';
+        notice.classList.remove('hidden');
+        window.setTimeout(() => notice.classList.add('hidden'), 4800);
+      };
+
+      document.addEventListener('astro:page-load', showLanguageSwitchNotice);
+      showLanguageSwitchNotice();
+    </script> </body> </html>

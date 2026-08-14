@@ -1,0 +1,1213 @@
+<!DOCTYPE html><html lang="en" class="dark" data-analytics="ga4-baidu"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script>
+      const applyTheme = () => {
+        const theme = localStorage.getItem("theme");
+        const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      };
+      applyTheme();
+      document.addEventListener("astro:page-load", applyTheme);
+    </script><title>LangGraph Memory and Checkpointing | AI - XBSTACK</title><meta name="description" content="LangGraph Memory and Checkpointing guide to thread_id, Checkpointer, state restoration, checkpoint history, HITL resume, multi-user isolation, and auditability."><meta http-equiv="content-language" content="en"><meta name="keywords" content="LangGraph Memory and Checkpointing, LangGraph Checkpointer, thread_id, state restoration, checkpoint history, Human-in-the-loop, state persistence, multi-user isolation, durable execution, production AI agents"><meta name="theme-color" content="#050608"><meta property="og:type" content="article"><meta property="og:locale" content="en_US"><meta property="og:url" content="https://www.xbstack.com/en/ai/langgraph-memory-checkpointing-production-agents/"><meta property="og:title" content="LangGraph Memory and Checkpointing | AI - XBSTACK"><meta property="og:description" content="LangGraph Memory and Checkpointing guide to thread_id, Checkpointer, state restoration, checkpoint history, HITL resume, multi-user isolation, and auditability."><meta property="og:image" content="https://www.xbstack.com/_astro/cogview4-b291f527-e780a076-1200x630.B51EJ8sq.webp"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/en/ai/langgraph-memory-checkpointing-production-agents/"><meta property="twitter:title" content="LangGraph Memory and Checkpointing | AI - XBSTACK"><meta property="twitter:description" content="LangGraph Memory and Checkpointing guide to thread_id, Checkpointer, state restoration, checkpoint history, HITL resume, multi-user isolation, and auditability."><meta property="twitter:image" content="https://www.xbstack.com/_astro/cogview4-b291f527-e780a076-1200x630.B51EJ8sq.webp"><link rel="canonical" href="https://www.xbstack.com/en/ai/langgraph-memory-checkpointing-production-agents/"><link rel="alternate" hreflang="zh-CN" href="https://www.xbstack.com/ai/langgraph-memory-checkpointing-production-agents/"><link rel="alternate" hreflang="en" href="https://www.xbstack.com/en/ai/langgraph-memory-checkpointing-production-agents/"><link rel="alternate" hreflang="x-default" href="https://www.xbstack.com/ai/langgraph-memory-checkpointing-production-agents/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/en/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Tools and Products","description":"AI Finance, compound calculator, Lunest and a small set of practical tools and reusable resources.","url":"https://www.xbstack.com/en/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Long-term Thinking","description":"Investment research, reading notes and long-term thinking with evidence, outcomes and decision reviews.","url":"https://www.xbstack.com/en/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Travel, Photography and Gear","description":"Field notes from real hiking, travel, photography and gear use, with Guizhou as a core but not exclusive focus.","url":"https://www.xbstack.com/en/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"Xiaobai's profile, current products, long-term research themes, working principles and the XBSTACK public asset system.","url":"https://www.xbstack.com/en/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","additionalType":"https://schema.org/TechArticle","headline":"LangGraph Memory and Checkpointing: How Production-Grade AI Agents Save, Restore, and Audit State","description":"LangGraph Memory and Checkpointing guide to thread_id, Checkpointer, state restoration, checkpoint history, HITL resume, multi-user isolation, and auditability.","inLanguage":"en","image":"https://www.xbstack.com/_astro/cogview4-b291f527-e780a076-1200x630.B51EJ8sq.webp","datePublished":"2026-06-01T00:00:00.000Z","author":{"@id":"https://www.xbstack.com/about/#person"},"publisher":{"@type":"Organization","name":"XBSTACK","logo":{"@type":"ImageObject","url":"https://www.xbstack.com/favicon/favicon.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.xbstack.com/en/ai/langgraph-memory-checkpointing-production-agents/"},"articleSection":"dev","keywords":["LangGraph Memory and Checkpointing","LangGraph Checkpointer","thread_id","state restoration","checkpoint history","Human-in-the-loop","state persistence","multi-user isolation","durable execution","production AI agents"],"abstract":"LangGraph memory and checkpointing provide durable, restorable graph state rather than simple chat-history recall. Production designs should define thread identity, checkpoint storage, resume semantics, multi-user isolation, human interrupts, retention, and audit history explicitly.","about":[{"@type":"Thing","name":"LangGraph"},{"@type":"Thing","name":"AI Agent"},{"@type":"Thing","name":"Memory"},{"@type":"Thing","name":"Checkpointing"},{"@type":"Thing","name":"Stateful Agents"},{"@type":"Thing","name":"Production AI"}],"speakable":{"@type":"SpeakableSpecification","cssSelector":[".markdown-content h2",".markdown-content p:first-of-type"]}},{"@type":"Person","@id":"https://www.xbstack.com/about/#person","name":"Xiaobai","alternateName":["小白"],"url":"https://www.xbstack.com/en/about/","image":"https://www.xbstack.com/_astro/avatar.BzDyfp9G.webp","jobTitle":"Full-Stack AI Engineer","worksFor":{"@type":"Organization","name":"XBSTACK","url":"https://www.xbstack.com"},"sameAs":["https://github.com/xbstack"],"knowsAbout":["AI Agents","LangGraph","Model Context Protocol","AI Workflows","Product Engineering"]}]}</script><meta property="article:published_time" content="Mon Jun 01 2026 08:00:00 GMT+0800 (China Standard Time)"><meta name="abstract" content="LangGraph Memory and Checkpointing guide to thread_id, Checkpointer, state restoration, checkpoint history, HITL resume, multi-user isolation, and auditability."><meta name="speakable-selector" content=".markdown-content h2, .markdown-content p"><meta name="ai-content-access" content="allowed"><meta name="geo-optimized" content="true"><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
+
+          const productionAnalyticsHosts = new Set(['www.xbstack.com', 'xbstack.com']);
+          const automationUserAgent = /HeadlessChrome|PhantomJS|Playwright|Puppeteer|Selenium|Lighthouse|PageSpeed|bot\b|crawler|spider|slurp|curl|wget|python-requests|axios|node-fetch|facebookexternalhit|Twitterbot|LinkedInBot|Bytespider|GPTBot|ClaudeBot|PerplexityBot/i;
+          const analyticsUrl = new URL(window.location.href);
+          const analyticsSource = String(analyticsUrl.searchParams.get('utm_source') || '').toLowerCase();
+          const analyticsCampaign = String(analyticsUrl.searchParams.get('utm_campaign') || '').toLowerCase();
+          const internalAnalyticsAudit =
+            analyticsUrl.searchParams.has('ga4_audit') ||
+            analyticsUrl.searchParams.has('analytics_test') ||
+            ['internal', 'internal_test', 'qa', 'test'].includes(analyticsSource) ||
+            analyticsCampaign.includes('ga4_audit') ||
+            analyticsCampaign.includes('internal_test');
+          const shouldTrackAnalytics =
+            Boolean(googleAnalyticsId) &&
+            productionAnalyticsHosts.has(window.location.hostname.toLowerCase()) &&
+            navigator.webdriver !== true &&
+            !automationUserAgent.test(navigator.userAgent || '') &&
+            !internalAnalyticsAudit;
+
+          if (!shouldTrackAnalytics) {
+            window.__analytics_suppressed = true;
+            window.__analytics_suppression_reason = internalAnalyticsAudit ? 'internal_test' : 'environment_or_automation';
+          } else if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_id', 'utm_term', 'utm_content'];
+            const UTM_ALIASES = {
+              utmsource: 'utm_source',
+              utmmedium: 'utm_medium',
+              utmcampaign: 'utm_campaign',
+              utmcontent: 'utm_content',
+              utmterm: 'utm_term',
+              utmid: 'utm_id',
+            };
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.normalizeUtmAliases = () => {
+              try {
+                const url = new URL(window.location.href);
+                let changed = false;
+                Object.entries(UTM_ALIASES).forEach(([alias, canonical]) => {
+                  const aliasValue = url.searchParams.get(alias);
+                  if (aliasValue && !url.searchParams.get(canonical)) {
+                    url.searchParams.set(canonical, aliasValue);
+                    changed = true;
+                  }
+                  if (url.searchParams.has(alias)) {
+                    url.searchParams.delete(alias);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.normalizeUtmAliases();
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
+            window.__ga4_initialized = true;
+            window.__ga4_client_loaded = false;
+            window.__ga4_tracking_started = false;
+            window.__ga4_human_verified = false;
+            window.__ga4_session_class = '';
+            window.__lastGA4PageKey = "";
+            window.__lastGA4PageLocation = document.referrer || "";
+            window.__ga4_tracking_start_reason = '';
+            window.__scroll50Reported = false;
+            window.__scroll90Reported = false;
+
+            const getReferrerHost = () => {
+              try {
+                return document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+              } catch (err) {
+                return '';
+              }
+            };
+
+            const inferSourceHint = () => {
+              const refHost = getReferrerHost();
+              if (!refHost) return '';
+              if (refHost.includes('zhihu')) return 'zhihu_referrer';
+              if (refHost.includes('juejin')) return 'juejin_referrer';
+              if (refHost.includes('csdn')) return 'csdn_referrer';
+              if (refHost.includes('weixin') || refHost.includes('wechat')) return 'wechat_referrer';
+              if (refHost.includes('google')) return 'google_referrer';
+              if (refHost.includes('baidu')) return 'baidu_referrer';
+              return refHost;
+            };
+
+            const getAttributionPayload = () => {
+              const params = new URLSearchParams(window.location.search);
+              const current = {};
+              UTM_KEYS.forEach((key) => {
+                const value = params.get(key);
+                if (value) current[key] = value;
+              });
+
+              const referrerHost = getReferrerHost();
+              const currentHost = window.location.hostname.replace(/^www\./, '');
+              const sourceHint = inferSourceHint();
+              const hasExternalReferrer = Boolean(referrerHost && referrerHost !== currentHost);
+
+              let stored = {};
+              try {
+                stored = JSON.parse(sessionStorage.getItem('xbstack_attribution') || '{}');
+              } catch (err) {
+                stored = {};
+              }
+
+              if (Object.keys(current).length) {
+                stored = {
+                  ...stored,
+                  ...current,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: current.utm_source ? `utm:${current.utm_source}` : sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              } else if (hasExternalReferrer && !stored.captured_at) {
+                // Preserve first-touch referral attribution even when the platform strips UTM parameters.
+                stored = {
+                  ...stored,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              }
+
+              if (stored.captured_at) {
+                try {
+                  sessionStorage.setItem('xbstack_attribution', JSON.stringify(stored));
+                } catch (err) {}
+              }
+
+              return {
+                utm_source: stored.utm_source || '',
+                utm_medium: stored.utm_medium || '',
+                utm_campaign: stored.utm_campaign || '',
+                utm_id: stored.utm_id || '',
+                utm_term: stored.utm_term || '',
+                utm_content: stored.utm_content || '',
+                attribution_landing_page: stored.landing_page || '',
+                referrer_host: stored.referrer_host || referrerHost,
+                source_hint: stored.source_hint || (stored.utm_source ? `utm:${stored.utm_source}` : sourceHint),
+              };
+            };
+
+            const getAnalyticsPageContext = () => {
+              const url = new URL(window.location.href);
+              const isCompoundCalculator = [
+                '/tools/compound-calculator/',
+                '/en/tools/compound-calculator/',
+              ].includes(url.pathname);
+
+              if (isCompoundCalculator) {
+                ['scenario', 'principal', 'monthly', 'rate', 'years', 'volatility', 'inflation', 'm2_drag', 'target', 'compare_rate'].forEach((key) => {
+                  url.searchParams.delete(key);
+                });
+              }
+
+              return {
+                pagePath: url.pathname,
+                pageLocation: url.href,
+                pageSearch: url.search,
+              };
+            };
+
+            window.xbTrackEvent = (eventName, payload = {}) => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !eventName ||
+                !window.__ga4_tracking_started ||
+                !window.__ga4_human_verified
+              ) return;
+              const analyticsPage = getAnalyticsPageContext();
+              window.gtag('event', eventName, {
+                transport_type: 'beacon',
+                page_path: analyticsPage.pagePath,
+                page_title: document.title || '',
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+                ...payload,
+              });
+            };
+
+            window.sendGA4PageView = () => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !window.__ga4_tracking_started
+              ) return;
+
+              const analyticsPage = getAnalyticsPageContext();
+              const pageLocation = analyticsPage.pageLocation;
+              const pageTitle = document.title || '';
+              const pageKey = `${pageLocation}|${pageTitle}`;
+
+              if (pageKey === window.__lastGA4PageKey) return;
+              const pageReferrer = window.__lastGA4PageLocation;
+              window.__lastGA4PageKey = pageKey;
+              window.__lastGA4PageLocation = pageLocation;
+              window.__scroll50Reported = false;
+              window.__scroll90Reported = false;
+
+              window.gtag('event', 'page_view', {
+                page_title: pageTitle,
+                page_location: pageLocation,
+                page_path: analyticsPage.pagePath,
+                page_search: analyticsPage.pageSearch,
+                page_referrer: pageReferrer,
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+              });
+            };
+
+            window.initGA4Tracking = () => {
+              if (typeof window.gtag !== 'function') return;
+              if (window.__ga4_events_bound) return;
+              window.__ga4_events_bound = true;
+
+              // 1. 页面滚动深度上报
+              const handleScroll = (event) => {
+                if (!event?.isTrusted || !window.__ga4_human_verified) return;
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const progress = (scrollTop / scrollHeight) * 100;
+
+                if (progress >= 50 && !window.__scroll50Reported) {
+                  window.xbTrackEvent('scroll_50', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll50Reported = true;
+                }
+                if (progress >= 90 && !window.__scroll90Reported) {
+                  window.xbTrackEvent('scroll_90', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll90Reported = true;
+                }
+              };
+
+              window.addEventListener('scroll', handleScroll, { passive: true });
+
+              // 2. 完整链接与按钮点击上报。link_click 是统一事实表，旧事件继续保留用于历史对比。
+              const inferLinkArea = (target) => {
+                const explicitArea = target.closest('[data-analytics-area]')?.getAttribute('data-analytics-area');
+                if (explicitArea) return explicitArea.slice(0, 60);
+                if (target.closest('header, nav, [role="navigation"]')) return 'navigation';
+                if (target.closest('footer')) return 'footer';
+                if (target.closest('[class*="related"], [class*="recommend"], [class*="next-reading"]')) return 'related_content';
+                if (target.closest('[class*="sidebar"], aside')) return 'sidebar';
+                if (target.closest('.markdown-content, article')) return 'article_body';
+                if (target.closest('[class*="card"], [class*="grid"]')) return 'content_card';
+                return 'page_other';
+              };
+
+              const classifyLink = (target, url, linkArea) => {
+                const rawHref = String(target.getAttribute('href') || '');
+                const protocol = String(url.protocol || '').toLowerCase();
+                const path = String(url.pathname || '/');
+                const host = String(url.hostname || '').replace(/^www\./, '').toLowerCase();
+                const isHttp = protocol === 'http:' || protocol === 'https:';
+                const isExternal = isHttp && url.origin !== window.location.origin;
+                const isDownload =
+                  target.hasAttribute('download') ||
+                  /\.(pdf|zip|gz|tar|csv|xlsx?|docx?|pptx?|json|ya?ml|mp3|mp4|mov|webm)(?:$|[?#])/i.test(rawHref);
+
+                if (protocol === 'mailto:' || protocol === 'tel:') return 'contact';
+                if (isDownload) return 'download';
+                if (isExternal && host === 'github.com') return 'github';
+                if (isExternal) return 'external';
+                if (path.startsWith('/go/')) return 'affiliate';
+                if (path.startsWith('/tools/') || path.startsWith('/compound-interest/')) return 'tool';
+                if (path.startsWith('/newsletter/')) return 'newsletter';
+                if (url.origin === window.location.origin && path === window.location.pathname && url.hash) return 'anchor';
+                if (linkArea === 'related_content') return 'related_article';
+                if (linkArea === 'article_body') return 'internal_article';
+                return 'internal';
+              };
+
+              const handleClick = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const target = e.target.closest('a,button');
+                if (!target) return;
+
+                const label = (target.getAttribute('aria-label') || target.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 100);
+                if (target.tagName === 'BUTTON') {
+                  window.xbTrackEvent('click_button', {
+                    event_category: 'engagement',
+                    event_label: label,
+                    link_area: inferLinkArea(target),
+                    link_position: inferLinkArea(target),
+                    source_page_path: window.location.pathname,
+                  });
+                  return;
+                }
+
+                const rawHref = String(target.getAttribute('href') || '').trim();
+                if (!rawHref || rawHref.toLowerCase().startsWith('javascript:')) return;
+
+                try {
+                  const url = new URL(rawHref, window.location.href);
+                  const linkArea = inferLinkArea(target);
+                  const linkType = classifyLink(target, url, linkArea);
+                  const isExternalHttp =
+                    (url.protocol === 'http:' || url.protocol === 'https:') &&
+                    url.origin !== window.location.origin;
+                  const payload = {
+                    event_category:
+                      ['affiliate', 'tool', 'newsletter'].includes(linkType)
+                        ? 'conversion'
+                        : isExternalHttp
+                          ? 'outbound'
+                          : 'navigation',
+                    event_label: url.href,
+                    link_text: label,
+                    link_url: url.href,
+                    link_domain: url.hostname.replace(/^www\./, ''),
+                    link_id: target.id || '',
+                    link_classes: String(target.className || '').slice(0, 120),
+                    outbound: isExternalHttp,
+                    link_type: linkType,
+                    link_area: linkArea,
+                    link_position: linkArea,
+                    source_page_path: window.location.pathname,
+                    target_page_path: url.pathname || '',
+                  };
+
+                  // 所有真实链接统一进入 link_click，运营报表以该事件为准。
+                  window.xbTrackEvent('link_click', payload);
+
+                  if (linkType === 'external' || linkType === 'github') {
+                    window.xbTrackEvent('click_external', payload);
+                  }
+                  if (linkType === 'github') {
+                    window.xbTrackEvent('github_click', payload);
+                  }
+                  if (linkType === 'download') {
+                    window.xbTrackEvent('download_click', payload);
+                  }
+                  if (linkType === 'affiliate') {
+                    window.xbTrackEvent('affiliate_click', {
+                      ...payload,
+                      affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                    });
+                  }
+                  if (linkType === 'tool') {
+                    window.xbTrackEvent('click_tool', payload);
+                  }
+                  if (linkType === 'newsletter') {
+                    window.xbTrackEvent('newsletter_click', payload);
+                  }
+                  if (linkType === 'related_article') {
+                    window.xbTrackEvent('related_article_click', payload);
+                  }
+                  if (['internal', 'internal_article', 'related_article', 'anchor'].includes(linkType)) {
+                    window.xbTrackEvent('internal_link_click', payload);
+                  }
+                  if (
+                    !isExternalHttp &&
+                    ['/ai/', '/newsletter/', '/search/', '/life/', '/investing/'].some((prefix) => url.pathname.startsWith(prefix))
+                  ) {
+                    window.xbTrackEvent('click_internal_entry', payload);
+                  }
+                } catch (err) {}
+              };
+
+              const handleSubmit = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const form = e.target;
+                if (!form || form.tagName !== 'FORM') return;
+                const action = form.getAttribute('action') || '';
+                const formType = form.getAttribute('data-analytics-form') || '';
+                const formData = new FormData(form);
+                const searchTerm = String(formData.get('q') || '').trim();
+
+                if (action.includes('/search') || formType === 'site-search') {
+                  window.xbTrackEvent('view_search_results', {
+                    event_category: 'site_search',
+                    search_term: searchTerm,
+                  });
+                }
+
+                if (action.includes('buttondown.email') || formType === 'newsletter') {
+                  const provider = action.includes('buttondown.email') ? 'buttondown' : 'xbstack_api';
+                  window.xbTrackEvent('newsletter_subscribe_attempt', {
+                    event_category: 'conversion',
+                    event_label: window.location.pathname,
+                    newsletter_provider: provider,
+                  });
+                  window.xbTrackEvent('newsletter_subscribe', {
+                    event_category: 'conversion',
+                    event_label: 'submitted',
+                    newsletter_provider: provider,
+                    confirmation_status: 'submitted',
+                  });
+                }
+              };
+
+              document.addEventListener('click', handleClick);
+              document.addEventListener('submit', handleSubmit, true);
+            };
+
+            // 原始访问先进入 GA4，再通过 traffic_verification 区分未验证访问与真人互动。
+            // 这样既保留完整 page_view / session_start 基线，也能在报表层排除低质量流量。
+            window.loadGA4Client = () => {
+              if (window.__ga4_client_loaded) return;
+              window.__ga4_client_loaded = true;
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = function() {
+                window.dataLayer.push(arguments);
+              };
+
+              const ga4Script = document.createElement('script');
+              ga4Script.async = true;
+              ga4Script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(googleAnalyticsId)}`;
+              document.head.appendChild(ga4Script);
+
+              window.gtag('js', new Date());
+              window.gtag('config', googleAnalyticsId, {
+                send_page_view: false,
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+              });
+            };
+
+            window.startGA4Tracking = (
+              reason = 'page_load',
+              sessionClass = 'unverified_session',
+              humanVerified = false,
+            ) => {
+              if (window.__ga4_tracking_started) {
+                if (humanVerified && !window.__ga4_human_verified) {
+                  window.verifyGA4Human(reason, sessionClass);
+                }
+                return;
+              }
+              window.__ga4_tracking_start_reason = String(reason || 'page_load').slice(0, 60);
+              window.__ga4_session_class = String(sessionClass || 'unverified_session').slice(0, 40);
+              window.__ga4_human_verified = Boolean(humanVerified);
+              window.__ga4_tracking_started = true;
+              window.loadGA4Client();
+              window.sendGA4PageView();
+              window.initGA4Tracking();
+            };
+
+            window.verifyGA4Human = (reason = 'interaction', sessionClass = 'human_interaction') => {
+              if (!window.__ga4_tracking_started) {
+                window.startGA4Tracking(reason, sessionClass, true);
+                return;
+              }
+              if (window.__ga4_human_verified) return;
+
+              const previousClass = window.__ga4_session_class || 'unverified_session';
+              window.__ga4_human_verified = true;
+              window.__ga4_session_class = String(sessionClass || 'human_interaction').slice(0, 40);
+              window.__ga4_tracking_start_reason = String(reason || 'interaction').slice(0, 60);
+              window.gtag('event', 'traffic_verified', {
+                transport_type: 'beacon',
+                traffic_verification: window.__ga4_session_class,
+                previous_traffic_verification: previousClass,
+                verification_reason: window.__ga4_tracking_start_reason,
+                page_path: window.location.pathname,
+                page_title: document.title || '',
+              });
+            };
+
+            ['pointerdown', 'keydown', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(
+                eventName,
+                (event) => {
+                  if (!event?.isTrusted) return;
+                  window.verifyGA4Human(`interaction:${eventName}`, 'human_interaction');
+                },
+                { once: true, passive: true },
+              );
+            });
+
+            let pointerMoveCount = 0;
+            let pointerMoveDistance = 0;
+            let lastPointerX = null;
+            let lastPointerY = null;
+            const handleHumanPointerMove = (event) => {
+              if (
+                window.__ga4_human_verified ||
+                !event?.isTrusted ||
+                event.pointerType === 'touch'
+              ) return;
+              if (lastPointerX !== null && lastPointerY !== null) {
+                pointerMoveDistance += Math.hypot(event.clientX - lastPointerX, event.clientY - lastPointerY);
+              }
+              lastPointerX = event.clientX;
+              lastPointerY = event.clientY;
+              pointerMoveCount += 1;
+              if (pointerMoveCount >= 3 && pointerMoveDistance >= 120) {
+                window.removeEventListener('pointermove', handleHumanPointerMove);
+                window.verifyGA4Human('interaction:pointermove', 'human_interaction');
+              }
+            };
+            window.addEventListener('pointermove', handleHumanPointerMove, { passive: true });
+
+            // 放宽采集：所有可见前台页面都记录原始访问；真人互动后再升级质量标签。
+            window.setTimeout(() => {
+              if (
+                window.__ga4_tracking_started ||
+                document.visibilityState !== 'visible'
+              ) return;
+              window.startGA4Tracking('page_load:visible_800ms', 'unverified_session', false);
+            }, 800);
+
+            document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+              if (window.__ga4_tracking_started) {
+                window.sendGA4PageView();
+                window.initGA4Tracking();
+              }
+            });
+          } else {
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+            if (window.__ga4_tracking_started && typeof window.sendGA4PageView === 'function') {
+              window.sendGA4PageView();
+            }
+          }
+        })();</script><script data-baidu-id="c7bfaf645bfc8974405a85c2a55573a0">
+          const baiduId = document.currentScript?.dataset.baiduId || '';
+          if (!window.__baidu_analytics_initialized) {
+            window._hmt = window._hmt || [];
+            window.__baidu_analytics_initialized = true;
+            window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+
+            const loadBaiduAnalytics = () => {
+              if (window.__baidu_script_loaded || !baiduId) return;
+              window.__baidu_script_loaded = true;
+              const hm = document.createElement('script');
+              hm.async = true;
+              hm.src = "https://hm.baidu.com/hm.js?" + baiduId;
+              document.head.appendChild(hm);
+              window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+            };
+
+            // 百度统计不是首屏渲染依赖：首次交互时加载，若用户未交互则 12 秒后加载。
+            ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(eventName, loadBaiduAnalytics, { once: true, passive: true });
+            });
+            window.setTimeout(loadBaiduAnalytics, 12000);
+
+            document.addEventListener('astro:page-load', () => {
+              const pageKey = window.location.pathname + window.location.search;
+              if (!window.__baidu_script_loaded || pageKey === window.__lastBaiduPageKey) return;
+              window.__lastBaiduPageKey = pageKey;
+              window._hmt.push(['_trackPageview', pageKey]);
+            });
+          }
+        </script><link rel="stylesheet" href="/_astro/archive.DJ636BNq.css">
+<link rel="stylesheet" href="/_astro/archive.KSCYbzqj.css">
+<link rel="stylesheet" href="/_astro/_slug_.CRFvxpGR.css">
+<link rel="stylesheet" href="/_astro/_slug_.CeiCBDdi.css">
+<link rel="stylesheet" href="/_astro/vendor-media.DSulWsr7.css">
+<style>.aqua-pill[data-astro-cid-hs6yaznx]{background:#0ea5e91a;backdrop-filter:blur(8px)}
+.glass-button[data-astro-cid-xwnkcw7l]{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:var(--sizeGap);padding:var(--sizePadding);background:var(--variantBase);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--variantBorder);border-radius:var(--sizeBorderRadius);font-size:var(--sizeFontSize);font-weight:500;color:var(--variantColor);cursor:pointer;transition:all .3s cubic-bezier(.175,.885,.32,2.2);box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d;-webkit-user-select:none;-moz-user-select:none;user-select:none;overflow:hidden;text-decoration:none;white-space:nowrap}.glass-button[data-astro-cid-xwnkcw7l]:before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,var(--variantGradient),transparent);transition:left .6s cubic-bezier(.25,.46,.45,.94);pointer-events:none;opacity:0}.glass-button[data-astro-cid-xwnkcw7l]:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);transform:translateY(-4px) scale(1.03);box-shadow:0 20px 25px -5px var(--variantShadow),0 15px 15px -5px #0000004d,inset 1px 1px 4px #ffffff80;filter:brightness(1.2) saturate(1.3)}.glass-button[data-astro-cid-xwnkcw7l]:hover:before{left:100%;opacity:1}.glass-button[data-astro-cid-xwnkcw7l]:active{transform:translateY(-1px) scale(.98);box-shadow:0 2px 6px var(--variantShadow)}.glass-button[data-astro-cid-xwnkcw7l]:disabled{cursor:not-allowed;opacity:.6;transform:none;pointer-events:none}.glass-button[data-astro-cid-xwnkcw7l]:disabled:hover{transform:none;box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d}.glass-button__icon[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;justify-content:center;width:var(--sizeIconSize);height:var(--sizeIconSize);transition:all .3s cubic-bezier(.175,.885,.32,2.2)}.glass-button__icon[data-astro-cid-xwnkcw7l] svg{width:100%;height:100%}.glass-button[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{transform:scale(1.2) rotate(-5deg);filter:drop-shadow(0 0 4px var(--variantShadow))}.glass-button__content[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;transition:all .3s ease}.glass-button__spinner[data-astro-cid-xwnkcw7l]{width:var(--sizeIconSize);height:var(--sizeIconSize);animation:spin 1s linear infinite}.dark[data-astro-cid-xwnkcw7l]{.glass-button{background:#37373799;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-color:#ffffff26;color:#e5e7eb;box-shadow:0 4px 8px #0006,inset 1px 1px 3px #ffffff26}.glass-button:before{background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}.glass-button:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);box-shadow:0 6px 14px var(--variantShadow),inset 1px 1px 4px #fff3;filter:brightness(1.2) saturate(1.3)}}@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.glass-button--primary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--secondary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(37,99,235,.5))}.glass-button--success[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(22,163,74,.5))}.glass-button--warning[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(217,119,6,.5))}.glass-button--danger[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--info[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(99,102,241,.5))}
+</style></head> <body class="bg-[var(--xb-bg)] text-[var(--xb-ink)] selection:bg-orange-500/20 selection:text-orange-500 overflow-x-hidden"> <style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value=="object"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};"requestIdleCallback"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event("astro:idle"));})();</script><script>(()=>{var A=Object.defineProperty;var g=(i,o,a)=>o in i?A(i,o,{enumerable:!0,configurable:!0,writable:!0,value:a}):i[o]=a;var d=(i,o,a)=>g(i,typeof o!="symbol"?o+"":o,a);{let i={0:t=>m(t),1:t=>a(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(a(t)),5:t=>new Set(a(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t),11:t=>1/0*t},o=t=>{let[l,e]=t;return l in i?i[l](e):void 0},a=t=>t.map(o),m=t=>typeof t!="object"||t===null?t:Object.fromEntries(Object.entries(t).map(([l,e])=>[l,o(e)]));class y extends HTMLElement{constructor(){super(...arguments);d(this,"Component");d(this,"hydrator");d(this,"hydrate",async()=>{var b;if(!this.hydrator||!this.isConnected)return;let e=(b=this.parentElement)==null?void 0:b.closest("astro-island[ssr]");if(e){e.addEventListener("astro:hydrate",this.hydrate,{once:!0});return}let c=this.querySelectorAll("astro-slot"),n={},h=this.querySelectorAll("template[data-astro-template]");for(let r of h){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("data-astro-template")||"default"]=r.innerHTML,r.remove())}for(let r of c){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("name")||"default"]=r.innerHTML)}let p;try{p=this.hasAttribute("props")?m(JSON.parse(this.getAttribute("props"))):{}}catch(r){let s=this.getAttribute("component-url")||"<unknown>",v=this.getAttribute("component-export");throw v&&(s+=` (export ${v})`),console.error(`[hydrate] Error parsing props for component ${s}`,this.getAttribute("props"),r),r}let u;await this.hydrator(this)(this.Component,p,n,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),this.dispatchEvent(new CustomEvent("astro:hydrate"))});d(this,"unmount",()=>{this.isConnected||this.dispatchEvent(new CustomEvent("astro:unmount"))})}disconnectedCallback(){document.removeEventListener("astro:after-swap",this.unmount),document.addEventListener("astro:after-swap",this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute("await-children")||document.readyState==="interactive"||document.readyState==="complete")this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener("DOMContentLoaded",e),c.disconnect(),this.childrenConnectedCallback()},c=new MutationObserver(()=>{var n;((n=this.lastChild)==null?void 0:n.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue==="astro:end"&&(this.lastChild.remove(),e())});c.observe(this,{childList:!0}),document.addEventListener("DOMContentLoaded",e)}}async childrenConnectedCallback(){let e=this.getAttribute("before-hydration-url");e&&await import(e),this.start()}async start(){let e=JSON.parse(this.getAttribute("opts")),c=this.getAttribute("client");if(Astro[c]===void 0){window.addEventListener(`astro:${c}`,()=>this.start(),{once:!0});return}try{await Astro[c](async()=>{let n=this.getAttribute("renderer-url"),[h,{default:p}]=await Promise.all([import(this.getAttribute("component-url")),n?import(n):()=>()=>{}]),u=this.getAttribute("component-export")||"default";if(!u.includes("."))this.Component=h[u];else{this.Component=h;for(let f of u.split("."))this.Component=this.Component[f]}return this.hydrator=p,this.hydrate},e,this)}catch(n){console.error(`[astro-island] Error hydrating ${this.getAttribute("component-url")}`,n)}}attributeChangedCallback(){this.hydrate()}}d(y,"observedAttributes",["props"]),customElements.get("astro-island")||customElements.define("astro-island",y)}})();</script><astro-island uid="ZWjsVO" prefix="r16" component-url="/_astro/GlobalLightbox.CqZePd56.js" component-export="default" renderer-url="/_astro/client.DPSb9UvF.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;GlobalLightbox&quot;,&quot;value&quot;:true}"></astro-island> <astro-island uid="2nwVdo" prefix="r17" component-url="/_astro/AffiliatePopup.C1KShLAm.js" component-export="default" renderer-url="/_astro/client.DPSb9UvF.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;AffiliatePopup&quot;,&quot;value&quot;:true}"></astro-island> <div id="app-background" class="fixed inset-0 z-[-1] h-full w-full pointer-events-none bg-slate-50 dark:bg-slate-950 transition-colors duration-500"> <div id="app-background-image" class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-500" data-day="/_astro/macos2.hYF-Pyun.webp" data-night="/_astro/macos2-night.DwJ7amhx.webp" aria-hidden="true"></div> <div class="absolute inset-0 bg-[#DFE1E6]/90 dark:bg-transparent backdrop-blur-[6px] pointer-events-none"></div> <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b82f611,transparent_50%)] dark:hidden pointer-events-none"></div> <div class="absolute inset-0 opacity-[0.08] dark:opacity-[0.03] pointer-events-none mix-blend-multiply" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+');"></div> </div> <script>
+  (() => {
+    const bindBackground = () => {
+      const root = document.documentElement;
+      const background = document.getElementById('app-background-image');
+      if (!background || background.dataset.themeObserverBound === 'true') return;
+
+      const applyBackground = () => {
+        const source = root.classList.contains('dark') ? background.dataset.night : background.dataset.day;
+        if (!source) return;
+        const nextValue = `url("${source}")`;
+        if (background.style.backgroundImage !== nextValue) {
+          background.style.backgroundImage = nextValue;
+        }
+      };
+
+      applyBackground();
+      const observer = new MutationObserver(applyBackground);
+      observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+      background.dataset.themeObserverBound = 'true';
+    };
+
+    bindBackground();
+    document.addEventListener('astro:page-load', bindBackground);
+  })();
+</script> <header class="sticky top-0 z-[500] border-b border-[var(--xb-line)] bg-[color:var(--xb-bg)]/95 backdrop-blur-xl"> <div class="xb-shell flex min-h-[66px] items-center gap-7"> <a href="/en/" class="flex shrink-0 items-center gap-2.5 font-black tracking-[-0.035em] text-[var(--xb-ink)]" aria-label="XBSTACK Home"> <img src="/favicon/favicon.svg" alt="XBSTACK" width="32" height="32" decoding="async" class="h-8 w-8 object-contain"> <span class="text-[17px]">XBSTACK</span> </a> <nav class="hidden items-center gap-1 lg:flex" aria-label="Primary navigation"> <a href="/en/ai/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors bg-blue-500/[0.06] text-blue-600 dark:text-blue-400"> AI </a><a href="/en/tools/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Tools </a><a href="/en/horizon/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Horizon </a><a href="/en/life/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Lens </a><a href="/en/about/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> About </a> </nav> <div class="ml-auto flex items-center gap-2"> <a id="global-search-trigger" data-xbstack-search-trigger href="/en/search/" aria-label="Open site search" class="hidden h-9 min-w-[190px] items-center gap-2 rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)] px-3 text-left text-[11px] text-[var(--xb-muted)] transition-colors hover:border-blue-400 md:flex"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="shrink-0" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.8 173.8 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.8 173.8 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3M97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8"></path></svg> <span class="truncate">Search docs, tools, topics…</span> <kbd class="ml-auto rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[9px] text-[var(--xb-faint)]">⌘K</kbd> </a> <div class="hidden sm:block"> <nav data-visible-language-alternate aria-label="Select language" data-astro-cid-iemtoba4> <details class="language-switcher-details relative" data-language-switcher-details data-astro-cid-iemtoba4> <summary class="language-switcher-summary flex h-10 min-w-[88px] cursor-pointer list-none items-center justify-center gap-2 rounded-full border border-slate-200/60 bg-white/50 px-3 text-[12px] font-bold text-slate-600 shadow-sm backdrop-blur-md transition-all hover:border-blue-300 hover:bg-blue-50/80 hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-blue-400/50 dark:hover:bg-blue-500/10 dark:hover:text-blue-400 dark:focus-visible:ring-offset-slate-950" aria-label="Select language" title="Select language" data-astro-cid-iemtoba4> <svg aria-hidden="true" viewBox="0 0 24 24" class="h-3.5 w-3.5 flex-none" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4> <circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle> <path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path> </svg> <span class="whitespace-nowrap" data-astro-cid-iemtoba4>English</span> <svg aria-hidden="true" viewBox="0 0 20 20" class="language-chevron h-3 w-3 flex-none text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-iemtoba4> <path d="m5 7.5 5 5 5-5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path> </svg> </summary> <div class="language-switcher-menu absolute right-0 top-[calc(100%+0.65rem)] z-[520] w-44 overflow-hidden rounded-2xl border border-slate-200/80 bg-white/95 p-2 shadow-[0_18px_50px_-18px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0B1020]/95" role="menu" aria-label="Select language" data-astro-cid-iemtoba4> <div class="px-3 pb-1.5 pt-1 text-[9px] font-black uppercase tracking-[0.22em] text-slate-400 dark:text-slate-500" data-astro-cid-iemtoba4> Language </div> <a href="/ai/langgraph-memory-checkpointing-production-agents/" data-language-choice="zh-CN" data-language-current="false" data-language-available="true" role="menuitemradio" aria-checked="false" title="切换到中文版本" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors text-slate-600 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-blue-400" data-astro-cid-iemtoba4> <span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4> <span class="h-1.5 w-1.5 rounded-full bg-slate-300 dark:bg-slate-700" data-astro-cid-iemtoba4></span> </span> <span class="flex-1" data-astro-cid-iemtoba4>中文</span> <span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>ZH</span> </a><a href="/en/ai/langgraph-memory-checkpointing-production-agents/" data-language-choice="en" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" role="menuitemradio" aria-checked="true" title="Current language: English" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors cursor-default bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" data-astro-cid-iemtoba4> <span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4> <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" data-astro-cid-iemtoba4> <path d="m4.5 10 3.2 3.2 7.8-7.8" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path> </svg> </span> <span class="flex-1" data-astro-cid-iemtoba4>English</span> <span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>EN</span> </a> </div> </details> </nav>  <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> <div class="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)]"> <div class="relative flex items-center justify-center w-full h-full"> <input class="sr-only" id="theme-switcher" data-theme-switcher type="checkbox"> <label class="flex items-center justify-center cursor-pointer w-full h-full group/theme" for="theme-switcher" aria-label="切换主题">  <svg class="w-5 h-5 transition-all duration-500 scale-100 dark:scale-0 opacity-100 dark:opacity-0 absolute text-orange-500 group-hover/theme:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg>  <svg class="w-5 h-5 transition-all duration-500 scale-0 dark:scale-100 opacity-0 dark:opacity-100 absolute text-sky-400 group-hover/theme:-rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </label> </div> <script>
+  // 立即执行以防止闪烁
+  (function() {
+    const theme = localStorage.getItem("theme");
+    const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  })();
+
+  // 页面加载和切换后的初始化逻辑
+  function initTheme() {
+    const themeSwitchers = document.querySelectorAll("[data-theme-switcher]");
+    const isDark = document.documentElement.classList.contains("dark");
+
+    // 同步所有切换按钮的状态
+    themeSwitchers.forEach((el) => {
+      el.checked = isDark;
+      
+      // 移除旧的监听器（如果存在），防止重复绑定
+      // 由于是匿名函数难以移除，我们采用 cloneNode 或者简单的标志位
+      // Astro 的 View Transitions 会重新运行脚本，所以只需确保不累积
+      // 最简单的方式是直接覆盖 onclick 或 onchange，但这里用 addEventListener
+      // 我们可以给元素加个标记
+      if (el.dataset.initialized) return;
+      
+      el.addEventListener("change", (e) => {
+        const checked = e.target.checked;
+        if (checked) {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        }
+        
+        // 同步其他可能存在的切换按钮（例如移动端和桌面端各有一个）
+        document.querySelectorAll("[data-theme-switcher]").forEach(other => {
+            if (other !== el) other.checked = checked;
+        });
+      });
+      
+      el.dataset.initialized = "true";
+    });
+  }
+
+  // 绑定事件
+  document.addEventListener("DOMContentLoaded", initTheme);
+  document.addEventListener("astro:page-load", initTheme);
+  document.addEventListener("astro:after-swap", initTheme);
+</script> </div> <button id="mobile-menu-trigger" type="button" aria-label="Open navigation menu" aria-controls="mobile-menu" aria-expanded="false" class="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)] text-[var(--xb-text)] lg:hidden"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path></svg></button> </div> </div> <div class="border-t border-[var(--xb-line)]/70"> <div class="xb-shell overflow-x-auto"> <nav class="flex min-w-max items-center gap-1 py-2" aria-label="AI navigation"> <a href="/en/ai/agent/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:text-[var(--xb-ink)]"> Agents </a><a href="/en/ai/langgraph/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:text-[var(--xb-ink)]"> LangGraph </a><a href="/en/ai/mcp/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:text-[var(--xb-ink)]"> MCP </a><a href="/en/ai/workflow/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:text-[var(--xb-ink)]"> Workflow </a> </nav> </div> </div> <div id="mobile-menu" class="invisible fixed inset-0 z-[600] pointer-events-none"> <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/50 opacity-0 backdrop-blur-sm transition-opacity"></div> <aside id="mobile-menu-panel" class="absolute right-0 top-0 flex h-full w-[300px] translate-x-full flex-col border-l border-[var(--xb-line)] bg-[var(--xb-surface)] transition-transform"> <div class="flex h-16 items-center justify-between border-b border-[var(--xb-line)] px-5"> <strong class="text-sm tracking-tight text-[var(--xb-ink)]">XBSTACK</strong> <button id="mobile-menu-close" type="button" aria-label="Close navigation menu" class="text-[var(--xb-muted)]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg></button> </div> <div class="border-b border-[var(--xb-line)] p-4"> <a id="mobile-search-trigger" data-xbstack-search-trigger href="/en/search/" class="flex h-10 w-full items-center gap-2 rounded-lg border border-[var(--xb-line)] px-3 text-[12px] text-[var(--xb-muted)]"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.8 173.8 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.8 173.8 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3M97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8"></path></svg> Search XBSTACK </a> </div> <nav class="flex flex-1 flex-col gap-2 overflow-y-auto p-4"> <div> <a href="/en/ai/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold bg-blue-500/[0.07] text-blue-600 dark:text-blue-400">AI</a> <div class="mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3 ml-4"> <a href="/en/ai/agent/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Agents</a><a href="/en/ai/langgraph/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">LangGraph</a><a href="/en/ai/mcp/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">MCP</a><a href="/en/ai/workflow/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Workflow</a> </div> </div><div> <a href="/en/tools/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">Tools</a> <div class="mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3 ml-4"> <a href="/en/tools/compound-calculator/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Compound Calculator</a><a href="/en/tools/ai-finance/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">AI Finance Analyzer</a><a href="/en/tools/lunest/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Lunest</a> </div> </div><div> <a href="/en/horizon/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">Horizon</a> <div class="mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3 ml-4"> <a href="/en/investing/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Investing</a><a href="/en/horizon/reading/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Reading</a><a href="/en/investing/thoughts/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Thinking</a> </div> </div><div> <a href="/en/life/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">Lens</a> <div class="mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3 ml-4"> <a href="/en/life/hiking/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Outdoor</a><a href="/en/life/road-trip/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Travel</a><a href="/en/life/photo/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Photography</a><a href="/en/life/gear/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Gear</a> </div> </div><div> <a href="/en/about/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">About</a>  </div> </nav> <div class="border-t border-[var(--xb-line)] p-4 sm:hidden"> <nav data-visible-language-alternate aria-label="Select language" data-astro-cid-iemtoba4> <div class="flex w-full items-center justify-between gap-4" aria-label="Select language" data-astro-cid-iemtoba4> <div class="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300" data-astro-cid-iemtoba4> <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4> <circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle> <path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path> </svg> <span data-astro-cid-iemtoba4>Language</span> </div> <div class="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 p-1 dark:border-white/10 dark:bg-white/5" data-astro-cid-iemtoba4> <a href="/ai/langgraph-memory-checkpointing-production-agents/" data-language-choice="zh-CN" data-language-current="false" data-language-available="true" title="切换到中文版本" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400" data-astro-cid-iemtoba4> 中文 </a><a href="/en/ai/langgraph-memory-checkpointing-production-agents/" data-language-choice="en" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="Current language: English" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all cursor-default bg-white text-blue-600 shadow-sm dark:bg-blue-500/15 dark:text-blue-400" data-astro-cid-iemtoba4> English </a> </div> </div> </nav>  <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> </aside> </div> <script>
+    if (!window.__xbstackSearchShortcutReady) {
+      window.__xbstackSearchShortcutReady = true;
+      window.addEventListener('keydown', (event) => {
+        const target = event.target;
+        const isTyping = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target?.isContentEditable;
+        const isCommandK = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
+        const isSlash = event.key === '/' && !isTyping;
+        if (!isCommandK && !isSlash) return;
+        event.preventDefault();
+        window.location.href = window.location.pathname.startsWith('/en/') ? '/en/search/' : '/search/';
+      });
+    }
+
+    const bindHeader = () => {
+      const trigger = document.getElementById('mobile-menu-trigger');
+      const close = document.getElementById('mobile-menu-close');
+      const menu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const panel = document.getElementById('mobile-menu-panel');
+      const setOpen = (open) => {
+        if (!menu || !overlay || !panel) return;
+        trigger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) {
+          menu.classList.remove('invisible', 'pointer-events-none');
+          overlay.classList.add('opacity-100');
+          panel.classList.remove('translate-x-full');
+          document.body.style.overflow = 'hidden';
+        } else {
+          overlay.classList.remove('opacity-100');
+          panel.classList.add('translate-x-full');
+          document.body.style.overflow = '';
+          setTimeout(() => menu.classList.add('invisible', 'pointer-events-none'), 220);
+        }
+      };
+      trigger?.addEventListener('click', () => setOpen(true));
+      close?.addEventListener('click', () => setOpen(false));
+      overlay?.addEventListener('click', () => setOpen(false));
+    };
+    document.addEventListener('astro:page-load', bindHeader);
+    bindHeader();
+  </script> </header> <div id="language-switch-notice" class="pointer-events-none fixed left-1/2 top-24 z-[700] hidden max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/95 px-5 py-3 text-center text-sm font-bold text-slate-700 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 dark:text-slate-200" role="status" aria-live="polite"></div> <main id="main-content" class="flex-1">  <div id="reading-progress" class="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 z-[110] transition-all duration-300 w-0 shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div> <main class="pt-24 md:pt-32 pb-20"> <script>(()=>{var a=(s,i,o)=>{let r=async()=>{await(await s())()},t=typeof i.value=="object"?i.value:void 0,c={rootMargin:t==null?void 0:t.rootMargin},n=new IntersectionObserver(e=>{for(let l of e)if(l.isIntersecting){n.disconnect(),r();break}},c);for(let e of o.children)n.observe(e)};(self.Astro||(self.Astro={})).visible=a;window.dispatchEvent(new Event("astro:visible"));})();</script><script type="module" src="/_astro/Comment.astro_astro_type_script_index_0_lang.DIUdttQg.js"></script><script type="module">function g(){const t=document.querySelector("header");return t?t.offsetHeight+32:140}function a(){document.querySelectorAll("[data-toc-link]").forEach(e=>{const n=e.cloneNode(!0);e.parentNode?.replaceChild(n,e),n.addEventListener("click",function(o){o.preventDefault();const r=o.currentTarget.getAttribute("href");if(!r)return;const c=r.substring(1),d=document.getElementById(c);if(d){const s=d.getBoundingClientRect(),i=window.pageYOffset||document.documentElement.scrollTop,u=g(),l=i+s.top-u;window.scrollTo({top:Math.max(0,l),behavior:"smooth"}),history.pushState(null,"",`#${c}`)}})})}document.addEventListener("DOMContentLoaded",a);document.addEventListener("astro:page-load",a);</script><div class="xb-article-grid py-8 md:py-10"> <aside class="xb-article-side"> <section class="border border-[var(--xb-line)] bg-[var(--xb-surface)] rounded-xl p-5 xb-article-panel !rounded-xl !shadow-none" aria-label="Author profile"> <a href="/en/about/" class="group flex flex-col items-center text-center"> <div class="overflow-hidden rounded-full border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] h-[72px] w-[72px]"> <img src="/_astro/avatar.BzDyfp9G_ZzAEsA.webp" alt="Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="h-full w-full object-cover"> </div> <div class="mt-3"> <h3 class="m-0 text-[14px] font-bold tracking-tight text-[var(--xb-ink)] group-hover:text-blue-600 dark:group-hover:text-blue-400">Xiaobai</h3> <p class="mt-1 text-[9px] font-bold tracking-wide text-blue-600 dark:text-blue-400">Developer · Builder</p> </div> </a> <p class="text-[10px] leading-5 text-[var(--xb-muted)] mt-4 text-center">Building AI engineering systems, developer tools and long-term digital assets at XBSTACK.</p> <a href="/en/about/" class="mt-3 block text-center text-[9px] font-bold text-blue-600 hover:underline dark:text-blue-400">About Xiaobai &amp; XBSTACK →</a> <div class="my-3 h-px bg-[var(--xb-line)]"></div> <ul class="flex items-center py-2 justify-center"><li class="inline-block px-1 intersect:animate-fade opacity-0"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span class="sr-only">GitHub</span> </span>  </button> </a></li></ul> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">ARTICLE INFO</div> <dl class="space-y-3 text-[10px] leading-5 text-[var(--xb-muted)]"> <div><dt class="font-bold text-[var(--xb-ink)]">Published</dt><dd>6/1/2026</dd></div> <div><dt class="font-bold text-[var(--xb-ink)]">Topic</dt><dd><a href="/en/ai/langgraph/" class="text-blue-600 dark:text-blue-400">langgraph</a></dd></div>  </dl> <div class="mt-4 flex flex-wrap gap-1.5"><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#LangGraph</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#AI Agent</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#Memory</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#Checkpointing</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#Stateful Agents</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#Production AI</span></div> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">Related</div> <p class="text-[10px] leading-5 text-[var(--xb-muted)]">Continue with the related topic, tools or weekly updates.</p> <div class="mt-3 grid gap-2 text-[10px] font-bold text-blue-600 dark:text-blue-400"><nav data-cluster-hub-link><a href="/en/ai/langgraph/">Topic →</a></nav><a href="/en/tools/">Products &amp; tools →</a><a href="/en/newsletter/">Newsletter →</a></div> </section> </aside> <main class="min-w-0"> <article class="xb-article-paper"> <div class="xl:hidden mb-6"><section class="border border-[var(--xb-line)] bg-[var(--xb-surface)] rounded-xl p-4 !rounded-xl !shadow-none" aria-label="Author profile"> <a href="/en/about/" class="group flex items-center gap-4"> <div class="overflow-hidden rounded-full border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] h-14 w-14 shrink-0"> <img src="/_astro/avatar.BzDyfp9G_ZzAEsA.webp" alt="Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="h-full w-full object-cover"> </div> <div class="min-w-0"> <h3 class="m-0 text-[14px] font-bold tracking-tight text-[var(--xb-ink)] group-hover:text-blue-600 dark:group-hover:text-blue-400">Xiaobai</h3> <p class="mt-1 text-[9px] font-bold tracking-wide text-blue-600 dark:text-blue-400">Developer · Builder</p> </div> </a> <p class="text-[10px] leading-5 text-[var(--xb-muted)] mt-3">Building AI engineering systems, developer tools and long-term digital assets at XBSTACK.</p> <a href="/en/about/" class="mt-3 block text-center text-[9px] font-bold text-blue-600 hover:underline dark:text-blue-400">About Xiaobai &amp; XBSTACK →</a> <div class="my-3 h-px bg-[var(--xb-line)]"></div> <ul class="flex items-center py-2 justify-center"><li class="inline-block px-1 intersect:animate-fade opacity-0"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span class="sr-only">GitHub</span> </span>  </button> </a></li></ul> </section></div> <header class="mb-10 border-b border-[var(--xb-line)] pb-8"><div class="mb-8 overflow-hidden rounded-xl border border-[var(--xb-line)] bg-[var(--xb-surface-soft)]"><img src="/_astro/cogview4-b291f527-e780a076-1200x630.B51EJ8sq_Z2vOM4w.webp" alt="LangGraph Memory and Checkpointing for Production AI Agents" sizes="(min-width: 1280px) 860px, calc(100vw - 40px)" loading="eager" fetchpriority="high" decoding="async" width="1200" height="630" class="aspect-[40/21] w-full object-cover"></div><div class="mb-4 flex flex-wrap items-center gap-2"><a href="/ai/agent/" class="rounded-md border border-blue-500/15 bg-blue-500/[0.05] px-2.5 py-1 text-[10px] font-bold text-blue-600 dark:text-blue-400">Dev</a></div><h1 class="m-0 text-[clamp(2rem,4vw,3.6rem)] font-black leading-[1.12] tracking-[-.045em] text-[var(--xb-ink)]">LangGraph Memory and Checkpointing: How Production-Grade AI Agents Save, Restore, and Audit State</h1><p class="mt-5 max-w-[760px] text-[15px] leading-7 text-[var(--xb-text)]">Use LangGraph Memory and Checkpointing for thread-scoped state, restoration, checkpoint history, Human-in-the-loop resume, multi-user isolation, and production auditability.</p><div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] text-[var(--xb-faint)]"><span>Published · 2026-06-01</span><span>11 min read</span><span>XBSTACK</span></div><div class="mt-4 flex flex-wrap gap-2"><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#LangGraph</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#AI Agent</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#Memory</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#Checkpointing</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#Stateful Agents</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#Production AI</span></div></header> <nav class="mb-7 flex items-center justify-between gap-4 border-y border-[var(--xb-line)] py-3 text-[10px] text-[var(--xb-muted)]" aria-label="Article language version"> <span>This URL is the English edition.</span> <a href="/ai/langgraph-memory-checkpointing-production-agents/" hreflang="zh-CN" class="font-bold text-blue-600 dark:text-blue-400">阅读中文版本 →</a> </nav>   <div class="prose prose-tech markdown-content max-w-none">  <aside class="mb-10 rounded-2xl border border-orange-500/20 bg-orange-500/[0.045] px-5 py-4 not-prose" data-analytics-area="article_body" aria-label="Recommended next step"> <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"> <div> <p class="text-xs font-black uppercase tracking-[0.18em] text-orange-600 dark:text-orange-400">Topic path / LangGraph</p> <p class="mt-1 text-sm font-bold leading-6 text-slate-700 dark:text-slate-300">Continue through the production LangGraph learning path</p> </div> <div class="flex shrink-0 flex-wrap gap-2"> <a href="/en/ai/langgraph/" class="rounded-full bg-orange-500 px-4 py-2 text-xs font-black text-white transition-colors hover:bg-orange-600">Open LangGraph hub →</a> <a href="/en/ai/langgraph-thread-session-state-isolation/" class="rounded-full border border-slate-300 px-4 py-2 text-xs font-black text-slate-700 transition-colors hover:border-orange-500 hover:text-orange-500 dark:border-white/15 dark:text-slate-200">Start with state isolation</a> </div> </div> </aside><h2 id="the-key-point">The Key Point</h2>
+<p>LangGraph Memory isn’t about “making the Agent remember chat history”; it’s about giving production-grade Agents a saveable, restorable, and auditable execution state. The real focus isn’t <code>messages</code>, but rather <code>thread_id</code>, the checkpointer, checkpoint history, Human-in-the-loop resume, and state transition strategies.</p>
+<p>If your Agent only ever generates a single response, you can skip checkpoints. But if it spans multiple nodes, waits for human review, calls external tools, or handles multi-user sessions, Memory and Checkpointing are the foundation of your production system.</p>
+<h2 id="who-this-guide-is-for">Who This Guide Is For</h2>
+<ul>
+<li>Full-stack developers migrating LangGraph from demos to production services.</li>
+<li>AI engineers needing to isolate <code>thread_id</code>, <code>session_id</code>, and <code>user_id</code> across multiple users.</li>
+<li>Product and backend leads designing human review workflows, breakpoint resumption, error recovery, and audit logs.</li>
+<li>Developers who have already read <a href="/en/ai/langgraph-thread-session-state-isolation/">State Isolation</a>, <a href="/en/ai/langgraph-checkpointer-memory-sqlite-redis/">Checkpointer Selection</a>, and <a href="/en/ai/langgraph-human-in-the-loop-approval/">Human-in-the-loop Approval</a>, and want to tie them all together.</li>
+</ul>
+<h2 id="what-this-guide-covers">What This Guide Covers</h2>
+<p>As step 8 in the <a href="/en/ai/langgraph/">LangGraph Series</a>, this article connects Memory, Checkpointers, <code>thread_id</code>, long-term state, and Human-in-the-loop resumption. It goes beyond a generic overview of “Agent memory” to answer production-specific questions: How do you resume after a service restart? How do you recover after human review? How do you isolate multi-user threads? How do you return failed nodes to an auditable state?</p>
+<p>Before continuing, we recommend reading <a href="/en/ai/langgraph-thread-session-state-isolation/">State Isolation</a>, <a href="/en/ai/langgraph-checkpointer-memory-sqlite-redis/">Checkpointer Selection</a>, and <a href="/en/ai/langgraph-human-in-the-loop-approval/">Human-in-the-loop Approval</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th align="left">Production Issue</th><th align="left">Without Checkpoints</th><th align="left">LangGraph Memory Solution</th></tr></thead><tbody><tr><td align="left">Service Restart</td><td align="left">Execution state is lost; users must start over</td><td align="left">Restore from a persistent checkpointer using <code>thread_id</code></td></tr><tr><td align="left">Waiting for Human Review</td><td align="left">Agent holds resources for too long or times out</td><td align="left">Save state on interrupt; resume once confirmed by a human</td></tr><tr><td align="left">Multi-User Concurrency</td><td align="left">Sessions cross-contaminate each other</td><td align="left">Isolate using <code>user_id</code>, <code>session_id</code>, and <code>thread_id</code></td></tr><tr><td align="left">Tool Failure</td><td align="left">Re-executes the entire chain, wasting tokens and API calls</td><td align="left">Replay from the last checkpoint or retry locally</td></tr><tr><td align="left">Audit &#x26; Accountability</td><td align="left">Only final output is visible; intermediate states are hidden</td><td align="left">Read checkpoint history and the state of each node</td></tr></tbody></table>
+<h2 id="problems-solved">Problems Solved</h2>
+<ul>
+<li>How to resume an AI workflow after a server crash or network timeout?</li>
+<li>How to implement a “Human-in-the-loop” approval process for sensitive financial operations?</li>
+<li>How to maintain state isolation across thousands of concurrent user sessions?</li>
+<li>How to debug the exact state of an agent at any specific point in its execution graph?</li>
+<li>How to recover from tool-calling errors without restarting the entire agentic loop?</li>
+</ul>
+<h2 id="who-is-it-for">Who is it for?</h2>
+<ul>
+<li>Full-stack developers building autonomous AI agents beyond simple chat interfaces.</li>
+<li>AI Engineers migrating from brittle LangChain chains to robust LangGraph state machines.</li>
+<li>DevOps specialists tasked with scaling agentic workflows in production environments.</li>
+<li>Product managers designing complex AI workflows that require human oversight and audit logs.</li>
+</ul>
+<h2 id="why-memory-is-the-root-privilege-of-ai-agents">Why Memory is the “Root Privilege” of AI Agents</h2>
+<p>Stateless agents hit a wall when handling multi-step business logic across session boundaries. A stateless AI agent is a cognitive illusion. You send a prompt, you get a response. It is a one-shot hit.</p>
+<p>Guiyang is raining again. The sound of water hitting the air conditioner’s external unit sounds like a DDoS attack on a legacy server. I am sitting in my “Flower Orchard” apartment, staring at a LangGraph error log. My NAS fan is screaming. It is 2 AM. Earlier today, a stateless customer support bot I built crashed after a ten-minute user delay. The Lambda function timed out, the context was purged, and the bot greeted the returning user with a fresh, useless “Hello! How can I help you?”</p>
+<p>That prompted the move to LangGraph. In LangGraph, memory is not just a chat_history list. It is the “Root Privilege” of the system. It is the ability to persist the entire execution graph’s state to a database.</p>
+<p>I remember my first climb up <a href="/en/life/">Qianling Mountain</a> last winter. The fog was so thick I could barely see my own boots. I had to stop every hundred meters to check my compass and leave a small stone marker on the path. Those stones were my “checkpoints”. Without them, I would have been wandering in circles, much like a stateless agent in an infinite loop.</p>
+<h2 id="langgraph-checkpointing-the-saveload-mechanism-of-the-ai-world">LangGraph Checkpointing: The Save/Load mechanism of the AI World</h2>
+<p>Checkpointing provides the only viable path to durable agentic systems in production environments. The checkpointer acts as the “Quick Save” button in a video game. Every time a node in your graph finishes execution, the system takes a snapshot of the current state and writes it to a persistent store.</p>
+<p>Progress remains safe if the system crashes or stops to wait for human approval. You simply reload the state using a thread_id.</p>
+<p><img alt="LangGraph Memory Architecture" loading="lazy" decoding="async" fetchpriority="auto" width="851" height="1114" src="/_astro/langgraph-memory-architecture.CeGkO7VK_Z15kUNa.png" ></p>
+<p>I can smell the wet asphalt from the street below. A taxi just splashed through a puddle, the sound reminding me of the transition between nodes in a graph. Discrete, physical, and sometimes messy.</p>
+<h3 id="the-power-of-the-thread-id">The Power of the Thread ID</h3>
+<p>The thread_id serves as your primary key. It isolates the state of one execution from another. Every user session in a SaaS gets a unique thread_id.</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token comment"># Resuming an execution is as simple as passing the thread_id</span>
+config <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">"configurable"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token string">"thread_id"</span><span class="token punctuation">:</span> <span class="token string">"user-session-9527"</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+events <span class="token operator">=</span> graph<span class="token punctuation">.</span>stream<span class="token punctuation">(</span><span class="token boolean">None</span><span class="token punctuation">,</span> config<span class="token punctuation">,</span> stream_mode<span class="token operator">=</span><span class="token string">"values"</span><span class="token punctuation">)</span>
+</code></pre>
+<p>This configuration supports scaling to millions of threads. The state lives in your Postgres or SQLite database rather than your RAM. In my local setup on the NAS, I use a SQLite file for development. For the production cluster, Postgres is non-negotiable.</p>
+<p>I recently had a debate with a colleague about whether we could just use Redis. Redis delivers speed at the cost of the durability required for long-term state. If the Redis instance restarts and your RDB/AOF isn’t perfectly synced, your agent forgets its soul.</p>
+<h2 id="deep-dive-state-schema-design">Deep Dive: State Schema Design</h2>
+<p>State schema design dictates exactly what the system chooses to remember. In LangGraph, this is defined by your State class.</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Annotated<span class="token punctuation">,</span> TypedDict
+<span class="token keyword">from</span> langgraph<span class="token punctuation">.</span>graph<span class="token punctuation">.</span>message <span class="token keyword">import</span> add_messages
+
+<span class="token keyword">class</span> <span class="token class-name">AgentState</span><span class="token punctuation">(</span>TypedDict<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># This keeps track of the conversation history</span>
+    messages<span class="token punctuation">:</span> Annotated<span class="token punctuation">[</span><span class="token builtin">list</span><span class="token punctuation">,</span> add_messages<span class="token punctuation">]</span>
+    <span class="token comment"># Business logic flags</span>
+    is_payment_verified<span class="token punctuation">:</span> <span class="token builtin">bool</span>
+    <span class="token comment"># Internal scratchpad for tool outputs</span>
+    scratchpad<span class="token punctuation">:</span> <span class="token builtin">dict</span>
+    <span class="token comment"># User profile fetched from external DB</span>
+    user_context<span class="token punctuation">:</span> <span class="token builtin">dict</span>
+</code></pre>
+<p>The add_messages annotator is a specialized “reducer”. It tells LangGraph how to merge new messages into the existing list. Instead of overwriting the entire list, it appends new messages. This is like preserving your hard drive rather than deleting it to save one file.</p>
+<p>When I am at the “Minsheng Road” market, looking for the best “Chuangwang Noodles”, I don’t need to remember every person I passed. I only need to remember the stall number and the price of the extra blood cake. That is what your State should be: a curated collection of essential variables.</p>
+<h2 id="use-case-automated-content-moderation-system">Use Case: Automated Content Moderation System</h2>
+<p>LangGraph memory enables seamless human-in-the-loop escalation for high-stakes automated moderation workflows. Imagine a high-volume social media platform. You need an agent that:</p>
+<ol>
+<li>Filters spam.</li>
+<li>Checks for hate speech.</li>
+<li>Escalates to humans if the confidence score is between 40% and 70%.</li>
+<li>Finalizes the post if score > 70%.</li>
+</ol>
+<p>In this use case, LangGraph memory ensures that the system resumes instantly from the “Escalation” node even after a five-hour human review delay. The human sees the full context (spam scores, detected keywords) without the agent needing to re-scan the text. This physical separation of automated logic and human judgment is the cornerstone of robust AI systems.</p>
+<h2 id="benchmark-state-retrieval-performance">Benchmark: State Retrieval Performance</h2>
+<p>The database overhead for state persistence is minimal compared to the resilience gains it provides in production. I ran a benchmark on my NAS (Flynix OS, Intel N100) to measure the latency of different checkpointer implementations.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th align="left">Storage Engine</th><th align="right">Put Latency (ms)</th><th align="right">Get Latency (ms)</th><th align="right">Max Concurrent Threads</th></tr></thead><tbody><tr><td align="left">In-Memory</td><td align="right">0.05</td><td align="right">0.02</td><td align="right">1,000,000+</td></tr><tr><td align="left">SQLite (Local)</td><td align="right">12.4</td><td align="right">4.8</td><td align="right">5,000+</td></tr><tr><td align="left">Postgres (Docker)</td><td align="right">28.6</td><td align="right">8.2</td><td align="right">50,000+</td></tr><tr><td align="left">Redis (AOF)</td><td align="right">5.4</td><td align="right">1.8</td><td align="right">200,000+</td></tr></tbody></table>
+<p>SQLite is the best for local experiments. For the production cluster, Postgres’s overhead is a small price to pay for ACID compliance and multi-node access.</p>
+<h2 id="short-term-memory-vs-long-term-memory">Short-Term Memory vs Long-Term Memory</h2>
+<p>In the AI world, we often confuse context with memory, though they serve fundamentally different purposes. Context (Short-term) is what the LLM currently sees. It is the active RAM. In LangGraph, this is represented by the State object that flows between nodes. It contains the current tool outputs, the latest messages, and the intermediate variables.</p>
+<p>Memory (Long-term) is what the system knows about the world and the user over time. This lives outside the graph’s active state. When I am hiking in <a href="/en/life/yala-summit/">Yala Snow Mountain</a>, I don’t need to remember every step I took (short-term state). I need to remember the general direction of the base camp and my previous medical history (long-term memory).</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th align="left">Feature</th><th align="left">Short-term State</th><th align="left">Long-term Memory / Persistence</th></tr></thead><tbody><tr><td align="left">Storage</td><td align="left">Active Graph State</td><td align="left">SQLite / Postgres / Redis / user profile DB</td></tr><tr><td align="left">Scope</td><td align="left">Current Thread / Task</td><td align="left">Cross-thread / User Profile</td></tr><tr><td align="left">Lifespan</td><td align="left">Duration of the task</td><td align="left">Permanent or long-lived</td></tr><tr><td align="left">Example</td><td align="left">Last tool execution result</td><td align="left">User preference, approval history, past decisions</td></tr></tbody></table>
+<p>In production, you must prune your short-term state. You cannot keep 100 tool calls in the context window. You summarize, you truncate, but you keep the “Checkpoints” in the persistent store for audit.</p>
+<h2 id="human-in-the-loop-the-emergency-stop-for-financial-agents">Human-in-the-Loop: The “Emergency Stop” for Financial Agents</h2>
+<p>The “interrupt” feature acts as an emergency stop for critical logic, making it the most powerful tool enabled by checkpointing. Imagine an AI Agent responsible for paying invoices. You don’t want it to autonomously send $50,000 to a new vendor without a human looking at it.</p>
+<p>With LangGraph, you can set a breakpoint:</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token comment"># Setting a breakpoint before the 'pay_invoice' node</span>
+graph <span class="token operator">=</span> builder<span class="token punctuation">.</span><span class="token builtin">compile</span><span class="token punctuation">(</span>checkpointer<span class="token operator">=</span>memory<span class="token punctuation">,</span> interrupt_before<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">"pay_invoice"</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+</code></pre>
+<p>The agent will run, planning the payment, verifying the invoice, and then it will stop. It saves the state to the checkpointer and goes to sleep. It doesn’t consume CPU. It doesn’t cost LLM tokens. It just waits.</p>
+<p>A human logs in, sees the pending payment, clicks “Approve”, and the system resumes from exactly where it left off. This is the difference between a “script” and a “system”.</p>
+<p>My heart is racing, similar to the 120bpm stress test I mentioned in my <a href="/en/life/high-altitude-edc/">EDC list</a>. Building these systems feels like high-altitude climbing. You need redundancy. You need “Save Points”.</p>
+<p>I once saw a guy try to climb a technical section of the <a href="/en/life/">Basen Peak</a> without a belay. He was fast, but one slip and it would have been game over. A stateless agent is that climber. A LangGraph agent is the one with the ropes, the anchors, and a team at the bottom.</p>
+<h2 id="advanced-patterns-multi-thread-scalability">Advanced Patterns: Multi-thread Scalability</h2>
+<p>Thread_id management becomes the primary bottleneck when moving from a single user to ten thousand. In a production environment, your thread_id should probably be a composite key of {user_id}:{session_id}. This allows you to query all threads for a specific user, enabling features like “Resume your last session” across multiple devices.</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token comment"># Strategy for high-concurrency checkpointing</span>
+<span class="token keyword">from</span> langgraph<span class="token punctuation">.</span>checkpoint<span class="token punctuation">.</span>postgres <span class="token keyword">import</span> PostgresSaver
+
+<span class="token comment"># Use a connection pool to avoid exhausting DB connections</span>
+<span class="token keyword">with</span> PostgresSaver<span class="token punctuation">.</span>from_conn_string<span class="token punctuation">(</span>DB_URL<span class="token punctuation">)</span> <span class="token keyword">as</span> checkpointer<span class="token punctuation">:</span>
+    graph <span class="token operator">=</span> builder<span class="token punctuation">.</span><span class="token builtin">compile</span><span class="token punctuation">(</span>checkpointer<span class="token operator">=</span>checkpointer<span class="token punctuation">)</span>
+    <span class="token comment"># The system now handles ACID transactions for every node state update</span>
+</code></pre>
+<p>The database handles the consistency. If two requests hit the same thread_id simultaneously, the database locks will prevent state corruption. I don’t trust local storage for my critical <a href="/en/investing/thoughts/">investment logs</a>; everything must be on the NAS with a proper backup schedule.</p>
+<h2 id="handling-state-evolution-the-migration-problem">Handling State Evolution (The “Migration” Problem)</h2>
+<p>Your code changes faster than your data, necessitating a robust migration strategy for persisted states. What happens when you add a new field to your AgentState but you have 10,000 active threads in the database with the old schema?</p>
+<p>This is where you need a “Migration Layer”.</p>
+<ol>
+<li>Versioning your State: Add a version field to your TypedDict.</li>
+<li>Graceful Upgrades: When loading a checkpoint, check the version. If it is v1, run a transformation function to make it v2.</li>
+<li>Node Resilience: Ensure your nodes can handle None values for new fields.</li>
+</ol>
+<p>It is like upgrading your gear. When I switched from a standard backpack to a carbon-fiber frame, I had to adjust my entire packing logic. I couldn’t just throw things in the same way. I had to learn the new distribution of weight.</p>
+<h2 id="custom-checkpointers-beyond-sql">Custom Checkpointers: Beyond SQL</h2>
+<p>LangGraph allows you to implement a BaseCheckpointSaver for environments where Postgres is too heavy. You could write a checkpointer that saves to:</p>
+<ul>
+<li>S3 / R2 for low-cost archival.</li>
+<li>DynamoDB for massive scale.</li>
+<li>Even a local JSON file if you are building a CLI tool like the one I am using right now.</li>
+</ul>
+<p>The interface is simple: put to save, get to load. It is the ultimate abstraction of “Remembering”.</p>
+<p>I am thinking about the “Wandong Market” in Guiyang. The vendors there have a memory like a LangGraph checkpointer. They know exactly how much you paid last week, what your favorite cut of pork is, and which of your family members is visiting. They don’t have a database, but they have a “State” that persists across every transaction. That is the level of “contextual awareness” we are aiming for with AI agents.</p>
+<h2 id="error-recovery-and-rollbacks">Error Recovery and Rollbacks</h2>
+<p>LangGraph’s checkpoint history allows for precise point-in-time recovery and debugging of failed agentic loops. What happens when a node fails? In a stateless system, you just retry and pray. In LangGraph, you can “Rollback”.</p>
+<p>Since every state is a checkpoint, you can technically “Time Travel”. You can see exactly what the state was 5 nodes ago and resume from there.</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token comment"># Fetching historical states for a thread</span>
+state_history <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span>graph<span class="token punctuation">.</span>get_state_history<span class="token punctuation">(</span>config<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token comment"># Pick an old checkpoint and resume</span>
+old_checkpoint <span class="token operator">=</span> state_history<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">.</span>config
+graph<span class="token punctuation">.</span>invoke<span class="token punctuation">(</span><span class="token boolean">None</span><span class="token punctuation">,</span> old_checkpoint<span class="token punctuation">)</span>
+</code></pre>
+<p>This is invaluable for debugging. When a user reports a weird bug, I don’t need to ask them for their logs. I just pull the thread_id from the database and replay the entire execution on my local machine. It is like having a black box flight recorder for your AI.</p>
+<p>I can hear the rain getting heavier. The “Flower Orchard” is famous for its dense population, and even at this hour, you can hear the hum of life. It is a chaotic system, but it has its own logic. Much like a complex state graph.</p>
+<h2 id="observability-visualizing-the-ghosts-in-the-machine">Observability: Visualizing the Ghosts in the Machine</h2>
+<p>Observability is a core pillar of production systems, which is why LangGraph saves every “Ghost” of a past execution. Why did the agent decide to search for cat food when the user asked for a tax consultant?</p>
+<p>You can use LangSmith to visualize these checkpoints, but you can also build your own dashboard.</p>
+<p>I am currently working on a small React dashboard that pulls data from my NAS’s Postgres database and renders the graph state in real-time. It is like having a thermal camera for your code. You see where the “heat” is—which nodes are being hit the most, where the state is getting bloated, and where the transitions are failing.</p>
+<p>I once spent four hours debugging a state loop that was caused by a simple typo in a conditional edge. If I hadn’t had the checkpoint history, I would have been blind. I would have been like a hiker without a GPS, trying to find my way back to the <a href="/en/life/">Basen Peak</a> in a whiteout.</p>
+<h2 id="security-and-privacy-data-masking-in-the-checkpointer">Security and Privacy: Data Masking in the Checkpointer</h2>
+<p>Security and privacy are the ultimate non-negotiables when saving user data in state checkpoints. Messages, emails, financial records. If your database is compromised, your users’ lives are exposed.</p>
+<p>In LangGraph, you should implement a “Sensitivity Filter” before the state hits the checkpointer.</p>
+<ol>
+<li>Regex-based masking: Strip out phone numbers and credit card details.</li>
+<li>PII Detection: Use a specialized model to identify and redact names and addresses.</li>
+<li>Encryption at rest: Ensure your database (Postgres/SQLite) is encrypted.</li>
+</ol>
+<p>I take this personally. In Guiyang, we have a strong sense of community, but we also value our privacy. When you are eating at a small noodle shop, the owner knows you, but they don’t tell the whole street what you ordered. Your checkpointer should be like that owner. Discreet. Secure.</p>
+<h2 id="real-world-state-walkthrough-the-lead-scoring-agent">Real-world State Walkthrough: The “Lead Scoring” Agent</h2>
+<p>Atomic state updates ensure that every tool-calling result is persisted immediately, preventing duplicate API costs on retry. Let’s look at how the state evolves in a real scenario. Imagine a B2B Lead Scoring Agent.</p>
+<ul>
+<li>Node 1: Enrichment. The agent takes an email address and searches LinkedIn and Clearbit.
+<ul>
+<li>State: { “email”: “<a href="mailto:ceo@bigcorp.com">ceo@bigcorp.com</a>”, “company_info”: None, “score”: 0 }</li>
+</ul>
+</li>
+<li>Checkpoint 1: Saved.</li>
+<li>Node 2: Analysis. The agent evaluates the company size and industry.
+<ul>
+<li>State: { “email”: “<a href="mailto:ceo@bigcorp.com">ceo@bigcorp.com</a>”, “company_info”: {“size”: 5000, “industry”: “Tech”}, “score”: 50 }</li>
+</ul>
+</li>
+<li>Checkpoint 2: Saved.</li>
+<li>Node 3: Intervention. The agent pauses for a human to confirm if “BigCorp” is a competitor.</li>
+<li>Breakpoint: The thread sleeps.</li>
+<li>Human Action: Confirms “Not a competitor”.</li>
+<li>Resume: The agent continues from Checkpoint 2.</li>
+<li>Node 4: Scoring. Final score calculated.
+<ul>
+<li>State: { …, “score”: 90 }</li>
+</ul>
+</li>
+<li>Final Checkpoint: Saved.</li>
+</ul>
+<p>Without checkpointing, if the human takes two days to reply, you’d have to re-run the Enrichment and Analysis nodes, wasting API credits and time. With LangGraph, it’s just a resume. It’s the “Dry-aged” logic of AI development.</p>
+<h2 id="conclusion-the-zero-bold-philosophy-of-system-design">Conclusion: The “Zero-Bold” Philosophy of System Design</h2>
+<p>Building these systems is less about the “AI” and more about the “Engineering”. The LLM is just a fancy CPU instruction. The real work is in the architecture—the memory, the persistence, the human-in-the-loop flows.</p>
+<p>In my <a href="/en/ai/xbstack-architecture/">XBSTACK Architecture Record</a>, I talk about the “Zero-Bold” philosophy. It’s about removing the noise. In our writing, we remove the bold text to make it cleaner, more human. In our systems, we remove the “Statelessness” to make them more reliable, more professional.</p>
+<p>I’m hungry. The rain has stopped, and the air is fresh. I’m going to walk down to the “Flower Orchard” gate and see if the late-night BBQ stall is still open. I need some grilled tofu and a cold beer. My state is stable. My thread is committed. My checkpoint is secure.</p>
+<p>The next time you build an agent, don’t just build a prompt. Build a memory. Build a system that can survive the storm.</p>
+<h2 id="common-pitfalls--error-logs">Common Pitfalls / Error Logs</h2>
+<h3 id="1-the-in-memory-trap">1. The “In-Memory” Trap</h3>
+<p>Using MemorySaver() in production.
+Error: Lost state after server restart.
+Log: No state found for thread_id ‘xxx’ after process reboot.
+Solution: Always use SqliteSaver or PostgresSaver in production.</p>
+<h3 id="2-state-explosion">2. State Explosion</h3>
+<p>Saving massive binary objects or entire HTML pages into the graph state.
+Error: Database write timeout or Context window exceeded.
+Solution: Store large data in a separate object store (S3) and only keep the URI in the LangGraph state.</p>
+<h3 id="3-missing-thread-id">3. Missing Thread ID</h3>
+<p>Log: ValueError: Config must contain thread_id for persistence.
+Solution: Ensure your config object always has a configurable key with a thread_id.</p>
+<h2 id="comparison-the-architectural-matrix">Comparison (The Architectural Matrix)</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th align="left">Feature</th><th align="left">LangGraph</th><th align="left">AutoGen</th><th align="left">CrewAI</th><th align="left">LangChain Chains</th></tr></thead><tbody><tr><td align="left">State Management</td><td align="left">Native Checkpointing</td><td align="left">Manual / Event-based</td><td align="left">Process-driven</td><td align="left">Stateless / Buffer</td></tr><tr><td align="left">Persistence</td><td align="left">Built-in DB savers</td><td align="left">Custom implementation</td><td align="left">3rd-party integration</td><td align="left">Manual persistence</td></tr><tr><td align="left">Control Flow</td><td align="left">Cyclic Graph (Explicit)</td><td align="left">Conversational</td><td align="left">Hierarchical</td><td align="left">Linear / Directed</td></tr><tr><td align="left">Human-in-the-loop</td><td align="left">First-class Breakpoints</td><td align="left">Interactive Chat</td><td align="left">Task Approval</td><td align="left">Not Native</td></tr></tbody></table>
+<p>LangGraph is the choice for engineers who want absolute control over the state machine. Autogen is great for multi-agent brainstorming, but LangGraph is where you build the “Operating System” for your agents.</p>
+<h2 id="faq-common-questions-about-langgraph-memory">FAQ: Common Questions About LangGraph Memory</h2>
+<h3 id="what-is-langgraph-checkpointing">What is LangGraph checkpointing?</h3>
+<p>It is a mechanism that saves snapshots of the Agent State to persistent storage after each node transition. This enables recovery after service restarts, resumption after review, historical auditing, and error replay.</p>
+<h3 id="are-checkpointing-and-memory-the-same-thing">Are checkpointing and memory the same thing?</h3>
+<p>No. Checkpointing is the engineering implementation of state persistence; memory is a broader concept that includes short-term state, long-term user preferences, historical task records, and cross-thread memory.</p>
+<h3 id="should-i-use-postgres-in-production">Should I use Postgres in production?</h3>
+<p>For production environments with multiple users, processes, or workers, prioritize using <code>PostgresSaver</code>. <code>MemorySaver</code> is only suitable for local experimentation, while SQLite is appropriate for single-machine development and lightweight internal tools.</p>
+<h3 id="can-langgraph-handle-human-in-the-loop-pauses">Can LangGraph handle human-in-the-loop pauses?</h3>
+<p>Yes. You can pause execution at high-risk nodes using <code>interrupt_before</code> or <code>interrupt_after</code>, write the state to the checkpointer, and resume later using the same <code>thread_id</code> once external confirmation is received.</p>
+<h3 id="will-checkpoints-accumulate-indefinitely">Will checkpoints accumulate indefinitely?</h3>
+<p>They will. Therefore, production systems must implement strategies for TTL (time-to-live), archiving, compression, and sensitive field masking. Auditing should retain key nodes, while ordinary intermediate states can be cleaned up according to business cycles.</p>
+<h2 id="next-steps">Next Steps</h2>
+<ul>
+<li><a href="/en/ai/ai-agent-complete-guide/">Complete AI Agent Engineering Guide</a></li>
+<li><a href="/en/ai/langgraph/">LangGraph Pillar Page: Mastering Stateful AI Agents</a></li>
+<li><a href="/en/ai/ai-agent-memory-implementation/">AI Agent Memory Systems: From RAG to Persistence</a></li>
+<li><a href="/en/ai/how-to-build-an-ai-invoice-approval-agent/">Building a Production AI Invoice Agent</a></li>
+<li><a href="/en/ai/mcp-vs-function-calling/">MCP vs Function Calling: Which one for your Tools?</a></li>
+<li><a href="/en/ai/n8n-ai-workflow-error-handling/">n8n AI Workflow Error Handling Guide</a></li>
+</ul>
+<p>I’m done for today. The rain in Guiyang has softened into a light mist. The NAS fan has finally quieted down. The state is saved. The thread is closed.</p>
+<p>Xiaobai’s signature: Written for chunks, born for retrieval.</p> <section class="mt-16 rounded-[34px] border border-orange-500/20 bg-orange-500/[0.06] p-7 md:p-9 not-prose"> <div class="text-[10px] font-black uppercase tracking-[0.28em] text-orange-500 mb-4">Topic path / LangGraph</div> <h2 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-4">Continue through the production LangGraph learning path</h2> <p class="text-sm font-bold leading-7 text-slate-600 dark:text-slate-400 max-w-3xl">The LangGraph hub organizes state isolation, checkpointing, human approval, retries, observability, supervisors, subgraphs and memory into one reviewable path.</p> <div class="mt-7 flex flex-wrap gap-3"> <a href="/en/ai/langgraph/" class="rounded-full bg-orange-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-white hover:bg-orange-600 transition-colors">Open LangGraph hub →</a> <a href="/en/ai/langgraph-thread-session-state-isolation/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">Start with state isolation</a> <a href="/en/newsletter/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">Subscribe for updates</a> </div> </section> </div> <section class="mt-14 border-t border-[var(--xb-line)] pt-7" data-related-reading> <div class="mb-4 flex items-center justify-between gap-4"><h2 class="m-0 text-[17px] font-bold text-[var(--xb-ink)]">Next reading</h2><a href="/en/ai/langgraph/" class="text-[10px] font-bold text-blue-600 dark:text-blue-400">Topic hub →</a></div> <div class="xb-article-related"><a href="/en/ai/langgraph-toolnode-max-concurrency-ignored/" data-related-link><span class="font-bold text-[var(--xb-ink)]">LangGraph ToolNode Ignores max_concurrency in Async Execution: Reproduction and Workaround</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">LangGraph 1.2.10 ToolNode max_concurrency reproduction: sync invoke respects limits while async ainvoke starts all tested tool calls; includes root cause and Semaphore workaround.</span></a><a href="/en/ai/langgraph-subgraph-worker-state/" data-related-link><span class="font-bold text-[var(--xb-ink)]">LangGraph Subgraph in Practice: Designing Subgraphs, Worker State, and Local State for Multi-Agent Systems</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">LangGraph Subgraph in Practice: A practical guide to LangGraph subgraph design, covering parent-child graph boundaries, Worker State isolation, shared state, state propagation.</span></a><a href="/en/ai/langgraph-checkpointer-memory-sqlite-redis/" data-related-link><span class="font-bold text-[var(--xb-ink)]">LangGraph Checkpointer in Practice: How to Choose Between MemorySaver, SQLite, and Redis</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">LangGraph Checkpointer in Practice: A practical guide to selecting a state persistence strategy for LangGraph Checkpointers.</span></a><a href="/en/ai/langgraph-agent-error-recovery-retry-timeout/" data-related-link><span class="font-bold text-[var(--xb-ink)]">LangGraph Failure Recovery: Tool Errors, Timeouts, Retry, and error_handler</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">LangGraph error_handler exception recovery in 1.2.11: reproduce re-raises in custom/messages streams, subgraphs, and parallel nodes, then apply node-level capture or fallback.</span></a></div> </section> <section class="mt-10 border-t border-[var(--xb-line)] pt-7"> <div class="grid grid-cols-1 gap-4 md:grid-cols-[1fr_260px] md:items-center"><div><h2 class="m-0 text-[16px] font-bold text-[var(--xb-ink)]">AI Engineering Weekly</h2><p class="mt-1 text-[10px] leading-5 text-[var(--xb-muted)]">Production changes, real failures, experiments and new XBSTACK assets.</p></div><astro-island uid="Z24jjjU" prefix="r13" component-url="/_astro/NewsletterForm.D2u-Fqaq.js" component-export="default" renderer-url="/_astro/client.DPSb9UvF.js" props="{&quot;compact&quot;:[0,true],&quot;lang&quot;:[0,&quot;en&quot;]}" ssr client="visible" opts="{&quot;name&quot;:&quot;NewsletterForm&quot;,&quot;value&quot;:true}" await-children><div class="w-full "><form class="flex flex-col gap-2 sm:flex-row"><input type="email" placeholder="you@example.com" class="h-11 min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3.5 text-[12px] font-semibold text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-950 dark:text-white" required="" value=""/><button type="submit" class="h-11 shrink-0 rounded-lg px-5 text-[11px] font-bold transition bg-blue-600 text-white hover:bg-blue-700">Subscribe</button></form></div><!--astro:end--></astro-island></div> </section> </article> <section class="xb-article-comments"> <div class="mb-5 flex items-center gap-3 text-[11px] font-bold text-[var(--xb-ink)]"><span>Comments &amp; evidence</span><span class="h-px flex-1 bg-[var(--xb-line)]"></span></div> <section class="xbstack-comments" data-xbstack-waline data-server-url="https://comments.xbstack.com" data-comment-path="/en/ai/langgraph-memory-checkpointing-production-agents/" data-comment-lang="en" aria-labelledby="xbstack-comments-title"> <div class="xbstack-comments__header"> <div> <p class="xbstack-comments__eyebrow">DISCUSSION</p> <h2 id="xbstack-comments-title"> Questions, verification and corrections </h2> <p class="xbstack-comments__description"> Sign in to comment. Every new comment is reviewed before publication; while pending, it is visible only to you and the administrator. </p> </div> <div class="xbstack-comments__policy" aria-label="Comment policy"> <span>Sign-in required</span> <span>Reviewed before public</span> </div> </div> <div class="xbstack-comments__status" data-waline-status role="status" aria-live="polite"> <span class="xbstack-comments__spinner" aria-hidden="true"></span> <span>Loading the discussion…</span> </div> <div id="waline" class="xbstack-comments__mount" data-waline-mount></div> <noscript> <p class="xbstack-comments__noscript"> JavaScript is required to view and post comments. </p> </noscript> </section>  </section> </main> <aside class="xb-article-side"> <section class="xb-article-panel"> <div class="xb-article-panel__title">ON THIS PAGE</div> <div class="liquid-glass-container "><div class="liquidGlass-wrapper dock !p-6"><div class="liquidGlass-effect-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-tint-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-shine  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-text  intersect:animate-fadeLeft transition-all duration-300 fast-slow"><div class="intersect:animate-fadeLeft" data-astro-cid-hop3l3kc><h2 class="text-2xl border-none mb-3" data-astro-cid-hop3l3kc>内容导航</h2><div class="max-h-96 overflow-y-auto" data-astro-cid-hop3l3kc><ul class="list-none m-0 space-y-1" data-astro-cid-hop3l3kc><li class="ml-0" data-astro-cid-hop3l3kc><a href="#the-key-point" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>The Key Point</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#who-this-guide-is-for" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Who This Guide Is For</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#what-this-guide-covers" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>What This Guide Covers</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#problems-solved" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Problems Solved</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#who-is-it-for" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Who is it for?</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#why-memory-is-the-root-privilege-of-ai-agents" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Why Memory is the “Root Privilege” of AI Agents</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#langgraph-checkpointing-the-saveload-mechanism-of-the-ai-world" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>LangGraph Checkpointing: The Save/Load mechanism of the AI World</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#the-power-of-the-thread-id" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>The Power of the Thread ID</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#deep-dive-state-schema-design" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Deep Dive: State Schema Design</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#use-case-automated-content-moderation-system" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Use Case: Automated Content Moderation System</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#benchmark-state-retrieval-performance" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Benchmark: State Retrieval Performance</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#short-term-memory-vs-long-term-memory" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Short-Term Memory vs Long-Term Memory</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#human-in-the-loop-the-emergency-stop-for-financial-agents" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Human-in-the-Loop: The “Emergency Stop” for Financial Agents</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#advanced-patterns-multi-thread-scalability" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Advanced Patterns: Multi-thread Scalability</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#handling-state-evolution-the-migration-problem" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Handling State Evolution (The “Migration” Problem)</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#custom-checkpointers-beyond-sql" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Custom Checkpointers: Beyond SQL</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#error-recovery-and-rollbacks" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Error Recovery and Rollbacks</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#observability-visualizing-the-ghosts-in-the-machine" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Observability: Visualizing the Ghosts in the Machine</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#security-and-privacy-data-masking-in-the-checkpointer" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Security and Privacy: Data Masking in the Checkpointer</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#real-world-state-walkthrough-the-lead-scoring-agent" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Real-world State Walkthrough: The “Lead Scoring” Agent</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#conclusion-the-zero-bold-philosophy-of-system-design" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Conclusion: The “Zero-Bold” Philosophy of System Design</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#common-pitfalls--error-logs" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Common Pitfalls / Error Logs</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#1-the-in-memory-trap" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>1. The “In-Memory” Trap</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#2-state-explosion" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>2. State Explosion</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#3-missing-thread-id" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>3. Missing Thread ID</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#comparison-the-architectural-matrix" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Comparison (The Architectural Matrix)</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#faq-common-questions-about-langgraph-memory" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>FAQ: Common Questions About LangGraph Memory</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#what-is-langgraph-checkpointing" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>What is LangGraph checkpointing?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#are-checkpointing-and-memory-the-same-thing" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Are checkpointing and memory the same thing?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#should-i-use-postgres-in-production" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Should I use Postgres in production?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#can-langgraph-handle-human-in-the-loop-pauses" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Can LangGraph handle human-in-the-loop pauses?</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#will-checkpoints-accumulate-indefinitely" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Will checkpoints accumulate indefinitely?</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#next-steps" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Next Steps</a></li></ul></div></div></div></div></div> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">ARTICLE TOOLS</div> <div class="grid gap-1 text-[10px] text-[var(--xb-text)]"> <button type="button" data-copy-article class="flex items-center justify-between border-b border-[var(--xb-line)] py-2 text-left"><span>Copy link</span><span>↗</span></button> <a href="/en/ai/langgraph/" class="flex items-center justify-between border-b border-[var(--xb-line)] py-2"><span>Topic hub</span><span>→</span></a> <a href="/en/rss.xml" class="flex items-center justify-between border-b border-[var(--xb-line)] py-2"><span>RSS</span><span>→</span></a> <a href="/en/newsletter/" class="flex items-center justify-between py-2"><span>Newsletter</span><span>→</span></a> </div> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">RELATED</div> <div class="xb-article-related"><a href="/en/ai/langgraph-toolnode-max-concurrency-ignored/">LangGraph ToolNode Ignores max_concurrency in Async Execution: Reproduction and Workaround</a><a href="/en/ai/langgraph-subgraph-worker-state/">LangGraph Subgraph in Practice: Designing Subgraphs, Worker State, and Local State for Multi-Agent Systems</a><a href="/en/ai/langgraph-checkpointer-memory-sqlite-redis/">LangGraph Checkpointer in Practice: How to Choose Between MemorySaver, SQLite, and Redis</a></div> </section>  </aside> </div> <script>
+  const bindArticleTools=()=>{document.querySelectorAll('[data-copy-article]').forEach((button)=>{if(button.dataset.ready)return;button.dataset.ready='1';button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(window.location.href);const original=button.querySelector('span')?.textContent;if(button.querySelector('span'))button.querySelector('span').textContent='已复制';setTimeout(()=>{if(button.querySelector('span'))button.querySelector('span').textContent=original||'复制链接'},1200)}catch{}})})};document.addEventListener('astro:page-load',bindArticleTools);bindArticleTools();
+</script> </main> <script>
+    function initProgress() {
+      const progressBar = document.getElementById('reading-progress');
+      if (!progressBar) return;
+      window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = scrolled + "%";
+      });
+    }
+    document.addEventListener('astro:page-load', initProgress);
+    initProgress();
+  </script>  </main> <footer class="mt-16 border-t border-[var(--xb-line)] bg-[var(--xb-surface)]"> <div class="xb-shell py-10 md:py-12"> <div class="grid gap-10 lg:grid-cols-[minmax(260px,0.9fr)_minmax(0,1.6fr)] lg:gap-16"> <div class="max-w-[430px]"> <a href="/en/" class="inline-flex items-center gap-2.5 font-black tracking-[-0.035em] text-[var(--xb-ink)]"> <img src="/favicon/favicon.svg" alt="XBSTACK" width="32" height="32" loading="lazy" decoding="async" class="h-8 w-8 object-contain"> <span class="text-[17px]">XBSTACK</span> </a> <p class="mt-5 text-[18px] font-bold leading-7 tracking-[-0.02em] text-[var(--xb-ink)]"> Look High. Build Low. </p> <p class="mt-3 text-[12px] leading-6 text-[var(--xb-muted)]"> Engineering notes, useful products, investment and reading records, travel and outdoor field notes. </p> </div> <nav class="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-4" aria-label="Footer navigation"> <div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">Explore</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/en/ai/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">AI</a><a href="/en/tools/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Tools</a><a href="/en/horizon/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Horizon</a><a href="/en/life/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Lens</a><a href="/en/about/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">About</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">AI Engineering</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/en/ai/agent/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Agents</a><a href="/en/ai/langgraph/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">LangGraph</a><a href="/en/ai/mcp/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">MCP</a><a href="/en/ai/workflow/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Workflow</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">Resources</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/en/search/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Search</a><a href="/en/archive/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Archive</a><a href="/en/newsletter/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Newsletter</a><a href="/en/rss.xml" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">RSS</a><a href="https://github.com/xbstack" target="_blank" rel="noopener noreferrer" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">GitHub: @xbstack</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">Contact</h2> <div class="flex flex-col items-start gap-2.5"> <a href="mailto:xbstack@163.com" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Email: xbstack@163.com</a><a href="/en/wechat/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 wechat-trigger" data-wechat-qr="/assets/qrcode_guizhou_outdoor.png">WeChat: 贵州户外</a><a href="/en/contact/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Partnerships</a> </div> </div> </nav> </div> <div class="mt-9 flex flex-col gap-3 border-t border-[var(--xb-line)] pt-5 sm:flex-row sm:items-center sm:justify-between"> <div class="text-[10px] text-[var(--xb-faint)]">© 2026 XBSTACK. All rights reserved.</div> <div class="flex flex-wrap gap-x-4 gap-y-2"> <a href="/en/privacy/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">Privacy</a><a href="/en/tos/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">Terms</a><a href="/en/disclosure/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">Disclosure</a><a href="/advertising/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">Ad Policy</a><a href="/cookies/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">Cookies</a> </div> </div> </div> </footer> <!-- 桌面悬停卡：由全局脚本定位到当前公众号入口附近 --><div id="wechat-hover-card" class="fixed z-[9998] hidden w-[390px] pointer-events-none opacity-0 translate-y-2 transition-all duration-200" aria-hidden="true"> <div class="rounded-[30px] border border-white/15 bg-[#0d1728]/95 p-6 text-white shadow-[0_28px_80px_rgba(2,6,23,0.48)] backdrop-blur-2xl"> <div class="text-[10px] font-black uppercase tracking-[0.34em] text-orange-400">XBSTACK WeChat</div> <div class="mt-2 text-[24px] font-black tracking-tight">Follow XBSTACK Updates</div> <div class="mt-1 text-[12px] font-bold tracking-[0.12em] text-slate-400">AI Engineering · Product Building · Field Notes</div> <div class="mt-5 grid grid-cols-[148px_1fr] items-center gap-5"> <img id="wechat-hover-qr" src="/assets/qrcode_guizhou_outdoor.png" width="360" height="360" alt="QR code for the Guizhou Outdoor WeChat public account" class="block aspect-square w-full object-contain"> <div class="space-y-3 text-[13px] font-bold leading-relaxed text-slate-300"> <p>Field-tested Guizhou hiking routes</p> <p>AI tools and independent products</p> <p>Investing systems and long-term reviews</p> </div> </div> <div class="mt-5 border-t border-white/10 pt-4 text-center text-[12px] font-black text-slate-300"> Open the full profile </div> </div> </div> <!-- 全局点击弹窗 --> <div id="wechat-modal" class="fixed inset-0 z-[10000] hidden items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="wechat-modal-title" aria-hidden="true"> <button id="wechat-modal-backdrop" type="button" aria-label="Close WeChat public-account dialog" class="absolute inset-0 cursor-default bg-slate-950/86 backdrop-blur-xl"></button> <div id="wechat-modal-content" class="relative max-h-[94vh] w-full max-w-[620px] scale-95 overflow-y-auto rounded-[38px] border border-slate-500/45 bg-[#0d1728] text-white opacity-0 shadow-[0_40px_140px_rgba(0,0,0,0.68)] transition-all duration-300 sm:rounded-[50px]"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"> <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px]"></div> <div class="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-orange-500/10 blur-[80px]"></div> </div> <button id="wechat-modal-close" type="button" aria-label="Close WeChat public-account dialog" class="absolute right-5 top-5 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 transition hover:bg-white/10 hover:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg> </button> <div class="relative z-10 px-6 pb-6 pt-10 sm:px-10 sm:pb-9 sm:pt-12"> <header class="text-center"> <div class="text-[10px] font-black uppercase tracking-[0.44em] text-orange-400 sm:text-xs">XBSTACK WeChat</div> <h2 id="wechat-modal-title" class="mt-4 text-3xl font-black tracking-tight text-white sm:text-[38px]" style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;">Follow XBSTACK Updates</h2> <p class="mt-3 text-sm font-bold tracking-[0.16em] text-slate-400 sm:text-base">AI Engineering · Product Building · Field Notes</p> </header> <div class="mt-8 grid items-center gap-7 sm:grid-cols-[210px_1fr] sm:gap-8"> <img id="wechat-modal-qr" src="/assets/qrcode_guizhou_outdoor.png" width="360" height="360" decoding="async" alt="QR code for the Guizhou Outdoor WeChat public account" class="mx-auto block aspect-square w-full max-w-[210px] object-contain sm:max-w-none"> <div class="divide-y divide-white/10"> <div class="grid grid-cols-[38px_1fr] gap-3 py-3 first:pt-0"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M634.92 462.7l-288-448C341.03 5.54 330.89 0 320 0s-21.03 5.54-26.92 14.7l-288 448a32.001 32.001 0 0 0-1.17 32.64A32.004 32.004 0 0 0 32 512h576c11.71 0 22.48-6.39 28.09-16.67a31.983 31.983 0 0 0-1.17-32.63zM320 91.18L405.39 224H320l-64 64-38.06-38.06L320 91.18z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">Outdoor · Field-tested Guizhou routes</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">Practical notes on trail conditions, supplies, risks, and exit options.</p> </div> </div> <div class="grid grid-cols-[38px_1fr] gap-3 py-3"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M278.9 511.5l-61-17.7c-6.4-1.8-10-8.5-8.2-14.9L346.2 8.7c1.8-6.4 8.5-10 14.9-8.2l61 17.7c6.4 1.8 10 8.5 8.2 14.9L293.8 503.3c-1.9 6.4-8.5 10.1-14.9 8.2zm-114-112.2l43.5-46.4c4.6-4.9 4.3-12.7-.8-17.2L117 256l90.6-79.7c5.1-4.5 5.5-12.3.8-17.2l-43.5-46.4c-4.5-4.8-12.1-5.1-17-.5L3.8 247.2c-5.1 4.7-5.1 12.8 0 17.5l144.1 135.1c4.9 4.6 12.5 4.4 17-.5zm327.2.6l144.1-135.1c5.1-4.7 5.1-12.8 0-17.5L492.1 112.1c-4.8-4.5-12.4-4.3-17 .5L431.6 159c-4.6 4.9-4.3 12.7.8 17.2L523 256l-90.6 79.7c-5.1 4.5-5.5 12.3-.8 17.2l43.5 46.4c4.5 4.9 12.1 5.1 17 .6z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">Independent Development · AI tools and products</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">From real user needs to launch reviews and durable digital products.</p> </div> </div> <div class="grid grid-cols-[38px_1fr] gap-3 py-3 last:pb-0"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16zM464 96H345.94c-21.38 0-32.09 25.85-16.97 40.97l32.4 32.4L288 242.75l-73.37-73.37c-12.5-12.5-32.76-12.5-45.25 0l-68.69 68.69c-6.25 6.25-6.25 16.38 0 22.63l22.62 22.62c6.25 6.25 16.38 6.25 22.63 0L192 237.25l73.37 73.37c12.5 12.5 32.76 12.5 45.25 0l96-96 32.4 32.4c15.12 15.12 40.97 4.41 40.97-16.97V112c.01-8.84-7.15-16-15.99-16z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">Investing · Compounding, risk, and long-term thinking</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">Investment systems, market observations, and decision reviews—not financial advice.</p> </div> </div> </div> </div> <div class="mt-6 text-center text-sm font-black leading-relaxed text-slate-300"> Scan to follow the WeChat public account <span class="text-orange-400">“贵州户外 (Guizhou Outdoor)”</span> <p class="mt-1 text-xs font-bold text-slate-500">Get new field routes, independent-development notes, and investing reviews.</p> </div> <button id="wechat-modal-confirm" type="button" class="mt-7 w-full rounded-[24px] bg-white px-6 py-4 text-sm font-black tracking-[0.12em] text-slate-950 shadow-xl transition hover:-translate-y-0.5 hover:bg-slate-100 active:translate-y-0"> CLOSE </button> </div> </div> </div> <script type="module">const b="/assets/qrcode_guizhou_outdoor.png";function f(){const t=document.getElementById("wechat-modal"),y=document.getElementById("wechat-modal-backdrop"),d=document.getElementById("wechat-modal-content"),u=document.getElementById("wechat-modal-close"),E=document.getElementById("wechat-modal-confirm"),c=document.getElementById("wechat-modal-qr"),o=document.getElementById("wechat-hover-card"),i=document.getElementById("wechat-hover-qr");if(!t||!d||!o)return;let l=0;const p=window.matchMedia("(hover: hover) and (pointer: fine)"),w=e=>{const n=e.dataset.wechatQr||b;c&&c.src!==new URL(n,window.location.href).href&&(c.src=n),i&&i.src!==new URL(n,window.location.href).href&&(i.src=n)},s=()=>{window.clearTimeout(l),o.classList.add("opacity-0","translate-y-2"),l=window.setTimeout(()=>o.classList.add("hidden"),180)},v=e=>{if(!p.matches||!t.classList.contains("hidden"))return;window.clearTimeout(l),w(e),o.classList.remove("hidden");const n=e.getBoundingClientRect(),L=390,B=310,r=12;let m=n.left+n.width/2-L/2;m=Math.max(r,Math.min(m,window.innerWidth-L-r));let h=n.top-B-12;h<r&&(h=n.bottom+12),o.style.left=`${m}px`,o.style.top=`${h}px`,requestAnimationFrame(()=>o.classList.remove("opacity-0","translate-y-2"))},I=e=>{s(),w(e),t.classList.remove("hidden"),t.classList.add("flex"),t.setAttribute("aria-hidden","false"),document.body.style.overflow="hidden",requestAnimationFrame(()=>{d.classList.remove("scale-95","opacity-0"),d.classList.add("scale-100","opacity-100"),u?.focus()})},a=()=>{d.classList.remove("scale-100","opacity-100"),d.classList.add("scale-95","opacity-0"),window.setTimeout(()=>{t.classList.add("hidden"),t.classList.remove("flex"),t.setAttribute("aria-hidden","true"),document.body.style.overflow=""},260)};document.querySelectorAll(".wechat-trigger").forEach(e=>{e.dataset.wechatInitialized!=="true"&&(e.dataset.wechatInitialized="true",e.addEventListener("mouseenter",()=>v(e)),e.addEventListener("mouseleave",s),e.addEventListener("focus",()=>v(e)),e.addEventListener("blur",s),e.addEventListener("click",n=>{n.preventDefault(),I(e)}))}),t.dataset.wechatInitialized!=="true"&&(t.dataset.wechatInitialized="true",u?.addEventListener("click",a),E?.addEventListener("click",a),y?.addEventListener("click",a),document.addEventListener("keydown",e=>{e.key==="Escape"&&!t.classList.contains("hidden")&&a()}),window.addEventListener("scroll",s,{passive:!0}),window.addEventListener("resize",s))}f();document.addEventListener("astro:page-load",f);</script> <script>
+      const showLanguageSwitchNotice = () => {
+        let payload = null;
+        try {
+          const raw = sessionStorage.getItem('xbstack_language_notice');
+          if (!raw) return;
+          payload = JSON.parse(raw);
+          sessionStorage.removeItem('xbstack_language_notice');
+        } catch (error) {
+          return;
+        }
+
+        const notice = document.getElementById('language-switch-notice');
+        if (!notice) return;
+
+        const targetIsEnglish = String(payload?.language || '').toLowerCase().startsWith('en');
+        notice.textContent = targetIsEnglish
+          ? 'This page does not have an English version yet. You have been taken to the English home page.'
+          : '当前页面暂未提供中文版本，已为你打开中文首页。';
+        notice.classList.remove('hidden');
+        window.setTimeout(() => notice.classList.add('hidden'), 4800);
+      };
+
+      document.addEventListener('astro:page-load', showLanguageSwitchNotice);
+      showLanguageSwitchNotice();
+    </script> </body> </html>

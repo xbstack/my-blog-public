@@ -1,0 +1,1162 @@
+<!DOCTYPE html><html lang="en" class="dark" data-analytics="ga4-baidu"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script>
+      const applyTheme = () => {
+        const theme = localStorage.getItem("theme");
+        const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      };
+      applyTheme();
+      document.addEventListener("astro:page-load", applyTheme);
+    </script><title>LangGraph ToolNode Ignores max_concurrency in Async | AI - XBSTACK</title><meta name="description" content="LangGraph ToolNode max_concurrency async bug: reproduce sync vs ainvoke behavior, inspect the executor/gather split, and apply a shared asyncio.Semaphore workaround."><meta http-equiv="content-language" content="en"><meta name="keywords" content="LangGraph ToolNode max_concurrency, ToolNode ainvoke concurrency, RunnableConfig max_concurrency ignored, LangGraph asyncio.gather, LangGraph async tool rate limit, asyncio Semaphore ToolNode, ToolNode async bug, LangGraph ToolNode Ignores max_concurrency in Async Execution, LangGraph, ToolNode"><meta name="theme-color" content="#050608"><meta property="og:type" content="article"><meta property="og:locale" content="en_US"><meta property="og:url" content="https://www.xbstack.com/en/ai/langgraph-toolnode-max-concurrency-ignored/"><meta property="og:title" content="LangGraph ToolNode Ignores max_concurrency in Async | AI - XBSTACK"><meta property="og:description" content="LangGraph ToolNode max_concurrency async bug: reproduce sync vs ainvoke behavior, inspect the executor/gather split, and apply a shared asyncio.Semaphore workaround."><meta property="og:image" content="https://www.xbstack.com/_astro/01-cover.uBLdVPzl.webp"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/en/ai/langgraph-toolnode-max-concurrency-ignored/"><meta property="twitter:title" content="LangGraph ToolNode Ignores max_concurrency in Async | AI - XBSTACK"><meta property="twitter:description" content="LangGraph ToolNode max_concurrency async bug: reproduce sync vs ainvoke behavior, inspect the executor/gather split, and apply a shared asyncio.Semaphore workaround."><meta property="twitter:image" content="https://www.xbstack.com/_astro/01-cover.uBLdVPzl.webp"><link rel="canonical" href="https://www.xbstack.com/en/ai/langgraph-toolnode-max-concurrency-ignored/"><link rel="alternate" hreflang="zh-CN" href="https://www.xbstack.com/ai/langgraph-toolnode-max-concurrency-ignored/"><link rel="alternate" hreflang="en" href="https://www.xbstack.com/en/ai/langgraph-toolnode-max-concurrency-ignored/"><link rel="alternate" hreflang="x-default" href="https://www.xbstack.com/ai/langgraph-toolnode-max-concurrency-ignored/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/en/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Tools and Products","description":"AI Finance, compound calculator, Lunest and a small set of practical tools and reusable resources.","url":"https://www.xbstack.com/en/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Long-term Thinking","description":"Investment research, reading notes and long-term thinking with evidence, outcomes and decision reviews.","url":"https://www.xbstack.com/en/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Travel, Photography and Gear","description":"Field notes from real hiking, travel, photography and gear use, with Guizhou as a core but not exclusive focus.","url":"https://www.xbstack.com/en/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"Xiaobai's profile, current products, long-term research themes, working principles and the XBSTACK public asset system.","url":"https://www.xbstack.com/en/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","additionalType":"https://schema.org/TechArticle","headline":"LangGraph ToolNode Ignores max_concurrency in Async Execution: Reproduction and Workaround","description":"LangGraph ToolNode max_concurrency async bug: reproduce sync vs ainvoke behavior, inspect the executor/gather split, and apply a shared asyncio.Semaphore workaround.","inLanguage":"en","image":"https://www.xbstack.com/_astro/01-cover.uBLdVPzl.webp","datePublished":"2026-08-04T00:00:00.000Z","author":{"@id":"https://www.xbstack.com/about/#person"},"publisher":{"@type":"Organization","name":"XBSTACK","logo":{"@type":"ImageObject","url":"https://www.xbstack.com/favicon/favicon.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.xbstack.com/en/ai/langgraph-toolnode-max-concurrency-ignored/"},"articleSection":"langgraph","keywords":["LangGraph ToolNode max_concurrency","ToolNode ainvoke concurrency","RunnableConfig max_concurrency ignored","LangGraph asyncio.gather","LangGraph async tool rate limit","asyncio Semaphore ToolNode","ToolNode async bug","LangGraph ToolNode Ignores max_concurrency in Async Execution","LangGraph","ToolNode"],"abstract":"XBSTACK verified on macOS, Python 3.11.15, langgraph 1.2.10, langgraph-prebuilt 1.1.0, and langchain-core 1.5.3 that four tool calls sent directly to one ToolNode produce measured maximum concurrency of 1/2/4 through invoke() with limits 1/2/4, but 4/4/4 through ainvoke(). The sync path uses get_executor_for_config(config); the async path passes all coroutines to asyncio.gather. Upstream issue #8517 was opened on August 3, 2026 and remained open on August 4. A shared asyncio.Semaphore at the constrained resource boundary is a verified temporary workaround.","about":[{"@type":"Thing","name":"LangGraph"},{"@type":"Thing","name":"ToolNode"},{"@type":"Thing","name":"max_concurrency"},{"@type":"Thing","name":"RunnableConfig"},{"@type":"Thing","name":"asyncio"},{"@type":"Thing","name":"Python"},{"@type":"Thing","name":"Rate Limiting"},{"@type":"Thing","name":"Production Engineering"},{"@type":"Thing","name":"asyncio.gather"},{"@type":"Thing","name":"asyncio.Semaphore"},{"@type":"Thing","name":"get_executor_for_config"},{"@type":"Thing","name":"gather_with_concurrency"}],"citation":["https://github.com/langchain-ai/langgraph/issues/8517","https://github.com/langchain-ai/langgraph/blob/main/libs/prebuilt/langgraph/prebuilt/tool_node.py","https://reference.langchain.com/python/langchain-core/runnables/config/RunnableConfig/max_concurrency","https://github.com/xbstack/langgraph-toolnode-max-concurrency-repro"],"speakable":{"@type":"SpeakableSpecification","cssSelector":[".markdown-content h2",".markdown-content p:first-of-type"]}},{"@type":"Person","@id":"https://www.xbstack.com/about/#person","name":"Xiaobai","alternateName":["小白"],"url":"https://www.xbstack.com/en/about/","image":"https://www.xbstack.com/_astro/avatar.BzDyfp9G.webp","jobTitle":"Full-Stack AI Engineer","worksFor":{"@type":"Organization","name":"XBSTACK","url":"https://www.xbstack.com"},"sameAs":["https://github.com/xbstack"],"knowsAbout":["AI Agents","LangGraph","Model Context Protocol","AI Workflows","Product Engineering"]}]}</script><meta property="article:published_time" content="Tue Aug 04 2026 08:00:00 GMT+0800 (China Standard Time)"><meta name="abstract" content="LangGraph ToolNode max_concurrency async bug: reproduce sync vs ainvoke behavior, inspect the executor/gather split, and apply a shared asyncio.Semaphore workaround."><meta name="speakable-selector" content=".markdown-content h2, .markdown-content p"><meta name="ai-content-access" content="allowed"><meta name="geo-optimized" content="true"><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
+
+          const productionAnalyticsHosts = new Set(['www.xbstack.com', 'xbstack.com']);
+          const automationUserAgent = /HeadlessChrome|PhantomJS|Playwright|Puppeteer|Selenium|Lighthouse|PageSpeed|bot\b|crawler|spider|slurp|curl|wget|python-requests|axios|node-fetch|facebookexternalhit|Twitterbot|LinkedInBot|Bytespider|GPTBot|ClaudeBot|PerplexityBot/i;
+          const analyticsUrl = new URL(window.location.href);
+          const analyticsSource = String(analyticsUrl.searchParams.get('utm_source') || '').toLowerCase();
+          const analyticsCampaign = String(analyticsUrl.searchParams.get('utm_campaign') || '').toLowerCase();
+          const internalAnalyticsAudit =
+            analyticsUrl.searchParams.has('ga4_audit') ||
+            analyticsUrl.searchParams.has('analytics_test') ||
+            ['internal', 'internal_test', 'qa', 'test'].includes(analyticsSource) ||
+            analyticsCampaign.includes('ga4_audit') ||
+            analyticsCampaign.includes('internal_test');
+          const shouldTrackAnalytics =
+            Boolean(googleAnalyticsId) &&
+            productionAnalyticsHosts.has(window.location.hostname.toLowerCase()) &&
+            navigator.webdriver !== true &&
+            !automationUserAgent.test(navigator.userAgent || '') &&
+            !internalAnalyticsAudit;
+
+          if (!shouldTrackAnalytics) {
+            window.__analytics_suppressed = true;
+            window.__analytics_suppression_reason = internalAnalyticsAudit ? 'internal_test' : 'environment_or_automation';
+          } else if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_id', 'utm_term', 'utm_content'];
+            const UTM_ALIASES = {
+              utmsource: 'utm_source',
+              utmmedium: 'utm_medium',
+              utmcampaign: 'utm_campaign',
+              utmcontent: 'utm_content',
+              utmterm: 'utm_term',
+              utmid: 'utm_id',
+            };
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.normalizeUtmAliases = () => {
+              try {
+                const url = new URL(window.location.href);
+                let changed = false;
+                Object.entries(UTM_ALIASES).forEach(([alias, canonical]) => {
+                  const aliasValue = url.searchParams.get(alias);
+                  if (aliasValue && !url.searchParams.get(canonical)) {
+                    url.searchParams.set(canonical, aliasValue);
+                    changed = true;
+                  }
+                  if (url.searchParams.has(alias)) {
+                    url.searchParams.delete(alias);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.normalizeUtmAliases();
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
+            window.__ga4_initialized = true;
+            window.__ga4_client_loaded = false;
+            window.__ga4_tracking_started = false;
+            window.__ga4_human_verified = false;
+            window.__ga4_session_class = '';
+            window.__lastGA4PageKey = "";
+            window.__lastGA4PageLocation = document.referrer || "";
+            window.__ga4_tracking_start_reason = '';
+            window.__scroll50Reported = false;
+            window.__scroll90Reported = false;
+
+            const getReferrerHost = () => {
+              try {
+                return document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+              } catch (err) {
+                return '';
+              }
+            };
+
+            const inferSourceHint = () => {
+              const refHost = getReferrerHost();
+              if (!refHost) return '';
+              if (refHost.includes('zhihu')) return 'zhihu_referrer';
+              if (refHost.includes('juejin')) return 'juejin_referrer';
+              if (refHost.includes('csdn')) return 'csdn_referrer';
+              if (refHost.includes('weixin') || refHost.includes('wechat')) return 'wechat_referrer';
+              if (refHost.includes('google')) return 'google_referrer';
+              if (refHost.includes('baidu')) return 'baidu_referrer';
+              return refHost;
+            };
+
+            const getAttributionPayload = () => {
+              const params = new URLSearchParams(window.location.search);
+              const current = {};
+              UTM_KEYS.forEach((key) => {
+                const value = params.get(key);
+                if (value) current[key] = value;
+              });
+
+              const referrerHost = getReferrerHost();
+              const currentHost = window.location.hostname.replace(/^www\./, '');
+              const sourceHint = inferSourceHint();
+              const hasExternalReferrer = Boolean(referrerHost && referrerHost !== currentHost);
+
+              let stored = {};
+              try {
+                stored = JSON.parse(sessionStorage.getItem('xbstack_attribution') || '{}');
+              } catch (err) {
+                stored = {};
+              }
+
+              if (Object.keys(current).length) {
+                stored = {
+                  ...stored,
+                  ...current,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: current.utm_source ? `utm:${current.utm_source}` : sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              } else if (hasExternalReferrer && !stored.captured_at) {
+                // Preserve first-touch referral attribution even when the platform strips UTM parameters.
+                stored = {
+                  ...stored,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              }
+
+              if (stored.captured_at) {
+                try {
+                  sessionStorage.setItem('xbstack_attribution', JSON.stringify(stored));
+                } catch (err) {}
+              }
+
+              return {
+                utm_source: stored.utm_source || '',
+                utm_medium: stored.utm_medium || '',
+                utm_campaign: stored.utm_campaign || '',
+                utm_id: stored.utm_id || '',
+                utm_term: stored.utm_term || '',
+                utm_content: stored.utm_content || '',
+                attribution_landing_page: stored.landing_page || '',
+                referrer_host: stored.referrer_host || referrerHost,
+                source_hint: stored.source_hint || (stored.utm_source ? `utm:${stored.utm_source}` : sourceHint),
+              };
+            };
+
+            const getAnalyticsPageContext = () => {
+              const url = new URL(window.location.href);
+              const isCompoundCalculator = [
+                '/tools/compound-calculator/',
+                '/en/tools/compound-calculator/',
+              ].includes(url.pathname);
+
+              if (isCompoundCalculator) {
+                ['scenario', 'principal', 'monthly', 'rate', 'years', 'volatility', 'inflation', 'm2_drag', 'target', 'compare_rate'].forEach((key) => {
+                  url.searchParams.delete(key);
+                });
+              }
+
+              return {
+                pagePath: url.pathname,
+                pageLocation: url.href,
+                pageSearch: url.search,
+              };
+            };
+
+            window.xbTrackEvent = (eventName, payload = {}) => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !eventName ||
+                !window.__ga4_tracking_started ||
+                !window.__ga4_human_verified
+              ) return;
+              const analyticsPage = getAnalyticsPageContext();
+              window.gtag('event', eventName, {
+                transport_type: 'beacon',
+                page_path: analyticsPage.pagePath,
+                page_title: document.title || '',
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+                ...payload,
+              });
+            };
+
+            window.sendGA4PageView = () => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !window.__ga4_tracking_started
+              ) return;
+
+              const analyticsPage = getAnalyticsPageContext();
+              const pageLocation = analyticsPage.pageLocation;
+              const pageTitle = document.title || '';
+              const pageKey = `${pageLocation}|${pageTitle}`;
+
+              if (pageKey === window.__lastGA4PageKey) return;
+              const pageReferrer = window.__lastGA4PageLocation;
+              window.__lastGA4PageKey = pageKey;
+              window.__lastGA4PageLocation = pageLocation;
+              window.__scroll50Reported = false;
+              window.__scroll90Reported = false;
+
+              window.gtag('event', 'page_view', {
+                page_title: pageTitle,
+                page_location: pageLocation,
+                page_path: analyticsPage.pagePath,
+                page_search: analyticsPage.pageSearch,
+                page_referrer: pageReferrer,
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+              });
+            };
+
+            window.initGA4Tracking = () => {
+              if (typeof window.gtag !== 'function') return;
+              if (window.__ga4_events_bound) return;
+              window.__ga4_events_bound = true;
+
+              // 1. 页面滚动深度上报
+              const handleScroll = (event) => {
+                if (!event?.isTrusted || !window.__ga4_human_verified) return;
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const progress = (scrollTop / scrollHeight) * 100;
+
+                if (progress >= 50 && !window.__scroll50Reported) {
+                  window.xbTrackEvent('scroll_50', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll50Reported = true;
+                }
+                if (progress >= 90 && !window.__scroll90Reported) {
+                  window.xbTrackEvent('scroll_90', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll90Reported = true;
+                }
+              };
+
+              window.addEventListener('scroll', handleScroll, { passive: true });
+
+              // 2. 完整链接与按钮点击上报。link_click 是统一事实表，旧事件继续保留用于历史对比。
+              const inferLinkArea = (target) => {
+                const explicitArea = target.closest('[data-analytics-area]')?.getAttribute('data-analytics-area');
+                if (explicitArea) return explicitArea.slice(0, 60);
+                if (target.closest('header, nav, [role="navigation"]')) return 'navigation';
+                if (target.closest('footer')) return 'footer';
+                if (target.closest('[class*="related"], [class*="recommend"], [class*="next-reading"]')) return 'related_content';
+                if (target.closest('[class*="sidebar"], aside')) return 'sidebar';
+                if (target.closest('.markdown-content, article')) return 'article_body';
+                if (target.closest('[class*="card"], [class*="grid"]')) return 'content_card';
+                return 'page_other';
+              };
+
+              const classifyLink = (target, url, linkArea) => {
+                const rawHref = String(target.getAttribute('href') || '');
+                const protocol = String(url.protocol || '').toLowerCase();
+                const path = String(url.pathname || '/');
+                const host = String(url.hostname || '').replace(/^www\./, '').toLowerCase();
+                const isHttp = protocol === 'http:' || protocol === 'https:';
+                const isExternal = isHttp && url.origin !== window.location.origin;
+                const isDownload =
+                  target.hasAttribute('download') ||
+                  /\.(pdf|zip|gz|tar|csv|xlsx?|docx?|pptx?|json|ya?ml|mp3|mp4|mov|webm)(?:$|[?#])/i.test(rawHref);
+
+                if (protocol === 'mailto:' || protocol === 'tel:') return 'contact';
+                if (isDownload) return 'download';
+                if (isExternal && host === 'github.com') return 'github';
+                if (isExternal) return 'external';
+                if (path.startsWith('/go/')) return 'affiliate';
+                if (path.startsWith('/tools/') || path.startsWith('/compound-interest/')) return 'tool';
+                if (path.startsWith('/newsletter/')) return 'newsletter';
+                if (url.origin === window.location.origin && path === window.location.pathname && url.hash) return 'anchor';
+                if (linkArea === 'related_content') return 'related_article';
+                if (linkArea === 'article_body') return 'internal_article';
+                return 'internal';
+              };
+
+              const handleClick = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const target = e.target.closest('a,button');
+                if (!target) return;
+
+                const label = (target.getAttribute('aria-label') || target.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 100);
+                if (target.tagName === 'BUTTON') {
+                  window.xbTrackEvent('click_button', {
+                    event_category: 'engagement',
+                    event_label: label,
+                    link_area: inferLinkArea(target),
+                    link_position: inferLinkArea(target),
+                    source_page_path: window.location.pathname,
+                  });
+                  return;
+                }
+
+                const rawHref = String(target.getAttribute('href') || '').trim();
+                if (!rawHref || rawHref.toLowerCase().startsWith('javascript:')) return;
+
+                try {
+                  const url = new URL(rawHref, window.location.href);
+                  const linkArea = inferLinkArea(target);
+                  const linkType = classifyLink(target, url, linkArea);
+                  const isExternalHttp =
+                    (url.protocol === 'http:' || url.protocol === 'https:') &&
+                    url.origin !== window.location.origin;
+                  const payload = {
+                    event_category:
+                      ['affiliate', 'tool', 'newsletter'].includes(linkType)
+                        ? 'conversion'
+                        : isExternalHttp
+                          ? 'outbound'
+                          : 'navigation',
+                    event_label: url.href,
+                    link_text: label,
+                    link_url: url.href,
+                    link_domain: url.hostname.replace(/^www\./, ''),
+                    link_id: target.id || '',
+                    link_classes: String(target.className || '').slice(0, 120),
+                    outbound: isExternalHttp,
+                    link_type: linkType,
+                    link_area: linkArea,
+                    link_position: linkArea,
+                    source_page_path: window.location.pathname,
+                    target_page_path: url.pathname || '',
+                  };
+
+                  // 所有真实链接统一进入 link_click，运营报表以该事件为准。
+                  window.xbTrackEvent('link_click', payload);
+
+                  if (linkType === 'external' || linkType === 'github') {
+                    window.xbTrackEvent('click_external', payload);
+                  }
+                  if (linkType === 'github') {
+                    window.xbTrackEvent('github_click', payload);
+                  }
+                  if (linkType === 'download') {
+                    window.xbTrackEvent('download_click', payload);
+                  }
+                  if (linkType === 'affiliate') {
+                    window.xbTrackEvent('affiliate_click', {
+                      ...payload,
+                      affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                    });
+                  }
+                  if (linkType === 'tool') {
+                    window.xbTrackEvent('click_tool', payload);
+                  }
+                  if (linkType === 'newsletter') {
+                    window.xbTrackEvent('newsletter_click', payload);
+                  }
+                  if (linkType === 'related_article') {
+                    window.xbTrackEvent('related_article_click', payload);
+                  }
+                  if (['internal', 'internal_article', 'related_article', 'anchor'].includes(linkType)) {
+                    window.xbTrackEvent('internal_link_click', payload);
+                  }
+                  if (
+                    !isExternalHttp &&
+                    ['/ai/', '/newsletter/', '/search/', '/life/', '/investing/'].some((prefix) => url.pathname.startsWith(prefix))
+                  ) {
+                    window.xbTrackEvent('click_internal_entry', payload);
+                  }
+                } catch (err) {}
+              };
+
+              const handleSubmit = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const form = e.target;
+                if (!form || form.tagName !== 'FORM') return;
+                const action = form.getAttribute('action') || '';
+                const formType = form.getAttribute('data-analytics-form') || '';
+                const formData = new FormData(form);
+                const searchTerm = String(formData.get('q') || '').trim();
+
+                if (action.includes('/search') || formType === 'site-search') {
+                  window.xbTrackEvent('view_search_results', {
+                    event_category: 'site_search',
+                    search_term: searchTerm,
+                  });
+                }
+
+                if (action.includes('buttondown.email') || formType === 'newsletter') {
+                  const provider = action.includes('buttondown.email') ? 'buttondown' : 'xbstack_api';
+                  window.xbTrackEvent('newsletter_subscribe_attempt', {
+                    event_category: 'conversion',
+                    event_label: window.location.pathname,
+                    newsletter_provider: provider,
+                  });
+                  window.xbTrackEvent('newsletter_subscribe', {
+                    event_category: 'conversion',
+                    event_label: 'submitted',
+                    newsletter_provider: provider,
+                    confirmation_status: 'submitted',
+                  });
+                }
+              };
+
+              document.addEventListener('click', handleClick);
+              document.addEventListener('submit', handleSubmit, true);
+            };
+
+            // 原始访问先进入 GA4，再通过 traffic_verification 区分未验证访问与真人互动。
+            // 这样既保留完整 page_view / session_start 基线，也能在报表层排除低质量流量。
+            window.loadGA4Client = () => {
+              if (window.__ga4_client_loaded) return;
+              window.__ga4_client_loaded = true;
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = function() {
+                window.dataLayer.push(arguments);
+              };
+
+              const ga4Script = document.createElement('script');
+              ga4Script.async = true;
+              ga4Script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(googleAnalyticsId)}`;
+              document.head.appendChild(ga4Script);
+
+              window.gtag('js', new Date());
+              window.gtag('config', googleAnalyticsId, {
+                send_page_view: false,
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+              });
+            };
+
+            window.startGA4Tracking = (
+              reason = 'page_load',
+              sessionClass = 'unverified_session',
+              humanVerified = false,
+            ) => {
+              if (window.__ga4_tracking_started) {
+                if (humanVerified && !window.__ga4_human_verified) {
+                  window.verifyGA4Human(reason, sessionClass);
+                }
+                return;
+              }
+              window.__ga4_tracking_start_reason = String(reason || 'page_load').slice(0, 60);
+              window.__ga4_session_class = String(sessionClass || 'unverified_session').slice(0, 40);
+              window.__ga4_human_verified = Boolean(humanVerified);
+              window.__ga4_tracking_started = true;
+              window.loadGA4Client();
+              window.sendGA4PageView();
+              window.initGA4Tracking();
+            };
+
+            window.verifyGA4Human = (reason = 'interaction', sessionClass = 'human_interaction') => {
+              if (!window.__ga4_tracking_started) {
+                window.startGA4Tracking(reason, sessionClass, true);
+                return;
+              }
+              if (window.__ga4_human_verified) return;
+
+              const previousClass = window.__ga4_session_class || 'unverified_session';
+              window.__ga4_human_verified = true;
+              window.__ga4_session_class = String(sessionClass || 'human_interaction').slice(0, 40);
+              window.__ga4_tracking_start_reason = String(reason || 'interaction').slice(0, 60);
+              window.gtag('event', 'traffic_verified', {
+                transport_type: 'beacon',
+                traffic_verification: window.__ga4_session_class,
+                previous_traffic_verification: previousClass,
+                verification_reason: window.__ga4_tracking_start_reason,
+                page_path: window.location.pathname,
+                page_title: document.title || '',
+              });
+            };
+
+            ['pointerdown', 'keydown', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(
+                eventName,
+                (event) => {
+                  if (!event?.isTrusted) return;
+                  window.verifyGA4Human(`interaction:${eventName}`, 'human_interaction');
+                },
+                { once: true, passive: true },
+              );
+            });
+
+            let pointerMoveCount = 0;
+            let pointerMoveDistance = 0;
+            let lastPointerX = null;
+            let lastPointerY = null;
+            const handleHumanPointerMove = (event) => {
+              if (
+                window.__ga4_human_verified ||
+                !event?.isTrusted ||
+                event.pointerType === 'touch'
+              ) return;
+              if (lastPointerX !== null && lastPointerY !== null) {
+                pointerMoveDistance += Math.hypot(event.clientX - lastPointerX, event.clientY - lastPointerY);
+              }
+              lastPointerX = event.clientX;
+              lastPointerY = event.clientY;
+              pointerMoveCount += 1;
+              if (pointerMoveCount >= 3 && pointerMoveDistance >= 120) {
+                window.removeEventListener('pointermove', handleHumanPointerMove);
+                window.verifyGA4Human('interaction:pointermove', 'human_interaction');
+              }
+            };
+            window.addEventListener('pointermove', handleHumanPointerMove, { passive: true });
+
+            // 放宽采集：所有可见前台页面都记录原始访问；真人互动后再升级质量标签。
+            window.setTimeout(() => {
+              if (
+                window.__ga4_tracking_started ||
+                document.visibilityState !== 'visible'
+              ) return;
+              window.startGA4Tracking('page_load:visible_800ms', 'unverified_session', false);
+            }, 800);
+
+            document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+              if (window.__ga4_tracking_started) {
+                window.sendGA4PageView();
+                window.initGA4Tracking();
+              }
+            });
+          } else {
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+            if (window.__ga4_tracking_started && typeof window.sendGA4PageView === 'function') {
+              window.sendGA4PageView();
+            }
+          }
+        })();</script><script data-baidu-id="c7bfaf645bfc8974405a85c2a55573a0">
+          const baiduId = document.currentScript?.dataset.baiduId || '';
+          if (!window.__baidu_analytics_initialized) {
+            window._hmt = window._hmt || [];
+            window.__baidu_analytics_initialized = true;
+            window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+
+            const loadBaiduAnalytics = () => {
+              if (window.__baidu_script_loaded || !baiduId) return;
+              window.__baidu_script_loaded = true;
+              const hm = document.createElement('script');
+              hm.async = true;
+              hm.src = "https://hm.baidu.com/hm.js?" + baiduId;
+              document.head.appendChild(hm);
+              window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+            };
+
+            // 百度统计不是首屏渲染依赖：首次交互时加载，若用户未交互则 12 秒后加载。
+            ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(eventName, loadBaiduAnalytics, { once: true, passive: true });
+            });
+            window.setTimeout(loadBaiduAnalytics, 12000);
+
+            document.addEventListener('astro:page-load', () => {
+              const pageKey = window.location.pathname + window.location.search;
+              if (!window.__baidu_script_loaded || pageKey === window.__lastBaiduPageKey) return;
+              window.__lastBaiduPageKey = pageKey;
+              window._hmt.push(['_trackPageview', pageKey]);
+            });
+          }
+        </script><link rel="stylesheet" href="/_astro/archive.DJ636BNq.css">
+<link rel="stylesheet" href="/_astro/archive.KSCYbzqj.css">
+<link rel="stylesheet" href="/_astro/_slug_.CRFvxpGR.css">
+<link rel="stylesheet" href="/_astro/_slug_.CeiCBDdi.css">
+<link rel="stylesheet" href="/_astro/vendor-media.DSulWsr7.css">
+<style>.aqua-pill[data-astro-cid-hs6yaznx]{background:#0ea5e91a;backdrop-filter:blur(8px)}
+.glass-button[data-astro-cid-xwnkcw7l]{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:var(--sizeGap);padding:var(--sizePadding);background:var(--variantBase);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--variantBorder);border-radius:var(--sizeBorderRadius);font-size:var(--sizeFontSize);font-weight:500;color:var(--variantColor);cursor:pointer;transition:all .3s cubic-bezier(.175,.885,.32,2.2);box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d;-webkit-user-select:none;-moz-user-select:none;user-select:none;overflow:hidden;text-decoration:none;white-space:nowrap}.glass-button[data-astro-cid-xwnkcw7l]:before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,var(--variantGradient),transparent);transition:left .6s cubic-bezier(.25,.46,.45,.94);pointer-events:none;opacity:0}.glass-button[data-astro-cid-xwnkcw7l]:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);transform:translateY(-4px) scale(1.03);box-shadow:0 20px 25px -5px var(--variantShadow),0 15px 15px -5px #0000004d,inset 1px 1px 4px #ffffff80;filter:brightness(1.2) saturate(1.3)}.glass-button[data-astro-cid-xwnkcw7l]:hover:before{left:100%;opacity:1}.glass-button[data-astro-cid-xwnkcw7l]:active{transform:translateY(-1px) scale(.98);box-shadow:0 2px 6px var(--variantShadow)}.glass-button[data-astro-cid-xwnkcw7l]:disabled{cursor:not-allowed;opacity:.6;transform:none;pointer-events:none}.glass-button[data-astro-cid-xwnkcw7l]:disabled:hover{transform:none;box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d}.glass-button__icon[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;justify-content:center;width:var(--sizeIconSize);height:var(--sizeIconSize);transition:all .3s cubic-bezier(.175,.885,.32,2.2)}.glass-button__icon[data-astro-cid-xwnkcw7l] svg{width:100%;height:100%}.glass-button[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{transform:scale(1.2) rotate(-5deg);filter:drop-shadow(0 0 4px var(--variantShadow))}.glass-button__content[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;transition:all .3s ease}.glass-button__spinner[data-astro-cid-xwnkcw7l]{width:var(--sizeIconSize);height:var(--sizeIconSize);animation:spin 1s linear infinite}.dark[data-astro-cid-xwnkcw7l]{.glass-button{background:#37373799;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-color:#ffffff26;color:#e5e7eb;box-shadow:0 4px 8px #0006,inset 1px 1px 3px #ffffff26}.glass-button:before{background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}.glass-button:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);box-shadow:0 6px 14px var(--variantShadow),inset 1px 1px 4px #fff3;filter:brightness(1.2) saturate(1.3)}}@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.glass-button--primary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--secondary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(37,99,235,.5))}.glass-button--success[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(22,163,74,.5))}.glass-button--warning[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(217,119,6,.5))}.glass-button--danger[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--info[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(99,102,241,.5))}
+</style></head> <body class="bg-[var(--xb-bg)] text-[var(--xb-ink)] selection:bg-orange-500/20 selection:text-orange-500 overflow-x-hidden"> <style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value=="object"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};"requestIdleCallback"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event("astro:idle"));})();</script><script>(()=>{var A=Object.defineProperty;var g=(i,o,a)=>o in i?A(i,o,{enumerable:!0,configurable:!0,writable:!0,value:a}):i[o]=a;var d=(i,o,a)=>g(i,typeof o!="symbol"?o+"":o,a);{let i={0:t=>m(t),1:t=>a(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(a(t)),5:t=>new Set(a(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t),11:t=>1/0*t},o=t=>{let[l,e]=t;return l in i?i[l](e):void 0},a=t=>t.map(o),m=t=>typeof t!="object"||t===null?t:Object.fromEntries(Object.entries(t).map(([l,e])=>[l,o(e)]));class y extends HTMLElement{constructor(){super(...arguments);d(this,"Component");d(this,"hydrator");d(this,"hydrate",async()=>{var b;if(!this.hydrator||!this.isConnected)return;let e=(b=this.parentElement)==null?void 0:b.closest("astro-island[ssr]");if(e){e.addEventListener("astro:hydrate",this.hydrate,{once:!0});return}let c=this.querySelectorAll("astro-slot"),n={},h=this.querySelectorAll("template[data-astro-template]");for(let r of h){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("data-astro-template")||"default"]=r.innerHTML,r.remove())}for(let r of c){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("name")||"default"]=r.innerHTML)}let p;try{p=this.hasAttribute("props")?m(JSON.parse(this.getAttribute("props"))):{}}catch(r){let s=this.getAttribute("component-url")||"<unknown>",v=this.getAttribute("component-export");throw v&&(s+=` (export ${v})`),console.error(`[hydrate] Error parsing props for component ${s}`,this.getAttribute("props"),r),r}let u;await this.hydrator(this)(this.Component,p,n,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),this.dispatchEvent(new CustomEvent("astro:hydrate"))});d(this,"unmount",()=>{this.isConnected||this.dispatchEvent(new CustomEvent("astro:unmount"))})}disconnectedCallback(){document.removeEventListener("astro:after-swap",this.unmount),document.addEventListener("astro:after-swap",this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute("await-children")||document.readyState==="interactive"||document.readyState==="complete")this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener("DOMContentLoaded",e),c.disconnect(),this.childrenConnectedCallback()},c=new MutationObserver(()=>{var n;((n=this.lastChild)==null?void 0:n.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue==="astro:end"&&(this.lastChild.remove(),e())});c.observe(this,{childList:!0}),document.addEventListener("DOMContentLoaded",e)}}async childrenConnectedCallback(){let e=this.getAttribute("before-hydration-url");e&&await import(e),this.start()}async start(){let e=JSON.parse(this.getAttribute("opts")),c=this.getAttribute("client");if(Astro[c]===void 0){window.addEventListener(`astro:${c}`,()=>this.start(),{once:!0});return}try{await Astro[c](async()=>{let n=this.getAttribute("renderer-url"),[h,{default:p}]=await Promise.all([import(this.getAttribute("component-url")),n?import(n):()=>()=>{}]),u=this.getAttribute("component-export")||"default";if(!u.includes("."))this.Component=h[u];else{this.Component=h;for(let f of u.split("."))this.Component=this.Component[f]}return this.hydrator=p,this.hydrate},e,this)}catch(n){console.error(`[astro-island] Error hydrating ${this.getAttribute("component-url")}`,n)}}attributeChangedCallback(){this.hydrate()}}d(y,"observedAttributes",["props"]),customElements.get("astro-island")||customElements.define("astro-island",y)}})();</script><astro-island uid="ZWjsVO" prefix="r16" component-url="/_astro/GlobalLightbox.CqZePd56.js" component-export="default" renderer-url="/_astro/client.DPSb9UvF.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;GlobalLightbox&quot;,&quot;value&quot;:true}"></astro-island> <astro-island uid="2nwVdo" prefix="r17" component-url="/_astro/AffiliatePopup.C1KShLAm.js" component-export="default" renderer-url="/_astro/client.DPSb9UvF.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;AffiliatePopup&quot;,&quot;value&quot;:true}"></astro-island> <div id="app-background" class="fixed inset-0 z-[-1] h-full w-full pointer-events-none bg-slate-50 dark:bg-slate-950 transition-colors duration-500"> <div id="app-background-image" class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-500" data-day="/_astro/macos2.hYF-Pyun.webp" data-night="/_astro/macos2-night.DwJ7amhx.webp" aria-hidden="true"></div> <div class="absolute inset-0 bg-[#DFE1E6]/90 dark:bg-transparent backdrop-blur-[6px] pointer-events-none"></div> <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b82f611,transparent_50%)] dark:hidden pointer-events-none"></div> <div class="absolute inset-0 opacity-[0.08] dark:opacity-[0.03] pointer-events-none mix-blend-multiply" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+');"></div> </div> <script>
+  (() => {
+    const bindBackground = () => {
+      const root = document.documentElement;
+      const background = document.getElementById('app-background-image');
+      if (!background || background.dataset.themeObserverBound === 'true') return;
+
+      const applyBackground = () => {
+        const source = root.classList.contains('dark') ? background.dataset.night : background.dataset.day;
+        if (!source) return;
+        const nextValue = `url("${source}")`;
+        if (background.style.backgroundImage !== nextValue) {
+          background.style.backgroundImage = nextValue;
+        }
+      };
+
+      applyBackground();
+      const observer = new MutationObserver(applyBackground);
+      observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+      background.dataset.themeObserverBound = 'true';
+    };
+
+    bindBackground();
+    document.addEventListener('astro:page-load', bindBackground);
+  })();
+</script> <header class="sticky top-0 z-[500] border-b border-[var(--xb-line)] bg-[color:var(--xb-bg)]/95 backdrop-blur-xl"> <div class="xb-shell flex min-h-[66px] items-center gap-7"> <a href="/en/" class="flex shrink-0 items-center gap-2.5 font-black tracking-[-0.035em] text-[var(--xb-ink)]" aria-label="XBSTACK Home"> <img src="/favicon/favicon.svg" alt="XBSTACK" width="32" height="32" decoding="async" class="h-8 w-8 object-contain"> <span class="text-[17px]">XBSTACK</span> </a> <nav class="hidden items-center gap-1 lg:flex" aria-label="Primary navigation"> <a href="/en/ai/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors bg-blue-500/[0.06] text-blue-600 dark:text-blue-400"> AI </a><a href="/en/tools/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Tools </a><a href="/en/horizon/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Horizon </a><a href="/en/life/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Lens </a><a href="/en/about/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> About </a> </nav> <div class="ml-auto flex items-center gap-2"> <a id="global-search-trigger" data-xbstack-search-trigger href="/en/search/" aria-label="Open site search" class="hidden h-9 min-w-[190px] items-center gap-2 rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)] px-3 text-left text-[11px] text-[var(--xb-muted)] transition-colors hover:border-blue-400 md:flex"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="shrink-0" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.8 173.8 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.8 173.8 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3M97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8"></path></svg> <span class="truncate">Search docs, tools, topics…</span> <kbd class="ml-auto rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[9px] text-[var(--xb-faint)]">⌘K</kbd> </a> <div class="hidden sm:block"> <nav data-visible-language-alternate aria-label="Select language" data-astro-cid-iemtoba4> <details class="language-switcher-details relative" data-language-switcher-details data-astro-cid-iemtoba4> <summary class="language-switcher-summary flex h-10 min-w-[88px] cursor-pointer list-none items-center justify-center gap-2 rounded-full border border-slate-200/60 bg-white/50 px-3 text-[12px] font-bold text-slate-600 shadow-sm backdrop-blur-md transition-all hover:border-blue-300 hover:bg-blue-50/80 hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-blue-400/50 dark:hover:bg-blue-500/10 dark:hover:text-blue-400 dark:focus-visible:ring-offset-slate-950" aria-label="Select language" title="Select language" data-astro-cid-iemtoba4> <svg aria-hidden="true" viewBox="0 0 24 24" class="h-3.5 w-3.5 flex-none" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4> <circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle> <path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path> </svg> <span class="whitespace-nowrap" data-astro-cid-iemtoba4>English</span> <svg aria-hidden="true" viewBox="0 0 20 20" class="language-chevron h-3 w-3 flex-none text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-iemtoba4> <path d="m5 7.5 5 5 5-5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path> </svg> </summary> <div class="language-switcher-menu absolute right-0 top-[calc(100%+0.65rem)] z-[520] w-44 overflow-hidden rounded-2xl border border-slate-200/80 bg-white/95 p-2 shadow-[0_18px_50px_-18px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0B1020]/95" role="menu" aria-label="Select language" data-astro-cid-iemtoba4> <div class="px-3 pb-1.5 pt-1 text-[9px] font-black uppercase tracking-[0.22em] text-slate-400 dark:text-slate-500" data-astro-cid-iemtoba4> Language </div> <a href="/ai/langgraph-toolnode-max-concurrency-ignored/" data-language-choice="zh-CN" data-language-current="false" data-language-available="true" role="menuitemradio" aria-checked="false" title="切换到中文版本" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors text-slate-600 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-blue-400" data-astro-cid-iemtoba4> <span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4> <span class="h-1.5 w-1.5 rounded-full bg-slate-300 dark:bg-slate-700" data-astro-cid-iemtoba4></span> </span> <span class="flex-1" data-astro-cid-iemtoba4>中文</span> <span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>ZH</span> </a><a href="/en/ai/langgraph-toolnode-max-concurrency-ignored/" data-language-choice="en" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" role="menuitemradio" aria-checked="true" title="Current language: English" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors cursor-default bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" data-astro-cid-iemtoba4> <span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4> <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" data-astro-cid-iemtoba4> <path d="m4.5 10 3.2 3.2 7.8-7.8" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path> </svg> </span> <span class="flex-1" data-astro-cid-iemtoba4>English</span> <span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>EN</span> </a> </div> </details> </nav>  <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> <div class="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)]"> <div class="relative flex items-center justify-center w-full h-full"> <input class="sr-only" id="theme-switcher" data-theme-switcher type="checkbox"> <label class="flex items-center justify-center cursor-pointer w-full h-full group/theme" for="theme-switcher" aria-label="切换主题">  <svg class="w-5 h-5 transition-all duration-500 scale-100 dark:scale-0 opacity-100 dark:opacity-0 absolute text-orange-500 group-hover/theme:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg>  <svg class="w-5 h-5 transition-all duration-500 scale-0 dark:scale-100 opacity-0 dark:opacity-100 absolute text-sky-400 group-hover/theme:-rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </label> </div> <script>
+  // 立即执行以防止闪烁
+  (function() {
+    const theme = localStorage.getItem("theme");
+    const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  })();
+
+  // 页面加载和切换后的初始化逻辑
+  function initTheme() {
+    const themeSwitchers = document.querySelectorAll("[data-theme-switcher]");
+    const isDark = document.documentElement.classList.contains("dark");
+
+    // 同步所有切换按钮的状态
+    themeSwitchers.forEach((el) => {
+      el.checked = isDark;
+      
+      // 移除旧的监听器（如果存在），防止重复绑定
+      // 由于是匿名函数难以移除，我们采用 cloneNode 或者简单的标志位
+      // Astro 的 View Transitions 会重新运行脚本，所以只需确保不累积
+      // 最简单的方式是直接覆盖 onclick 或 onchange，但这里用 addEventListener
+      // 我们可以给元素加个标记
+      if (el.dataset.initialized) return;
+      
+      el.addEventListener("change", (e) => {
+        const checked = e.target.checked;
+        if (checked) {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        }
+        
+        // 同步其他可能存在的切换按钮（例如移动端和桌面端各有一个）
+        document.querySelectorAll("[data-theme-switcher]").forEach(other => {
+            if (other !== el) other.checked = checked;
+        });
+      });
+      
+      el.dataset.initialized = "true";
+    });
+  }
+
+  // 绑定事件
+  document.addEventListener("DOMContentLoaded", initTheme);
+  document.addEventListener("astro:page-load", initTheme);
+  document.addEventListener("astro:after-swap", initTheme);
+</script> </div> <button id="mobile-menu-trigger" type="button" aria-label="Open navigation menu" aria-controls="mobile-menu" aria-expanded="false" class="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)] text-[var(--xb-text)] lg:hidden"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path></svg></button> </div> </div> <div class="border-t border-[var(--xb-line)]/70"> <div class="xb-shell overflow-x-auto"> <nav class="flex min-w-max items-center gap-1 py-2" aria-label="AI navigation"> <a href="/en/ai/agent/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:text-[var(--xb-ink)]"> Agents </a><a href="/en/ai/langgraph/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:text-[var(--xb-ink)]"> LangGraph </a><a href="/en/ai/mcp/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:text-[var(--xb-ink)]"> MCP </a><a href="/en/ai/workflow/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:text-[var(--xb-ink)]"> Workflow </a> </nav> </div> </div> <div id="mobile-menu" class="invisible fixed inset-0 z-[600] pointer-events-none"> <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/50 opacity-0 backdrop-blur-sm transition-opacity"></div> <aside id="mobile-menu-panel" class="absolute right-0 top-0 flex h-full w-[300px] translate-x-full flex-col border-l border-[var(--xb-line)] bg-[var(--xb-surface)] transition-transform"> <div class="flex h-16 items-center justify-between border-b border-[var(--xb-line)] px-5"> <strong class="text-sm tracking-tight text-[var(--xb-ink)]">XBSTACK</strong> <button id="mobile-menu-close" type="button" aria-label="Close navigation menu" class="text-[var(--xb-muted)]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg></button> </div> <div class="border-b border-[var(--xb-line)] p-4"> <a id="mobile-search-trigger" data-xbstack-search-trigger href="/en/search/" class="flex h-10 w-full items-center gap-2 rounded-lg border border-[var(--xb-line)] px-3 text-[12px] text-[var(--xb-muted)]"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.8 173.8 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.8 173.8 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3M97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8"></path></svg> Search XBSTACK </a> </div> <nav class="flex flex-1 flex-col gap-2 overflow-y-auto p-4"> <div> <a href="/en/ai/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold bg-blue-500/[0.07] text-blue-600 dark:text-blue-400">AI</a> <div class="mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3 ml-4"> <a href="/en/ai/agent/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Agents</a><a href="/en/ai/langgraph/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">LangGraph</a><a href="/en/ai/mcp/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">MCP</a><a href="/en/ai/workflow/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Workflow</a> </div> </div><div> <a href="/en/tools/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">Tools</a> <div class="mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3 ml-4"> <a href="/en/tools/compound-calculator/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Compound Calculator</a><a href="/en/tools/ai-finance/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">AI Finance Analyzer</a><a href="/en/tools/lunest/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Lunest</a> </div> </div><div> <a href="/en/horizon/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">Horizon</a> <div class="mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3 ml-4"> <a href="/en/investing/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Investing</a><a href="/en/horizon/reading/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Reading</a><a href="/en/investing/thoughts/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Thinking</a> </div> </div><div> <a href="/en/life/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">Lens</a> <div class="mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3 ml-4"> <a href="/en/life/hiking/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Outdoor</a><a href="/en/life/road-trip/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Travel</a><a href="/en/life/photo/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Photography</a><a href="/en/life/gear/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Gear</a> </div> </div><div> <a href="/en/about/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">About</a>  </div> </nav> <div class="border-t border-[var(--xb-line)] p-4 sm:hidden"> <nav data-visible-language-alternate aria-label="Select language" data-astro-cid-iemtoba4> <div class="flex w-full items-center justify-between gap-4" aria-label="Select language" data-astro-cid-iemtoba4> <div class="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300" data-astro-cid-iemtoba4> <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4> <circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle> <path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path> </svg> <span data-astro-cid-iemtoba4>Language</span> </div> <div class="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 p-1 dark:border-white/10 dark:bg-white/5" data-astro-cid-iemtoba4> <a href="/ai/langgraph-toolnode-max-concurrency-ignored/" data-language-choice="zh-CN" data-language-current="false" data-language-available="true" title="切换到中文版本" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400" data-astro-cid-iemtoba4> 中文 </a><a href="/en/ai/langgraph-toolnode-max-concurrency-ignored/" data-language-choice="en" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="Current language: English" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all cursor-default bg-white text-blue-600 shadow-sm dark:bg-blue-500/15 dark:text-blue-400" data-astro-cid-iemtoba4> English </a> </div> </div> </nav>  <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> </aside> </div> <script>
+    if (!window.__xbstackSearchShortcutReady) {
+      window.__xbstackSearchShortcutReady = true;
+      window.addEventListener('keydown', (event) => {
+        const target = event.target;
+        const isTyping = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target?.isContentEditable;
+        const isCommandK = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
+        const isSlash = event.key === '/' && !isTyping;
+        if (!isCommandK && !isSlash) return;
+        event.preventDefault();
+        window.location.href = window.location.pathname.startsWith('/en/') ? '/en/search/' : '/search/';
+      });
+    }
+
+    const bindHeader = () => {
+      const trigger = document.getElementById('mobile-menu-trigger');
+      const close = document.getElementById('mobile-menu-close');
+      const menu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const panel = document.getElementById('mobile-menu-panel');
+      const setOpen = (open) => {
+        if (!menu || !overlay || !panel) return;
+        trigger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) {
+          menu.classList.remove('invisible', 'pointer-events-none');
+          overlay.classList.add('opacity-100');
+          panel.classList.remove('translate-x-full');
+          document.body.style.overflow = 'hidden';
+        } else {
+          overlay.classList.remove('opacity-100');
+          panel.classList.add('translate-x-full');
+          document.body.style.overflow = '';
+          setTimeout(() => menu.classList.add('invisible', 'pointer-events-none'), 220);
+        }
+      };
+      trigger?.addEventListener('click', () => setOpen(true));
+      close?.addEventListener('click', () => setOpen(false));
+      overlay?.addEventListener('click', () => setOpen(false));
+    };
+    document.addEventListener('astro:page-load', bindHeader);
+    bindHeader();
+  </script> </header> <div id="language-switch-notice" class="pointer-events-none fixed left-1/2 top-24 z-[700] hidden max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/95 px-5 py-3 text-center text-sm font-bold text-slate-700 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 dark:text-slate-200" role="status" aria-live="polite"></div> <main id="main-content" class="flex-1">  <div id="reading-progress" class="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 z-[110] transition-all duration-300 w-0 shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div> <main class="pt-24 md:pt-32 pb-20"> <script>(()=>{var a=(s,i,o)=>{let r=async()=>{await(await s())()},t=typeof i.value=="object"?i.value:void 0,c={rootMargin:t==null?void 0:t.rootMargin},n=new IntersectionObserver(e=>{for(let l of e)if(l.isIntersecting){n.disconnect(),r();break}},c);for(let e of o.children)n.observe(e)};(self.Astro||(self.Astro={})).visible=a;window.dispatchEvent(new Event("astro:visible"));})();</script><script type="module" src="/_astro/Comment.astro_astro_type_script_index_0_lang.DIUdttQg.js"></script><script type="module">function g(){const t=document.querySelector("header");return t?t.offsetHeight+32:140}function a(){document.querySelectorAll("[data-toc-link]").forEach(e=>{const n=e.cloneNode(!0);e.parentNode?.replaceChild(n,e),n.addEventListener("click",function(o){o.preventDefault();const r=o.currentTarget.getAttribute("href");if(!r)return;const c=r.substring(1),d=document.getElementById(c);if(d){const s=d.getBoundingClientRect(),i=window.pageYOffset||document.documentElement.scrollTop,u=g(),l=i+s.top-u;window.scrollTo({top:Math.max(0,l),behavior:"smooth"}),history.pushState(null,"",`#${c}`)}})})}document.addEventListener("DOMContentLoaded",a);document.addEventListener("astro:page-load",a);</script><div class="xb-article-grid py-8 md:py-10"> <aside class="xb-article-side"> <section class="border border-[var(--xb-line)] bg-[var(--xb-surface)] rounded-xl p-5 xb-article-panel !rounded-xl !shadow-none" aria-label="Author profile"> <a href="/en/about/" class="group flex flex-col items-center text-center"> <div class="overflow-hidden rounded-full border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] h-[72px] w-[72px]"> <img src="/_astro/avatar.BzDyfp9G_ZzAEsA.webp" alt="Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="h-full w-full object-cover"> </div> <div class="mt-3"> <h3 class="m-0 text-[14px] font-bold tracking-tight text-[var(--xb-ink)] group-hover:text-blue-600 dark:group-hover:text-blue-400">Xiaobai</h3> <p class="mt-1 text-[9px] font-bold tracking-wide text-blue-600 dark:text-blue-400">Developer · Builder</p> </div> </a> <p class="text-[10px] leading-5 text-[var(--xb-muted)] mt-4 text-center">Building AI engineering systems, developer tools and long-term digital assets at XBSTACK.</p> <a href="/en/about/" class="mt-3 block text-center text-[9px] font-bold text-blue-600 hover:underline dark:text-blue-400">About Xiaobai &amp; XBSTACK →</a> <div class="my-3 h-px bg-[var(--xb-line)]"></div> <ul class="flex items-center py-2 justify-center"><li class="inline-block px-1 intersect:animate-fade opacity-0"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span class="sr-only">GitHub</span> </span>  </button> </a></li></ul> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">ARTICLE INFO</div> <dl class="space-y-3 text-[10px] leading-5 text-[var(--xb-muted)]"> <div><dt class="font-bold text-[var(--xb-ink)]">Published</dt><dd>8/4/2026</dd></div> <div><dt class="font-bold text-[var(--xb-ink)]">Topic</dt><dd><a href="/en/ai/langgraph/" class="text-blue-600 dark:text-blue-400">langgraph</a></dd></div>  </dl> <div class="mt-4 flex flex-wrap gap-1.5"><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#LangGraph</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#ToolNode</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#max_concurrency</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#RunnableConfig</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#asyncio</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#Python</span></div> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">Related</div> <p class="text-[10px] leading-5 text-[var(--xb-muted)]">Continue with the related topic, tools or weekly updates.</p> <div class="mt-3 grid gap-2 text-[10px] font-bold text-blue-600 dark:text-blue-400"><nav data-cluster-hub-link><a href="/en/ai/langgraph/">Topic →</a></nav><a href="/en/tools/">Products &amp; tools →</a><a href="/en/newsletter/">Newsletter →</a></div> </section> </aside> <main class="min-w-0"> <article class="xb-article-paper"> <div class="xl:hidden mb-6"><section class="border border-[var(--xb-line)] bg-[var(--xb-surface)] rounded-xl p-4 !rounded-xl !shadow-none" aria-label="Author profile"> <a href="/en/about/" class="group flex items-center gap-4"> <div class="overflow-hidden rounded-full border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] h-14 w-14 shrink-0"> <img src="/_astro/avatar.BzDyfp9G_ZzAEsA.webp" alt="Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="h-full w-full object-cover"> </div> <div class="min-w-0"> <h3 class="m-0 text-[14px] font-bold tracking-tight text-[var(--xb-ink)] group-hover:text-blue-600 dark:group-hover:text-blue-400">Xiaobai</h3> <p class="mt-1 text-[9px] font-bold tracking-wide text-blue-600 dark:text-blue-400">Developer · Builder</p> </div> </a> <p class="text-[10px] leading-5 text-[var(--xb-muted)] mt-3">Building AI engineering systems, developer tools and long-term digital assets at XBSTACK.</p> <a href="/en/about/" class="mt-3 block text-center text-[9px] font-bold text-blue-600 hover:underline dark:text-blue-400">About Xiaobai &amp; XBSTACK →</a> <div class="my-3 h-px bg-[var(--xb-line)]"></div> <ul class="flex items-center py-2 justify-center"><li class="inline-block px-1 intersect:animate-fade opacity-0"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span class="sr-only">GitHub</span> </span>  </button> </a></li></ul> </section></div> <header class="mb-10 border-b border-[var(--xb-line)] pb-8"><div class="mb-8 overflow-hidden rounded-xl border border-[var(--xb-line)] bg-[var(--xb-surface-soft)]"><img src="/_astro/01-cover.uBLdVPzl_19XPpe.webp" alt="Comparison showing LangGraph ToolNode sync execution limiting max concurrency to one while async execution starts four tools" sizes="(min-width: 1280px) 860px, calc(100vw - 40px)" loading="eager" fetchpriority="high" decoding="async" width="1200" height="630" class="aspect-[40/21] w-full object-cover"></div><div class="mb-4 flex flex-wrap items-center gap-2"><a href="/ai/langgraph/" class="rounded-md border border-blue-500/15 bg-blue-500/[0.05] px-2.5 py-1 text-[10px] font-bold text-blue-600 dark:text-blue-400">Langgraph</a></div><h1 class="m-0 text-[clamp(2rem,4vw,3.6rem)] font-black leading-[1.12] tracking-[-.045em] text-[var(--xb-ink)]">LangGraph ToolNode Ignores max_concurrency in Async Execution: Reproduction and Workaround</h1><p class="mt-5 max-w-[760px] text-[15px] leading-7 text-[var(--xb-text)]">LangGraph 1.2.10 ToolNode max_concurrency reproduction: sync invoke respects limits while async ainvoke starts all tested tool calls; includes root cause and Semaphore workaround.</p><div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] text-[var(--xb-faint)]"><span>Published · 2026-08-04</span><span>6 min read</span><span>XBSTACK</span></div><div class="mt-4 flex flex-wrap gap-2"><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#LangGraph</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#ToolNode</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#max_concurrency</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#RunnableConfig</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#asyncio</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#Python</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#Rate Limiting</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#Production Engineering</span></div></header> <nav class="mb-7 flex items-center justify-between gap-4 border-y border-[var(--xb-line)] py-3 text-[10px] text-[var(--xb-muted)]" aria-label="Article language version"> <span>This URL is the English edition.</span> <a href="/ai/langgraph-toolnode-max-concurrency-ignored/" hreflang="zh-CN" class="font-bold text-blue-600 dark:text-blue-400">阅读中文版本 →</a> </nav> <aside class="mb-8 border-l-2 border-blue-500 bg-blue-500/[0.04] px-4 py-3"> <div class="text-[9px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">Author note</div> <p class="mt-1 text-[12px] leading-6 text-[var(--xb-text)]">The experiment makes no model request and needs no API key. Four async tools only call asyncio.sleep while a counter records overlap. Timing is machine-dependent; the active counter and trace ordering are the primary evidence.</p> </aside>  <div class="prose prose-tech markdown-content max-w-none">  <aside class="mb-10 rounded-2xl border border-orange-500/20 bg-orange-500/[0.045] px-5 py-4 not-prose" data-analytics-area="article_body" aria-label="Recommended next step"> <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"> <div> <p class="text-xs font-black uppercase tracking-[0.18em] text-orange-600 dark:text-orange-400">Topic path / LangGraph</p> <p class="mt-1 text-sm font-bold leading-6 text-slate-700 dark:text-slate-300">Continue through the production LangGraph learning path</p> </div> <div class="flex shrink-0 flex-wrap gap-2"> <a href="/en/ai/langgraph/" class="rounded-full bg-orange-500 px-4 py-2 text-xs font-black text-white transition-colors hover:bg-orange-600">Open LangGraph hub →</a> <a href="/en/ai/langgraph-thread-session-state-isolation/" class="rounded-full border border-slate-300 px-4 py-2 text-xs font-black text-slate-700 transition-colors hover:border-orange-500 hover:text-orange-500 dark:border-white/15 dark:text-slate-200">Start with state isolation</a> </div> </div> </aside><h2 id="langgraph-toolnode-ignores-max_concurrency-in-async-execution-reproduction-and-workaround">LangGraph ToolNode Ignores max_concurrency in Async Execution: Reproduction and Workaround</h2>
+<p>The result is specific but important: <strong>with <code>langgraph==1.2.10</code>, direct multi-call <code>ToolNode</code> execution respects <code>RunnableConfig.max_concurrency</code> through <code>graph.invoke()</code>, but <code>graph.ainvoke()</code> can ignore the same ceiling.</strong> I sent four tool calls to one minimal ToolNode without a model or API key. At <code>max_concurrency=1</code>, the sync path reached one active tool while the async path reached four. At a limit of two, sync reached two and async still reached four.</p>
+<p>The fastest temporary protection is not to convert every tool to sync. Put a <strong>shared <code>asyncio.Semaphore</code></strong> around tools that consume the same bounded resource. That can protect a rate-limited API, connection pool, browser session, GPU slot, or non-concurrency-safe dependency. It does not repair ToolNode scheduling, so it should remain a tested application boundary until a released upstream fix passes your regression matrix.</p>
+<p>The behavior was reported in LangGraph <a href="https://github.com/langchain-ai/langgraph/issues/8517" rel="nofollow noopener noreferrer" target="_blank">issue #8517</a> on August 3, 2026. As of August 4, the issue was still open. External contributors had suggested an async parity test and a bounded gather direction, but there was no maintainer-confirmed release fix to validate.</p>
+<p>This page answers one search task:</p>
+<blockquote>
+<p>Why do several asynchronous tools in the same ToolNode start together even though I call <code>graph.ainvoke(..., config={"max_concurrency": 1})</code>?</p>
+</blockquote>
+<h2 id="scope-do-not-generalize-this-to-every-langgraph-agent-path">Scope: do not generalize this to every LangGraph agent path</h2>
+<p>The experiment has one custom <code>StateGraph</code>, one <code>ToolNode</code>, and one input message containing four tool calls. The finding covers <strong>the async batch inside that direct ToolNode path</strong>.</p>
+<p>It is not evidence that every asynchronous LangGraph agent ignores the setting. The issue author described a separate control involving a <code>create_agent</code> Send-based path, but XBSTACK did not include it in this experiment. Before applying the workaround, identify whether your overlap occurs inside one ToolNode batch, across graph tasks, through Send, between subgraphs, or across several nodes.</p>
+<p>For timeouts, retries, repeated side effects, and recovery policy, use <a href="/en/ai/langgraph-agent-error-recovery-retry-timeout/">LangGraph failure recovery for Tool Error and Timeout</a>. To record when each tool starts and ends, combine this test with <a href="/en/ai/langgraph-observability-agent-trace/">LangGraph observability and decision tracing</a>.</p>
+<h2 id="verified-offline-environment">Verified offline environment</h2>
+<p>The run completed on August 4, 2026:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Component</th><th>Version</th></tr></thead><tbody><tr><td>OS</td><td>macOS 26.5.2 arm64</td></tr><tr><td>Python</td><td>3.11.15</td></tr><tr><td>langgraph</td><td>1.2.10</td></tr><tr><td>langgraph-prebuilt</td><td>1.1.0</td></tr><tr><td>langchain-core</td><td>1.5.3</td></tr><tr><td>pytest</td><td>9.1.1</td></tr><tr><td>Model / API key</td><td>Not required</td></tr></tbody></table>
+<p>The experiment contains the reproduction, workaround, raw output, version matrix, and tests:</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">experiments/langgraph-toolnode-max-concurrency/
+├── README.md
+├── requirements.txt
+├── repro.py
+├── workaround.py
+├── tests/
+│   └── test_max_concurrency.py
+└── results/
+    ├── repro-results.json
+    ├── repro-results.txt
+    └── version-matrix.md
+</code></pre>
+<p>Standalone repository:</p>
+<p><a href="https://github.com/xbstack/langgraph-toolnode-max-concurrency-repro?utm_source=xbstack&#x26;utm_medium=referral&#x26;utm_campaign=langgraph_toolnode_max_concurrency&#x26;utm_content=article_repository_link_en" rel="nofollow noopener noreferrer" target="_blank">langgraph-toolnode-max-concurrency-repro</a></p>
+<h2 id="minimal-reproduction-with-four-calls-in-one-batch">Minimal reproduction with four calls in one batch</h2>
+<p>Each tool waits for the same interval and updates a shared active counter. The complete repository also writes trace and JSON evidence; this reduced example shows the core behavior:</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">import</span> asyncio
+
+<span class="token keyword">from</span> langchain_core<span class="token punctuation">.</span>messages <span class="token keyword">import</span> AIMessage
+<span class="token keyword">from</span> langchain_core<span class="token punctuation">.</span>tools <span class="token keyword">import</span> StructuredTool
+<span class="token keyword">from</span> langgraph<span class="token punctuation">.</span>graph <span class="token keyword">import</span> END<span class="token punctuation">,</span> START<span class="token punctuation">,</span> MessagesState<span class="token punctuation">,</span> StateGraph
+<span class="token keyword">from</span> langgraph<span class="token punctuation">.</span>prebuilt <span class="token keyword">import</span> ToolNode
+
+
+<span class="token keyword">class</span> <span class="token class-name">AsyncProbe</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>active <span class="token operator">=</span> <span class="token number">0</span>
+        self<span class="token punctuation">.</span>max_active <span class="token operator">=</span> <span class="token number">0</span>
+
+    <span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">run</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> delay<span class="token punctuation">:</span> <span class="token builtin">float</span> <span class="token operator">=</span> <span class="token number">0.08</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">str</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>active <span class="token operator">+=</span> <span class="token number">1</span>
+        self<span class="token punctuation">.</span>max_active <span class="token operator">=</span> <span class="token builtin">max</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>max_active<span class="token punctuation">,</span> self<span class="token punctuation">.</span>active<span class="token punctuation">)</span>
+        <span class="token keyword">try</span><span class="token punctuation">:</span>
+            <span class="token keyword">await</span> asyncio<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span>delay<span class="token punctuation">)</span>
+            <span class="token keyword">return</span> <span class="token string">"ok"</span>
+        <span class="token keyword">finally</span><span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>active <span class="token operator">-=</span> <span class="token number">1</span>
+
+
+<span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    probe <span class="token operator">=</span> AsyncProbe<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    names <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string-interpolation"><span class="token string">f"tool_</span><span class="token interpolation"><span class="token punctuation">{</span>index<span class="token punctuation">}</span></span><span class="token string">"</span></span> <span class="token keyword">for</span> index <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    tools <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+
+    <span class="token keyword">for</span> name <span class="token keyword">in</span> names<span class="token punctuation">:</span>
+        <span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">tool_coroutine</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">str</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span> <span class="token keyword">await</span> probe<span class="token punctuation">.</span>run<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+        tools<span class="token punctuation">.</span>append<span class="token punctuation">(</span>
+            StructuredTool<span class="token punctuation">.</span>from_function<span class="token punctuation">(</span>
+                coroutine<span class="token operator">=</span>tool_coroutine<span class="token punctuation">,</span>
+                name<span class="token operator">=</span>name<span class="token punctuation">,</span>
+                description<span class="token operator">=</span><span class="token string-interpolation"><span class="token string">f"Probe </span><span class="token interpolation"><span class="token punctuation">{</span>name<span class="token punctuation">}</span></span><span class="token string">"</span></span><span class="token punctuation">,</span>
+            <span class="token punctuation">)</span>
+        <span class="token punctuation">)</span>
+
+    builder <span class="token operator">=</span> StateGraph<span class="token punctuation">(</span>MessagesState<span class="token punctuation">)</span>
+    builder<span class="token punctuation">.</span>add_node<span class="token punctuation">(</span><span class="token string">"tools"</span><span class="token punctuation">,</span> ToolNode<span class="token punctuation">(</span>tools<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    builder<span class="token punctuation">.</span>add_edge<span class="token punctuation">(</span>START<span class="token punctuation">,</span> <span class="token string">"tools"</span><span class="token punctuation">)</span>
+    builder<span class="token punctuation">.</span>add_edge<span class="token punctuation">(</span><span class="token string">"tools"</span><span class="token punctuation">,</span> END<span class="token punctuation">)</span>
+    graph <span class="token operator">=</span> builder<span class="token punctuation">.</span><span class="token builtin">compile</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    message <span class="token operator">=</span> AIMessage<span class="token punctuation">(</span>
+        content<span class="token operator">=</span><span class="token string">""</span><span class="token punctuation">,</span>
+        tool_calls<span class="token operator">=</span><span class="token punctuation">[</span>
+            <span class="token punctuation">{</span><span class="token string">"id"</span><span class="token punctuation">:</span> <span class="token string-interpolation"><span class="token string">f"call-</span><span class="token interpolation"><span class="token punctuation">{</span>index<span class="token punctuation">}</span></span><span class="token string">"</span></span><span class="token punctuation">,</span> <span class="token string">"name"</span><span class="token punctuation">:</span> name<span class="token punctuation">,</span> <span class="token string">"args"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+            <span class="token keyword">for</span> index<span class="token punctuation">,</span> name <span class="token keyword">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span>names<span class="token punctuation">)</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span>
+
+    <span class="token keyword">await</span> graph<span class="token punctuation">.</span>ainvoke<span class="token punctuation">(</span>
+        <span class="token punctuation">{</span><span class="token string">"messages"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>message<span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+        config<span class="token operator">=</span><span class="token punctuation">{</span><span class="token string">"max_concurrency"</span><span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>probe<span class="token punctuation">.</span>max_active<span class="token punctuation">)</span>
+
+
+asyncio<span class="token punctuation">.</span>run<span class="token punctuation">(</span>main<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+</code></pre>
+<p>On the tested versions, the output is <code>4</code>, not the expected <code>1</code>.</p>
+<h2 id="matrix-sync-is-bounded-async-ignores-lower-limits">Matrix: sync is bounded, async ignores lower limits</h2>
+<p>Four tools each waited for roughly 80 milliseconds:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Path</th><th align="right">Configured limit</th><th align="right">Measured maximum active</th><th>Respected</th></tr></thead><tbody><tr><td><code>invoke()</code></td><td align="right">1</td><td align="right">1</td><td>yes</td></tr><tr><td><code>ainvoke()</code></td><td align="right">1</td><td align="right">4</td><td>no</td></tr><tr><td><code>invoke()</code></td><td align="right">2</td><td align="right">2</td><td>yes</td></tr><tr><td><code>ainvoke()</code></td><td align="right">2</td><td align="right">4</td><td>no</td></tr><tr><td><code>invoke()</code></td><td align="right">4</td><td align="right">4</td><td>yes</td></tr><tr><td><code>ainvoke()</code></td><td align="right">4</td><td align="right">4</td><td>superficially, because the limit equals the call count</td></tr></tbody></table>
+<p>Raw timing:</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">sync  max_concurrency=1 max_active=1 elapsed=0.3461s
+async max_concurrency=1 max_active=4 elapsed=0.0877s
+sync  max_concurrency=2 max_active=2 elapsed=0.1727s
+async max_concurrency=2 max_active=4 elapsed=0.0845s
+sync  max_concurrency=4 max_active=4 elapsed=0.0913s
+async max_concurrency=4 max_active=4 elapsed=0.0953s
+</code></pre>
+<p>Timing depends on the machine and should not be the only evidence. The active counter and trace are stronger: under a limit of one, the sync trace alternates start/end one tool at a time; the async trace records all four starts before the first completion.</p>
+<h2 id="root-cause-configured-executor-versus-unconditional-gather">Root cause: configured executor versus unconditional gather</h2>
+<p>The installed package and current ToolNode source show the same split.</p>
+<p>The sync <code>_func()</code> uses the configured executor:</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">with</span> get_executor_for_config<span class="token punctuation">(</span>config<span class="token punctuation">)</span> <span class="token keyword">as</span> executor<span class="token punctuation">:</span>
+    outputs <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span>
+        executor<span class="token punctuation">.</span><span class="token builtin">map</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>_run_one<span class="token punctuation">,</span> tool_calls<span class="token punctuation">,</span> input_types<span class="token punctuation">,</span> tool_runtimes<span class="token punctuation">)</span>
+    <span class="token punctuation">)</span>
+</code></pre>
+<p><code>get_executor_for_config(config)</code> reads the concurrency setting, which is why the sync matrix produced maxima of 1, 2, and 4.</p>
+<p>The async <code>_afunc()</code> collects every coroutine and sends the batch to <code>asyncio.gather()</code>:</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python">coros <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token keyword">for</span> call<span class="token punctuation">,</span> tool_runtime <span class="token keyword">in</span> <span class="token builtin">zip</span><span class="token punctuation">(</span>tool_calls<span class="token punctuation">,</span> tool_runtimes<span class="token punctuation">,</span> strict<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    coros<span class="token punctuation">.</span>append<span class="token punctuation">(</span>self<span class="token punctuation">.</span>_arun_one<span class="token punctuation">(</span>call<span class="token punctuation">,</span> input_type<span class="token punctuation">,</span> tool_runtime<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+outputs <span class="token operator">=</span> <span class="token keyword">await</span> asyncio<span class="token punctuation">.</span>gather<span class="token punctuation">(</span><span class="token operator">*</span>coros<span class="token punctuation">)</span>
+</code></pre>
+<p>That path does not use <code>config.get("max_concurrency")</code> to bound starts. <code>asyncio.gather()</code> waits for the full batch, but it does not impose a concurrency ceiling. The RunnableConfig is still propagated into each tool runtime; it simply does not control this batch scheduler.</p>
+<p>LangChain Core already exposes <code>gather_with_concurrency(n, *coros)</code>. A maintainer-level change could use that helper or an equivalent bounded implementation, followed by parity tests. The final design must still account for cancellation, error propagation, <code>Command</code> output, and compatibility with existing ToolNode behavior.</p>
+<h2 id="why-the-mismatch-matters-in-production">Why the mismatch matters in production</h2>
+<p>An extra four-way overlap may look harmless for local pure functions. Production tools usually touch bounded resources:</p>
+<ul>
+<li>provider APIs with per-account or per-tenant concurrency limits;</li>
+<li>PostgreSQL, Redis, HTTP, or browser connection pools;</li>
+<li>one file, device, GPU, or session that is not safe for concurrent use;</li>
+<li>paid quotas shared across several tool names;</li>
+<li>write operations that are not idempotent under overlap.</li>
+</ul>
+<p>A team can test the sync path, see <code>max_concurrency=1</code> work, then move production to <code>ainvoke()</code> and assume the resource remains protected. A single model response containing several calls can instead hit the provider simultaneously, causing 429 responses, pool exhaustion, out-of-order side effects, or retry amplification. Pair the concurrency test with the <a href="/en/ai/langgraph-agent-error-recovery-retry-timeout/">failure recovery and retry boundary guide</a> rather than adding retries blindly.</p>
+<h2 id="temporary-workaround-one-shared-semaphore-per-bounded-resource">Temporary workaround: one shared Semaphore per bounded resource</h2>
+<p>Wrap every tool that consumes the same resource with the same Semaphore:</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">import</span> asyncio
+
+api_semaphore <span class="token operator">=</span> asyncio<span class="token punctuation">.</span>Semaphore<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+
+
+<span class="token keyword">def</span> <span class="token function">limit_tool</span><span class="token punctuation">(</span>coroutine<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">guarded</span><span class="token punctuation">(</span><span class="token operator">*</span>args<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">async</span> <span class="token keyword">with</span> api_semaphore<span class="token punctuation">:</span>
+            <span class="token keyword">return</span> <span class="token keyword">await</span> coroutine<span class="token punctuation">(</span><span class="token operator">*</span>args<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> guarded
+
+
+<span class="token decorator annotation punctuation">@limit_tool</span>
+<span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">search_customers</span><span class="token punctuation">(</span>query<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">str</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token keyword">await</span> customer_api<span class="token punctuation">.</span>search<span class="token punctuation">(</span>query<span class="token punctuation">)</span>
+
+
+<span class="token decorator annotation punctuation">@limit_tool</span>
+<span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">search_orders</span><span class="token punctuation">(</span>query<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">str</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token keyword">await</span> order_api<span class="token punctuation">.</span>search<span class="token punctuation">(</span>query<span class="token punctuation">)</span>
+</code></pre>
+<p>The important property is sharing. If two tools consume the same provider quota but each creates its own <code>Semaphore(1)</code>, the combined system can still run two calls at once.</p>
+<p>The local suite covers:</p>
+<ul>
+<li>limits 1, 2, and 4;</li>
+<li>measured maxima 1, 2, and 4 with the wrapper;</li>
+<li>one tool raising <code>RuntimeError</code>;</li>
+<li>active returning to zero after all calls;</li>
+<li>the Semaphore not remaining locked;</li>
+<li><code>11 passed</code> overall.</li>
+</ul>
+<p><code>async with semaphore</code> releases the permit when the coroutine returns or raises. The tool still needs its own timeout, idempotency, and error policy. A Semaphore is not a replacement for those controls.</p>
+<h2 id="workarounds-that-do-not-solve-this-exact-path">Workarounds that do not solve this exact path</h2>
+<h3 id="locking-the-outer-ainvoke-call">Locking the outer <code>ainvoke()</code> call</h3>
+<p>An outer lock can limit how many whole graph runs overlap. It does not limit four tool calls inside one graph run, which is the behavior reproduced here.</p>
+<h3 id="converting-all-tools-to-sync">Converting all tools to sync</h3>
+<p>The sync path respected the limit in this version, but forcing network I/O into sync execution can block workers and reduce useful throughput. It is a diagnostic control, not a default production design.</p>
+<h3 id="relying-on-output-ordering">Relying on output ordering</h3>
+<p><code>asyncio.gather()</code> returns results in input order, but ordered output does not mean ordered execution. Every tool can start together while its final result is placed back into the original slot. Side-effect safety depends on the overlap, not only the returned list.</p>
+<h3 id="looking-only-at-average-duration">Looking only at average duration</h3>
+<p>Network variance, caching, and connection reuse distort timing. Record active count, peak count, start/end timestamps, request IDs, and resource keys at the tool boundary. <a href="/en/ai/langgraph-observability-agent-trace/">LangGraph observability</a> provides the broader trace context.</p>
+<h2 id="what-a-released-fix-should-prove">What a released fix should prove</h2>
+<p>A regression matrix should cover at least:</p>
+<ol>
+<li><code>max_concurrency=None</code> retaining the intended default behavior;</li>
+<li>sync and async direct ToolNode batches matching under limits 1, 2, and 4;</li>
+<li>exception and cancellation behavior remaining defined;</li>
+<li><code>ToolMessage</code>, <code>Command</code>, and multi-output combination remaining correct;</li>
+<li>each tool continuing to receive the correct ToolRuntime config;</li>
+<li>no accidental change to graph-level Send or other schedulers;</li>
+<li>the old reproduction turning into a passing anti-regression test.</li>
+</ol>
+<p>Do not remove the resource-level guard only because an issue is closed. Upgrade the released package, rerun the matrix against your actual tool set, and verify the external quota or pool directly.</p>
+<h2 id="upstream-status-and-recommended-action">Upstream status and recommended action</h2>
+<p>As of August 4, 2026:</p>
+<ul>
+<li>issue #8517 was open and labeled as a bug;</li>
+<li>the report included a self-contained reproduction;</li>
+<li>contributors had proposed async parity coverage and bounded gather;</li>
+<li>no maintainer-confirmed released version was available for this article to verify.</li>
+</ul>
+<p>A practical sequence is:</p>
+<ol>
+<li>run <code>repro.py</code> on your installed version;</li>
+<li>share one Semaphore across tools using the same bounded resource;</li>
+<li>assert <code>max_active</code> in tests instead of only asserting successful output;</li>
+<li>monitor 429s, pool exhaustion, and duplicate writes;</li>
+<li>rerun the matrix after an official release before removing the workaround.</li>
+</ol>
+<p>For worker handoffs, continue with <a href="/en/ai/langgraph-supervisor-worker-handoff/">LangGraph Supervisor/Worker Handoff</a>. For state that must survive interrupted or concurrent runs, use <a href="/en/ai/langgraph-checkpointer-memory-sqlite-redis/">LangGraph Checkpointer with MemorySaver, SQLite, and Redis</a>. The <a href="/en/ai/langgraph/">LangGraph hub</a> connects the rest of the production series.</p>
+<h2 id="reproduce-and-verify">Reproduce and verify</h2>
+<pre class="language-bash" data-language="bash"><code is:raw="" class="language-bash"><span class="token builtin class-name">cd</span> experiments/langgraph-toolnode-max-concurrency
+python3.11 <span class="token parameter variable">-m</span> venv .venv
+.venv/bin/python <span class="token parameter variable">-m</span> pip <span class="token function">install</span> <span class="token parameter variable">-r</span> requirements.txt
+.venv/bin/python repro.py <span class="token punctuation">\</span>
+  --json-output results/repro-results.json <span class="token punctuation">\</span>
+  --text-output results/repro-results.txt
+.venv/bin/python <span class="token parameter variable">-m</span> pytest <span class="token parameter variable">-q</span>
+</code></pre>
+<p>Current result:</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">11 passed in 1.11s
+</code></pre>
+<p>After an upstream fix, change the tests that describe the current defect so async limit one expects a measured maximum of one. The reproduction should become a permanent regression gate, not a test that preserves the old bug forever.</p> <section class="mt-16 rounded-[34px] border border-orange-500/20 bg-orange-500/[0.06] p-7 md:p-9 not-prose"> <div class="text-[10px] font-black uppercase tracking-[0.28em] text-orange-500 mb-4">Topic path / LangGraph</div> <h2 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-4">Continue through the production LangGraph learning path</h2> <p class="text-sm font-bold leading-7 text-slate-600 dark:text-slate-400 max-w-3xl">The LangGraph hub organizes state isolation, checkpointing, human approval, retries, observability, supervisors, subgraphs and memory into one reviewable path.</p> <div class="mt-7 flex flex-wrap gap-3"> <a href="/en/ai/langgraph/" class="rounded-full bg-orange-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-white hover:bg-orange-600 transition-colors">Open LangGraph hub →</a> <a href="/en/ai/langgraph-thread-session-state-isolation/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">Start with state isolation</a> <a href="/en/newsletter/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">Subscribe for updates</a> </div> </section> </div> <section class="mt-14 border-t border-[var(--xb-line)] pt-7" data-related-reading> <div class="mb-4 flex items-center justify-between gap-4"><h2 class="m-0 text-[17px] font-bold text-[var(--xb-ink)]">Next reading</h2><a href="/en/ai/langgraph/" class="text-[10px] font-bold text-blue-600 dark:text-blue-400">Topic hub →</a></div> <div class="xb-article-related"><a href="/en/ai/langgraph-subgraph-worker-state/" data-related-link><span class="font-bold text-[var(--xb-ink)]">LangGraph Subgraph in Practice: Designing Subgraphs, Worker State, and Local State for Multi-Agent Systems</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">LangGraph Subgraph in Practice: A practical guide to LangGraph subgraph design, covering parent-child graph boundaries, Worker State isolation, shared state, state propagation.</span></a><a href="/en/ai/langgraph-checkpointer-memory-sqlite-redis/" data-related-link><span class="font-bold text-[var(--xb-ink)]">LangGraph Checkpointer in Practice: How to Choose Between MemorySaver, SQLite, and Redis</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">LangGraph Checkpointer in Practice: A practical guide to selecting a state persistence strategy for LangGraph Checkpointers.</span></a><a href="/en/ai/langgraph-agent-error-recovery-retry-timeout/" data-related-link><span class="font-bold text-[var(--xb-ink)]">LangGraph Failure Recovery: Tool Errors, Timeouts, Retry, and error_handler</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">LangGraph error_handler exception recovery in 1.2.11: reproduce re-raises in custom/messages streams, subgraphs, and parallel nodes, then apply node-level capture or fallback.</span></a><a href="/en/ai/langgraph-human-in-the-loop-approval/" data-related-link><span class="font-bold text-[var(--xb-ink)]">LangGraph Human-in-the-Loop in Practice: How to Build a Multi-Agent Approval Workflow</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">LangGraph Human-in-the-Loop in Practice: A hands-on guide to designing Human-in-the-Loop approval workflows in LangGraph multi-agent systems, covering interrupt-based execution.</span></a></div> </section> <section class="mt-10 border-t border-[var(--xb-line)] pt-7"> <div class="grid grid-cols-1 gap-4 md:grid-cols-[1fr_260px] md:items-center"><div><h2 class="m-0 text-[16px] font-bold text-[var(--xb-ink)]">AI Engineering Weekly</h2><p class="mt-1 text-[10px] leading-5 text-[var(--xb-muted)]">Production changes, real failures, experiments and new XBSTACK assets.</p></div><astro-island uid="Z24jjjU" prefix="r13" component-url="/_astro/NewsletterForm.D2u-Fqaq.js" component-export="default" renderer-url="/_astro/client.DPSb9UvF.js" props="{&quot;compact&quot;:[0,true],&quot;lang&quot;:[0,&quot;en&quot;]}" ssr client="visible" opts="{&quot;name&quot;:&quot;NewsletterForm&quot;,&quot;value&quot;:true}" await-children><div class="w-full "><form class="flex flex-col gap-2 sm:flex-row"><input type="email" placeholder="you@example.com" class="h-11 min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3.5 text-[12px] font-semibold text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-950 dark:text-white" required="" value=""/><button type="submit" class="h-11 shrink-0 rounded-lg px-5 text-[11px] font-bold transition bg-blue-600 text-white hover:bg-blue-700">Subscribe</button></form></div><!--astro:end--></astro-island></div> </section> </article> <section class="xb-article-comments"> <div class="mb-5 flex items-center gap-3 text-[11px] font-bold text-[var(--xb-ink)]"><span>Comments &amp; evidence</span><span class="h-px flex-1 bg-[var(--xb-line)]"></span></div> <section class="xbstack-comments" data-xbstack-waline data-server-url="https://comments.xbstack.com" data-comment-path="/en/ai/langgraph-toolnode-max-concurrency-ignored/" data-comment-lang="en" aria-labelledby="xbstack-comments-title"> <div class="xbstack-comments__header"> <div> <p class="xbstack-comments__eyebrow">DISCUSSION</p> <h2 id="xbstack-comments-title"> Questions, verification and corrections </h2> <p class="xbstack-comments__description"> Sign in to comment. Every new comment is reviewed before publication; while pending, it is visible only to you and the administrator. </p> </div> <div class="xbstack-comments__policy" aria-label="Comment policy"> <span>Sign-in required</span> <span>Reviewed before public</span> </div> </div> <div class="xbstack-comments__status" data-waline-status role="status" aria-live="polite"> <span class="xbstack-comments__spinner" aria-hidden="true"></span> <span>Loading the discussion…</span> </div> <div id="waline" class="xbstack-comments__mount" data-waline-mount></div> <noscript> <p class="xbstack-comments__noscript"> JavaScript is required to view and post comments. </p> </noscript> </section>  </section> </main> <aside class="xb-article-side"> <section class="xb-article-panel"> <div class="xb-article-panel__title">ON THIS PAGE</div> <div class="liquid-glass-container "><div class="liquidGlass-wrapper dock !p-6"><div class="liquidGlass-effect-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-tint-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-shine  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-text  intersect:animate-fadeLeft transition-all duration-300 fast-slow"><div class="intersect:animate-fadeLeft" data-astro-cid-hop3l3kc><h2 class="text-2xl border-none mb-3" data-astro-cid-hop3l3kc>内容导航</h2><div class="max-h-96 overflow-y-auto" data-astro-cid-hop3l3kc><ul class="list-none m-0 space-y-1" data-astro-cid-hop3l3kc><li class="ml-0" data-astro-cid-hop3l3kc><a href="#langgraph-toolnode-ignores-max_concurrency-in-async-execution-reproduction-and-workaround" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>LangGraph ToolNode Ignores max_concurrency in Async Execution: Reproduction and Workaround</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#scope-do-not-generalize-this-to-every-langgraph-agent-path" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Scope: do not generalize this to every LangGraph agent path</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#verified-offline-environment" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Verified offline environment</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#minimal-reproduction-with-four-calls-in-one-batch" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Minimal reproduction with four calls in one batch</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#matrix-sync-is-bounded-async-ignores-lower-limits" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Matrix: sync is bounded, async ignores lower limits</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#root-cause-configured-executor-versus-unconditional-gather" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Root cause: configured executor versus unconditional gather</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#why-the-mismatch-matters-in-production" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Why the mismatch matters in production</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#temporary-workaround-one-shared-semaphore-per-bounded-resource" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Temporary workaround: one shared Semaphore per bounded resource</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#workarounds-that-do-not-solve-this-exact-path" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Workarounds that do not solve this exact path</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#locking-the-outer-ainvoke-call" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Locking the outer ainvoke() call</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#converting-all-tools-to-sync" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Converting all tools to sync</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#relying-on-output-ordering" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Relying on output ordering</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#looking-only-at-average-duration" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Looking only at average duration</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#what-a-released-fix-should-prove" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>What a released fix should prove</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#upstream-status-and-recommended-action" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Upstream status and recommended action</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#reproduce-and-verify" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Reproduce and verify</a></li></ul></div></div></div></div></div> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">ARTICLE TOOLS</div> <div class="grid gap-1 text-[10px] text-[var(--xb-text)]"> <button type="button" data-copy-article class="flex items-center justify-between border-b border-[var(--xb-line)] py-2 text-left"><span>Copy link</span><span>↗</span></button> <a href="/en/ai/langgraph/" class="flex items-center justify-between border-b border-[var(--xb-line)] py-2"><span>Topic hub</span><span>→</span></a> <a href="/en/rss.xml" class="flex items-center justify-between border-b border-[var(--xb-line)] py-2"><span>RSS</span><span>→</span></a> <a href="/en/newsletter/" class="flex items-center justify-between py-2"><span>Newsletter</span><span>→</span></a> </div> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">RELATED</div> <div class="xb-article-related"><a href="/en/ai/langgraph-subgraph-worker-state/">LangGraph Subgraph in Practice: Designing Subgraphs, Worker State, and Local State for Multi-Agent Systems</a><a href="/en/ai/langgraph-checkpointer-memory-sqlite-redis/">LangGraph Checkpointer in Practice: How to Choose Between MemorySaver, SQLite, and Redis</a><a href="/en/ai/langgraph-agent-error-recovery-retry-timeout/">LangGraph Failure Recovery: Tool Errors, Timeouts, Retry, and error_handler</a></div> </section>  </aside> </div> <script>
+  const bindArticleTools=()=>{document.querySelectorAll('[data-copy-article]').forEach((button)=>{if(button.dataset.ready)return;button.dataset.ready='1';button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(window.location.href);const original=button.querySelector('span')?.textContent;if(button.querySelector('span'))button.querySelector('span').textContent='已复制';setTimeout(()=>{if(button.querySelector('span'))button.querySelector('span').textContent=original||'复制链接'},1200)}catch{}})})};document.addEventListener('astro:page-load',bindArticleTools);bindArticleTools();
+</script> </main> <script>
+    function initProgress() {
+      const progressBar = document.getElementById('reading-progress');
+      if (!progressBar) return;
+      window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = scrolled + "%";
+      });
+    }
+    document.addEventListener('astro:page-load', initProgress);
+    initProgress();
+  </script>  </main> <footer class="mt-16 border-t border-[var(--xb-line)] bg-[var(--xb-surface)]"> <div class="xb-shell py-10 md:py-12"> <div class="grid gap-10 lg:grid-cols-[minmax(260px,0.9fr)_minmax(0,1.6fr)] lg:gap-16"> <div class="max-w-[430px]"> <a href="/en/" class="inline-flex items-center gap-2.5 font-black tracking-[-0.035em] text-[var(--xb-ink)]"> <img src="/favicon/favicon.svg" alt="XBSTACK" width="32" height="32" loading="lazy" decoding="async" class="h-8 w-8 object-contain"> <span class="text-[17px]">XBSTACK</span> </a> <p class="mt-5 text-[18px] font-bold leading-7 tracking-[-0.02em] text-[var(--xb-ink)]"> Look High. Build Low. </p> <p class="mt-3 text-[12px] leading-6 text-[var(--xb-muted)]"> Engineering notes, useful products, investment and reading records, travel and outdoor field notes. </p> </div> <nav class="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-4" aria-label="Footer navigation"> <div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">Explore</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/en/ai/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">AI</a><a href="/en/tools/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Tools</a><a href="/en/horizon/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Horizon</a><a href="/en/life/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Lens</a><a href="/en/about/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">About</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">AI Engineering</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/en/ai/agent/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Agents</a><a href="/en/ai/langgraph/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">LangGraph</a><a href="/en/ai/mcp/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">MCP</a><a href="/en/ai/workflow/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Workflow</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">Resources</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/en/search/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Search</a><a href="/en/archive/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Archive</a><a href="/en/newsletter/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Newsletter</a><a href="/en/rss.xml" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">RSS</a><a href="https://github.com/xbstack" target="_blank" rel="noopener noreferrer" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">GitHub: @xbstack</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">Contact</h2> <div class="flex flex-col items-start gap-2.5"> <a href="mailto:xbstack@163.com" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Email: xbstack@163.com</a><a href="/en/wechat/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 wechat-trigger" data-wechat-qr="/assets/qrcode_guizhou_outdoor.png">WeChat: 贵州户外</a><a href="/en/contact/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Partnerships</a> </div> </div> </nav> </div> <div class="mt-9 flex flex-col gap-3 border-t border-[var(--xb-line)] pt-5 sm:flex-row sm:items-center sm:justify-between"> <div class="text-[10px] text-[var(--xb-faint)]">© 2026 XBSTACK. All rights reserved.</div> <div class="flex flex-wrap gap-x-4 gap-y-2"> <a href="/en/privacy/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">Privacy</a><a href="/en/tos/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">Terms</a><a href="/en/disclosure/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">Disclosure</a><a href="/advertising/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">Ad Policy</a><a href="/cookies/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">Cookies</a> </div> </div> </div> </footer> <!-- 桌面悬停卡：由全局脚本定位到当前公众号入口附近 --><div id="wechat-hover-card" class="fixed z-[9998] hidden w-[390px] pointer-events-none opacity-0 translate-y-2 transition-all duration-200" aria-hidden="true"> <div class="rounded-[30px] border border-white/15 bg-[#0d1728]/95 p-6 text-white shadow-[0_28px_80px_rgba(2,6,23,0.48)] backdrop-blur-2xl"> <div class="text-[10px] font-black uppercase tracking-[0.34em] text-orange-400">XBSTACK WeChat</div> <div class="mt-2 text-[24px] font-black tracking-tight">Follow XBSTACK Updates</div> <div class="mt-1 text-[12px] font-bold tracking-[0.12em] text-slate-400">AI Engineering · Product Building · Field Notes</div> <div class="mt-5 grid grid-cols-[148px_1fr] items-center gap-5"> <img id="wechat-hover-qr" src="/assets/qrcode_guizhou_outdoor.png" width="360" height="360" alt="QR code for the Guizhou Outdoor WeChat public account" class="block aspect-square w-full object-contain"> <div class="space-y-3 text-[13px] font-bold leading-relaxed text-slate-300"> <p>Field-tested Guizhou hiking routes</p> <p>AI tools and independent products</p> <p>Investing systems and long-term reviews</p> </div> </div> <div class="mt-5 border-t border-white/10 pt-4 text-center text-[12px] font-black text-slate-300"> Open the full profile </div> </div> </div> <!-- 全局点击弹窗 --> <div id="wechat-modal" class="fixed inset-0 z-[10000] hidden items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="wechat-modal-title" aria-hidden="true"> <button id="wechat-modal-backdrop" type="button" aria-label="Close WeChat public-account dialog" class="absolute inset-0 cursor-default bg-slate-950/86 backdrop-blur-xl"></button> <div id="wechat-modal-content" class="relative max-h-[94vh] w-full max-w-[620px] scale-95 overflow-y-auto rounded-[38px] border border-slate-500/45 bg-[#0d1728] text-white opacity-0 shadow-[0_40px_140px_rgba(0,0,0,0.68)] transition-all duration-300 sm:rounded-[50px]"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"> <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px]"></div> <div class="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-orange-500/10 blur-[80px]"></div> </div> <button id="wechat-modal-close" type="button" aria-label="Close WeChat public-account dialog" class="absolute right-5 top-5 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 transition hover:bg-white/10 hover:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg> </button> <div class="relative z-10 px-6 pb-6 pt-10 sm:px-10 sm:pb-9 sm:pt-12"> <header class="text-center"> <div class="text-[10px] font-black uppercase tracking-[0.44em] text-orange-400 sm:text-xs">XBSTACK WeChat</div> <h2 id="wechat-modal-title" class="mt-4 text-3xl font-black tracking-tight text-white sm:text-[38px]" style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;">Follow XBSTACK Updates</h2> <p class="mt-3 text-sm font-bold tracking-[0.16em] text-slate-400 sm:text-base">AI Engineering · Product Building · Field Notes</p> </header> <div class="mt-8 grid items-center gap-7 sm:grid-cols-[210px_1fr] sm:gap-8"> <img id="wechat-modal-qr" src="/assets/qrcode_guizhou_outdoor.png" width="360" height="360" decoding="async" alt="QR code for the Guizhou Outdoor WeChat public account" class="mx-auto block aspect-square w-full max-w-[210px] object-contain sm:max-w-none"> <div class="divide-y divide-white/10"> <div class="grid grid-cols-[38px_1fr] gap-3 py-3 first:pt-0"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M634.92 462.7l-288-448C341.03 5.54 330.89 0 320 0s-21.03 5.54-26.92 14.7l-288 448a32.001 32.001 0 0 0-1.17 32.64A32.004 32.004 0 0 0 32 512h576c11.71 0 22.48-6.39 28.09-16.67a31.983 31.983 0 0 0-1.17-32.63zM320 91.18L405.39 224H320l-64 64-38.06-38.06L320 91.18z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">Outdoor · Field-tested Guizhou routes</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">Practical notes on trail conditions, supplies, risks, and exit options.</p> </div> </div> <div class="grid grid-cols-[38px_1fr] gap-3 py-3"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M278.9 511.5l-61-17.7c-6.4-1.8-10-8.5-8.2-14.9L346.2 8.7c1.8-6.4 8.5-10 14.9-8.2l61 17.7c6.4 1.8 10 8.5 8.2 14.9L293.8 503.3c-1.9 6.4-8.5 10.1-14.9 8.2zm-114-112.2l43.5-46.4c4.6-4.9 4.3-12.7-.8-17.2L117 256l90.6-79.7c5.1-4.5 5.5-12.3.8-17.2l-43.5-46.4c-4.5-4.8-12.1-5.1-17-.5L3.8 247.2c-5.1 4.7-5.1 12.8 0 17.5l144.1 135.1c4.9 4.6 12.5 4.4 17-.5zm327.2.6l144.1-135.1c5.1-4.7 5.1-12.8 0-17.5L492.1 112.1c-4.8-4.5-12.4-4.3-17 .5L431.6 159c-4.6 4.9-4.3 12.7.8 17.2L523 256l-90.6 79.7c-5.1 4.5-5.5 12.3-.8 17.2l43.5 46.4c4.5 4.9 12.1 5.1 17 .6z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">Independent Development · AI tools and products</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">From real user needs to launch reviews and durable digital products.</p> </div> </div> <div class="grid grid-cols-[38px_1fr] gap-3 py-3 last:pb-0"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16zM464 96H345.94c-21.38 0-32.09 25.85-16.97 40.97l32.4 32.4L288 242.75l-73.37-73.37c-12.5-12.5-32.76-12.5-45.25 0l-68.69 68.69c-6.25 6.25-6.25 16.38 0 22.63l22.62 22.62c6.25 6.25 16.38 6.25 22.63 0L192 237.25l73.37 73.37c12.5 12.5 32.76 12.5 45.25 0l96-96 32.4 32.4c15.12 15.12 40.97 4.41 40.97-16.97V112c.01-8.84-7.15-16-15.99-16z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">Investing · Compounding, risk, and long-term thinking</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">Investment systems, market observations, and decision reviews—not financial advice.</p> </div> </div> </div> </div> <div class="mt-6 text-center text-sm font-black leading-relaxed text-slate-300"> Scan to follow the WeChat public account <span class="text-orange-400">“贵州户外 (Guizhou Outdoor)”</span> <p class="mt-1 text-xs font-bold text-slate-500">Get new field routes, independent-development notes, and investing reviews.</p> </div> <button id="wechat-modal-confirm" type="button" class="mt-7 w-full rounded-[24px] bg-white px-6 py-4 text-sm font-black tracking-[0.12em] text-slate-950 shadow-xl transition hover:-translate-y-0.5 hover:bg-slate-100 active:translate-y-0"> CLOSE </button> </div> </div> </div> <script type="module">const b="/assets/qrcode_guizhou_outdoor.png";function f(){const t=document.getElementById("wechat-modal"),y=document.getElementById("wechat-modal-backdrop"),d=document.getElementById("wechat-modal-content"),u=document.getElementById("wechat-modal-close"),E=document.getElementById("wechat-modal-confirm"),c=document.getElementById("wechat-modal-qr"),o=document.getElementById("wechat-hover-card"),i=document.getElementById("wechat-hover-qr");if(!t||!d||!o)return;let l=0;const p=window.matchMedia("(hover: hover) and (pointer: fine)"),w=e=>{const n=e.dataset.wechatQr||b;c&&c.src!==new URL(n,window.location.href).href&&(c.src=n),i&&i.src!==new URL(n,window.location.href).href&&(i.src=n)},s=()=>{window.clearTimeout(l),o.classList.add("opacity-0","translate-y-2"),l=window.setTimeout(()=>o.classList.add("hidden"),180)},v=e=>{if(!p.matches||!t.classList.contains("hidden"))return;window.clearTimeout(l),w(e),o.classList.remove("hidden");const n=e.getBoundingClientRect(),L=390,B=310,r=12;let m=n.left+n.width/2-L/2;m=Math.max(r,Math.min(m,window.innerWidth-L-r));let h=n.top-B-12;h<r&&(h=n.bottom+12),o.style.left=`${m}px`,o.style.top=`${h}px`,requestAnimationFrame(()=>o.classList.remove("opacity-0","translate-y-2"))},I=e=>{s(),w(e),t.classList.remove("hidden"),t.classList.add("flex"),t.setAttribute("aria-hidden","false"),document.body.style.overflow="hidden",requestAnimationFrame(()=>{d.classList.remove("scale-95","opacity-0"),d.classList.add("scale-100","opacity-100"),u?.focus()})},a=()=>{d.classList.remove("scale-100","opacity-100"),d.classList.add("scale-95","opacity-0"),window.setTimeout(()=>{t.classList.add("hidden"),t.classList.remove("flex"),t.setAttribute("aria-hidden","true"),document.body.style.overflow=""},260)};document.querySelectorAll(".wechat-trigger").forEach(e=>{e.dataset.wechatInitialized!=="true"&&(e.dataset.wechatInitialized="true",e.addEventListener("mouseenter",()=>v(e)),e.addEventListener("mouseleave",s),e.addEventListener("focus",()=>v(e)),e.addEventListener("blur",s),e.addEventListener("click",n=>{n.preventDefault(),I(e)}))}),t.dataset.wechatInitialized!=="true"&&(t.dataset.wechatInitialized="true",u?.addEventListener("click",a),E?.addEventListener("click",a),y?.addEventListener("click",a),document.addEventListener("keydown",e=>{e.key==="Escape"&&!t.classList.contains("hidden")&&a()}),window.addEventListener("scroll",s,{passive:!0}),window.addEventListener("resize",s))}f();document.addEventListener("astro:page-load",f);</script> <script>
+      const showLanguageSwitchNotice = () => {
+        let payload = null;
+        try {
+          const raw = sessionStorage.getItem('xbstack_language_notice');
+          if (!raw) return;
+          payload = JSON.parse(raw);
+          sessionStorage.removeItem('xbstack_language_notice');
+        } catch (error) {
+          return;
+        }
+
+        const notice = document.getElementById('language-switch-notice');
+        if (!notice) return;
+
+        const targetIsEnglish = String(payload?.language || '').toLowerCase().startsWith('en');
+        notice.textContent = targetIsEnglish
+          ? 'This page does not have an English version yet. You have been taken to the English home page.'
+          : '当前页面暂未提供中文版本，已为你打开中文首页。';
+        notice.classList.remove('hidden');
+        window.setTimeout(() => notice.classList.add('hidden'), 4800);
+      };
+
+      document.addEventListener('astro:page-load', showLanguageSwitchNotice);
+      showLanguageSwitchNotice();
+    </script> </body> </html>

@@ -1,0 +1,1515 @@
+<!DOCTYPE html><html lang="zh-CN" class="dark" data-analytics="ga4-baidu"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script>
+      const applyTheme = () => {
+        const theme = localStorage.getItem("theme");
+        const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      };
+      applyTheme();
+      document.addEventListener("astro:page-load", applyTheme);
+    </script><title>OpenAI Agents SDK RunState：v0.19.3 修复 | AI - XBSTACK</title><meta name="description" content="OpenAI Agents SDK RunState 如何恢复 Tool Approval？本文对比 0.18.3 与 0.19.3，实测流式 Resume 丢失已批准 Tool Output 的回归、修复结果、跨进程恢复与业务幂等边界。"><meta http-equiv="content-language" content="zh-CN"><meta name="keywords" content="OpenAI Agents SDK RunState，OpenAI Agents SDK v0.19.3，OpenAI Agents SDK streamed resume，approved tool output，OutputGuardrail，OpenAI Agents SDK interruption，OpenAI Agents SDK 恢复中断运行，Agents SDK Tool Approval，OpenAI Agents SDK Human in the Loop，RunState to_json，RunState from_json，Agents SDK approve reject，Tool Approval 跨进程恢复，Agents SDK 长时间审批"><meta name="theme-color" content="#050608"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://www.xbstack.com/ai/openai-agents-sdk-runstate-approval-resume/"><meta property="og:title" content="OpenAI Agents SDK RunState：v0.19.3 修复 | AI - XBSTACK"><meta property="og:description" content="OpenAI Agents SDK RunState 如何恢复 Tool Approval？本文对比 0.18.3 与 0.19.3，实测流式 Resume 丢失已批准 Tool Output 的回归、修复结果、跨进程恢复与业务幂等边界。"><meta property="og:image" content="https://www.xbstack.com/_astro/01-openai-agents-runstate-cover.DW4MJt_b.webp"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/ai/openai-agents-sdk-runstate-approval-resume/"><meta property="twitter:title" content="OpenAI Agents SDK RunState：v0.19.3 修复 | AI - XBSTACK"><meta property="twitter:description" content="OpenAI Agents SDK RunState 如何恢复 Tool Approval？本文对比 0.18.3 与 0.19.3，实测流式 Resume 丢失已批准 Tool Output 的回归、修复结果、跨进程恢复与业务幂等边界。"><meta property="twitter:image" content="https://www.xbstack.com/_astro/01-openai-agents-runstate-cover.DW4MJt_b.webp"><link rel="canonical" href="https://www.xbstack.com/ai/openai-agents-sdk-runstate-approval-resume/"><link rel="alternate" hreflang="zh-CN" href="https://www.xbstack.com/ai/openai-agents-sdk-runstate-approval-resume/"><link rel="alternate" hreflang="en" href="https://www.xbstack.com/en/ai/openai-agents-sdk-runstate-approval-resume/"><link rel="alternate" hreflang="x-default" href="https://www.xbstack.com/ai/openai-agents-sdk-runstate-approval-resume/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI Agent engineering, LangGraph, MCP and workflow automation.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Tools","alternateName":"Tools and Products","description":"AI Finance, compound calculator, Lunest and a small set of practical tools and reusable resources.","url":"https://www.xbstack.com/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Horizon","alternateName":"Investing, Reading and Long-term Thinking","description":"Investment research, reading notes and long-term thinking with evidence, outcomes and decision reviews.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Travel, Photography and Gear","description":"Field notes from real hiking, travel, photography and gear use, with Guizhou as a core but not exclusive focus.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"Xiaobai's profile, current products, long-term research themes, working principles and the XBSTACK public asset system.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","additionalType":"https://schema.org/TechArticle","headline":"OpenAI Agents SDK Tool Approval 如何恢复？RunState 跨进程与 v0.19.3 流式 Resume 实测","description":"OpenAI Agents SDK RunState 如何恢复 Tool Approval？本文对比 0.18.3 与 0.19.3，实测流式 Resume 丢失已批准 Tool Output 的回归、修复结果、跨进程恢复与业务幂等边界。","inLanguage":"zh-CN","image":"https://www.xbstack.com/_astro/01-openai-agents-runstate-cover.DW4MJt_b.webp","datePublished":"2026-07-24T00:00:00.000Z","author":{"@id":"https://www.xbstack.com/about/#person"},"publisher":{"@type":"Organization","name":"XBSTACK","logo":{"@type":"ImageObject","url":"https://www.xbstack.com/favicon/favicon.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.xbstack.com/ai/openai-agents-sdk-runstate-approval-resume/"},"articleSection":"ai","keywords":["OpenAI Agents SDK RunState，OpenAI Agents SDK v0.19.3，OpenAI Agents SDK streamed resume，approved tool output，OutputGuardrail，OpenAI Agents SDK interruption，OpenAI Agents SDK 恢复中断运行，Agents SDK Tool Approval，OpenAI Agents SDK Human in the Loop，RunState to_json，RunState from_json，Agents SDK approve reject，Tool Approval 跨进程恢复，Agents SDK 长时间审批"],"abstract":"OpenAI Agents SDK RunState 是 Tool Approval 持久化暂停与恢复的 SDK 边界。本文先验证跨进程批准、拒绝、状态重放和 Context 脱敏，再用同一确定性场景对比 openai-agents 0.18.3 与 0.19.3：0.18.3 在已批准工具执行后触发 Output Guardrail 时只持久化 function_call，丢失 function_call_output；0.19.3 会在 Guardrail 前保存完整 Call/Output 对，并在下一轮正确重放。SDK 修复仍不提供业务 Exactly-once，外部副作用必须继续使用稳定幂等键和唯一账本。","about":[{"@type":"Thing","name":"OpenAI Agents SDK"},{"@type":"Thing","name":"RunState"},{"@type":"Thing","name":"Human-in-the-loop"},{"@type":"Thing","name":"Tool Approval"},{"@type":"Thing","name":"Python"},{"@type":"Thing","name":"AI Agent"},{"@type":"Thing","name":"Idempotency"},{"@type":"Thing","name":"State Persistence"},{"@type":"Thing","name":"Production Engineering"},{"@type":"Thing","name":"ToolApprovalItem"},{"@type":"Thing","name":"RunResult.interruptions"},{"@type":"Thing","name":"RunContextWrapper"},{"@type":"Thing","name":"Idempotency Ledger"},{"@type":"Thing","name":"Approval API"},{"@type":"Thing","name":"Agent Factory"},{"@type":"Thing","name":"Encrypted State Blob"},{"@type":"Thing","name":"Queue Redelivery"},{"@type":"Thing","name":"SQLite"},{"@type":"Thing","name":"conversation_id"},{"@type":"Thing","name":"previous_response_id"}],"citation":["https://openai.github.io/openai-agents-python/human_in_the_loop/","https://openai.github.io/openai-agents-python/ref/run_state/","https://openai.github.io/openai-agents-python/running_agents/","https://openai.github.io/openai-agents-python/sessions/","https://openai.github.io/openai-agents-python/context/","https://pypi.org/project/openai-agents/","https://github.com/openai/openai-agents-python/issues/636","https://github.com/openai/openai-agents-python/issues/2868","https://github.com/openai/openai-agents-python/releases/tag/v0.19.3","https://github.com/openai/openai-agents-python/pull/4126","https://github.com/openai/openai-agents-python/pull/4145","https://github.com/openai/openai-agents-python/pull/4147"],"speakable":{"@type":"SpeakableSpecification","cssSelector":[".markdown-content h2",".markdown-content p:first-of-type"]}},{"@type":"Person","@id":"https://www.xbstack.com/about/#person","name":"小白","alternateName":["Xiaobai"],"url":"https://www.xbstack.com/about/","image":"https://www.xbstack.com/_astro/avatar.BzDyfp9G.webp","jobTitle":"Full-Stack AI Engineer","worksFor":{"@type":"Organization","name":"XBSTACK","url":"https://www.xbstack.com"},"sameAs":["https://github.com/xbstack"],"knowsAbout":["AI Agents","LangGraph","Model Context Protocol","AI Workflows","Product Engineering"]}]}</script><meta property="article:published_time" content="Fri Jul 24 2026 08:00:00 GMT+0800 (China Standard Time)"><meta name="abstract" content="OpenAI Agents SDK RunState 如何恢复 Tool Approval？本文对比 0.18.3 与 0.19.3，实测流式 Resume 丢失已批准 Tool Output 的回归、修复结果、跨进程恢复与业务幂等边界。"><meta name="speakable-selector" content=".markdown-content h2, .markdown-content p"><meta name="ai-content-access" content="allowed"><meta name="geo-optimized" content="true"><link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
+
+          const productionAnalyticsHosts = new Set(['www.xbstack.com', 'xbstack.com']);
+          const automationUserAgent = /HeadlessChrome|PhantomJS|Playwright|Puppeteer|Selenium|Lighthouse|PageSpeed|bot\b|crawler|spider|slurp|curl|wget|python-requests|axios|node-fetch|facebookexternalhit|Twitterbot|LinkedInBot|Bytespider|GPTBot|ClaudeBot|PerplexityBot/i;
+          const analyticsUrl = new URL(window.location.href);
+          const analyticsSource = String(analyticsUrl.searchParams.get('utm_source') || '').toLowerCase();
+          const analyticsCampaign = String(analyticsUrl.searchParams.get('utm_campaign') || '').toLowerCase();
+          const internalAnalyticsAudit =
+            analyticsUrl.searchParams.has('ga4_audit') ||
+            analyticsUrl.searchParams.has('analytics_test') ||
+            ['internal', 'internal_test', 'qa', 'test'].includes(analyticsSource) ||
+            analyticsCampaign.includes('ga4_audit') ||
+            analyticsCampaign.includes('internal_test');
+          const shouldTrackAnalytics =
+            Boolean(googleAnalyticsId) &&
+            productionAnalyticsHosts.has(window.location.hostname.toLowerCase()) &&
+            navigator.webdriver !== true &&
+            !automationUserAgent.test(navigator.userAgent || '') &&
+            !internalAnalyticsAudit;
+
+          if (!shouldTrackAnalytics) {
+            window.__analytics_suppressed = true;
+            window.__analytics_suppression_reason = internalAnalyticsAudit ? 'internal_test' : 'environment_or_automation';
+          } else if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_id', 'utm_term', 'utm_content'];
+            const UTM_ALIASES = {
+              utmsource: 'utm_source',
+              utmmedium: 'utm_medium',
+              utmcampaign: 'utm_campaign',
+              utmcontent: 'utm_content',
+              utmterm: 'utm_term',
+              utmid: 'utm_id',
+            };
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.normalizeUtmAliases = () => {
+              try {
+                const url = new URL(window.location.href);
+                let changed = false;
+                Object.entries(UTM_ALIASES).forEach(([alias, canonical]) => {
+                  const aliasValue = url.searchParams.get(alias);
+                  if (aliasValue && !url.searchParams.get(canonical)) {
+                    url.searchParams.set(canonical, aliasValue);
+                    changed = true;
+                  }
+                  if (url.searchParams.has(alias)) {
+                    url.searchParams.delete(alias);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.normalizeUtmAliases();
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
+            window.__ga4_initialized = true;
+            window.__ga4_client_loaded = false;
+            window.__ga4_tracking_started = false;
+            window.__ga4_human_verified = false;
+            window.__ga4_session_class = '';
+            window.__lastGA4PageKey = "";
+            window.__lastGA4PageLocation = document.referrer || "";
+            window.__ga4_tracking_start_reason = '';
+            window.__scroll50Reported = false;
+            window.__scroll90Reported = false;
+
+            const getReferrerHost = () => {
+              try {
+                return document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+              } catch (err) {
+                return '';
+              }
+            };
+
+            const inferSourceHint = () => {
+              const refHost = getReferrerHost();
+              if (!refHost) return '';
+              if (refHost.includes('zhihu')) return 'zhihu_referrer';
+              if (refHost.includes('juejin')) return 'juejin_referrer';
+              if (refHost.includes('csdn')) return 'csdn_referrer';
+              if (refHost.includes('weixin') || refHost.includes('wechat')) return 'wechat_referrer';
+              if (refHost.includes('google')) return 'google_referrer';
+              if (refHost.includes('baidu')) return 'baidu_referrer';
+              return refHost;
+            };
+
+            const getAttributionPayload = () => {
+              const params = new URLSearchParams(window.location.search);
+              const current = {};
+              UTM_KEYS.forEach((key) => {
+                const value = params.get(key);
+                if (value) current[key] = value;
+              });
+
+              const referrerHost = getReferrerHost();
+              const currentHost = window.location.hostname.replace(/^www\./, '');
+              const sourceHint = inferSourceHint();
+              const hasExternalReferrer = Boolean(referrerHost && referrerHost !== currentHost);
+
+              let stored = {};
+              try {
+                stored = JSON.parse(sessionStorage.getItem('xbstack_attribution') || '{}');
+              } catch (err) {
+                stored = {};
+              }
+
+              if (Object.keys(current).length) {
+                stored = {
+                  ...stored,
+                  ...current,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: current.utm_source ? `utm:${current.utm_source}` : sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              } else if (hasExternalReferrer && !stored.captured_at) {
+                // Preserve first-touch referral attribution even when the platform strips UTM parameters.
+                stored = {
+                  ...stored,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              }
+
+              if (stored.captured_at) {
+                try {
+                  sessionStorage.setItem('xbstack_attribution', JSON.stringify(stored));
+                } catch (err) {}
+              }
+
+              return {
+                utm_source: stored.utm_source || '',
+                utm_medium: stored.utm_medium || '',
+                utm_campaign: stored.utm_campaign || '',
+                utm_id: stored.utm_id || '',
+                utm_term: stored.utm_term || '',
+                utm_content: stored.utm_content || '',
+                attribution_landing_page: stored.landing_page || '',
+                referrer_host: stored.referrer_host || referrerHost,
+                source_hint: stored.source_hint || (stored.utm_source ? `utm:${stored.utm_source}` : sourceHint),
+              };
+            };
+
+            const getAnalyticsPageContext = () => {
+              const url = new URL(window.location.href);
+              const isCompoundCalculator = [
+                '/tools/compound-calculator/',
+                '/en/tools/compound-calculator/',
+              ].includes(url.pathname);
+
+              if (isCompoundCalculator) {
+                ['scenario', 'principal', 'monthly', 'rate', 'years', 'volatility', 'inflation', 'm2_drag', 'target', 'compare_rate'].forEach((key) => {
+                  url.searchParams.delete(key);
+                });
+              }
+
+              return {
+                pagePath: url.pathname,
+                pageLocation: url.href,
+                pageSearch: url.search,
+              };
+            };
+
+            window.xbTrackEvent = (eventName, payload = {}) => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !eventName ||
+                !window.__ga4_tracking_started ||
+                !window.__ga4_human_verified
+              ) return;
+              const analyticsPage = getAnalyticsPageContext();
+              window.gtag('event', eventName, {
+                transport_type: 'beacon',
+                page_path: analyticsPage.pagePath,
+                page_title: document.title || '',
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+                ...payload,
+              });
+            };
+
+            window.sendGA4PageView = () => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !window.__ga4_tracking_started
+              ) return;
+
+              const analyticsPage = getAnalyticsPageContext();
+              const pageLocation = analyticsPage.pageLocation;
+              const pageTitle = document.title || '';
+              const pageKey = `${pageLocation}|${pageTitle}`;
+
+              if (pageKey === window.__lastGA4PageKey) return;
+              const pageReferrer = window.__lastGA4PageLocation;
+              window.__lastGA4PageKey = pageKey;
+              window.__lastGA4PageLocation = pageLocation;
+              window.__scroll50Reported = false;
+              window.__scroll90Reported = false;
+
+              window.gtag('event', 'page_view', {
+                page_title: pageTitle,
+                page_location: pageLocation,
+                page_path: analyticsPage.pagePath,
+                page_search: analyticsPage.pageSearch,
+                page_referrer: pageReferrer,
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+              });
+            };
+
+            window.initGA4Tracking = () => {
+              if (typeof window.gtag !== 'function') return;
+              if (window.__ga4_events_bound) return;
+              window.__ga4_events_bound = true;
+
+              // 1. 页面滚动深度上报
+              const handleScroll = (event) => {
+                if (!event?.isTrusted || !window.__ga4_human_verified) return;
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const progress = (scrollTop / scrollHeight) * 100;
+
+                if (progress >= 50 && !window.__scroll50Reported) {
+                  window.xbTrackEvent('scroll_50', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll50Reported = true;
+                }
+                if (progress >= 90 && !window.__scroll90Reported) {
+                  window.xbTrackEvent('scroll_90', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll90Reported = true;
+                }
+              };
+
+              window.addEventListener('scroll', handleScroll, { passive: true });
+
+              // 2. 完整链接与按钮点击上报。link_click 是统一事实表，旧事件继续保留用于历史对比。
+              const inferLinkArea = (target) => {
+                const explicitArea = target.closest('[data-analytics-area]')?.getAttribute('data-analytics-area');
+                if (explicitArea) return explicitArea.slice(0, 60);
+                if (target.closest('header, nav, [role="navigation"]')) return 'navigation';
+                if (target.closest('footer')) return 'footer';
+                if (target.closest('[class*="related"], [class*="recommend"], [class*="next-reading"]')) return 'related_content';
+                if (target.closest('[class*="sidebar"], aside')) return 'sidebar';
+                if (target.closest('.markdown-content, article')) return 'article_body';
+                if (target.closest('[class*="card"], [class*="grid"]')) return 'content_card';
+                return 'page_other';
+              };
+
+              const classifyLink = (target, url, linkArea) => {
+                const rawHref = String(target.getAttribute('href') || '');
+                const protocol = String(url.protocol || '').toLowerCase();
+                const path = String(url.pathname || '/');
+                const host = String(url.hostname || '').replace(/^www\./, '').toLowerCase();
+                const isHttp = protocol === 'http:' || protocol === 'https:';
+                const isExternal = isHttp && url.origin !== window.location.origin;
+                const isDownload =
+                  target.hasAttribute('download') ||
+                  /\.(pdf|zip|gz|tar|csv|xlsx?|docx?|pptx?|json|ya?ml|mp3|mp4|mov|webm)(?:$|[?#])/i.test(rawHref);
+
+                if (protocol === 'mailto:' || protocol === 'tel:') return 'contact';
+                if (isDownload) return 'download';
+                if (isExternal && host === 'github.com') return 'github';
+                if (isExternal) return 'external';
+                if (path.startsWith('/go/')) return 'affiliate';
+                if (path.startsWith('/tools/') || path.startsWith('/compound-interest/')) return 'tool';
+                if (path.startsWith('/newsletter/')) return 'newsletter';
+                if (url.origin === window.location.origin && path === window.location.pathname && url.hash) return 'anchor';
+                if (linkArea === 'related_content') return 'related_article';
+                if (linkArea === 'article_body') return 'internal_article';
+                return 'internal';
+              };
+
+              const handleClick = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const target = e.target.closest('a,button');
+                if (!target) return;
+
+                const label = (target.getAttribute('aria-label') || target.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 100);
+                if (target.tagName === 'BUTTON') {
+                  window.xbTrackEvent('click_button', {
+                    event_category: 'engagement',
+                    event_label: label,
+                    link_area: inferLinkArea(target),
+                    link_position: inferLinkArea(target),
+                    source_page_path: window.location.pathname,
+                  });
+                  return;
+                }
+
+                const rawHref = String(target.getAttribute('href') || '').trim();
+                if (!rawHref || rawHref.toLowerCase().startsWith('javascript:')) return;
+
+                try {
+                  const url = new URL(rawHref, window.location.href);
+                  const linkArea = inferLinkArea(target);
+                  const linkType = classifyLink(target, url, linkArea);
+                  const isExternalHttp =
+                    (url.protocol === 'http:' || url.protocol === 'https:') &&
+                    url.origin !== window.location.origin;
+                  const payload = {
+                    event_category:
+                      ['affiliate', 'tool', 'newsletter'].includes(linkType)
+                        ? 'conversion'
+                        : isExternalHttp
+                          ? 'outbound'
+                          : 'navigation',
+                    event_label: url.href,
+                    link_text: label,
+                    link_url: url.href,
+                    link_domain: url.hostname.replace(/^www\./, ''),
+                    link_id: target.id || '',
+                    link_classes: String(target.className || '').slice(0, 120),
+                    outbound: isExternalHttp,
+                    link_type: linkType,
+                    link_area: linkArea,
+                    link_position: linkArea,
+                    source_page_path: window.location.pathname,
+                    target_page_path: url.pathname || '',
+                  };
+
+                  // 所有真实链接统一进入 link_click，运营报表以该事件为准。
+                  window.xbTrackEvent('link_click', payload);
+
+                  if (linkType === 'external' || linkType === 'github') {
+                    window.xbTrackEvent('click_external', payload);
+                  }
+                  if (linkType === 'github') {
+                    window.xbTrackEvent('github_click', payload);
+                  }
+                  if (linkType === 'download') {
+                    window.xbTrackEvent('download_click', payload);
+                  }
+                  if (linkType === 'affiliate') {
+                    window.xbTrackEvent('affiliate_click', {
+                      ...payload,
+                      affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                    });
+                  }
+                  if (linkType === 'tool') {
+                    window.xbTrackEvent('click_tool', payload);
+                  }
+                  if (linkType === 'newsletter') {
+                    window.xbTrackEvent('newsletter_click', payload);
+                  }
+                  if (linkType === 'related_article') {
+                    window.xbTrackEvent('related_article_click', payload);
+                  }
+                  if (['internal', 'internal_article', 'related_article', 'anchor'].includes(linkType)) {
+                    window.xbTrackEvent('internal_link_click', payload);
+                  }
+                  if (
+                    !isExternalHttp &&
+                    ['/ai/', '/newsletter/', '/search/', '/life/', '/investing/'].some((prefix) => url.pathname.startsWith(prefix))
+                  ) {
+                    window.xbTrackEvent('click_internal_entry', payload);
+                  }
+                } catch (err) {}
+              };
+
+              const handleSubmit = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const form = e.target;
+                if (!form || form.tagName !== 'FORM') return;
+                const action = form.getAttribute('action') || '';
+                const formType = form.getAttribute('data-analytics-form') || '';
+                const formData = new FormData(form);
+                const searchTerm = String(formData.get('q') || '').trim();
+
+                if (action.includes('/search') || formType === 'site-search') {
+                  window.xbTrackEvent('view_search_results', {
+                    event_category: 'site_search',
+                    search_term: searchTerm,
+                  });
+                }
+
+                if (action.includes('buttondown.email') || formType === 'newsletter') {
+                  const provider = action.includes('buttondown.email') ? 'buttondown' : 'xbstack_api';
+                  window.xbTrackEvent('newsletter_subscribe_attempt', {
+                    event_category: 'conversion',
+                    event_label: window.location.pathname,
+                    newsletter_provider: provider,
+                  });
+                  window.xbTrackEvent('newsletter_subscribe', {
+                    event_category: 'conversion',
+                    event_label: 'submitted',
+                    newsletter_provider: provider,
+                    confirmation_status: 'submitted',
+                  });
+                }
+              };
+
+              document.addEventListener('click', handleClick);
+              document.addEventListener('submit', handleSubmit, true);
+            };
+
+            // 原始访问先进入 GA4，再通过 traffic_verification 区分未验证访问与真人互动。
+            // 这样既保留完整 page_view / session_start 基线，也能在报表层排除低质量流量。
+            window.loadGA4Client = () => {
+              if (window.__ga4_client_loaded) return;
+              window.__ga4_client_loaded = true;
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = function() {
+                window.dataLayer.push(arguments);
+              };
+
+              const ga4Script = document.createElement('script');
+              ga4Script.async = true;
+              ga4Script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(googleAnalyticsId)}`;
+              document.head.appendChild(ga4Script);
+
+              window.gtag('js', new Date());
+              window.gtag('config', googleAnalyticsId, {
+                send_page_view: false,
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+              });
+            };
+
+            window.startGA4Tracking = (
+              reason = 'page_load',
+              sessionClass = 'unverified_session',
+              humanVerified = false,
+            ) => {
+              if (window.__ga4_tracking_started) {
+                if (humanVerified && !window.__ga4_human_verified) {
+                  window.verifyGA4Human(reason, sessionClass);
+                }
+                return;
+              }
+              window.__ga4_tracking_start_reason = String(reason || 'page_load').slice(0, 60);
+              window.__ga4_session_class = String(sessionClass || 'unverified_session').slice(0, 40);
+              window.__ga4_human_verified = Boolean(humanVerified);
+              window.__ga4_tracking_started = true;
+              window.loadGA4Client();
+              window.sendGA4PageView();
+              window.initGA4Tracking();
+            };
+
+            window.verifyGA4Human = (reason = 'interaction', sessionClass = 'human_interaction') => {
+              if (!window.__ga4_tracking_started) {
+                window.startGA4Tracking(reason, sessionClass, true);
+                return;
+              }
+              if (window.__ga4_human_verified) return;
+
+              const previousClass = window.__ga4_session_class || 'unverified_session';
+              window.__ga4_human_verified = true;
+              window.__ga4_session_class = String(sessionClass || 'human_interaction').slice(0, 40);
+              window.__ga4_tracking_start_reason = String(reason || 'interaction').slice(0, 60);
+              window.gtag('event', 'traffic_verified', {
+                transport_type: 'beacon',
+                traffic_verification: window.__ga4_session_class,
+                previous_traffic_verification: previousClass,
+                verification_reason: window.__ga4_tracking_start_reason,
+                page_path: window.location.pathname,
+                page_title: document.title || '',
+              });
+            };
+
+            ['pointerdown', 'keydown', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(
+                eventName,
+                (event) => {
+                  if (!event?.isTrusted) return;
+                  window.verifyGA4Human(`interaction:${eventName}`, 'human_interaction');
+                },
+                { once: true, passive: true },
+              );
+            });
+
+            let pointerMoveCount = 0;
+            let pointerMoveDistance = 0;
+            let lastPointerX = null;
+            let lastPointerY = null;
+            const handleHumanPointerMove = (event) => {
+              if (
+                window.__ga4_human_verified ||
+                !event?.isTrusted ||
+                event.pointerType === 'touch'
+              ) return;
+              if (lastPointerX !== null && lastPointerY !== null) {
+                pointerMoveDistance += Math.hypot(event.clientX - lastPointerX, event.clientY - lastPointerY);
+              }
+              lastPointerX = event.clientX;
+              lastPointerY = event.clientY;
+              pointerMoveCount += 1;
+              if (pointerMoveCount >= 3 && pointerMoveDistance >= 120) {
+                window.removeEventListener('pointermove', handleHumanPointerMove);
+                window.verifyGA4Human('interaction:pointermove', 'human_interaction');
+              }
+            };
+            window.addEventListener('pointermove', handleHumanPointerMove, { passive: true });
+
+            // 放宽采集：所有可见前台页面都记录原始访问；真人互动后再升级质量标签。
+            window.setTimeout(() => {
+              if (
+                window.__ga4_tracking_started ||
+                document.visibilityState !== 'visible'
+              ) return;
+              window.startGA4Tracking('page_load:visible_800ms', 'unverified_session', false);
+            }, 800);
+
+            document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+              if (window.__ga4_tracking_started) {
+                window.sendGA4PageView();
+                window.initGA4Tracking();
+              }
+            });
+          } else {
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+            if (window.__ga4_tracking_started && typeof window.sendGA4PageView === 'function') {
+              window.sendGA4PageView();
+            }
+          }
+        })();</script><script data-baidu-id="c7bfaf645bfc8974405a85c2a55573a0">
+          const baiduId = document.currentScript?.dataset.baiduId || '';
+          if (!window.__baidu_analytics_initialized) {
+            window._hmt = window._hmt || [];
+            window.__baidu_analytics_initialized = true;
+            window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+
+            const loadBaiduAnalytics = () => {
+              if (window.__baidu_script_loaded || !baiduId) return;
+              window.__baidu_script_loaded = true;
+              const hm = document.createElement('script');
+              hm.async = true;
+              hm.src = "https://hm.baidu.com/hm.js?" + baiduId;
+              document.head.appendChild(hm);
+              window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+            };
+
+            // 百度统计不是首屏渲染依赖：首次交互时加载，若用户未交互则 12 秒后加载。
+            ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(eventName, loadBaiduAnalytics, { once: true, passive: true });
+            });
+            window.setTimeout(loadBaiduAnalytics, 12000);
+
+            document.addEventListener('astro:page-load', () => {
+              const pageKey = window.location.pathname + window.location.search;
+              if (!window.__baidu_script_loaded || pageKey === window.__lastBaiduPageKey) return;
+              window.__lastBaiduPageKey = pageKey;
+              window._hmt.push(['_trackPageview', pageKey]);
+            });
+          }
+        </script><link rel="stylesheet" href="/_astro/archive.DJ636BNq.css">
+<link rel="stylesheet" href="/_astro/archive.KSCYbzqj.css">
+<link rel="stylesheet" href="/_astro/_slug_.CRFvxpGR.css">
+<link rel="stylesheet" href="/_astro/_slug_.CeiCBDdi.css">
+<link rel="stylesheet" href="/_astro/vendor-media.DSulWsr7.css">
+<style>.glass-button[data-astro-cid-xwnkcw7l]{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:var(--sizeGap);padding:var(--sizePadding);background:var(--variantBase);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--variantBorder);border-radius:var(--sizeBorderRadius);font-size:var(--sizeFontSize);font-weight:500;color:var(--variantColor);cursor:pointer;transition:all .3s cubic-bezier(.175,.885,.32,2.2);box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d;-webkit-user-select:none;-moz-user-select:none;user-select:none;overflow:hidden;text-decoration:none;white-space:nowrap}.glass-button[data-astro-cid-xwnkcw7l]:before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,var(--variantGradient),transparent);transition:left .6s cubic-bezier(.25,.46,.45,.94);pointer-events:none;opacity:0}.glass-button[data-astro-cid-xwnkcw7l]:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);transform:translateY(-4px) scale(1.03);box-shadow:0 20px 25px -5px var(--variantShadow),0 15px 15px -5px #0000004d,inset 1px 1px 4px #ffffff80;filter:brightness(1.2) saturate(1.3)}.glass-button[data-astro-cid-xwnkcw7l]:hover:before{left:100%;opacity:1}.glass-button[data-astro-cid-xwnkcw7l]:active{transform:translateY(-1px) scale(.98);box-shadow:0 2px 6px var(--variantShadow)}.glass-button[data-astro-cid-xwnkcw7l]:disabled{cursor:not-allowed;opacity:.6;transform:none;pointer-events:none}.glass-button[data-astro-cid-xwnkcw7l]:disabled:hover{transform:none;box-shadow:0 4px 6px #0000001a,inset 1px 1px 2px #ffffff4d}.glass-button__icon[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;justify-content:center;width:var(--sizeIconSize);height:var(--sizeIconSize);transition:all .3s cubic-bezier(.175,.885,.32,2.2)}.glass-button__icon[data-astro-cid-xwnkcw7l] svg{width:100%;height:100%}.glass-button[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{transform:scale(1.2) rotate(-5deg);filter:drop-shadow(0 0 4px var(--variantShadow))}.glass-button__content[data-astro-cid-xwnkcw7l]{display:inline-flex;align-items:center;transition:all .3s ease}.glass-button__spinner[data-astro-cid-xwnkcw7l]{width:var(--sizeIconSize);height:var(--sizeIconSize);animation:spin 1s linear infinite}.dark[data-astro-cid-xwnkcw7l]{.glass-button{background:#37373799;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-color:#ffffff26;color:#e5e7eb;box-shadow:0 4px 8px #0006,inset 1px 1px 3px #ffffff26}.glass-button:before{background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}.glass-button:hover{background:var(--variantHover);border-color:var(--variantHoverBorder);color:var(--variantHoverColor);box-shadow:0 6px 14px var(--variantShadow),inset 1px 1px 4px #fff3;filter:brightness(1.2) saturate(1.3)}}@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.glass-button--primary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--secondary[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(37,99,235,.5))}.glass-button--success[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(22,163,74,.5))}.glass-button--warning[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(217,119,6,.5))}.glass-button--danger[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(220,38,38,.5))}.glass-button--info[data-astro-cid-xwnkcw7l]:hover .glass-button__icon[data-astro-cid-xwnkcw7l]{filter:drop-shadow(0 0 4px rgba(99,102,241,.5))}
+</style></head> <body class="bg-[var(--xb-bg)] text-[var(--xb-ink)] selection:bg-orange-500/20 selection:text-orange-500 overflow-x-hidden"> <style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value=="object"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};"requestIdleCallback"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event("astro:idle"));})();</script><script>(()=>{var A=Object.defineProperty;var g=(i,o,a)=>o in i?A(i,o,{enumerable:!0,configurable:!0,writable:!0,value:a}):i[o]=a;var d=(i,o,a)=>g(i,typeof o!="symbol"?o+"":o,a);{let i={0:t=>m(t),1:t=>a(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(a(t)),5:t=>new Set(a(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t),11:t=>1/0*t},o=t=>{let[l,e]=t;return l in i?i[l](e):void 0},a=t=>t.map(o),m=t=>typeof t!="object"||t===null?t:Object.fromEntries(Object.entries(t).map(([l,e])=>[l,o(e)]));class y extends HTMLElement{constructor(){super(...arguments);d(this,"Component");d(this,"hydrator");d(this,"hydrate",async()=>{var b;if(!this.hydrator||!this.isConnected)return;let e=(b=this.parentElement)==null?void 0:b.closest("astro-island[ssr]");if(e){e.addEventListener("astro:hydrate",this.hydrate,{once:!0});return}let c=this.querySelectorAll("astro-slot"),n={},h=this.querySelectorAll("template[data-astro-template]");for(let r of h){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("data-astro-template")||"default"]=r.innerHTML,r.remove())}for(let r of c){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("name")||"default"]=r.innerHTML)}let p;try{p=this.hasAttribute("props")?m(JSON.parse(this.getAttribute("props"))):{}}catch(r){let s=this.getAttribute("component-url")||"<unknown>",v=this.getAttribute("component-export");throw v&&(s+=` (export ${v})`),console.error(`[hydrate] Error parsing props for component ${s}`,this.getAttribute("props"),r),r}let u;await this.hydrator(this)(this.Component,p,n,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),this.dispatchEvent(new CustomEvent("astro:hydrate"))});d(this,"unmount",()=>{this.isConnected||this.dispatchEvent(new CustomEvent("astro:unmount"))})}disconnectedCallback(){document.removeEventListener("astro:after-swap",this.unmount),document.addEventListener("astro:after-swap",this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute("await-children")||document.readyState==="interactive"||document.readyState==="complete")this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener("DOMContentLoaded",e),c.disconnect(),this.childrenConnectedCallback()},c=new MutationObserver(()=>{var n;((n=this.lastChild)==null?void 0:n.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue==="astro:end"&&(this.lastChild.remove(),e())});c.observe(this,{childList:!0}),document.addEventListener("DOMContentLoaded",e)}}async childrenConnectedCallback(){let e=this.getAttribute("before-hydration-url");e&&await import(e),this.start()}async start(){let e=JSON.parse(this.getAttribute("opts")),c=this.getAttribute("client");if(Astro[c]===void 0){window.addEventListener(`astro:${c}`,()=>this.start(),{once:!0});return}try{await Astro[c](async()=>{let n=this.getAttribute("renderer-url"),[h,{default:p}]=await Promise.all([import(this.getAttribute("component-url")),n?import(n):()=>()=>{}]),u=this.getAttribute("component-export")||"default";if(!u.includes("."))this.Component=h[u];else{this.Component=h;for(let f of u.split("."))this.Component=this.Component[f]}return this.hydrator=p,this.hydrate},e,this)}catch(n){console.error(`[astro-island] Error hydrating ${this.getAttribute("component-url")}`,n)}}attributeChangedCallback(){this.hydrate()}}d(y,"observedAttributes",["props"]),customElements.get("astro-island")||customElements.define("astro-island",y)}})();</script><astro-island uid="ZWjsVO" prefix="r20" component-url="/_astro/GlobalLightbox.CqZePd56.js" component-export="default" renderer-url="/_astro/client.DPSb9UvF.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;GlobalLightbox&quot;,&quot;value&quot;:true}"></astro-island> <astro-island uid="2nwVdo" prefix="r21" component-url="/_astro/AffiliatePopup.C1KShLAm.js" component-export="default" renderer-url="/_astro/client.DPSb9UvF.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;AffiliatePopup&quot;,&quot;value&quot;:true}"></astro-island> <div id="app-background" class="fixed inset-0 z-[-1] h-full w-full pointer-events-none bg-slate-50 dark:bg-slate-950 transition-colors duration-500"> <div id="app-background-image" class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-500" data-day="/_astro/macos2.hYF-Pyun.webp" data-night="/_astro/macos2-night.DwJ7amhx.webp" aria-hidden="true"></div> <div class="absolute inset-0 bg-[#DFE1E6]/90 dark:bg-transparent backdrop-blur-[6px] pointer-events-none"></div> <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b82f611,transparent_50%)] dark:hidden pointer-events-none"></div> <div class="absolute inset-0 opacity-[0.08] dark:opacity-[0.03] pointer-events-none mix-blend-multiply" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+');"></div> </div> <script>
+  (() => {
+    const bindBackground = () => {
+      const root = document.documentElement;
+      const background = document.getElementById('app-background-image');
+      if (!background || background.dataset.themeObserverBound === 'true') return;
+
+      const applyBackground = () => {
+        const source = root.classList.contains('dark') ? background.dataset.night : background.dataset.day;
+        if (!source) return;
+        const nextValue = `url("${source}")`;
+        if (background.style.backgroundImage !== nextValue) {
+          background.style.backgroundImage = nextValue;
+        }
+      };
+
+      applyBackground();
+      const observer = new MutationObserver(applyBackground);
+      observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+      background.dataset.themeObserverBound = 'true';
+    };
+
+    bindBackground();
+    document.addEventListener('astro:page-load', bindBackground);
+  })();
+</script> <header class="sticky top-0 z-[500] border-b border-[var(--xb-line)] bg-[color:var(--xb-bg)]/95 backdrop-blur-xl"> <div class="xb-shell flex min-h-[66px] items-center gap-7"> <a href="/" class="flex shrink-0 items-center gap-2.5 font-black tracking-[-0.035em] text-[var(--xb-ink)]" aria-label="XBSTACK Home"> <img src="/favicon/favicon.svg" alt="XBSTACK" width="32" height="32" decoding="async" class="h-8 w-8 object-contain"> <span class="text-[17px]">XBSTACK</span> </a> <nav class="hidden items-center gap-1 lg:flex" aria-label="主导航"> <a href="/ai/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors bg-blue-500/[0.06] text-blue-600 dark:text-blue-400"> AI </a><a href="/tools/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Tools </a><a href="/horizon/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Horizon </a><a href="/life/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Lens </a><a href="/about/" class="rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> About </a> </nav> <div class="ml-auto flex items-center gap-2"> <a id="global-search-trigger" data-xbstack-search-trigger href="/search/" aria-label="打开站内搜索" class="hidden h-9 min-w-[190px] items-center gap-2 rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)] px-3 text-left text-[11px] text-[var(--xb-muted)] transition-colors hover:border-blue-400 md:flex"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="shrink-0" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.8 173.8 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.8 173.8 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3M97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8"></path></svg> <span class="truncate">搜索文章、工具、主题…</span> <kbd class="ml-auto rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[9px] text-[var(--xb-faint)]">⌘K</kbd> </a> <div class="hidden sm:block"> <nav data-visible-language-alternate aria-label="选择语言" data-astro-cid-iemtoba4> <details class="language-switcher-details relative" data-language-switcher-details data-astro-cid-iemtoba4> <summary class="language-switcher-summary flex h-10 min-w-[88px] cursor-pointer list-none items-center justify-center gap-2 rounded-full border border-slate-200/60 bg-white/50 px-3 text-[12px] font-bold text-slate-600 shadow-sm backdrop-blur-md transition-all hover:border-blue-300 hover:bg-blue-50/80 hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-blue-400/50 dark:hover:bg-blue-500/10 dark:hover:text-blue-400 dark:focus-visible:ring-offset-slate-950" aria-label="选择语言" title="选择语言" data-astro-cid-iemtoba4> <svg aria-hidden="true" viewBox="0 0 24 24" class="h-3.5 w-3.5 flex-none" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4> <circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle> <path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path> </svg> <span class="whitespace-nowrap" data-astro-cid-iemtoba4>中文</span> <svg aria-hidden="true" viewBox="0 0 20 20" class="language-chevron h-3 w-3 flex-none text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-iemtoba4> <path d="m5 7.5 5 5 5-5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path> </svg> </summary> <div class="language-switcher-menu absolute right-0 top-[calc(100%+0.65rem)] z-[520] w-44 overflow-hidden rounded-2xl border border-slate-200/80 bg-white/95 p-2 shadow-[0_18px_50px_-18px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0B1020]/95" role="menu" aria-label="选择语言" data-astro-cid-iemtoba4> <div class="px-3 pb-1.5 pt-1 text-[9px] font-black uppercase tracking-[0.22em] text-slate-400 dark:text-slate-500" data-astro-cid-iemtoba4> 语言 </div> <a href="/ai/openai-agents-sdk-runstate-approval-resume/" data-language-choice="zh-CN" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" role="menuitemradio" aria-checked="true" title="当前语言：中文" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors cursor-default bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" data-astro-cid-iemtoba4> <span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4> <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" data-astro-cid-iemtoba4> <path d="m4.5 10 3.2 3.2 7.8-7.8" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path> </svg> </span> <span class="flex-1" data-astro-cid-iemtoba4>中文</span> <span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>ZH</span> </a><a href="/en/ai/openai-agents-sdk-runstate-approval-resume/" data-language-choice="en" data-language-current="false" data-language-available="true" role="menuitemradio" aria-checked="false" title="Switch to the English version" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors text-slate-600 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-blue-400" data-astro-cid-iemtoba4> <span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4> <span class="h-1.5 w-1.5 rounded-full bg-slate-300 dark:bg-slate-700" data-astro-cid-iemtoba4></span> </span> <span class="flex-1" data-astro-cid-iemtoba4>English</span> <span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>EN</span> </a> </div> </details> </nav>  <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> <div class="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)]"> <div class="relative flex items-center justify-center w-full h-full"> <input class="sr-only" id="theme-switcher" data-theme-switcher type="checkbox"> <label class="flex items-center justify-center cursor-pointer w-full h-full group/theme" for="theme-switcher" aria-label="切换主题">  <svg class="w-5 h-5 transition-all duration-500 scale-100 dark:scale-0 opacity-100 dark:opacity-0 absolute text-orange-500 group-hover/theme:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg>  <svg class="w-5 h-5 transition-all duration-500 scale-0 dark:scale-100 opacity-0 dark:opacity-100 absolute text-sky-400 group-hover/theme:-rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </label> </div> <script>
+  // 立即执行以防止闪烁
+  (function() {
+    const theme = localStorage.getItem("theme");
+    const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  })();
+
+  // 页面加载和切换后的初始化逻辑
+  function initTheme() {
+    const themeSwitchers = document.querySelectorAll("[data-theme-switcher]");
+    const isDark = document.documentElement.classList.contains("dark");
+
+    // 同步所有切换按钮的状态
+    themeSwitchers.forEach((el) => {
+      el.checked = isDark;
+      
+      // 移除旧的监听器（如果存在），防止重复绑定
+      // 由于是匿名函数难以移除，我们采用 cloneNode 或者简单的标志位
+      // Astro 的 View Transitions 会重新运行脚本，所以只需确保不累积
+      // 最简单的方式是直接覆盖 onclick 或 onchange，但这里用 addEventListener
+      // 我们可以给元素加个标记
+      if (el.dataset.initialized) return;
+      
+      el.addEventListener("change", (e) => {
+        const checked = e.target.checked;
+        if (checked) {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        }
+        
+        // 同步其他可能存在的切换按钮（例如移动端和桌面端各有一个）
+        document.querySelectorAll("[data-theme-switcher]").forEach(other => {
+            if (other !== el) other.checked = checked;
+        });
+      });
+      
+      el.dataset.initialized = "true";
+    });
+  }
+
+  // 绑定事件
+  document.addEventListener("DOMContentLoaded", initTheme);
+  document.addEventListener("astro:page-load", initTheme);
+  document.addEventListener("astro:after-swap", initTheme);
+</script> </div> <button id="mobile-menu-trigger" type="button" aria-label="打开导航菜单" aria-controls="mobile-menu" aria-expanded="false" class="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)] text-[var(--xb-text)] lg:hidden"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path></svg></button> </div> </div> <div class="border-t border-[var(--xb-line)]/70"> <div class="xb-shell overflow-x-auto"> <nav class="flex min-w-max items-center gap-1 py-2" aria-label="AI 二级导航"> <a href="/ai/agent/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:text-[var(--xb-ink)]"> Agents </a><a href="/ai/langgraph/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:text-[var(--xb-ink)]"> LangGraph </a><a href="/ai/mcp/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:text-[var(--xb-ink)]"> MCP </a><a href="/ai/workflow/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:text-[var(--xb-ink)]"> Workflow </a> </nav> </div> </div> <div id="mobile-menu" class="invisible fixed inset-0 z-[600] pointer-events-none"> <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/50 opacity-0 backdrop-blur-sm transition-opacity"></div> <aside id="mobile-menu-panel" class="absolute right-0 top-0 flex h-full w-[300px] translate-x-full flex-col border-l border-[var(--xb-line)] bg-[var(--xb-surface)] transition-transform"> <div class="flex h-16 items-center justify-between border-b border-[var(--xb-line)] px-5"> <strong class="text-sm tracking-tight text-[var(--xb-ink)]">XBSTACK</strong> <button id="mobile-menu-close" type="button" aria-label="关闭导航菜单" class="text-[var(--xb-muted)]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg></button> </div> <div class="border-b border-[var(--xb-line)] p-4"> <a id="mobile-search-trigger" data-xbstack-search-trigger href="/search/" class="flex h-10 w-full items-center gap-2 rounded-lg border border-[var(--xb-line)] px-3 text-[12px] text-[var(--xb-muted)]"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.8 173.8 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.8 173.8 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3M97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8"></path></svg> 搜索 XBSTACK </a> </div> <nav class="flex flex-1 flex-col gap-2 overflow-y-auto p-4"> <div> <a href="/ai/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold bg-blue-500/[0.07] text-blue-600 dark:text-blue-400">AI</a> <div class="mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3 ml-4"> <a href="/ai/agent/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Agents</a><a href="/ai/langgraph/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">LangGraph</a><a href="/ai/mcp/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">MCP</a><a href="/ai/workflow/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Workflow</a> </div> </div><div> <a href="/tools/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">Tools</a> <div class="mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3 ml-4"> <a href="/tools/compound-calculator/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Compound Calculator</a><a href="/tools/ai-finance/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">AI Finance Analyzer</a><a href="/tools/lunest/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Lunest</a> </div> </div><div> <a href="/horizon/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">Horizon</a> <div class="mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3 ml-4"> <a href="/investing/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Investing</a><a href="/horizon/reading/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Reading</a><a href="/investing/thoughts/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Thinking</a> </div> </div><div> <a href="/life/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">Lens</a> <div class="mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3 ml-4"> <a href="/life/hiking/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Outdoor</a><a href="/life/road-trip/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Travel</a><a href="/life/photo/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Photography</a><a href="/life/gear/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Gear</a> </div> </div><div> <a href="/about/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">About</a>  </div> </nav> <div class="border-t border-[var(--xb-line)] p-4 sm:hidden"> <nav data-visible-language-alternate aria-label="选择语言" data-astro-cid-iemtoba4> <div class="flex w-full items-center justify-between gap-4" aria-label="选择语言" data-astro-cid-iemtoba4> <div class="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300" data-astro-cid-iemtoba4> <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4> <circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle> <path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path> </svg> <span data-astro-cid-iemtoba4>语言</span> </div> <div class="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 p-1 dark:border-white/10 dark:bg-white/5" data-astro-cid-iemtoba4> <a href="/ai/openai-agents-sdk-runstate-approval-resume/" data-language-choice="zh-CN" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="当前语言：中文" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all cursor-default bg-white text-blue-600 shadow-sm dark:bg-blue-500/15 dark:text-blue-400" data-astro-cid-iemtoba4> 中文 </a><a href="/en/ai/openai-agents-sdk-runstate-approval-resume/" data-language-choice="en" data-language-current="false" data-language-available="true" title="Switch to the English version" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400" data-astro-cid-iemtoba4> English </a> </div> </div> </nav>  <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> </aside> </div> <script>
+    if (!window.__xbstackSearchShortcutReady) {
+      window.__xbstackSearchShortcutReady = true;
+      window.addEventListener('keydown', (event) => {
+        const target = event.target;
+        const isTyping = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target?.isContentEditable;
+        const isCommandK = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
+        const isSlash = event.key === '/' && !isTyping;
+        if (!isCommandK && !isSlash) return;
+        event.preventDefault();
+        window.location.href = window.location.pathname.startsWith('/en/') ? '/en/search/' : '/search/';
+      });
+    }
+
+    const bindHeader = () => {
+      const trigger = document.getElementById('mobile-menu-trigger');
+      const close = document.getElementById('mobile-menu-close');
+      const menu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const panel = document.getElementById('mobile-menu-panel');
+      const setOpen = (open) => {
+        if (!menu || !overlay || !panel) return;
+        trigger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) {
+          menu.classList.remove('invisible', 'pointer-events-none');
+          overlay.classList.add('opacity-100');
+          panel.classList.remove('translate-x-full');
+          document.body.style.overflow = 'hidden';
+        } else {
+          overlay.classList.remove('opacity-100');
+          panel.classList.add('translate-x-full');
+          document.body.style.overflow = '';
+          setTimeout(() => menu.classList.add('invisible', 'pointer-events-none'), 220);
+        }
+      };
+      trigger?.addEventListener('click', () => setOpen(true));
+      close?.addEventListener('click', () => setOpen(false));
+      overlay?.addEventListener('click', () => setOpen(false));
+    };
+    document.addEventListener('astro:page-load', bindHeader);
+    bindHeader();
+  </script> </header> <div id="language-switch-notice" class="pointer-events-none fixed left-1/2 top-24 z-[700] hidden max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/95 px-5 py-3 text-center text-sm font-bold text-slate-700 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 dark:text-slate-200" role="status" aria-live="polite"></div> <main id="main-content" class="flex-1">  <div id="reading-progress" class="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 z-[110] transition-all duration-300 w-0 shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div> <main class="pt-24 md:pt-32 pb-20"> <script>(()=>{var a=(s,i,o)=>{let r=async()=>{await(await s())()},t=typeof i.value=="object"?i.value:void 0,c={rootMargin:t==null?void 0:t.rootMargin},n=new IntersectionObserver(e=>{for(let l of e)if(l.isIntersecting){n.disconnect(),r();break}},c);for(let e of o.children)n.observe(e)};(self.Astro||(self.Astro={})).visible=a;window.dispatchEvent(new Event("astro:visible"));})();</script><script type="module" src="/_astro/Comment.astro_astro_type_script_index_0_lang.DIUdttQg.js"></script><script type="module">function g(){const t=document.querySelector("header");return t?t.offsetHeight+32:140}function a(){document.querySelectorAll("[data-toc-link]").forEach(e=>{const n=e.cloneNode(!0);e.parentNode?.replaceChild(n,e),n.addEventListener("click",function(o){o.preventDefault();const r=o.currentTarget.getAttribute("href");if(!r)return;const c=r.substring(1),d=document.getElementById(c);if(d){const s=d.getBoundingClientRect(),i=window.pageYOffset||document.documentElement.scrollTop,u=g(),l=i+s.top-u;window.scrollTo({top:Math.max(0,l),behavior:"smooth"}),history.pushState(null,"",`#${c}`)}})})}document.addEventListener("DOMContentLoaded",a);document.addEventListener("astro:page-load",a);</script><div class="xb-article-grid py-8 md:py-10"> <aside class="xb-article-side"> <section class="border border-[var(--xb-line)] bg-[var(--xb-surface)] rounded-xl p-5 xb-article-panel !rounded-xl !shadow-none" aria-label="作者信息"> <a href="/about/" class="group flex flex-col items-center text-center"> <div class="overflow-hidden rounded-full border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] h-[72px] w-[72px]"> <img src="/_astro/avatar.BzDyfp9G_ZzAEsA.webp" alt="小白 / Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="h-full w-full object-cover"> </div> <div class="mt-3"> <h3 class="m-0 text-[14px] font-bold tracking-tight text-[var(--xb-ink)] group-hover:text-blue-600 dark:group-hover:text-blue-400">小白 / Xiaobai</h3> <p class="mt-1 text-[9px] font-bold tracking-wide text-blue-600 dark:text-blue-400">开发者 · 产品构建者</p> </div> </a> <p class="text-[10px] leading-5 text-[var(--xb-muted)] mt-4 text-center">持续构建 AI 工程系统、开发者工具与长期数字资产。</p> <a href="/about/" class="mt-3 block text-center text-[9px] font-bold text-blue-600 hover:underline dark:text-blue-400">关于作者与 XBSTACK →</a> <div class="my-3 h-px bg-[var(--xb-line)]"></div> <ul class="flex items-center py-2 justify-center"><li class="inline-block px-1 intersect:animate-fade opacity-0"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/qrcode_guizhou_outdoor.png" aria-label="微信公众号"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="微信公众号" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="sr-only">微信公众号</span> </span>  </button> </a></li><li class="inline-block px-1 intersect:animate-fade opacity-0"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span class="sr-only">GitHub</span> </span>  </button> </a></li></ul> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">文章信息</div> <dl class="space-y-3 text-[10px] leading-5 text-[var(--xb-muted)]"> <div><dt class="font-bold text-[var(--xb-ink)]">发布</dt><dd>2026/7/24</dd></div> <div><dt class="font-bold text-[var(--xb-ink)]">所属专题</dt><dd><a href="/ai/ai-agent-complete-guide/" class="text-blue-600 dark:text-blue-400">agent</a></dd></div>  </dl> <div class="mt-4 flex flex-wrap gap-1.5"><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#OpenAI Agents SDK</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#RunState</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#Human-in-the-loop</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#Tool Approval</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#Python</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#AI Agent</span></div> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">相关入口</div> <p class="text-[10px] leading-5 text-[var(--xb-muted)]">继续查看相关专题、工具与内容更新。</p> <div class="mt-3 grid gap-2 text-[10px] font-bold text-blue-600 dark:text-blue-400"><nav data-cluster-hub-link><a href="/ai/ai-agent-complete-guide/">相关专题 →</a></nav><a href="/tools/">产品与工具 →</a><a href="/newsletter/">Newsletter →</a></div> </section> </aside> <main class="min-w-0"> <article class="xb-article-paper"> <div class="xl:hidden mb-6"><section class="border border-[var(--xb-line)] bg-[var(--xb-surface)] rounded-xl p-4 !rounded-xl !shadow-none" aria-label="作者信息"> <a href="/about/" class="group flex items-center gap-4"> <div class="overflow-hidden rounded-full border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] h-14 w-14 shrink-0"> <img src="/_astro/avatar.BzDyfp9G_ZzAEsA.webp" alt="小白 / Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="h-full w-full object-cover"> </div> <div class="min-w-0"> <h3 class="m-0 text-[14px] font-bold tracking-tight text-[var(--xb-ink)] group-hover:text-blue-600 dark:group-hover:text-blue-400">小白 / Xiaobai</h3> <p class="mt-1 text-[9px] font-bold tracking-wide text-blue-600 dark:text-blue-400">开发者 · 产品构建者</p> </div> </a> <p class="text-[10px] leading-5 text-[var(--xb-muted)] mt-3">持续构建 AI 工程系统、开发者工具与长期数字资产。</p> <a href="/about/" class="mt-3 block text-center text-[9px] font-bold text-blue-600 hover:underline dark:text-blue-400">关于作者与 XBSTACK →</a> <div class="my-3 h-px bg-[var(--xb-line)]"></div> <ul class="flex items-center py-2 justify-center"><li class="inline-block px-1 intersect:animate-fade opacity-0"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/qrcode_guizhou_outdoor.png" aria-label="微信公众号"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="微信公众号" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="sr-only">微信公众号</span> </span>  </button> </a></li><li class="inline-block px-1 intersect:animate-fade opacity-0"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span class="sr-only">GitHub</span> </span>  </button> </a></li></ul> </section></div> <header class="mb-10 border-b border-[var(--xb-line)] pb-8"><div class="mb-8 overflow-hidden rounded-xl border border-[var(--xb-line)] bg-[var(--xb-surface-soft)]"><img src="/_astro/01-openai-agents-runstate-cover.DW4MJt_b_2mFXVl.webp" alt="OpenAI Agents SDK RunState 将 Tool Approval 状态跨进程持久化并恢复执行的生产架构" sizes="(min-width: 1280px) 860px, calc(100vw - 40px)" loading="eager" fetchpriority="high" decoding="async" width="1200" height="630" class="aspect-[40/21] w-full object-cover"></div><div class="mb-4 flex flex-wrap items-center gap-2"><a href="/ai/agent/" class="rounded-md border border-blue-500/15 bg-blue-500/[0.05] px-2.5 py-1 text-[10px] font-bold text-blue-600 dark:text-blue-400">ai</a></div><h1 class="m-0 text-[clamp(2rem,4vw,3.6rem)] font-black leading-[1.12] tracking-[-.045em] text-[var(--xb-ink)]">OpenAI Agents SDK Tool Approval 如何恢复？RunState 跨进程与 v0.19.3 流式 Resume 实测</h1><p class="mt-5 max-w-[760px] text-[15px] leading-7 text-[var(--xb-text)]">OpenAI Agents SDK RunState 如何恢复 Tool Approval？本文对比 openai-agents 0.18.3 与 0.19.3，实测跨进程批准/拒绝、流式 Resume 丢失已批准 Tool Output 的回归与修复，并验证重复投递、业务幂等和 Context 秘密边界。</p><div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] text-[var(--xb-faint)]"><span>发布 · 2026-07-24</span><span>27 分钟阅读</span><span>XBSTACK 原创</span></div><div class="mt-4 flex flex-wrap gap-2"><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#OpenAI Agents SDK</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#RunState</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#Human-in-the-loop</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#Tool Approval</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#Python</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#AI Agent</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#Idempotency</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#State Persistence</span></div></header> <nav class="mb-7 flex items-center justify-between gap-4 border-y border-[var(--xb-line)] py-3 text-[10px] text-[var(--xb-muted)]" aria-label="文章语言版本"> <span>当前 URL 为中文版本。</span> <a href="/en/ai/openai-agents-sdk-runstate-approval-resume/" hreflang="en" class="font-bold text-blue-600 dark:text-blue-400">Read this article in English →</a> </nav> <aside class="mb-8 border-l-2 border-blue-500 bg-blue-500/[0.04] px-4 py-3"> <div class="text-[9px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">小白的说明</div> <p class="mt-1 text-[12px] leading-6 text-[var(--xb-text)]">实验使用 Python 3.10.2、openai-agents 0.18.3 与 0.19.3、确定性自定义 Model 和 SQLite；未调用 OpenAI 或其他模型 Provider API。本文验证跨进程 RunState、流式 Resume、Output Guardrail 后的 Session 持久化、重复投递和 Context 序列化边界，不代表真实模型选择工具的准确率、网络延迟、Token 成本或托管队列表现。</p> </aside>  <div class="prose prose-tech markdown-content max-w-none">  <aside class="mb-10 rounded-2xl border border-orange-500/20 bg-orange-500/[0.045] px-5 py-4 not-prose" data-analytics-area="article_body" aria-label="推荐下一步"> <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"> <div> <p class="text-xs font-black uppercase tracking-[0.18em] text-orange-600 dark:text-orange-400">专题入口 / AI Agent Hub</p> <p class="mt-1 text-sm font-bold leading-6 text-slate-700 dark:text-slate-300">从单个 Agent 问题继续进入完整生产体系</p> </div> <div class="flex shrink-0 flex-wrap gap-2"> <a href="/ai/agent/" class="rounded-full bg-orange-500 px-4 py-2 text-xs font-black text-white transition-colors hover:bg-orange-600">进入 AI Agent 专题 →</a> <a href="/ai/ai-agent-architecture/" class="rounded-full border border-slate-300 px-4 py-2 text-xs font-black text-slate-700 transition-colors hover:border-orange-500 hover:text-orange-500 dark:border-white/15 dark:text-slate-200">查看架构指南</a> </div> </div> </aside><h2 id="openai-agents-sdk-tool-approval-如何恢复runstate-跨进程与-v0193-流式-resume-实测">OpenAI Agents SDK Tool Approval 如何恢复？RunState 跨进程与 v0.19.3 流式 Resume 实测</h2>
+<p>先说结论：<strong>OpenAI Agents SDK 的 <code>RunState</code> 可以把等待人工审批的 Agent 运行保存下来，并在另一个进程里批准、拒绝和继续执行；但 <code>openai-agents 0.18.3</code> 的流式 Resume 还有一个危险边界——已批准工具已经产生外部副作用后，如果 Output Guardrail 触发，中断前的 Session 只保存 <code>function_call</code>，可能丢失对应的 <code>function_call_output</code>。这个问题已在 <code>0.19.3</code> 修复。</strong></p>
+<p>我先重跑原有跨进程实验：<code>0.19.3</code> 下暂停前副作用仍为 0，独立 Worker 批准恢复后执行 1 次，拒绝路径执行 0 次；同一份已批准状态被两个 Worker 重放时仍会执行 2 次，只有业务幂等账本能把副作用压回 1 次。随后我用同一确定性 Tool、SQLite Session 和 Output Guardrail 对比 <code>0.18.3</code> 与 <code>0.19.3</code>：前者在 Guardrail Tripwire 后只留下 Tool Call，后者保存完整 Call/Output 对，并能在下一轮正确重放。</p>
+<p>因此，升级 <code>0.19.3</code> 解决的是<strong>流式恢复时的 SDK Session 持久化顺序</strong>，不是完整审批系统，也不是业务 Exactly-once。审批授权、队列重投、版本兼容、状态 Blob 安全、Context 秘密和外部副作用幂等仍必须由应用负责。</p>
+<p><img alt="OpenAI Agents SDK RunState 实验范围：暂停、跨进程批准、拒绝、重复投递和 Context 脱敏" loading="lazy" decoding="async" fetchpriority="auto" width="1448" height="1086" src="/_astro/02-test-scope.Bev5rqPa_2p7JJL.webp" ></p>
+<h2 id="一这个问题为什么值得单独写而不是继续补-langgraph-审批流">一、这个问题为什么值得单独写，而不是继续补 LangGraph 审批流</h2>
+<p>XBSTACK 已经有一篇 <a href="/ai/langgraph-human-in-the-loop-approval/">LangGraph Human-in-the-loop 审批流</a>，里面讨论的是 <code>interrupt</code>、Checkpointer、<code>thread_id</code> 和图节点恢复。OpenAI Agents SDK 的搜索任务不同：开发者使用的是 <code>function_tool(needs_approval=True)</code>、<code>RunResult.interruptions</code>、<code>RunState.to_json()</code> 和 <code>Runner.run(agent, state)</code>，恢复时没有 LangGraph 拓扑和 Checkpointer 帮你托管业务状态。</p>
+<p>OpenAI Agents SDK 的 Python HITL 能力也是一个经历过真实需求推动的功能。早期 GitHub Issue #636 要求 Python SDK 原生支持工具执行前暂停、结构化 interruption、可序列化状态和批准/拒绝后恢复；今天这些能力已经进入正式文档和 <code>openai-agents 0.18.3</code>。但“能暂停恢复”只是第一层。官方文档同时提醒：序列化状态会包含应用 Context、审批、Usage、Tool Input、嵌套 Agent 恢复信息、Trace 元数据和服务端会话设置；长时间审批还应记录 Agent 定义或 SDK 版本。</p>
+<p>这正是本文的核心矛盾：</p>
+<blockquote>
+<p><strong>RunState 让 Agent 运行可恢复，但恢复能力越强，业务授权、幂等、秘密和版本边界越不能交给 SDK 默认值。</strong></p>
+</blockquote>
+<p>如果你只是进程内 <code>input("approve?")</code>，官方示例已经足够。如果你要把审批放到 Web 后台、OA、Slack、邮件或移动端，并允许 Worker 在几小时后恢复，就需要完整的数据模型和失败实验。</p>
+<h2 id="二实验环境任务和没有测试的内容">二、实验环境、任务和没有测试的内容</h2>
+<p>本次实验代码保存在：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">experiments/openai-agents-runstate-approval-resume/
+</code></pre>
+<p>运行环境如下：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>项目</th><th>实验值</th></tr></thead><tbody><tr><td>Python</td><td>3.10.2</td></tr><tr><td>OpenAI Agents SDK</td><td><code>openai-agents==0.18.3</code> 与 <code>0.19.3</code></td></tr><tr><td>RunState Schema</td><td>0.18.3 为 <code>$schemaVersion = 1.12</code>；0.19.3 为 <code>1.13</code></td></tr><tr><td>Model</td><td>自定义确定性 <code>Model</code></td></tr><tr><td>Provider API</td><td>未调用</td></tr><tr><td>持久化</td><td>JSON 文件 + SQLite</td></tr><tr><td>高风险工具</td><td><code>deploy_release</code></td></tr><tr><td>幂等键</td><td><code>tenant-a:release:2026.07.24</code></td></tr></tbody></table>
+<p>我没有用真实模型决定要不要部署，因为那会把模型随机性、网络、费用和 Provider 行为混入实验。确定性 Model 第一次固定生成一个 <code>deploy_release</code> Tool Call，收到工具结果后固定输出最终消息。这样可以把测试范围收窄到 SDK 的暂停、状态序列化、恢复和工具执行语义。</p>
+<p>实验覆盖七条路径：</p>
+<ol>
+<li>工具需要审批时，是否在产生副作用前暂停；</li>
+<li>原进程退出后，另一个进程能否加载状态、批准并恢复；</li>
+<li>拒绝后是否仍然执行工具；</li>
+<li>同一份已批准状态被重复投递时，工具会执行几次；</li>
+<li>幂等账本是否能阻止重复副作用；</li>
+<li>Context 中的 Demo Secret 会不会进入状态 JSON；</li>
+<li>流式 Resume 在已批准工具执行后触发 Output Guardrail 时，Session 是否保存并重放完整 Tool Call/Output 对。</li>
+</ol>
+<p>没有测试真实 OpenAI Responses API、嵌套 <code>Agent.as_tool()</code>、Hosted MCP Approval、真实 Redis/Temporal/Celery 队列、多个 Worker 的同时竞争以及真实 Trace 导出。流式回归实验使用确定性自定义 Model 和 SQLiteSession，只验证 SDK 的 Session 持久化语义，不能推导模型选择工具的准确率、生产吞吐和网络延迟。</p>
+<h2 id="2026-08-05-更新0183-为什么会丢失已批准-tool-output0193-修复了什么">2026-08-05 更新：0.18.3 为什么会丢失已批准 Tool Output，0.19.3 修复了什么</h2>
+<p>OpenAI Agents SDK v0.19.3 的官方 Release 明确包含 <code>preserve approved tool output on streamed resume</code>。对应 PR #4126 解释了根因：已批准工具在流式恢复中已经完成副作用，但旧版会先运行 Agent Output Guardrail，之后才把本轮 Tool Call/Output 写入 Session；一旦 Guardrail Tripwire 中止最终输出，Tool Output 就没有被持久化，留下一个孤立的 Tool Call。</p>
+<p>我把官方回归条件缩成一个无 Provider 实验：确定性 Model 生成 <code>approval_tool</code>，第一次流式运行产生 interruption；批准后再次通过 <code>Runner.run_streamed()</code> 恢复，工具返回 <code>approved-result</code>，随后 Output Guardrail 固定触发 Tripwire。工具副作用计数在两个版本中都为 1，区别只发生在 SQLiteSession：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>版本</th><th>Guardrail 后 Session 内容</th><th align="right">Tool Output 是否保存</th><th align="right">下一轮是否重放完整对</th></tr></thead><tbody><tr><td><code>openai-agents==0.18.3</code></td><td><code>user</code>、<code>function_call</code></td><td align="right">否</td><td align="right">否</td></tr><tr><td><code>openai-agents==0.19.3</code></td><td><code>user</code>、<code>function_call</code>、<code>function_call_output</code></td><td align="right">是</td><td align="right">是</td></tr></tbody></table>
+<p>这类失败比普通报错危险：外部动作已经执行，但状态历史看起来像工具从未返回。后续模型可能重新请求工具，审计系统也无法从 Session 还原完整因果链。0.19.3 的修复是在 Output Guardrail 前先保存已批准工具的 Call/Output 对；普通最终输出仍维持原有保存顺序。</p>
+<p>同一个版本还修复了恢复期间的工具名冲突和 Tool Call/Output 去重顺序。恢复时如果启用工具、Handoff 或排序已经变化，0.19.3 会重新构建当前 Tool Inventory，并按 <code>tool_name_collision_policy</code> 对暂停前排队的调用进行协调；但动态替换 Tool 并不等于审批继续有效，应用仍应校验 Tool Schema 摘要、权限、审批过期时间和业务版本。</p>
+<p>完整证据保存在：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">experiments/openai-agents-runstate-approval-resume/
+├── stream_resume_regression.py
+└── artifacts/
+    ├── stream-resume-0.18.3.json
+    ├── stream-resume-0.19.3.json
+    ├── version-matrix.json
+    └── version-matrix.md
+</code></pre>
+<p>最直接的处理建议是：使用流式 Tool Approval 和 Session 的项目至少升级到 <code>openai-agents==0.19.3</code>，并把“已批准 Call/Output 对是否持久化”加入回归测试；同时继续保留业务幂等账本，因为 SDK 修复不会阻止同一 RunState 被重复恢复。</p>
+<h2 id="三tool-approval-到底如何暂停和恢复">三、Tool Approval 到底如何暂停和恢复</h2>
+<p>官方流程可以压缩成七步：模型提出 Tool Call；Runner 检查 <code>needs_approval</code>；尚无决策时产生 <code>ToolApprovalItem</code>；<code>RunResult.interruptions</code> 暴露待审批项；应用把结果转换为 <code>RunState</code> 并持久化；人工对状态执行 <code>approve()</code> 或 <code>reject()</code>；最后再次调用 <code>Runner.run(agent, state)</code>。</p>
+<p><img alt="OpenAI Agents SDK Tool Approval 从模型调用、interruption、RunState 序列化到恢复执行的完整生命周期" loading="lazy" decoding="async" fetchpriority="auto" width="1448" height="1086" src="/_astro/03-approval-lifecycle.Bagt4C8u_lCnmj.webp" ></p>
+<p>最小工具定义并不复杂：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">from</span> agents <span class="token keyword">import</span> function_tool
+
+<span class="token decorator annotation punctuation">@function_tool</span><span class="token punctuation">(</span>needs_approval<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">deploy_release</span><span class="token punctuation">(</span>release<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">,</span> idempotency_key<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">str</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token string-interpolation"><span class="token string">f"deployed:</span><span class="token interpolation"><span class="token punctuation">{</span>release<span class="token punctuation">}</span></span><span class="token string">"</span></span>
+</code></pre>
+<p>第一次运行：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python">result <span class="token operator">=</span> <span class="token keyword">await</span> Runner<span class="token punctuation">.</span>run<span class="token punctuation">(</span>
+    agent<span class="token punctuation">,</span>
+    <span class="token string">"Deploy release 2026.07.24"</span><span class="token punctuation">,</span>
+    context<span class="token operator">=</span>AppContext<span class="token punctuation">(</span>
+        tenant_id<span class="token operator">=</span><span class="token string">"tenant-a"</span><span class="token punctuation">,</span>
+        api_token<span class="token operator">=</span>runtime_token<span class="token punctuation">,</span>
+    <span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">assert</span> <span class="token builtin">len</span><span class="token punctuation">(</span>result<span class="token punctuation">.</span>interruptions<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span>
+<span class="token keyword">assert</span> effect_count<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span>
+state <span class="token operator">=</span> result<span class="token punctuation">.</span>to_state<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<p><code>needs_approval=True</code> 不是提示词约定，而是 Runner 在工具执行层检查的硬边界。模型已经提出了调用，参数也已经形成，但工具函数还没有运行。本次实验暂停时：</p>
+<pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"interruption_count"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token property">"tool_name"</span><span class="token operator">:</span> <span class="token string">"deploy_release"</span><span class="token punctuation">,</span>
+  <span class="token property">"arguments"</span><span class="token operator">:</span> <span class="token string">"{\"release\":\"2026.07.24\",\"idempotency_key\":\"tenant-a:release:2026.07.24\"}"</span><span class="token punctuation">,</span>
+  <span class="token property">"effect_count_before_approval"</span><span class="token operator">:</span> <span class="token number">0</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><code>needs_approval</code> 也不只适用于普通 <code>function_tool</code>。官方文档还覆盖 <code>Agent.as_tool()</code>、<code>ShellTool</code>、<code>ApplyPatchTool</code>、本地 MCP Server 的 <code>require_approval</code> 和 Hosted MCP Tool Approval。嵌套 Agent 内部产生的审批会冒泡到外层 Run，这意味着审批中心应围绕外层 Run 建模，而不是给每个子 Agent 临时设计一套 UI。</p>
+<h2 id="四runstate-保存的是-sdk-运行不是完整业务工单">四、RunState 保存的是 SDK 运行，不是完整业务工单</h2>
+<p><code>RunState</code> 的价值在于把 Runner 继续执行所需的信息封装成可序列化快照。官方参考文档列出的范围包括当前 Agent、原始输入、模型响应、Generated Items、审批状态、Usage、Tool Input、Guardrail 结果、Trace 元数据，以及可选的 <code>conversation_id</code>、<code>previous_response_id</code> 和自动响应链设置。</p>
+<p>本次暂停状态经过自定义 Context Serializer 后，JSON 大小为 6,279 bytes，顶层包含：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">$schemaVersion
+current_turn
+current_agent
+original_input
+model_responses
+context
+tool_use_tracker
+generated_items
+current_step
+last_model_response
+last_processed_response
+conversation_id
+previous_response_id
+trace
+</code></pre>
+<p>但是下面这些内容不应只依赖 RunState：</p>
+<ul>
+<li>哪个租户创建了审批；</li>
+<li>哪个用户有权批准；</li>
+<li>审批是否已经过期或撤销；</li>
+<li>Tool 参数是否在审批后被替换；</li>
+<li>队列消息是否重复；</li>
+<li>Worker 是否取得执行租约；</li>
+<li>外部部署、付款、邮件是否已经产生副作用；</li>
+<li>State Blob 存在哪里、谁能读取、何时删除。</li>
+</ul>
+<p><img alt="RunState 负责的 SDK 运行状态与应用必须独立管理的审批、授权、幂等和存储边界" loading="lazy" decoding="async" fetchpriority="auto" width="1448" height="1086" src="/_astro/04-runstate-boundary.4R1zdluq_rfdc5.webp" ></p>
+<p>生产系统至少应把数据拆成三类：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">run_state_blob       # SDK 快照，可加密存 Blob Store
+approval_request     # 业务审批工单、权限与生命周期
+idempotency_ledger   # 外部副作用去重、租约与结果复用记录
+</code></pre>
+<p>把三者塞进一张 <code>agent_runs</code> 表虽然省事，但很快会出现权限、TTL 和查询模式冲突。RunState Blob 可能较大，适合对象存储；审批工单需要频繁按用户、状态和过期时间查询；幂等记录需要唯一约束和强一致事务。它们的生命周期也不同。</p>
+<p>审批页面展示的内容也不能直接等同于 RunState 原始 Tool Input。生产系统应在 interruption 产生时生成一份不可变的 <code>review_snapshot</code>，只包含审批人真正需要看的字段，并同时计算摘要：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python">canonical_args <span class="token operator">=</span> json<span class="token punctuation">.</span>dumps<span class="token punctuation">(</span>
+    parsed_arguments<span class="token punctuation">,</span>
+    ensure_ascii<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">,</span>
+    sort_keys<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span>
+    separators<span class="token operator">=</span><span class="token punctuation">(</span><span class="token string">","</span><span class="token punctuation">,</span> <span class="token string">":"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span>
+arguments_digest <span class="token operator">=</span> hashlib<span class="token punctuation">.</span>sha256<span class="token punctuation">(</span>canonical_args<span class="token punctuation">.</span>encode<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>hexdigest<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<p>人工批准的是这份快照和摘要，而不是一个随时可以被后端重新拼装的 Python Dict。Worker 恢复前再次从 RunState 取出 Tool 名称与参数，重新计算摘要；只有与工单中的 <code>arguments_digest</code> 一致才允许执行。否则应将工单转为 <code>invalidated</code>，要求重新审批。</p>
+<p>这个步骤能防止两类隐蔽问题：第一，审批页面看到的是“部署测试环境”，但恢复前参数被替换成生产环境；第二，Tool Schema 在等待期间升级，旧 JSON 被新代码以不同默认值解释。签名或摘要不是为了证明模型诚实，而是为了证明<strong>批准时看到的动作与 Worker 最终执行的动作完全相同</strong>。</p>
+<p>此外，审批工单必须保存最小权限上下文，而不是只保存操作者 ID。至少要记录批准时的租户、角色、Scope、目标环境和资源边界。Worker 不能因为工单已经标记 approved 就跳过当前授权检查；长时间等待期间，用户可能离职、角色被撤销、生产变更窗口已经关闭。安全做法是同时满足“批准时有权”和“执行时仍有权”，任何一项失败都停止恢复。</p>
+<p>这不是抽象的安全洁癖。OpenAI Agents SDK 社区在 2026 年提出的 <a href="https://github.com/openai/openai-agents-python/issues/2868" rel="nofollow noopener noreferrer" target="_blank">per-tool authorization 需求</a>，明确把 Guardrail 与 Authorization 区分开：前者检查输入输出内容，后者决定某个身份在当前租户、Scope、速率限制和会话条件下能否执行这次 Tool Call。<code>needs_approval=True</code> 解决“必须有人确认”，但它不会自动证明这个审批人有权批准目标资源，也不会替 Worker 完成执行时的二次授权。因此，生产系统应把 Tool Approval 看作授权流程中的一个决策点，而不是完整的权限系统。</p>
+<p>更多 Agent 权限、状态与生产治理内容可继续进入 <a href="/ai/agent/">XBSTACK AI Agent 专题</a>。</p>
+<h2 id="五跨进程批准与恢复真正需要重建的是-agent-定义">五、跨进程批准与恢复：真正需要重建的是 Agent 定义</h2>
+<p>实验把一次完整审批拆成三个独立进程：</p>
+<ul>
+<li>进程 A 运行 Agent，得到 interruption，把 RunState 写入文件后退出；</li>
+<li>进程 B 模拟 Approval API，加载状态并记录批准决策，再把状态写回；</li>
+<li>进程 C 模拟 Worker，重新构建 Agent，通过 <code>RunState.from_json()</code> 加载状态并恢复。</li>
+</ul>
+<p><img alt="Agent Runner、Approval API 和 Worker 三个进程完成一次 Tool Approval 持久化恢复" loading="lazy" decoding="async" fetchpriority="auto" width="1448" height="1086" src="/_astro/05-cross-process-evidence.Bcu0BOSW_vnMOi.webp" ></p>
+<p>状态序列化代码：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">def</span> <span class="token function">context_serializer</span><span class="token punctuation">(</span>context<span class="token punctuation">:</span> AppContext<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> Mapping<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> Any<span class="token punctuation">]</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span><span class="token string">"tenant_id"</span><span class="token punctuation">:</span> context<span class="token punctuation">.</span>tenant_id<span class="token punctuation">}</span>
+
+payload <span class="token operator">=</span> state<span class="token punctuation">.</span>to_json<span class="token punctuation">(</span>
+    context_serializer<span class="token operator">=</span>context_serializer<span class="token punctuation">,</span>
+    strict_context<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span>
+
+wrapper <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">"app_state_version"</span><span class="token punctuation">:</span> <span class="token string">"runstate-approval-lab/v1"</span><span class="token punctuation">,</span>
+    <span class="token string">"sdk_state"</span><span class="token punctuation">:</span> payload<span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>另一个进程加载：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python">state <span class="token operator">=</span> <span class="token keyword">await</span> RunState<span class="token punctuation">.</span>from_json<span class="token punctuation">(</span>
+    initial_agent<span class="token punctuation">,</span>
+    wrapper<span class="token punctuation">[</span><span class="token string">"sdk_state"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    context_deserializer<span class="token operator">=</span>context_deserializer<span class="token punctuation">,</span>
+    strict_context<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span>
+</code></pre>
+<p>这里最容易产生误解：<code>from_json()</code> 的第一个参数仍然是 <code>initial_agent</code>。JSON 不会把 Python 函数、异步回调、Tool 实现、数据库连接、Secret Manager Client 和完整 Agent Graph 变成可执行对象。恢复进程必须使用兼容代码重新构建 Agent，并让 SDK 根据序列化身份把状态映射回这些定义。</p>
+<p>批准过程：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python">interruption <span class="token operator">=</span> state<span class="token punctuation">.</span>get_interruptions<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+state<span class="token punctuation">.</span>approve<span class="token punctuation">(</span>interruption<span class="token punctuation">)</span>
+<span class="token keyword">await</span> persist<span class="token punctuation">(</span>state<span class="token punctuation">)</span>
+</code></pre>
+<p>Worker 恢复：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python">state <span class="token operator">=</span> <span class="token keyword">await</span> load_state<span class="token punctuation">(</span>agent<span class="token punctuation">)</span>
+result <span class="token operator">=</span> <span class="token keyword">await</span> Runner<span class="token punctuation">.</span>run<span class="token punctuation">(</span>agent<span class="token punctuation">,</span> state<span class="token punctuation">)</span>
+</code></pre>
+<p>最终结果：</p>
+<pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"final_output"</span><span class="token operator">:</span> <span class="token string">"Release workflow finished: deployed:2026.07.24"</span><span class="token punctuation">,</span>
+  <span class="token property">"effect_count"</span><span class="token operator">:</span> <span class="token number">1</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>一个容易踩坑的实现细节是：在 0.18.3 实验中，调用 <code>state.approve(interruption)</code> 后，<code>get_interruptions()</code> 仍然能枚举到原 interruption，直到 Runner 真正恢复并消费它。业务代码不要用“interruption 数量是否为 0”来判断工单是否已批准。审批状态应该由独立 <code>approval_request.status</code> 管理，并通过 compare-and-set 从 <code>pending</code> 单向迁移到 <code>approved</code> 或 <code>rejected</code>。</p>
+<p>跨进程恢复还需要一套 Agent Registry。不要在 Worker 中永远调用当前最新版 <code>build_agent()</code>，而应按状态版本路由：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python">AGENT_FACTORIES <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">"runstate-approval-lab/v1"</span><span class="token punctuation">:</span> build_release_agent_v1<span class="token punctuation">,</span>
+    <span class="token string">"runstate-approval-lab/v2"</span><span class="token punctuation">:</span> build_release_agent_v2<span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+
+factory <span class="token operator">=</span> AGENT_FACTORIES<span class="token punctuation">.</span>get<span class="token punctuation">(</span>record<span class="token punctuation">.</span>app_state_version<span class="token punctuation">)</span>
+<span class="token keyword">if</span> factory <span class="token keyword">is</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+    <span class="token keyword">raise</span> StateVersionUnsupported<span class="token punctuation">(</span>record<span class="token punctuation">.</span>app_state_version<span class="token punctuation">)</span>
+agent <span class="token operator">=</span> factory<span class="token punctuation">(</span>runtime_dependencies<span class="token punctuation">)</span>
+</code></pre>
+<p>每个 Factory 应固定 Agent 名称、Tool 名称、参数 Schema、关键 Prompt Revision 和 Handoff 拓扑。部署新版本时，旧 Factory 至少保留到所有未决审批过期；如果无法长期维护，则在发布迁移时批量撤销旧审批。否则“状态 JSON 还能读”并不意味着 SDK 能找到同名 Tool，更不意味着新 Tool 仍认可旧参数。</p>
+<p>恢复接口也不应该直接接收任意 State JSON。合理入口是 <code>POST /approvals/{approval_id}/resume</code>，服务端根据登录用户和租户读取私有记录，再由 Worker 获取 Blob。这样可以避免攻击者提交自行修改的 RunState、替换审批结果或猜测对象存储地址。外部请求只携带不可枚举的审批 ID 和正常身份凭据，不携带可执行状态本身。</p>
+<h2 id="六拒绝不是抛异常而是把拒绝结果送回-agent">六、拒绝不是抛异常，而是把拒绝结果送回 Agent</h2>
+<p>拒绝路径同样从暂停状态恢复：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python">state<span class="token punctuation">.</span>reject<span class="token punctuation">(</span>
+    interruption<span class="token punctuation">,</span>
+    rejection_message<span class="token operator">=</span><span class="token string">"Deployment was denied by the release manager."</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span>
+result <span class="token operator">=</span> <span class="token keyword">await</span> Runner<span class="token punctuation">.</span>run<span class="token punctuation">(</span>agent<span class="token punctuation">,</span> state<span class="token punctuation">)</span>
+</code></pre>
+<p>实验结果：</p>
+<pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"final_output"</span><span class="token operator">:</span> <span class="token string">"Release workflow finished: Deployment was denied by the release manager."</span><span class="token punctuation">,</span>
+  <span class="token property">"effect_count"</span><span class="token operator">:</span> <span class="token number">0</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>也就是说，拒绝不会调用 <code>deploy_release</code>，但 Agent 仍可收到一个模型可见的拒绝结果，继续解释、重新规划或结束。官方还支持通过 <code>RunConfig.tool_error_formatter</code> 设置运行级默认拒绝信息，或者在单次 <code>state.reject()</code> 中传 <code>rejection_message</code> 覆盖。</p>
+<p>生产系统需要区分四种状态，而不是只有布尔值：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>状态</th><th>含义</th><th>后续动作</th></tr></thead><tbody><tr><td><code>pending</code></td><td>等待人工</td><td>不投递 Worker</td></tr><tr><td><code>approved</code></td><td>参数与权限已确认</td><td>投递恢复任务</td></tr><tr><td><code>rejected</code></td><td>明确拒绝</td><td>恢复 Agent 生成拒绝说明，工具不执行</td></tr><tr><td><code>expired/revoked</code></td><td>超时或撤销</td><td>禁止旧状态继续执行</td></tr></tbody></table>
+<p>如果一次 Run 同时产生多个 interruptions，官方允许只处理一部分后先恢复；已决策调用可继续，未决策调用会再次暂停。这意味着审批工单应至少以 <code>run_id + tool_call_id</code> 为粒度，而不是简单给整个 Run 一个 <code>approved=true</code>。</p>
+<h2 id="七最危险的反例同一份已批准状态会把工具执行两次">七、最危险的反例：同一份已批准状态会把工具执行两次</h2>
+<p>真正改变本文结论的是状态重放实验。</p>
+<p>我先把同一份已批准状态交给 Worker A。工具执行，数据库写入一条副作用记录。然后不使用 Worker A 的最新结果，而是再次把原始已批准状态交给 Worker B。Runner 并不知道这是队列重投、人工重复点击还是 Worker A 完成后 ACK 丢失，它只知道这个 Tool Call 已获批准、尚未在当前快照中完成，因此再次执行工具。</p>
+<p><img alt="同一份已批准 RunState 重放时，没有幂等账本会执行两次，有唯一幂等键时只执行一次" loading="lazy" decoding="async" fetchpriority="auto" width="1448" height="1086" src="/_astro/06-redelivery-idempotency.DK1wgfRX_Z5LvME.webp" ></p>
+<p>没有幂等账本：</p>
+<pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"retry-a"</span><span class="token operator">:</span> <span class="token string">"deployed:2026.07.24"</span><span class="token punctuation">,</span>
+  <span class="token property">"retry-b"</span><span class="token operator">:</span> <span class="token string">"deployed:2026.07.24"</span><span class="token punctuation">,</span>
+  <span class="token property">"effect_count"</span><span class="token operator">:</span> <span class="token number">2</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>加入 SQLite 唯一幂等键：</p>
+<pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"retry-a"</span><span class="token operator">:</span> <span class="token string">"deployed:2026.07.24"</span><span class="token punctuation">,</span>
+  <span class="token property">"retry-b"</span><span class="token operator">:</span> <span class="token string">"reused:deployed:2026.07.24"</span><span class="token punctuation">,</span>
+  <span class="token property">"effect_count"</span><span class="token operator">:</span> <span class="token number">1</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>工具中的关键事务：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python">connection<span class="token punctuation">.</span>execute<span class="token punctuation">(</span><span class="token string">"BEGIN IMMEDIATE"</span><span class="token punctuation">)</span>
+existing <span class="token operator">=</span> connection<span class="token punctuation">.</span>execute<span class="token punctuation">(</span>
+    <span class="token string">"SELECT result FROM idempotency_ledger WHERE idempotency_key = ?"</span><span class="token punctuation">,</span>
+    <span class="token punctuation">(</span>idempotency_key<span class="token punctuation">,</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span class="token punctuation">.</span>fetchone<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">if</span> existing<span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token string-interpolation"><span class="token string">f"reused:</span><span class="token interpolation"><span class="token punctuation">{</span>existing<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">}</span></span><span class="token string">"</span></span>
+
+result <span class="token operator">=</span> perform_external_effect<span class="token punctuation">(</span><span class="token punctuation">)</span>
+connection<span class="token punctuation">.</span>execute<span class="token punctuation">(</span>
+    <span class="token string">"INSERT INTO idempotency_ledger(idempotency_key, result) VALUES (?, ?)"</span><span class="token punctuation">,</span>
+    <span class="token punctuation">(</span>idempotency_key<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span>
+<span class="token keyword">return</span> result
+</code></pre>
+<p>真实系统中的幂等键不应由模型自由生成。可以使用：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">tenant_id + approval_id + logical_operation + target_resource
+</code></pre>
+<p>或者由应用在创建审批工单时生成不可变 <code>operation_key</code>，再通过 Tool Context 注入。对付款、部署、发邮件、创建工单等副作用，最好让下游 API 本身也接受幂等键。只在 Agent 数据库做去重，无法覆盖“外部系统已成功、本地事务却在写结果前崩溃”的窗口。</p>
+<p>这与 <a href="/ai/vercel-ai-sdk-7-migration-production/">AI SDK 7 流式中断与 Tool Call 恢复</a> 的结论一致：恢复状态和业务幂等属于两个层级。Agent 框架可以告诉你应该从哪个调用继续，但只有业务系统知道这个动作是否已经发生。</p>
+<p>这里还存在一个比“重复投递”更难的崩溃窗口：外部部署已经成功，但 Worker 在写入本地幂等结果前崩溃。下一次重试查询本地账本时仍看不到完成记录，于是再次部署。单库事务无法原子覆盖一个远程系统，因此需要根据 Tool 类型选择策略：</p>
+<ul>
+<li>下游支持 Idempotency-Key：把应用生成的 <code>operation_key</code> 原样传给下游，以对方的幂等结果为准；</li>
+<li>下游支持查询：先用稳定业务 ID 查询是否已经创建，再决定创建或复用；</li>
+<li>下游不支持幂等也无法查询：把操作标记为 <code>uncertain</code>，进入人工核对，而不是自动重试；</li>
+<li>本地可控写入：使用同一数据库事务或 Transactional Outbox，把业务变更和待发送事件一次提交。</li>
+</ul>
+<p>幂等账本也不应只有“有记录/没记录”两种状态。更完整的状态机是：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">reserved → executing → succeeded
+                    └→ failed_retryable
+                    └→ failed_terminal
+                    └→ uncertain
+</code></pre>
+<p>Worker 抢占操作时写入 <code>reserved</code> 并附带 Lease；超时后另一个 Worker 只能在 Lease 过期且状态允许时接管。已经 <code>succeeded</code> 的请求直接复用结果；<code>uncertain</code> 必须人工处理。这样才能区分“工具从未开始”“工具失败可重试”和“外部是否成功已无法确定”。</p>
+<p>同时要防止两个 Worker 在毫秒级并发读取“尚无记录”后都执行。实验使用 <code>BEGIN IMMEDIATE + UNIQUE</code> 串行化这一过程；Postgres 可使用唯一键、<code>INSERT ... ON CONFLICT</code>、行锁或 advisory lock。关键不是选择哪种锁，而是让“取得执行权”成为数据库可证明的原子事件。</p>
+<h2 id="八context-是持久化数据token-放进去就可能跟着状态走">八、Context 是持久化数据：Token 放进去就可能跟着状态走</h2>
+<p>官方文档对 <code>RunContextWrapper.context</code> 的描述很直接：如果后续序列化 RunState，这部分应用 Context 会随状态保存。它不是只能存在于内存里的依赖容器。</p>
+<p>实验先使用 Mapping Context：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python">context <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">"tenant_id"</span><span class="token punctuation">:</span> <span class="token string">"tenant-a"</span><span class="token punctuation">,</span>
+    <span class="token string">"api_token"</span><span class="token punctuation">:</span> DEMO_SECRET<span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>然后执行：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python">payload <span class="token operator">=</span> result<span class="token punctuation">.</span>to_state<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>to_json<span class="token punctuation">(</span>strict_context<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+</code></pre>
+<p>结果是 <code>mapping_context_secret_present = true</code>。因为 Mapping 本身满足可序列化条件，<code>strict_context=True</code> 不会替你识别哪个字段是秘密。</p>
+<p>第二组使用自定义对象：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token decorator annotation punctuation">@dataclass</span>
+<span class="token keyword">class</span> <span class="token class-name">AppContext</span><span class="token punctuation">:</span>
+    tenant_id<span class="token punctuation">:</span> <span class="token builtin">str</span>
+    api_token<span class="token punctuation">:</span> <span class="token builtin">str</span>
+</code></pre>
+<p>不提供 Serializer，严格模式直接失败：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">UserError: RunState serialization requires context to be a mapping when strict_context is True.
+Provide context_serializer to serialize custom contexts.
+</code></pre>
+<p>提供最小 Serializer：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">def</span> <span class="token function">context_serializer</span><span class="token punctuation">(</span>context<span class="token punctuation">:</span> AppContext<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> Mapping<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> Any<span class="token punctuation">]</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span><span class="token string">"tenant_id"</span><span class="token punctuation">:</span> context<span class="token punctuation">.</span>tenant_id<span class="token punctuation">}</span>
+</code></pre>
+<p>恢复时从运行环境重新注入 Token：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">def</span> <span class="token function">context_deserializer</span><span class="token punctuation">(</span>payload<span class="token punctuation">:</span> Mapping<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> Any<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> AppContext<span class="token punctuation">:</span>
+    <span class="token keyword">return</span> AppContext<span class="token punctuation">(</span>
+        tenant_id<span class="token operator">=</span><span class="token builtin">str</span><span class="token punctuation">(</span>payload<span class="token punctuation">[</span><span class="token string">"tenant_id"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        api_token<span class="token operator">=</span>secret_manager<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"agent-runtime-token"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span>
+</code></pre>
+<p><img alt="Mapping Context 直接保存秘密与自定义 Serializer 只持久化 tenant_id 的安全边界" loading="lazy" decoding="async" fetchpriority="auto" width="1448" height="1086" src="/_astro/07-context-secret-boundary.D2WqdS0l_Z2bQKbH.webp" ></p>
+<p>最终 <code>safe_serializer_secret_present = false</code>。这里还有一个官方文档特别强调的细节：<code>context_override</code> 可以在加载时替换 Context，但它不会从已经序列化的 Blob 中删除秘密。如果 Token 已经写进数据库或对象存储，加载时换一个 Context 并不能补救历史泄漏，仍需轮换凭据和清理 Blob。</p>
+<p>生产建议是把 Context 分成两部分：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">PersistedContext
+  tenant_id
+  user_id
+  request_id
+  locale
+  feature_flags_snapshot
+
+RuntimeDependencies
+  API clients
+  database connection
+  secret manager
+  access token
+  logger / tracer exporter
+</code></pre>
+<p>前者可以进入 RunState；后者只能通过恢复进程重新注入。</p>
+<p>即使 Context 已经脱敏，RunState 本身仍可能包含用户原始输入、Tool 参数、模型输出、文件路径、客户名称或待发送内容，因此不能因为“没有 API Key”就按普通缓存处理。建议按敏感业务数据管理：</p>
+<ul>
+<li>存储前使用 KMS 管理的数据密钥加密 Blob；</li>
+<li>Blob Key 带租户隔离，但不要把可读业务信息写进对象名；</li>
+<li>数据库只保存 URI、摘要、版本和密钥引用；</li>
+<li>Approval API 与 Worker 使用不同的最小权限 Service Account；</li>
+<li>前端永远只接收脱敏的 Review Snapshot；</li>
+<li>为 pending、rejected、completed 设置不同 TTL；</li>
+<li>删除工单时同步删除 Blob、临时导出和缓存副本；</li>
+<li>审计读取行为，而不只审计最终批准动作。</li>
+</ul>
+<p>如果审批内容涉及个人信息、合同、财务或生产凭据，还要明确数据驻留和备份策略。状态被复制到日志、错误追踪、调试下载或消息队列后，单纯删除主 Blob 并不等于完成清理。最稳妥的做法是从设计上禁止完整 State 进入普通日志，只记录 <code>approval_id</code>、Schema、大小、摘要和错误类别。</p>
+<h2 id="九长时间审批必须同时治理-sdk-schema-和应用版本">九、长时间审批必须同时治理 SDK Schema 和应用版本</h2>
+<p>本次 RunState JSON 的 SDK <code>$schemaVersion</code> 是 <code>1.12</code>。SDK 自己维护序列化 Schema 兼容，但生产系统不能只检查这个字段。假设审批周五创建、周一批准，期间发生了这些变化：</p>
+<ul>
+<li><code>deploy_release</code> 参数从 <code>release</code> 改成 <code>artifact_id</code>；</li>
+<li>Agent Prompt 增加环境限制；</li>
+<li>Tool 名称被重命名；</li>
+<li>原审批人已经失去生产权限；</li>
+<li>目标版本已经被撤销；</li>
+<li>SDK 升级改变了状态结构。</li>
+</ul>
+<p>即使 <code>RunState.from_json()</code> 成功，也不代表旧审批仍然可以执行。</p>
+<p><img alt="长时间审批需要应用状态版本、SDK Schema、Agent 身份、参数摘要和过期策略五层门禁" loading="lazy" decoding="async" fetchpriority="auto" width="1448" height="1086" src="/_astro/08-version-gates.BPAeRAog_Z24bLtT.webp" ></p>
+<p>我在实验状态外包了一层：</p>
+<pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"app_state_version"</span><span class="token operator">:</span> <span class="token string">"runstate-approval-lab/v1"</span><span class="token punctuation">,</span>
+  <span class="token property">"sdk_state"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"$schemaVersion"</span><span class="token operator">:</span> <span class="token string">"1.12"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>生产记录建议至少保存：</p>
+<pre class="language-sql" data-language="sql"><code is:raw="" class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> approval_request <span class="token punctuation">(</span>
+  approval_id           <span class="token keyword">TEXT</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span><span class="token punctuation">,</span>
+  tenant_id             <span class="token keyword">TEXT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  operator_scope        <span class="token keyword">TEXT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  run_id                <span class="token keyword">TEXT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  tool_call_id          <span class="token keyword">TEXT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  tool_name             <span class="token keyword">TEXT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  arguments_digest      <span class="token keyword">TEXT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  app_state_version     <span class="token keyword">TEXT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  sdk_schema_version    <span class="token keyword">TEXT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  agent_revision        <span class="token keyword">TEXT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  state_blob_uri        <span class="token keyword">TEXT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token keyword">status</span>                <span class="token keyword">TEXT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  expires_at            <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  decided_by            <span class="token keyword">TEXT</span><span class="token punctuation">,</span>
+  decided_at            <span class="token keyword">TIMESTAMP</span><span class="token punctuation">,</span>
+  revoked_at            <span class="token keyword">TIMESTAMP</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Worker 恢复前必须重新验证租户、审批人、当前权限、参数摘要、状态版本、过期时间和撤销状态。对于无法兼容的旧版本，正确做法是返回“需要重新生成审批”，而不是强行反序列化并执行。</p>
+<h2 id="十runstatesessionconversation_id-和-previous_response_id-不要混成一个状态概念">十、RunState、Session、conversation_id 和 previous_response_id 不要混成一个状态概念</h2>
+<p>OpenAI Agents SDK 提供了多种状态延续方式，它们解决的问题不同：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>机制</th><th>状态在哪里</th><th>主要用途</th><th>恢复时传什么</th></tr></thead><tbody><tr><td><code>result.to_input_list()</code></td><td>应用内存/数据库</td><td>完全手动的历史管理</td><td>历史 Items + 新输入</td></tr><tr><td><code>session</code></td><td>应用存储 + SDK</td><td>多轮会话历史</td><td>同一 Session 或同一后端实例</td></tr><tr><td><code>conversation_id</code></td><td>OpenAI Conversations API</td><td>跨 Worker 的具名服务端会话</td><td>相同 conversation_id</td></tr><tr><td><code>previous_response_id</code></td><td>OpenAI Responses API</td><td>轻量响应链</td><td>上一个 response ID</td></tr><tr><td><code>RunState</code></td><td>应用持久化 Blob</td><td>被中断的单次运行恢复</td><td>恢复后的 RunState</td></tr></tbody></table>
+<p><code>RunState</code> 会保存当前运行的 <code>conversation_id</code>、<code>previous_response_id</code> 和 <code>auto_previous_response_id</code> 配置，因此审批恢复后可以继续同一服务端会话。但 <code>conversation_id</code> 与 <code>previous_response_id</code> 互斥；本地 <code>session</code> 也不能在同一次运行中与这些服务端状态机制组合。</p>
+<p>如果审批流程同时使用 Session，恢复时要继续传同一个 Session 实例，或者传一个指向同一存储后端的实例。RunState 负责恢复暂停中的 Run，Session 负责把恢复后的这一轮追加到正确会话历史。两者不能相互替代。</p>
+<p>更重要的是，这些 ID 都不应该被当作业务授权 ID：</p>
+<ul>
+<li><code>conversation_id</code> 不是 <code>tenant_id</code>；</li>
+<li><code>previous_response_id</code> 不是审批凭据；</li>
+<li>Session ID 不是 Tool 幂等键；</li>
+<li>RunState Blob 地址不是可公开访问的恢复 Token。</li>
+</ul>
+<p>如果你还在设计 Agent 的用户、会话和运行隔离，可以同时参考 <a href="/ai/ai-agent-memory-architecture/">AI Agent Memory Architecture</a>；涉及高风险工具权限时，继续看 <a href="/ai/ai-agent-security/">AI Agent Security</a> 和 <a href="/ai/mcp-security-best-practices/">MCP 安全治理</a>。</p>
+<h2 id="十一生产级架构审批-apiblob队列worker-和幂等账本如何协作">十一、生产级架构：审批 API、Blob、队列、Worker 和幂等账本如何协作</h2>
+<p>一套可上线的 RunState 审批系统，建议采用下面的职责分工：</p>
+<p><img alt="生产级 OpenAI Agents SDK RunState 审批恢复架构：Agent API、审批库、Blob、队列、Worker、幂等账本和审计" loading="lazy" decoding="async" fetchpriority="auto" width="1448" height="1086" src="/_astro/09-production-architecture.CK6QvFp__1lh4dI.webp" ></p>
+<h3 id="agent-api">Agent API</h3>
+<p>负责运行 Agent，直到完成或出现 interruption。出现 interruption 时，不把完整 State JSON 直接返回浏览器，而是：</p>
+<ol>
+<li>计算 Tool 参数摘要；</li>
+<li>将加密 State Blob 写入私有存储；</li>
+<li>创建 <code>approval_request</code>；</li>
+<li>返回最小化、脱敏后的审批展示数据。</li>
+</ol>
+<h3 id="approval-api">Approval API</h3>
+<p>负责认证审批人，检查租户和权限，以 compare-and-set 更新工单：</p>
+<pre class="language-sql" data-language="sql"><code is:raw="" class="language-sql"><span class="token keyword">UPDATE</span> approval_request
+<span class="token keyword">SET</span> <span class="token keyword">status</span> <span class="token operator">=</span> <span class="token string">'approved'</span><span class="token punctuation">,</span> decided_by <span class="token operator">=</span> ?<span class="token punctuation">,</span> decided_at <span class="token operator">=</span> <span class="token keyword">CURRENT_TIMESTAMP</span>
+<span class="token keyword">WHERE</span> approval_id <span class="token operator">=</span> ?
+  <span class="token operator">AND</span> tenant_id <span class="token operator">=</span> ?
+  <span class="token operator">AND</span> <span class="token keyword">status</span> <span class="token operator">=</span> <span class="token string">'pending'</span>
+  <span class="token operator">AND</span> expires_at <span class="token operator">></span> <span class="token keyword">CURRENT_TIMESTAMP</span><span class="token punctuation">;</span>
+</code></pre>
+<p>只有更新行数为 1 时，才允许投递恢复任务。这样可以阻止双击批准、重复 Webhook 和过期审批。</p>
+<h3 id="queue">Queue</h3>
+<p>只传 <code>approval_id</code>，不要把完整 RunState Blob 放到普通消息队列。Worker 根据 ID 重新读取工单和 Blob，并再次验证权限、版本、摘要与撤销状态。队列默认按至少一次投递设计，不能假设消息只来一次。</p>
+<h3 id="worker">Worker</h3>
+<p>根据 <code>app_state_version</code> 加载兼容 Agent Factory，重新注入运行时依赖，调用 <code>RunState.from_json()</code>，再次核对 Tool Call 参数摘要，然后执行 <code>Runner.run(agent, state)</code>。</p>
+<h3 id="idempotency-ledger">Idempotency Ledger</h3>
+<p>所有有外部副作用的 Tool 在执行前抢占 <code>operation_key</code>。最好使用下游系统原生幂等能力；没有时至少使用数据库唯一约束、状态机和结果复用。不要用“Worker 已经拿到消息”作为完成标志，只有外部副作用和结果记录都进入可恢复状态后才能 ACK。</p>
+<h3 id="audit-与-trace">Audit 与 Trace</h3>
+<p>审计记录需要回答：谁批准、批准了什么参数、当时使用哪版 Agent、哪个 Worker 执行、外部系统返回什么、是否命中幂等复用。Trace 可以帮助还原 SDK 运行，但长期凭据不应为了恢复 Trace 而默认写入 State。官方的 <code>include_tracing_api_key=True</code> 是显式选项，生产环境应非常谨慎。</p>
+<p>生产观测至少要有以下指标：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>指标</th><th>说明</th><th>异常信号</th></tr></thead><tbody><tr><td><code>approval_pending_age</code></td><td>工单等待时间</td><td>P95 持续升高，审批渠道失效</td></tr><tr><td><code>approval_expired_total</code></td><td>超时工单数</td><td>默认 TTL 或通知机制不合理</td></tr><tr><td><code>resume_attempts_total</code></td><td>每个工单恢复次数</td><td>大于 1 说明发生重投或人工重试</td></tr><tr><td><code>idempotency_reuse_total</code></td><td>复用已完成结果次数</td><td>突增说明队列 ACK 或 Worker 稳定性有问题</td></tr><tr><td><code>state_deserialize_failure</code></td><td>状态加载失败</td><td>SDK/应用版本不兼容或 Blob 损坏</td></tr><tr><td><code>argument_digest_mismatch</code></td><td>参数摘要不一致</td><td>数据被修改、Schema 漂移或潜在攻击</td></tr><tr><td><code>effect_uncertain_total</code></td><td>外部结果不确定</td><td>必须停止自动重试并人工核对</td></tr><tr><td><code>state_blob_bytes</code></td><td>Blob 大小</td><td>Context、历史或 Trace 意外膨胀</td></tr></tbody></table>
+<p>日志要以 <code>approval_id</code>、<code>run_id</code>、<code>tool_call_id</code>、<code>operation_key</code> 关联，但不能打印完整 Tool 参数和 State。Trace ID 可以作为检索入口，不能替代业务审计；Trace 被采样或过期后，审批记录仍需独立存在。</p>
+<p>上线前的自动回归不应只测试“批准能成功”，至少覆盖：暂停前 0 副作用、批准 1 次、拒绝 0 次、重复批准只投递一次、同一状态重复恢复、Worker 执行后 ACK 丢失、Context 秘密扫描、参数摘要不一致、工单过期、权限撤销、旧应用版本、Blob 损坏和部分 interruptions 未决。每个测试都应验证数据库状态与外部效果，而不只是最终文本。</p>
+<p>这套架构也符合 <a href="/ai/ai-agent-production-governance/">AI Agent 生产治理</a> 的原则：模型负责提出动作，审批系统负责权限，Worker 负责执行，业务系统负责幂等，审计系统负责可追溯性。</p>
+<h2 id="十二最终决策什么时候只用官方示例什么时候必须上完整架构">十二、最终决策：什么时候只用官方示例，什么时候必须上完整架构</h2>
+<p>如果你的场景满足以下条件，官方的进程内示例已经足够：</p>
+<ul>
+<li>审批人在同一个 CLI 或请求生命周期里立即决定；</li>
+<li>Tool 没有不可逆副作用；</li>
+<li>进程不会退出；</li>
+<li>不经过队列；</li>
+<li>Context 不包含长期凭据；</li>
+<li>状态不需要跨版本存活。</li>
+</ul>
+<p>出现任意一项，就应进入持久化架构：</p>
+<ul>
+<li>审批可能等待分钟、小时或天；</li>
+<li>前端、Approval API 和 Worker 是不同服务；</li>
+<li>Tool 会部署、付款、发信、写数据库或改云资源；</li>
+<li>队列、Webhook 或人工操作可能重复；</li>
+<li>多租户权限需要隔离；</li>
+<li>Agent、Tool 或 Prompt 会持续升级；</li>
+<li>状态 Blob 需要加密、TTL、撤销和审计。</li>
+</ul>
+<p>正式上线不建议一次性把所有高风险 Tool 接入持久化审批。更稳妥的灰度顺序是：先接入只读或可逆工具，验证状态 Blob、审批通知、版本加载和审计链；再选择一个内部租户开放低频写入，故意制造队列重投、Worker 重启和超时；确认幂等复用、权限撤销和过期工单都符合预期后，才接入部署、付款、外发邮件等不可逆动作。</p>
+<p>回滚也要提前设计。代码回滚时不能只把线上镜像切回旧版本，因为数据库里可能同时存在 v1 和 v2 的 pending State。应保留版本路由，让旧 Worker 继续消费旧状态，新流量停止创建 v2 工单；无法兼容的工单统一标记 <code>migration_required</code>，由 Agent 重新生成提案并再次审批。绝不能把旧批准记录直接套到新 Tool 参数上。</p>
+<p>建议把每次灰度发布记录成一组可量化门禁：状态反序列化成功率、重复恢复率、幂等复用率、拒绝后副作用数、过期工单执行数、参数摘要不一致数和人工核对量。只要出现拒绝后执行、过期后执行或摘要不一致仍执行，立即停止扩量。这些属于安全正确性问题，不应通过“错误率还不高”接受。</p>
+<p>上线前至少检查：</p>
+<ol>
+<li>高风险 Tool 是否使用 <code>needs_approval</code> 或对应审批能力；</li>
+<li>暂停时副作用是否确实为 0；</li>
+<li>State 是否经过严格 Context Serializer；</li>
+<li>Blob 是否加密并绑定租户 ACL；</li>
+<li>审批参数是否有不可变摘要；</li>
+<li>工单是否支持 approved、rejected、expired、revoked；</li>
+<li>Worker 是否按应用版本重建 Agent；</li>
+<li>队列是否按至少一次投递设计；</li>
+<li>Tool 是否有稳定幂等键与唯一约束；</li>
+<li>重复恢复、拒绝、过期和版本不兼容是否都有自动测试。</li>
+</ol>
+<p>本次实验的最终判断是：<strong>RunState 已经把 OpenAI Agents SDK 的 HITL 从“进程内暂停”推进到真正可持久化的运行边界，但生产可靠性仍然取决于应用层是否把审批授权、状态版本、秘密和副作用幂等拆开。</strong> 只保存一个 JSON 文件可以完成 Demo；要让它安全执行生产动作，必须把它放进完整的软件工程系统。</p>
+<p>如果你没有使用 Agents SDK RunState，而是直接调用底层 Responses API 和 Conversation，还要处理另一种状态裂缝：客户端已经看到流式 <code>function_call</code>，但 Stream 中断后服务端没有提交该调用。对应报错和恢复策略见 <a href="/ai/openai-responses-api-stream-abort-tool-call-lost/">OpenAI Responses API 报 No tool call found：流中断后如何对账与恢复</a>。</p>
+<h2 id="可复现实验">可复现实验</h2>
+<p>实验目录：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">experiments/openai-agents-runstate-approval-resume/
+</code></pre>
+<p>运行：</p>
+<pre class="language-bash" data-language="bash"><code is:raw="" class="language-bash">python3 <span class="token parameter variable">-m</span> venv .venv
+.venv/bin/pip <span class="token function">install</span> <span class="token parameter variable">-r</span> requirements.txt
+.venv/bin/python lab.py run-all
+.venv/bin/python <span class="token parameter variable">-m</span> unittest discover <span class="token parameter variable">-s</span> tests <span class="token parameter variable">-v</span>
+</code></pre>
+<p>核心结果保存在：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">artifacts/results.json
+</code></pre>
+<h2 id="官方资料">官方资料</h2>
+<ul>
+<li><a href="https://openai.github.io/openai-agents-python/human_in_the_loop/" rel="nofollow noopener noreferrer" target="_blank">OpenAI Agents SDK：Human-in-the-loop</a></li>
+<li><a href="https://openai.github.io/openai-agents-python/ref/run_state/" rel="nofollow noopener noreferrer" target="_blank">OpenAI Agents SDK：RunState API Reference</a></li>
+<li><a href="https://openai.github.io/openai-agents-python/running_agents/" rel="nofollow noopener noreferrer" target="_blank">OpenAI Agents SDK：Running agents 与状态策略</a></li>
+<li><a href="https://openai.github.io/openai-agents-python/sessions/" rel="nofollow noopener noreferrer" target="_blank">OpenAI Agents SDK：Sessions</a></li>
+<li><a href="https://openai.github.io/openai-agents-python/context/" rel="nofollow noopener noreferrer" target="_blank">OpenAI Agents SDK：Context</a></li>
+<li><a href="https://pypi.org/project/openai-agents/" rel="nofollow noopener noreferrer" target="_blank">PyPI：openai-agents 0.18.3</a></li>
+</ul>  <section class="mt-16 rounded-[34px] border border-orange-500/20 bg-orange-500/[0.06] p-7 md:p-9 not-prose"> <div class="text-[10px] font-black uppercase tracking-[0.28em] text-orange-500 mb-4">专题入口 / AI Agent Hub</div> <h2 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-4">从单个 Agent 问题继续进入完整生产体系</h2> <p class="text-sm font-bold leading-7 text-slate-600 dark:text-slate-400 max-w-3xl">AI Agent 专题统一组织架构、记忆、工具调用、评测、安全、部署和多智能体协作，让每篇文章都回到明确的主题主页面。</p> <div class="mt-7 flex flex-wrap gap-3"> <a href="/ai/agent/" class="rounded-full bg-orange-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-white hover:bg-orange-600 transition-colors">进入 AI Agent 专题 →</a> <a href="/ai/ai-agent-architecture/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">查看架构指南</a> <a href="/newsletter/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">订阅更新</a> </div> </section> </div> <section class="mt-14 border-t border-[var(--xb-line)] pt-7" data-related-reading> <div class="mb-4 flex items-center justify-between gap-4"><h2 class="m-0 text-[17px] font-bold text-[var(--xb-ink)]">下一步阅读</h2><a href="/ai/ai-agent-complete-guide/" class="text-[10px] font-bold text-blue-600 dark:text-blue-400">返回专题 →</a></div> <div class="xb-article-related"><a href="/ai/openai-agents-sdk-duplicate-tool-names/" data-related-link><span class="font-bold text-[var(--xb-ink)]">OpenAI Agents SDK 重复 Tool 名称：为什么后注册工具会覆盖前一个？</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">OpenAI Agents SDK 重复 Tool 名称：实测 openai-agents 0.19.2：两个 FunctionTool 使用同名 lookup 时，SDK 校验不会报错，Agent 仍把两个工具交给模型，而本地分发表只保留后注册工具。本文给出离线复现、风险边界、启动前校验和修复方案。</span></a><a href="/ai/ai-agent-memory-implementation/" data-related-link><span class="font-bold text-[var(--xb-ink)]">AI Agent 记忆系统实现：解决智能体“断片”的 3 层架构与实战代码</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">AI Agent 记忆系统实现：AI Agent 记忆系统实战。对比向量数据库与图数据库在长期记忆存储中的表现。本文进一步说明先给结论：Agent 记忆系统要分清“上下文、事实、状态”、本文解决的问题：Query 意图锁定。</span></a><a href="/ai/ai-agent-autogen-tutorial/" data-related-link><span class="font-bold text-[var(--xb-ink)]">AutoGen 实战教程：多智能体对话协作、工具调用与生产化边界</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">AutoGen 实战教程：系统拆解 AutoGen 在多智能体对话协作中的实战用法与生产化边界，覆盖 AgentChat、GroupChat、Planner / Executor / Critic 模式、工具调用、Human-in-the-loop、对话轮次控制、评估指标、成本监控和 Microsoft Agent Framework 迁移风险。</span></a><a href="/ai/ai-agent-langchain-tutorial/" data-related-link><span class="font-bold text-[var(--xb-ink)]">LangChain 实战教程：手把手构建具备工具调用能力的智能体</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">LangChain 实战教程：基于 LangChain 框架的 AI Agent 构建指南。涵盖 Pydantic 工具定义、AgentExecutor 运行机制、持久化记忆集成及工业级错误处理实战。</span></a></div> </section> <section class="mt-10 border-t border-[var(--xb-line)] pt-7"> <div class="grid grid-cols-1 gap-4 md:grid-cols-[1fr_260px] md:items-center"><div><h2 class="m-0 text-[16px] font-bold text-[var(--xb-ink)]">AI 工程周报</h2><p class="mt-1 text-[10px] leading-5 text-[var(--xb-muted)]">只发真正改变工程判断的变化、故障、实验和新资产。</p></div><astro-island uid="ZNxmiM" prefix="r15" component-url="/_astro/NewsletterForm.D2u-Fqaq.js" component-export="default" renderer-url="/_astro/client.DPSb9UvF.js" props="{&quot;compact&quot;:[0,true],&quot;lang&quot;:[0,&quot;zh-CN&quot;]}" ssr client="visible" opts="{&quot;name&quot;:&quot;NewsletterForm&quot;,&quot;value&quot;:true}" await-children><div class="w-full "><form class="flex flex-col gap-2 sm:flex-row"><input type="email" placeholder="输入你的邮箱" class="h-11 min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3.5 text-[12px] font-semibold text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-950 dark:text-white" required="" value=""/><button type="submit" class="h-11 shrink-0 rounded-lg px-5 text-[11px] font-bold transition bg-blue-600 text-white hover:bg-blue-700">订阅</button></form></div><!--astro:end--></astro-island></div> </section> </article> <section class="xb-article-comments"> <div class="mb-5 flex items-center gap-3 text-[11px] font-bold text-[var(--xb-ink)]"><span>评论与补充证据</span><span class="h-px flex-1 bg-[var(--xb-line)]"></span></div> <section class="xbstack-comments" data-xbstack-waline data-server-url="https://comments.xbstack.com" data-comment-path="/ai/openai-agents-sdk-runstate-approval-resume/" data-comment-lang="zh-CN" aria-labelledby="xbstack-comments-title"> <div class="xbstack-comments__header"> <div> <p class="xbstack-comments__eyebrow">参与讨论</p> <h2 id="xbstack-comments-title"> 问题、验证与勘误 </h2> <p class="xbstack-comments__description"> 登录后可发表评论。所有新评论先进入审核；审核期间仅评论者本人和管理员可见，通过后才公开。 </p> </div> <div class="xbstack-comments__policy" aria-label="评论规则"> <span>登录评论</span> <span>审核后公开</span> </div> </div> <div class="xbstack-comments__status" data-waline-status role="status" aria-live="polite"> <span class="xbstack-comments__spinner" aria-hidden="true"></span> <span>正在加载评论区…</span> </div> <div id="waline" class="xbstack-comments__mount" data-waline-mount></div> <noscript> <p class="xbstack-comments__noscript"> 评论区需要启用 JavaScript 才能查看和发布评论。 </p> </noscript> </section>  </section> </main> <aside class="xb-article-side"> <section class="xb-article-panel"> <div class="xb-article-panel__title">本文目录</div> <div class="liquid-glass-container "><div class="liquidGlass-wrapper dock !p-6"><div class="liquidGlass-effect-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-tint-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-shine  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-text  intersect:animate-fadeLeft transition-all duration-300 fast-slow"><div class="intersect:animate-fadeLeft" data-astro-cid-hop3l3kc><h2 class="text-2xl border-none mb-3" data-astro-cid-hop3l3kc>内容导航</h2><div class="max-h-96 overflow-y-auto" data-astro-cid-hop3l3kc><ul class="list-none m-0 space-y-1" data-astro-cid-hop3l3kc><li class="ml-0" data-astro-cid-hop3l3kc><a href="#openai-agents-sdk-tool-approval-如何恢复runstate-跨进程与-v0193-流式-resume-实测" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>OpenAI Agents SDK Tool Approval 如何恢复？RunState 跨进程与 v0.19.3 流式 Resume 实测</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#一这个问题为什么值得单独写而不是继续补-langgraph-审批流" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>一、这个问题为什么值得单独写，而不是继续补 LangGraph 审批流</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#二实验环境任务和没有测试的内容" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>二、实验环境、任务和没有测试的内容</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#2026-08-05-更新0183-为什么会丢失已批准-tool-output0193-修复了什么" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>2026-08-05 更新：0.18.3 为什么会丢失已批准 Tool Output，0.19.3 修复了什么</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#三tool-approval-到底如何暂停和恢复" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>三、Tool Approval 到底如何暂停和恢复</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#四runstate-保存的是-sdk-运行不是完整业务工单" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>四、RunState 保存的是 SDK 运行，不是完整业务工单</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#五跨进程批准与恢复真正需要重建的是-agent-定义" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>五、跨进程批准与恢复：真正需要重建的是 Agent 定义</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#六拒绝不是抛异常而是把拒绝结果送回-agent" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>六、拒绝不是抛异常，而是把拒绝结果送回 Agent</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#七最危险的反例同一份已批准状态会把工具执行两次" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>七、最危险的反例：同一份已批准状态会把工具执行两次</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#八context-是持久化数据token-放进去就可能跟着状态走" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>八、Context 是持久化数据：Token 放进去就可能跟着状态走</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#九长时间审批必须同时治理-sdk-schema-和应用版本" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>九、长时间审批必须同时治理 SDK Schema 和应用版本</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#十runstatesessionconversation_id-和-previous_response_id-不要混成一个状态概念" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>十、RunState、Session、conversation_id 和 previous_response_id 不要混成一个状态概念</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#十一生产级架构审批-apiblob队列worker-和幂等账本如何协作" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>十一、生产级架构：审批 API、Blob、队列、Worker 和幂等账本如何协作</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#agent-api" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Agent API</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#approval-api" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Approval API</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#queue" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Queue</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#worker" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Worker</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#idempotency-ledger" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Idempotency Ledger</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#audit-与-trace" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Audit 与 Trace</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#十二最终决策什么时候只用官方示例什么时候必须上完整架构" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>十二、最终决策：什么时候只用官方示例，什么时候必须上完整架构</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#可复现实验" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>可复现实验</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#官方资料" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>官方资料</a></li></ul></div></div></div></div></div> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">文章工具</div> <div class="grid gap-1 text-[10px] text-[var(--xb-text)]"> <button type="button" data-copy-article class="flex items-center justify-between border-b border-[var(--xb-line)] py-2 text-left"><span>复制链接</span><span>↗</span></button> <a href="/ai/ai-agent-complete-guide/" class="flex items-center justify-between border-b border-[var(--xb-line)] py-2"><span>返回专题 Hub</span><span>→</span></a> <a href="/rss.xml" class="flex items-center justify-between border-b border-[var(--xb-line)] py-2"><span>RSS</span><span>→</span></a> <a href="/newsletter/" class="flex items-center justify-between py-2"><span>Newsletter</span><span>→</span></a> </div> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">相关文章</div> <div class="xb-article-related"><a href="/ai/openai-agents-sdk-duplicate-tool-names/">OpenAI Agents SDK 重复 Tool 名称：为什么后注册工具会覆盖前一个？</a><a href="/ai/ai-agent-memory-implementation/">AI Agent 记忆系统实现：解决智能体“断片”的 3 层架构与实战代码</a><a href="/ai/ai-agent-autogen-tutorial/">AutoGen 实战教程：多智能体对话协作、工具调用与生产化边界</a></div> </section>  </aside> </div> <script>
+  const bindArticleTools=()=>{document.querySelectorAll('[data-copy-article]').forEach((button)=>{if(button.dataset.ready)return;button.dataset.ready='1';button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(window.location.href);const original=button.querySelector('span')?.textContent;if(button.querySelector('span'))button.querySelector('span').textContent='已复制';setTimeout(()=>{if(button.querySelector('span'))button.querySelector('span').textContent=original||'复制链接'},1200)}catch{}})})};document.addEventListener('astro:page-load',bindArticleTools);bindArticleTools();
+</script> </main> <script>
+    function initProgress() {
+      const progressBar = document.getElementById('reading-progress');
+      if (!progressBar) return;
+      window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = scrolled + "%";
+      });
+    }
+    document.addEventListener('astro:page-load', initProgress);
+    initProgress();
+  </script>  </main> <footer class="mt-16 border-t border-[var(--xb-line)] bg-[var(--xb-surface)]"> <div class="xb-shell py-10 md:py-12"> <div class="grid gap-10 lg:grid-cols-[minmax(260px,0.9fr)_minmax(0,1.6fr)] lg:gap-16"> <div class="max-w-[430px]"> <a href="/" class="inline-flex items-center gap-2.5 font-black tracking-[-0.035em] text-[var(--xb-ink)]"> <img src="/favicon/favicon.svg" alt="XBSTACK" width="32" height="32" loading="lazy" decoding="async" class="h-8 w-8 object-contain"> <span class="text-[17px]">XBSTACK</span> </a> <p class="mt-5 text-[18px] font-bold leading-7 tracking-[-0.02em] text-[var(--xb-ink)]"> 在高处看世界，在底层堆资产。 </p> <p class="mt-3 text-[12px] leading-6 text-[var(--xb-muted)]"> 工程实践、可用产品、投资与阅读记录，以及旅行和户外现场。 </p> </div> <nav class="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-4" aria-label="页脚导航"> <div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">主题</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/ai/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">AI</a><a href="/tools/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Tools</a><a href="/horizon/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Horizon</a><a href="/life/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Lens</a><a href="/about/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">About</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">AI 工程</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/ai/agent/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Agents</a><a href="/ai/langgraph/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">LangGraph</a><a href="/ai/mcp/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">MCP</a><a href="/ai/workflow/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Workflow</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">资源</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/search/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">搜索</a><a href="/archive/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">归档</a><a href="/newsletter/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Newsletter</a><a href="/rss.xml" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">RSS</a><a href="https://github.com/xbstack" target="_blank" rel="noopener noreferrer" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">GitHub：@xbstack</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">联系</h2> <div class="flex flex-col items-start gap-2.5"> <a href="mailto:xbstack@163.com" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">邮箱：xbstack@163.com</a><a href="/wechat/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 wechat-trigger" data-wechat-qr="/assets/qrcode_guizhou_outdoor.png">微信公众号：贵州户外</a><a href="/contact/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">商务合作</a> </div> </div> </nav> </div> <div class="mt-9 flex flex-col gap-3 border-t border-[var(--xb-line)] pt-5 sm:flex-row sm:items-center sm:justify-between"> <div class="text-[10px] text-[var(--xb-faint)]">© 2026 XBSTACK. All rights reserved.</div> <div class="flex flex-wrap gap-x-4 gap-y-2"> <a href="/privacy/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">隐私政策</a><a href="/tos/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">服务条款</a><a href="/disclosure/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">免责声明</a><a href="/advertising/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">广告政策</a><a href="/cookies/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">Cookie 政策</a> </div> </div> </div> </footer> <!-- 桌面悬停卡：由全局脚本定位到当前公众号入口附近 --><div id="wechat-hover-card" class="fixed z-[9998] hidden w-[390px] pointer-events-none opacity-0 translate-y-2 transition-all duration-200" aria-hidden="true"> <div class="rounded-[30px] border border-white/15 bg-[#0d1728]/95 p-6 text-white shadow-[0_28px_80px_rgba(2,6,23,0.48)] backdrop-blur-2xl"> <div class="text-[10px] font-black uppercase tracking-[0.34em] text-orange-400">XBSTACK 微信公众号</div> <div class="mt-2 text-[24px] font-black tracking-tight">关注内容更新</div> <div class="mt-1 text-[12px] font-bold tracking-[0.12em] text-slate-400">AI 工程 · 产品构建 · 户外实践</div> <div class="mt-5 grid grid-cols-[148px_1fr] items-center gap-5"> <img id="wechat-hover-qr" src="/assets/qrcode_guizhou_outdoor.png" width="360" height="360" alt="微信公众号贵州户外二维码" class="block aspect-square w-full object-contain"> <div class="space-y-3 text-[13px] font-bold leading-relaxed text-slate-300"> <p>贵州徒步与路线实测</p> <p>AI 工具与独立产品</p> <p>投资体系与长期复盘</p> </div> </div> <div class="mt-5 border-t border-white/10 pt-4 text-center text-[12px] font-black text-slate-300"> 点击查看完整名片 </div> </div> </div> <!-- 全局点击弹窗 --> <div id="wechat-modal" class="fixed inset-0 z-[10000] hidden items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="wechat-modal-title" aria-hidden="true"> <button id="wechat-modal-backdrop" type="button" aria-label="关闭微信公众号弹窗" class="absolute inset-0 cursor-default bg-slate-950/86 backdrop-blur-xl"></button> <div id="wechat-modal-content" class="relative max-h-[94vh] w-full max-w-[620px] scale-95 overflow-y-auto rounded-[38px] border border-slate-500/45 bg-[#0d1728] text-white opacity-0 shadow-[0_40px_140px_rgba(0,0,0,0.68)] transition-all duration-300 sm:rounded-[50px]"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"> <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px]"></div> <div class="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-orange-500/10 blur-[80px]"></div> </div> <button id="wechat-modal-close" type="button" aria-label="关闭微信公众号弹窗" class="absolute right-5 top-5 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 transition hover:bg-white/10 hover:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg> </button> <div class="relative z-10 px-6 pb-6 pt-10 sm:px-10 sm:pb-9 sm:pt-12"> <header class="text-center"> <div class="text-[10px] font-black uppercase tracking-[0.44em] text-orange-400 sm:text-xs">XBSTACK 微信公众号</div> <h2 id="wechat-modal-title" class="mt-4 text-3xl font-black tracking-tight text-white sm:text-[38px]" style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;">关注内容更新</h2> <p class="mt-3 text-sm font-bold tracking-[0.16em] text-slate-400 sm:text-base">AI 工程 · 产品构建 · 户外实践</p> </header> <div class="mt-8 grid items-center gap-7 sm:grid-cols-[210px_1fr] sm:gap-8"> <img id="wechat-modal-qr" src="/assets/qrcode_guizhou_outdoor.png" width="360" height="360" decoding="async" alt="微信公众号贵州户外二维码" class="mx-auto block aspect-square w-full max-w-[210px] object-contain sm:max-w-none"> <div class="divide-y divide-white/10"> <div class="grid grid-cols-[38px_1fr] gap-3 py-3 first:pt-0"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M634.92 462.7l-288-448C341.03 5.54 330.89 0 320 0s-21.03 5.54-26.92 14.7l-288 448a32.001 32.001 0 0 0-1.17 32.64A32.004 32.004 0 0 0 32 512h576c11.71 0 22.48-6.39 28.09-16.67a31.983 31.983 0 0 0-1.17-32.63zM320 91.18L405.39 224H320l-64 64-38.06-38.06L320 91.18z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">户外徒步 · 贵州路线实探与分享</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">记录每一次出发，提供真实路况、补给、风险和下撤信息。</p> </div> </div> <div class="grid grid-cols-[38px_1fr] gap-3 py-3"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M278.9 511.5l-61-17.7c-6.4-1.8-10-8.5-8.2-14.9L346.2 8.7c1.8-6.4 8.5-10 14.9-8.2l61 17.7c6.4 1.8 10 8.5 8.2 14.9L293.8 503.3c-1.9 6.4-8.5 10.1-14.9 8.2zm-114-112.2l43.5-46.4c4.6-4.9 4.3-12.7-.8-17.2L117 256l90.6-79.7c5.1-4.5 5.5-12.3.8-17.2l-43.5-46.4c-4.5-4.8-12.1-5.1-17-.5L3.8 247.2c-5.1 4.7-5.1 12.8 0 17.5l144.1 135.1c4.9 4.6 12.5 4.4 17-.5zm327.2.6l144.1-135.1c5.1-4.7 5.1-12.8 0-17.5L492.1 112.1c-4.8-4.5-12.4-4.3-17 .5L431.6 159c-4.6 4.9-4.3 12.7.8 17.2L523 256l-90.6 79.7c-5.1 4.5-5.5 12.3-.8 17.2l43.5 46.4c4.5 4.9 12.1 5.1 17 .6z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">独立开发 · AI、工具与产品实战</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">从真实需求到上线复盘，持续构建可长期积累的数字产品。</p> </div> </div> <div class="grid grid-cols-[38px_1fr] gap-3 py-3 last:pb-0"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16zM464 96H345.94c-21.38 0-32.09 25.85-16.97 40.97l32.4 32.4L288 242.75l-73.37-73.37c-12.5-12.5-32.76-12.5-45.25 0l-68.69 68.69c-6.25 6.25-6.25 16.38 0 22.63l22.62 22.62c6.25 6.25 16.38 6.25 22.63 0L192 237.25l73.37 73.37c12.5 12.5 32.76 12.5 45.25 0l96-96 32.4 32.4c15.12 15.12 40.97 4.41 40.97-16.97V112c.01-8.84-7.15-16-15.99-16z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">投资思考 · 复利、风险与长期主义</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">分享投资体系、市场观察和个人决策复盘，不构成投资建议。</p> </div> </div> </div> </div> <div class="mt-6 text-center text-sm font-black leading-relaxed text-slate-300"> 扫码关注微信公众号 <span class="text-orange-400">“贵州户外”</span> <p class="mt-1 text-xs font-bold text-slate-500">获取户外路线、独立开发与投资复盘的最新内容</p> </div> <button id="wechat-modal-confirm" type="button" class="mt-7 w-full rounded-[24px] bg-white px-6 py-4 text-sm font-black tracking-[0.12em] text-slate-950 shadow-xl transition hover:-translate-y-0.5 hover:bg-slate-100 active:translate-y-0"> 知道了 / CLOSE </button> </div> </div> </div> <script type="module">const b="/assets/qrcode_guizhou_outdoor.png";function f(){const t=document.getElementById("wechat-modal"),y=document.getElementById("wechat-modal-backdrop"),d=document.getElementById("wechat-modal-content"),u=document.getElementById("wechat-modal-close"),E=document.getElementById("wechat-modal-confirm"),c=document.getElementById("wechat-modal-qr"),o=document.getElementById("wechat-hover-card"),i=document.getElementById("wechat-hover-qr");if(!t||!d||!o)return;let l=0;const p=window.matchMedia("(hover: hover) and (pointer: fine)"),w=e=>{const n=e.dataset.wechatQr||b;c&&c.src!==new URL(n,window.location.href).href&&(c.src=n),i&&i.src!==new URL(n,window.location.href).href&&(i.src=n)},s=()=>{window.clearTimeout(l),o.classList.add("opacity-0","translate-y-2"),l=window.setTimeout(()=>o.classList.add("hidden"),180)},v=e=>{if(!p.matches||!t.classList.contains("hidden"))return;window.clearTimeout(l),w(e),o.classList.remove("hidden");const n=e.getBoundingClientRect(),L=390,B=310,r=12;let m=n.left+n.width/2-L/2;m=Math.max(r,Math.min(m,window.innerWidth-L-r));let h=n.top-B-12;h<r&&(h=n.bottom+12),o.style.left=`${m}px`,o.style.top=`${h}px`,requestAnimationFrame(()=>o.classList.remove("opacity-0","translate-y-2"))},I=e=>{s(),w(e),t.classList.remove("hidden"),t.classList.add("flex"),t.setAttribute("aria-hidden","false"),document.body.style.overflow="hidden",requestAnimationFrame(()=>{d.classList.remove("scale-95","opacity-0"),d.classList.add("scale-100","opacity-100"),u?.focus()})},a=()=>{d.classList.remove("scale-100","opacity-100"),d.classList.add("scale-95","opacity-0"),window.setTimeout(()=>{t.classList.add("hidden"),t.classList.remove("flex"),t.setAttribute("aria-hidden","true"),document.body.style.overflow=""},260)};document.querySelectorAll(".wechat-trigger").forEach(e=>{e.dataset.wechatInitialized!=="true"&&(e.dataset.wechatInitialized="true",e.addEventListener("mouseenter",()=>v(e)),e.addEventListener("mouseleave",s),e.addEventListener("focus",()=>v(e)),e.addEventListener("blur",s),e.addEventListener("click",n=>{n.preventDefault(),I(e)}))}),t.dataset.wechatInitialized!=="true"&&(t.dataset.wechatInitialized="true",u?.addEventListener("click",a),E?.addEventListener("click",a),y?.addEventListener("click",a),document.addEventListener("keydown",e=>{e.key==="Escape"&&!t.classList.contains("hidden")&&a()}),window.addEventListener("scroll",s,{passive:!0}),window.addEventListener("resize",s))}f();document.addEventListener("astro:page-load",f);</script> <script>
+      const showLanguageSwitchNotice = () => {
+        let payload = null;
+        try {
+          const raw = sessionStorage.getItem('xbstack_language_notice');
+          if (!raw) return;
+          payload = JSON.parse(raw);
+          sessionStorage.removeItem('xbstack_language_notice');
+        } catch (error) {
+          return;
+        }
+
+        const notice = document.getElementById('language-switch-notice');
+        if (!notice) return;
+
+        const targetIsEnglish = String(payload?.language || '').toLowerCase().startsWith('en');
+        notice.textContent = targetIsEnglish
+          ? 'This page does not have an English version yet. You have been taken to the English home page.'
+          : '当前页面暂未提供中文版本，已为你打开中文首页。';
+        notice.classList.remove('hidden');
+        window.setTimeout(() => notice.classList.add('hidden'), 4800);
+      };
+
+      document.addEventListener('astro:page-load', showLanguageSwitchNotice);
+      showLanguageSwitchNotice();
+    </script> </body> </html>
