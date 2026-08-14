@@ -2,7 +2,7 @@ import { c as createComponent, a as renderComponent, r as renderTemplate, m as m
 import 'piccolore';
 import { $ as $$BaseLayout } from '../chunks/BaseLayout_Lb3doMJi.mjs';
 import { N as NewsletterForm } from '../chunks/NewsletterForm_DuXcv_Zx.mjs';
-import { g as getCollection } from '../chunks/_astro_content_jbBoyPXF.mjs';
+import { g as getCollection } from '../chunks/_astro_content_C-Q10liE.mjs';
 export { renderers } from '../renderers.mjs';
 
 const $$Index = createComponent(async ($$result, $$props, $$slots) => {

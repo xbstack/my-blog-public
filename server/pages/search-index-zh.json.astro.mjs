@@ -1,4 +1,4 @@
-import { b as buildSearchIndex, s as searchIndexHeaders } from '../chunks/search-index_BnyladUV.mjs';
+import { b as buildSearchIndex, s as searchIndexHeaders } from '../chunks/search-index_DKgLmRma.mjs';
 export { renderers } from '../renderers.mjs';
 
 const GET = async () => {

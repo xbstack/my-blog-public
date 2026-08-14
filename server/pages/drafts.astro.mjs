@@ -3,7 +3,7 @@ import 'piccolore';
 import 'clsx';
 import '../chunks/BaseLayout_Lb3doMJi.mjs';
 import '../chunks/BlogListCard_BXcEr3EY.mjs';
-import '../chunks/_astro_content_jbBoyPXF.mjs';
+import '../chunks/_astro_content_C-Q10liE.mjs';
 export { renderers } from '../renderers.mjs';
 
 const $$Astro = createAstro("https://www.xbstack.com");

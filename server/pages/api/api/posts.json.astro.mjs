@@ -1,4 +1,4 @@
-import { g as getCollection } from '../../../chunks/_astro_content_jbBoyPXF.mjs';
+import { g as getCollection } from '../../../chunks/_astro_content_C-Q10liE.mjs';
 export { renderers } from '../../../renderers.mjs';
 
 const entrySlug = (entry) => entry.slug || entry.id.replace(/\.(md|mdx)$/, "");

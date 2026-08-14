@@ -1,7 +1,7 @@
 import { c as createComponent, a as renderComponent, r as renderTemplate, m as maybeRenderHead, b as addAttribute } from '../chunks/astro/server_CuadZCs7.mjs';
 import 'piccolore';
 import { $ as $$BaseLayout } from '../chunks/BaseLayout_Lb3doMJi.mjs';
-import { g as getCollection } from '../chunks/_astro_content_jbBoyPXF.mjs';
+import { g as getCollection } from '../chunks/_astro_content_C-Q10liE.mjs';
 import { $ as $$BlogListCard } from '../chunks/BlogListCard_BXcEr3EY.mjs';
 export { renderers } from '../renderers.mjs';
 

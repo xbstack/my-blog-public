@@ -1,7 +1,7 @@
 import { d as createAstro, c as createComponent, a as renderComponent, r as renderTemplate, m as maybeRenderHead, b as addAttribute, e as renderScript } from '../../chunks/astro/server_CuadZCs7.mjs';
 import 'piccolore';
 import { $ as $$AdminLayout } from '../../chunks/AdminLayout_DUrOWMw0.mjs';
-import { g as getCollection } from '../../chunks/_astro_content_jbBoyPXF.mjs';
+import { g as getCollection } from '../../chunks/_astro_content_C-Q10liE.mjs';
 export { renderers } from '../../renderers.mjs';
 
 const $$Astro = createAstro("https://www.xbstack.com");

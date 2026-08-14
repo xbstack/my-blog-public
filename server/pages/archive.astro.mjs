@@ -1,6 +1,6 @@
 import { c as createComponent, a as renderComponent, r as renderTemplate } from '../chunks/astro/server_CuadZCs7.mjs';
 import 'piccolore';
-import { g as getArchivePosts, a as getArchiveSidebarData, A as ARCHIVE_PAGE_SIZE, $ as $$ArchivePage } from '../chunks/ArchivePage_B-T8lHxY.mjs';
+import { g as getArchivePosts, a as getArchiveSidebarData, A as ARCHIVE_PAGE_SIZE, $ as $$ArchivePage } from '../chunks/ArchivePage_C9DsL7zH.mjs';
 export { renderers } from '../renderers.mjs';
 
 const $$Archive = createComponent(async ($$result, $$props, $$slots) => {

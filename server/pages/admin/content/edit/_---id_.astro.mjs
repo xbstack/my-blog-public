@@ -1,7 +1,7 @@
 import { d as createAstro, c as createComponent, a as renderComponent, r as renderTemplate, f as defineScriptVars, b as addAttribute, m as maybeRenderHead } from '../../../../chunks/astro/server_CuadZCs7.mjs';
 import 'piccolore';
 import { $ as $$AdminLayout } from '../../../../chunks/AdminLayout_DUrOWMw0.mjs';
-import { a as getEntry } from '../../../../chunks/_astro_content_jbBoyPXF.mjs';
+import { a as getEntry } from '../../../../chunks/_astro_content_C-Q10liE.mjs';
 export { renderers } from '../../../../renderers.mjs';
 
 var __freeze = Object.freeze;

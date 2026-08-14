@@ -1,6 +1,6 @@
 import { d as createAstro, c as createComponent, m as maybeRenderHead, a as renderComponent, b as addAttribute, r as renderTemplate } from '../../chunks/astro/server_CuadZCs7.mjs';
 import 'piccolore';
-import { g as getCollection } from '../../chunks/_astro_content_jbBoyPXF.mjs';
+import { g as getCollection } from '../../chunks/_astro_content_C-Q10liE.mjs';
 import { $ as $$BaseLayout } from '../../chunks/BaseLayout_Lb3doMJi.mjs';
 import { $ as $$BlogListCard } from '../../chunks/BlogListCard_BXcEr3EY.mjs';
 import { $ as $$AuthorSidebar, s as slugify } from '../../chunks/authorSidebar_iCvki5ec.mjs';

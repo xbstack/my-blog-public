@@ -4,7 +4,7 @@ import { $ as $$AdminLayout } from '../../chunks/AdminLayout_DUrOWMw0.mjs';
 import { G as GrowthIntelligenceConsole } from '../../chunks/GrowthIntelligenceConsole_BtPZhcYM.mjs';
 import fs from 'fs';
 import path from 'path';
-import { g as getCollection } from '../../chunks/_astro_content_jbBoyPXF.mjs';
+import { g as getCollection } from '../../chunks/_astro_content_C-Q10liE.mjs';
 /* empty css                                        */
 export { renderers } from '../../renderers.mjs';
 
