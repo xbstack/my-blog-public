@@ -1,0 +1,44 @@
+{
+  "runtime": "n8n 1.112.4",
+  "date": "2026-08-18",
+  "process_timed_out_after_output": false,
+  "process_returncode": 0,
+  "cases": {
+    "Raw body + JSON response": {
+      "execution_status": "success",
+      "keys": ["_chunkSize", "_defaultFlushFlag", "_defaultFullFlushFlag", "_events", "_eventsCount", "_finishFlushFlag", "_handle", "_level", "_maxOutputLength", "_mode", "_outBuffer", "_outOffset", "_readableState", "_rejectGarbageAfterEnd", "_strategy", "_writableState", "_writeState", "allowHalfOpen", "bytesWritten"],
+      "has_readable_state": true,
+      "has_writable_state": true,
+      "has_bytes_written": true,
+      "has_echo_json": false,
+      "echo_case": null
+    },
+    "JSON body + JSON response": {
+      "execution_status": "success",
+      "keys": ["args", "data", "files", "form", "headers", "json", "url"],
+      "has_readable_state": false,
+      "has_writable_state": false,
+      "has_bytes_written": false,
+      "has_echo_json": true,
+      "echo_case": "json-json"
+    },
+    "Raw body + Auto response": {
+      "execution_status": "success",
+      "keys": ["args", "data", "files", "form", "headers", "json", "url"],
+      "has_readable_state": false,
+      "has_writable_state": false,
+      "has_bytes_written": false,
+      "has_echo_json": true,
+      "echo_case": "raw-auto"
+    },
+    "Raw body + Text response": {
+      "execution_status": "success",
+      "keys": ["data"],
+      "has_readable_state": false,
+      "has_writable_state": false,
+      "has_bytes_written": false,
+      "has_echo_json": false,
+      "echo_case": null
+    }
+  }
+}
