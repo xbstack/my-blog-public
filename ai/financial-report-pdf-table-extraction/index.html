@@ -980,9 +980,9 @@
 </code></pre>
 <p>我们在让模型抽取时，会强制指定这一套 Schema。</p>
 <h2 id="6-第四层处理用-json-schema-限制大模型输出">6. 第四层处理：用 JSON Schema 限制大模型输出</h2>
-<p>通过结构化 JSON Schema 约束大模型输出，是彻底杜绝 AI 自由发挥和生成幻觉投资建议的核心手段。</p>
-<p>很多程序员写 Prompt 时，喜欢用自然语言写一句“请以 JSON 格式输出上述财务数据”。然而在这种宽松的口头要求下，大模型经常会在输出中包含 markdown 代码块包围、多余的解释文字，甚至在遇到提取失败的字段时直接编造数字。</p>
-<p>在生产环境中，我们必须使用 OpenAI 或者 Llama.cpp 支持的 Structured Outputs 模式（即 JSON Schema 强类型约束模式）。当大模型被限制在 JSON Schema 中时，它的输出概率分布在每个 Token 级别都受到了 Schema 状态机的强力裁剪。如果 Schema 规定 <code>revenue</code> 的类型是 <code>number</code> 或 <code>null</code>，模型就不可能输出一段文字。</p>
+<p>用 JSON Schema 约束大模型输出，是降低格式漂移、让财报抽取结果可被程序校验的重要手段，但 <strong>Schema 合规不等于事实正确</strong>。如果需要完整的字段设计，包括 <code>source_page</code>、<code>source_text</code>、<code>confidence</code>、<code>null_reason</code> 和人工复核字段，见 <a href="/ai/llm-json-schema-financial-report-extraction/">LLM JSON Schema 财报结构化抽取</a>。</p>
+<p>很多程序员写 Prompt 时，喜欢用自然语言写一句“请以 JSON 格式输出上述财务数据”。然而在这种宽松的口头要求下，大模型可能会在输出中包含 markdown 代码块、多余解释文字，甚至在字段提取失败时猜测数值。</p>
+<p>在生产环境中，优先使用 Provider 支持的 Structured Outputs / JSON Schema 模式，并在应用层再次做 Schema Validation。Schema 可以把 <code>revenue</code> 限制为 <code>number | null</code>，但它不能证明抽取出的数字与原始财报一致，因此还需要证据字段、来源页码和人工复核。</p>
 <p>以下是我编写的基于 JSON Schema 的抽取提示词模板和大模型调用参数配置：</p>
 <pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">import</span> json
 <span class="token keyword">from</span> openai <span class="token keyword">import</span> OpenAI
