@@ -15,6 +15,33 @@
       "status": "active",
       "category_code": "ai",
       "sort_order": 1
+    },
+    {
+      "id": "2",
+      "name": "ECWU's Notebook",
+      "url": "https://ecwuuuuu.com",
+      "description": "AI、开源、自托管、工程实践与摄影记录",
+      "status": "active",
+      "category_code": "ai",
+      "sort_order": 2
+    },
+    {
+      "id": "3",
+      "name": "Strike Freedom",
+      "url": "https://strikefreedom.top",
+      "description": "Go、Linux、网络与开源源码深度技术博客",
+      "status": "active",
+      "category_code": "ai",
+      "sort_order": 3
+    },
+    {
+      "id": "4",
+      "name": "FGHRSH",
+      "url": "https://www.fghrsh.net",
+      "description": "长期独立写作，记录技术、DIY、硬件与生活",
+      "status": "active",
+      "category_code": "tool",
+      "sort_order": 4
     }
   ]
 }
