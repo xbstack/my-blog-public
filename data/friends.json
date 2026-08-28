@@ -12,7 +12,7 @@
       "name": "猫普的精神世界",
       "url": "https://maplezz.com",
       "description": "一个独立开发者的精神自留地",
-      "avatar": "/images/friends/maplezz.png",
+      "avatar": "https://maplezz.com/favicon/apple-touch-icon.png",
       "status": "active",
       "category_code": "ai",
       "sort_order": 1
@@ -22,7 +22,7 @@
       "name": "ECWU's Notebook",
       "url": "https://ecwuuuuu.com",
       "description": "AI、开源、自托管、工程实践与摄影记录",
-      "avatar": "/images/friends/ecwu.png",
+      "avatar": "https://ecwuuuuu.com/favicon.ico",
       "status": "active",
       "category_code": "ai",
       "sort_order": 2
@@ -32,7 +32,7 @@
       "name": "Strike Freedom",
       "url": "https://strikefreedom.top",
       "description": "Go、Linux、网络与开源源码深度技术博客",
-      "avatar": "/images/friends/strikefreedom.png",
+      "avatar": "https://img.icons8.com/fluency/48/pokeball.png",
       "status": "active",
       "category_code": "ai",
       "sort_order": 3
@@ -42,7 +42,7 @@
       "name": "FGHRSH",
       "url": "https://www.fghrsh.net",
       "description": "长期独立写作，记录技术、DIY、硬件与生活",
-      "avatar": "/images/friends/fghrsh.png",
+      "avatar": "https://cdn.fghrsh.net/blogcdn/2018/08/201808108310_6281.png",
       "status": "active",
       "category_code": "life",
       "sort_order": 4
