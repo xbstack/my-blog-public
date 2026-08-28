@@ -1,9 +1,10 @@
 {
   "categories": [
-    { "id": "cat-ai", "name": "AI / 独立开发", "code": "ai", "sort_order": 1 },
-    { "id": "cat-photo", "name": "摄影", "code": "photo", "sort_order": 2 },
-    { "id": "cat-music", "name": "音乐", "code": "music", "sort_order": 3 },
-    { "id": "cat-tool", "name": "工具", "code": "tool", "sort_order": 4 }
+    { "id": "cat-ai", "name": "AI / 开发", "code": "ai", "sort_order": 1 },
+    { "id": "cat-tool", "name": "产品 / 工具", "code": "tool", "sort_order": 2 },
+    { "id": "cat-life", "name": "创作 / 生活", "code": "life", "sort_order": 3 },
+    { "id": "cat-invest", "name": "投资 / 商业", "code": "invest", "sort_order": 4 },
+    { "id": "cat-outdoor", "name": "户外 / 旅行", "code": "outdoor", "sort_order": 5 }
   ],
   "links": [
     {
@@ -11,7 +12,7 @@
       "name": "猫普的精神世界",
       "url": "https://maplezz.com",
       "description": "一个独立开发者的精神自留地",
-      "avatar": "/favicon/avatar.webp",
+      "avatar": "/images/friends/maplezz.png",
       "status": "active",
       "category_code": "ai",
       "sort_order": 1
@@ -21,6 +22,7 @@
       "name": "ECWU's Notebook",
       "url": "https://ecwuuuuu.com",
       "description": "AI、开源、自托管、工程实践与摄影记录",
+      "avatar": "/images/friends/ecwu.png",
       "status": "active",
       "category_code": "ai",
       "sort_order": 2
@@ -30,6 +32,7 @@
       "name": "Strike Freedom",
       "url": "https://strikefreedom.top",
       "description": "Go、Linux、网络与开源源码深度技术博客",
+      "avatar": "/images/friends/strikefreedom.png",
       "status": "active",
       "category_code": "ai",
       "sort_order": 3
@@ -39,8 +42,9 @@
       "name": "FGHRSH",
       "url": "https://www.fghrsh.net",
       "description": "长期独立写作，记录技术、DIY、硬件与生活",
+      "avatar": "/images/friends/fghrsh.png",
       "status": "active",
-      "category_code": "tool",
+      "category_code": "life",
       "sort_order": 4
     }
   ]
