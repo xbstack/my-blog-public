@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="20 30 155 90" role="img" aria-label="XBSTACK animated logo">
+  <defs>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="1.8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Static brand mark -->
+  <g>
+    <path d="M29 40 L59 76 L28 113 L46 113 L68 87 L74 92 L91 113 L110 113 L47 40 Z" fill="#111111"/>
+    <path d="M109 41 L104 41 L103 40 L91 40 L84 47 L84 48 L79 53 L79 54 L73 60 L73 61 L75 63 L75 64 L82 71 L84 69 L84 68 L92 60 L92 59 L102 49 L102 48 Z" fill="#111111"/>
+    <path d="M120 40 L108 53 L144 53 L149 59 L149 64 L144 70 L141 71 L112 71 L109 74 L109 79 L111 82 L142 82 L148 86 L150 92 L149 96 L143 101 L107 101 L117 113 L148 113 L154 111 L159 107 L164 96 L163 86 L155 77 L163 65 L162 52 L158 46 L150 41 Z" fill="#FF6500"/>
+  </g>
+
+  <!-- Traveling highlight. It runs once and disappears. -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+    <path pathLength="100" d="M29 40 L59 76 L28 113 L46 113 L68 87 L74 92 L91 113 L110 113 L47 40 Z"
+          stroke="#FF8A33" stroke-width="2.0" stroke-dasharray="8 92" stroke-dashoffset="108" opacity="0">
+      <animate attributeName="stroke-dashoffset" values="108;0" dur="1.05s" begin="0s" fill="freeze"/>
+      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.82;1" dur="1.05s" begin="0s" fill="freeze"/>
+    </path>
+    <path pathLength="100" d="M109 41 L104 41 L103 40 L91 40 L84 47 L84 48 L79 53 L79 54 L73 60 L73 61 L75 63 L75 64 L82 71 L84 69 L84 68 L92 60 L92 59 L102 49 L102 48 Z"
+          stroke="#FF8A33" stroke-width="2.0" stroke-dasharray="10 90" stroke-dashoffset="110" opacity="0">
+      <animate attributeName="stroke-dashoffset" values="110;0" dur="0.72s" begin="0.12s" fill="freeze"/>
+      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.8;1" dur="0.72s" begin="0.12s" fill="freeze"/>
+    </path>
+    <path pathLength="100" d="M120 40 L108 53 L144 53 L149 59 L149 64 L144 70 L141 71 L112 71 L109 74 L109 79 L111 82 L142 82 L148 86 L150 92 L149 96 L143 101 L107 101 L117 113 L148 113 L154 111 L159 107 L164 96 L163 86 L155 77 L163 65 L162 52 L158 46 L150 41 Z"
+          stroke="#FF9A45" stroke-width="2.4" stroke-dasharray="8 92" stroke-dashoffset="108" opacity="0">
+      <animate attributeName="stroke-dashoffset" values="108;0" dur="1.0s" begin="0.38s" fill="freeze"/>
+      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.84;1" dur="1.0s" begin="0.38s" fill="freeze"/>
+    </path>
+  </g>
+</svg>
