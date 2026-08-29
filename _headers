@@ -52,6 +52,5 @@
 # Public brand logo: allow friend-link pages and other external sites to embed it
 /favicon/logo.png
   ! Cross-Origin-Resource-Policy
-  Cross-Origin-Resource-Policy: cross-origin
   Access-Control-Allow-Origin: *
   Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
