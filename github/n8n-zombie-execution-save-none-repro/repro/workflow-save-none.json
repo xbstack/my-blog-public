@@ -1,0 +1,82 @@
+{
+  "id": "xbstackZombie2366",
+  "name": "XBSTACK n8n zombie execution save-none repro",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "xbstack-zombie-save-none",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "4a60f1bf-27f4-4b3d-b7bd-48c86ff1f5b8",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [0, 0],
+      "webhookId": "xbstack-zombie-save-none"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4d2de7ce-acde-4ee1-b9dd-bb38de5b1a86",
+              "name": "ok",
+              "value": true,
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d1fe5465-7eb6-48e8-a1c2-02aa128a1267",
+      "name": "Set Result",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [240, 0]
+    },
+    {
+      "parameters": {},
+      "id": "3b4dd39f-230a-47d2-b6bb-79b5748d0a7f",
+      "name": "No Operation",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [480, 0]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Result": {
+      "main": [
+        [
+          {
+            "node": "No Operation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "saveExecutionProgress": false,
+    "saveManualExecutions": true
+  },
+  "pinData": {},
+  "versionId": "cb5c7860-ecb4-4b18-bb1e-e85a27dd89cf"
+}
