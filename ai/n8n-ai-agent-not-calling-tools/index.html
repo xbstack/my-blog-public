@@ -574,7 +574,7 @@
               window._hmt.push(['_trackPageview', pageKey]);
             });
           }
-        </script><link rel="stylesheet" href="/_astro/archive.BqrbM-yl.css">
+        </script><link rel="stylesheet" href="/_astro/archive.CE3XuaME.css">
 <style>h1,h2,h3,h4,h5,h6{scroll-margin-top:8rem}[data-astro-cid-hop3l3kc][data-toc-link]{cursor:pointer;transition:color .2s ease}[data-astro-cid-hop3l3kc][data-toc-link]:hover{color:var(--color-primary, #f97316)}.financial-disclaimer[data-astro-cid-qg2yevcq]{box-shadow:0 4px 20px -5px #f973161a}
 </style>
 <link rel="stylesheet" href="/_astro/_slug_.CoqtapaZ.css">
@@ -1073,7 +1073,7 @@ send_refund_confirmation_email
 9. 写入业务审计ID和幂等键
 </code></pre>
 <p>每次只改变一个变量。一次同时换模型、改Prompt、改Schema和换Memory，最终即使成功，也无法知道真正修复了什么。</p>
-<p>可复现实验代码已同步到<a href="https://github.com/xbstack/my-blog-public/tree/main/experiments/n8n-ai-agent-tool-choice" rel="nofollow noopener noreferrer" target="_blank">公开 GitHub 目录</a>。它不需要 API Key，可直接重跑请求契约和 5 项单元测试。</p>
+<p>可复现实验代码已同步到<a href="https://github.com/xbstack/my-blog-public/tree/main/experiments/n8n-ai-agent-tool-choice" rel="nofollow noopener noreferrer" target="_blank">公开 GitHub 目录</a>。它不需要 API Key，可直接重跑请求契约和 5 项单元测试。框架层行为应继续对照 n8n 当前的 <a href="https://docs.n8n.io/integrations/builtin/cluster-nodes/root-nodes/n8n-nodes-langchain.agent/" rel="nofollow noopener noreferrer" target="_blank">AI Agent 官方文档</a> 和 <a href="https://docs.n8n.io/advanced-ai/" rel="nofollow noopener noreferrer" target="_blank">Advanced AI 官方文档</a>；本地实验用于验证请求与执行契约，不替代上游文档。</p>
 <h2 id="最终判断">最终判断</h2>
 <p>n8n AI Agent不调用工具并不是一个单一Bug。首轮<code>tool_choice</code>缺失、Provider兼容不完整、模型工具选择能力、Schema错误、工具描述冲突和Memory丢失都可能产生相似表象。</p>
 <p>最重要的判断标准不是Agent回复里有没有“我已调用”，而是Execution中是否存在真实Tool Call、Tool节点是否执行、结果是否持久化、外部副作用是否有审计记录。Prompt只能影响模型，不能代替协议约束和业务证据。</p>

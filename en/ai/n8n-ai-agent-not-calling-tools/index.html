@@ -574,7 +574,7 @@
               window._hmt.push(['_trackPageview', pageKey]);
             });
           }
-        </script><link rel="stylesheet" href="/_astro/archive.BqrbM-yl.css">
+        </script><link rel="stylesheet" href="/_astro/archive.CE3XuaME.css">
 <style>h1,h2,h3,h4,h5,h6{scroll-margin-top:8rem}[data-astro-cid-hop3l3kc][data-toc-link]{cursor:pointer;transition:color .2s ease}[data-astro-cid-hop3l3kc][data-toc-link]:hover{color:var(--color-primary, #f97316)}.financial-disclaimer[data-astro-cid-qg2yevcq]{box-shadow:0 4px 20px -5px #f973161a}
 </style>
 <link rel="stylesheet" href="/_astro/_slug_.CoqtapaZ.css">
@@ -1074,7 +1074,7 @@ send_refund_confirmation_email
 9. Add audit IDs and idempotency keys for side effects
 </code></pre>
 <p>Change one variable at a time. If the model, prompt, schema, provider, and memory are all changed together, a successful run still does not identify the actual fix.</p>
-<p>The reproducible lab is available in the <a href="https://github.com/xbstack/my-blog-public/tree/main/experiments/n8n-ai-agent-tool-choice" rel="nofollow noopener noreferrer" target="_blank">public GitHub directory</a>. It requires no API key and reruns both the request-contract fixture and five unit tests.</p>
+<p>The reproducible lab is available in the <a href="https://github.com/xbstack/my-blog-public/tree/main/experiments/n8n-ai-agent-tool-choice" rel="nofollow noopener noreferrer" target="_blank">public GitHub directory</a>. It requires no API key and reruns both the request-contract fixture and five unit tests. For framework-level behavior, compare the observed execution with n8n’s current <a href="https://docs.n8n.io/integrations/builtin/cluster-nodes/root-nodes/n8n-nodes-langchain.agent/" rel="nofollow noopener noreferrer" target="_blank">AI Agent documentation</a> and <a href="https://docs.n8n.io/advanced-ai/" rel="nofollow noopener noreferrer" target="_blank">Advanced AI documentation</a>; the local lab is evidence for the request/execution contract, not a replacement for upstream documentation.</p>
 <h2 id="final-decision">Final decision</h2>
 <p>“n8n AI Agent not calling tools” is a symptom shared by several failure classes: a missing first-iteration <code>tool_choice</code>, incomplete provider compatibility, weak tool selection, invalid schema, ambiguous descriptions, result parsing, and missing tool messages in memory.</p>
 <p>The load-bearing evidence is not a sentence saying “I called the tool.” It is an execution that contains a real tool call, a tool node result, persisted state, and an audit record for external side effects. Prompts can influence the model; they cannot replace the request contract or execution evidence.</p>
