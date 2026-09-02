@@ -4,7 +4,8 @@
     { "id": "cat-tool", "name": "产品 / 工具", "code": "tool", "sort_order": 2 },
     { "id": "cat-life", "name": "创作 / 生活", "code": "life", "sort_order": 3 },
     { "id": "cat-invest", "name": "投资 / 商业", "code": "invest", "sort_order": 4 },
-    { "id": "cat-outdoor", "name": "户外 / 旅行", "code": "outdoor", "sort_order": 5 }
+    { "id": "cat-outdoor", "name": "户外 / 旅行", "code": "outdoor", "sort_order": 5 },
+    { "id": "cat-community", "name": "博客社区", "code": "community", "sort_order": 6 }
   ],
   "links": [
     {
@@ -46,6 +47,16 @@
       "status": "active",
       "category_code": "life",
       "sort_order": 4
+    },
+    {
+      "id": "5",
+      "name": "博友圈",
+      "url": "https://www.boyouquan.com/certificates/www.xbstack.com",
+      "description": "让我们跨越山海彼此相连，一起用文字打败时间",
+      "avatar": "https://www.boyouquan.com/images/logo/performance.svg?domainName=www.xbstack.com",
+      "status": "active",
+      "category_code": "community",
+      "sort_order": 5
     }
   ]
 }
