@@ -39,16 +39,6 @@
       "sort_order": 3
     },
     {
-      "id": "4",
-      "name": "FGHRSH",
-      "url": "https://www.fghrsh.net",
-      "description": "长期独立写作，记录技术、DIY、硬件与生活",
-      "avatar": "https://cdn.fghrsh.net/blogcdn/2018/08/201808108310_6281.png",
-      "status": "active",
-      "category_code": "life",
-      "sort_order": 4
-    },
-    {
       "id": "5",
       "name": "博友圈",
       "url": "https://www.boyouquan.com/certificates/www.xbstack.com",
