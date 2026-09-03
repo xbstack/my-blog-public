@@ -47,6 +47,16 @@
       "status": "active",
       "category_code": "community",
       "sort_order": 5
+    },
+    {
+      "id": "6",
+      "name": "中文独立博客列表",
+      "url": "https://github.com/timqian/chinese-independent-blogs",
+      "description": "中文独立博客与 RSS 公开列表，XBSTACK 已收录",
+      "avatar": "https://github.githubassets.com/favicons/favicon.svg",
+      "status": "active",
+      "category_code": "community",
+      "sort_order": 6
     }
   ]
 }
