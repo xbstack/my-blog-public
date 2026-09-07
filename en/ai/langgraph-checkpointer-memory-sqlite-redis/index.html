@@ -1294,6 +1294,7 @@ config <span class="token operator">=</span> <span class="token punctuation">{</
 <ul>
 <li>Root cause: Your Tool returned an object that is a custom Python class instance (for example, directly returning a database ORM object) instead of converting it to a basic <code>dict</code> or JSON string. The Checkpointer cannot serialize this complex object into a byte stream when saving the graph state to disk.</li>
 <li>Solution: Ensure that all data returned by your Tool function to the Node consists of standard primitive types (<code>str</code>, <code>int</code>, <code>dict</code>, <code>list</code>).</li>
+<li>If the value serializes successfully but its timezone semantics change after restore, continue with <a href="/en/ai/langgraph-checkpoint-zoneinfo-fold-dst/">LangGraph Checkpoint Loses ZoneInfo and fold</a>. That case is not a hard serialization failure: the <code>datetime</code> round-trip preserves the instant while losing the IANA timezone rule and <code>fold</code> semantics.</li>
 </ul>
 <hr>
 <h2 id="10-production-readiness-checklist--faq">10. Production Readiness Checklist &#x26; FAQ</h2>

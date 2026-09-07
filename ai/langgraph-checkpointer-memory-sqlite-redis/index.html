@@ -1307,6 +1307,7 @@ config <span class="token operator">=</span> <span class="token punctuation">{</
 <ul>
 <li>发生原因：你的 Tool 返回的对象是一个自定义的 Python 类实例（比如直接返回了某个数据库 ORM 对象），而没有将其转换为基础的 dict 或 JSON 字符串。Checkpointer 在序列化图状态保存到磁盘时，无法将该复杂对象转化为字节流。</li>
 <li>解决方案：在 Tool 函数中，确保所有返回给 Node 的数据都是标准的基本类型（str、int、dict、list）。</li>
+<li>如果对象本身可以序列化、但恢复后时区语义发生变化，继续看 <a href="/ai/langgraph-checkpoint-zoneinfo-fold-dst/">LangGraph Checkpoint 恢复后时间错一小时：ZoneInfo / fold 丢失复现</a>。该问题不是“无法序列化”，而是 <code>datetime</code> round-trip 后 IANA timezone rule 与 <code>fold</code> 语义没有完整保留。</li>
 </ul>
 <hr>
 <h2 id="十上线检查清单与-faq">十、上线检查清单与 FAQ</h2>
