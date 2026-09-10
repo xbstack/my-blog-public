@@ -990,6 +990,7 @@ finalStep.toolCalls: 0
 <p>The final answer was identical. The number of model steps was identical. The tool was identical. The application-facing shape around that answer was not.</p>
 <p>That is the kind of change that passes a visual smoke test and still breaks persistence, analytics, audit logs, or recovery logic.</p>
 <p>This article explains what changed, why those differences matter, and how I would migrate a production application without treating the SDK response object as the system of record.</p>
+<p>After the migration, cost measurement should not stop at tokens either. One business task may span multiple model steps, tools, approvals, retries, and recovery attempts, so the useful unit is the cost of one successfully verified outcome. The <a href="/en/ai/openai-outcome-based-pricing-ai-agent-roi/">OpenAI outcome-based pricing and AI Agent ROI analysis</a> extends this into an AI FinOps model; for a different runtime’s cross-process approval boundary, compare the <a href="/en/ai/openai-agents-sdk-runstate-approval-resume/">OpenAI Agents SDK RunState approval-resume test</a>.</p>
 <h2 id="the-production-workflow-behind-the-test">The Production Workflow Behind the Test</h2>
 <p>The baseline fixture uses a deliberately small workflow:</p>
 <pre class="language-text" data-language="text"><code is:raw="" class="language-text">user asks for order A-100
