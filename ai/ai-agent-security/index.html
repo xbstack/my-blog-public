@@ -6,7 +6,7 @@
       };
       applyTheme();
       document.addEventListener("astro:page-load", applyTheme);
-    </script><title>AI Agent Security：防御提示词注入与工具滥用的安全全案 | AI - XBSTACK</title><meta name="description" content="AI Agent Security：深入探讨 AI Agent 安全架构，涵盖提示词注入 (Prompt Injection) 防御、工具执行沙箱化、数据主权隔离及生产级安全审计策略。"><meta http-equiv="content-language" content="zh-CN"><meta name="keywords" content="AI Agent 安全，提示词注入防御，智能体漏洞，工具调用安全，Docker 沙箱，AI 审计，开发者指南，AI Agent Security，AI Agent，Security"><meta name="theme-color" content="#050608"><meta name="robots" content="index,follow,max-image-preview:large"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://www.xbstack.com/ai/ai-agent-security/"><meta property="og:title" content="AI Agent Security：防御提示词注入与工具滥用的安全全案 | AI - XBSTACK"><meta property="og:description" content="AI Agent Security：深入探讨 AI Agent 安全架构，涵盖提示词注入 (Prompt Injection) 防御、工具执行沙箱化、数据主权隔离及生产级安全审计策略。"><meta property="og:image" content="https://www.xbstack.com/_astro/ai-agent-security.BUHvu_5K.webp"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/ai/ai-agent-security/"><meta property="twitter:title" content="AI Agent Security：防御提示词注入与工具滥用的安全全案 | AI - XBSTACK"><meta property="twitter:description" content="AI Agent Security：深入探讨 AI Agent 安全架构，涵盖提示词注入 (Prompt Injection) 防御、工具执行沙箱化、数据主权隔离及生产级安全审计策略。"><meta property="twitter:image" content="https://www.xbstack.com/_astro/ai-agent-security.BUHvu_5K.webp"><link rel="canonical" href="https://www.xbstack.com/ai/ai-agent-security/"><link rel="describedby" href="/llms.txt" type="text/plain"><link rel="alternate" hreflang="zh-CN" href="https://www.xbstack.com/ai/ai-agent-security/"><link rel="alternate" hreflang="en" href="https://www.xbstack.com/en/ai/ai-agent-security/"><link rel="alternate" hreflang="x-default" href="https://www.xbstack.com/ai/ai-agent-security/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI engineering, Agents, MCP, LangGraph, workflow automation, model updates, security and local AI.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Products","alternateName":"Products and Tools","description":"Apps, AI products, developer tools and practical utilities built and maintained by XBSTACK.","url":"https://www.xbstack.com/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Insights","alternateName":"Insights, Investing, Reading and Long-term Thinking","description":"Investment research, reading notes, decision reviews and long-term thinking with evidence and outcomes.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Travel, Photography and Gear","description":"Field notes from real hiking, travel, photography and gear use, with Guizhou as a core but not exclusive focus.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"Xiaobai's profile, current products, long-term research themes, working principles and the XBSTACK public asset system.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","additionalType":"https://schema.org/TechArticle","headline":"AI Agent Security：防御提示词注入与工具滥用的安全全案","description":"AI Agent Security：深入探讨 AI Agent 安全架构，涵盖提示词注入 (Prompt Injection) 防御、工具执行沙箱化、数据主权隔离及生产级安全审计策略。","inLanguage":"zh-CN","image":"https://www.xbstack.com/_astro/ai-agent-security.BUHvu_5K.webp","datePublished":"2026-04-24T00:00:00.000Z","author":{"@id":"https://www.xbstack.com/about/#person"},"publisher":{"@type":"Organization","name":"XBSTACK","logo":{"@type":"ImageObject","url":"https://www.xbstack.com/favicon/logo-light.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.xbstack.com/ai/ai-agent-security/"},"articleSection":"ai","keywords":["AI Agent 安全，提示词注入防御，智能体漏洞，工具调用安全，Docker 沙箱，AI 审计，开发者指南，AI Agent Security，AI Agent，Security"],"abstract":"AI Agent Security：深入探讨 AI Agent 安全架构，涵盖提示词注入 (Prompt Injection) 防御、工具执行沙箱化、数据主权隔离及生产级安全审计策略。 AI Agent 的风险不止来自用户直接输入，也来自网页、PDF、邮件、知识库里隐藏的间接指令。真正可靠的防护不是靠几条正则把 Prompt Injection 挡住，而是把模型能做的动作压到最小：只给必要工具、只给必要数据、只在必要场景允许写操作。","about":[{"@type":"Thing","name":"AI Agent"},{"@type":"Thing","name":"Security"},{"@type":"Thing","name":"Prompt Injection"},{"@type":"Thing","name":"沙箱隔离"},{"@type":"Thing","name":"架构设计"}]},{"@type":"Person","@id":"https://www.xbstack.com/about/#person","name":"小白","alternateName":["Xiaobai"],"url":"https://www.xbstack.com/about/","image":"https://www.xbstack.com/_astro/avatar.BzDyfp9G.webp","jobTitle":"Full-Stack AI Engineer","worksFor":{"@type":"Organization","name":"XBSTACK","url":"https://www.xbstack.com"},"sameAs":["https://github.com/xbstack"],"knowsAbout":["AI Agents","LangGraph","Model Context Protocol","AI Workflows","Product Engineering"]}]}</script><meta property="article:published_time" content="Fri Apr 24 2026 08:00:00 GMT+0800 (China Standard Time)"><meta name="abstract" content="AI Agent Security：深入探讨 AI Agent 安全架构，涵盖提示词注入 (Prompt Injection) 防御、工具执行沙箱化、数据主权隔离及生产级安全审计策略。"><meta name="speakable-selector" content=".markdown-content h2, .markdown-content p"><meta name="ai-content-access" content="allowed"><meta name="geo-optimized" content="true"><link id="xbstack-favicon" rel="icon" type="image/svg+xml" href="/favicon/logo-dark.svg"><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
+    </script><title>AI Agent 安全指南：Prompt Injection、MCP、Memory 与 Tool 权限 | AI - XBSTACK</title><meta name="description" content="AI Agent 安全如何落地？从 Prompt Injection、MCP/Tool 权限、Memory Poisoning 到 Sandbox、HITL、Runtime Control、审计与安全测试，给出完整工程防护框架。"><meta http-equiv="content-language" content="zh-CN"><meta name="keywords" content="AI Agent Security, AI Agent 安全, Agentic AI Security, Prompt Injection, Indirect Prompt Injection, Agent Goal Hijack, Tool Misuse, MCP Security, MCP Tool Poisoning, Agentic Supply Chain, Agent Authorization, Agent Identity, Identity Privilege Abuse, Memory Poisoning, Context Poisoning, Agent Sandbox, Human in the Loop, Runtime Control, Agent Control Standard, Multi-Agent Security, Agent Audit, Agent Security Testing, Incident Response, Kill Switch"><meta name="theme-color" content="#050608"><meta name="robots" content="index,follow,max-image-preview:large"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://www.xbstack.com/ai/ai-agent-security/"><meta property="og:title" content="AI Agent 安全指南：Prompt Injection、MCP、Memory 与 Tool 权限 | AI - XBSTACK"><meta property="og:description" content="AI Agent 安全如何落地？从 Prompt Injection、MCP/Tool 权限、Memory Poisoning 到 Sandbox、HITL、Runtime Control、审计与安全测试，给出完整工程防护框架。"><meta property="og:image" content="https://www.xbstack.com/_astro/ai-agent-security.BUHvu_5K.webp"><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.xbstack.com/ai/ai-agent-security/"><meta property="twitter:title" content="AI Agent 安全指南：Prompt Injection、MCP、Memory 与 Tool 权限 | AI - XBSTACK"><meta property="twitter:description" content="AI Agent 安全如何落地？从 Prompt Injection、MCP/Tool 权限、Memory Poisoning 到 Sandbox、HITL、Runtime Control、审计与安全测试，给出完整工程防护框架。"><meta property="twitter:image" content="https://www.xbstack.com/_astro/ai-agent-security.BUHvu_5K.webp"><link rel="canonical" href="https://www.xbstack.com/ai/ai-agent-security/"><link rel="describedby" href="/llms.txt" type="text/plain"><link rel="alternate" hreflang="zh-CN" href="https://www.xbstack.com/ai/ai-agent-security/"><link rel="alternate" hreflang="en" href="https://www.xbstack.com/en/ai/ai-agent-security/"><link rel="alternate" hreflang="x-default" href="https://www.xbstack.com/ai/ai-agent-security/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI engineering, Agents, MCP, LangGraph, workflow automation, model updates, security and local AI.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Products","alternateName":"Products and Tools","description":"Apps, AI products, developer tools and practical utilities built and maintained by XBSTACK.","url":"https://www.xbstack.com/tools/"},{"@type":"SiteNavigationElement","position":3,"name":"Insights","alternateName":"Insights, Investing, Reading and Long-term Thinking","description":"Investment research, reading notes, decision reviews and long-term thinking with evidence and outcomes.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Travel, Photography and Gear","description":"Field notes from real hiking, travel, photography and gear use, with Guizhou as a core but not exclusive focus.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"Xiaobai's profile, current products, long-term research themes, working principles and the XBSTACK public asset system.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","additionalType":"https://schema.org/TechArticle","headline":"AI Agent 安全怎么做？Prompt Injection、MCP、Memory 与 Tool 权限完整指南","description":"AI Agent 安全如何落地？从 Prompt Injection、MCP/Tool 权限、Memory Poisoning 到 Sandbox、HITL、Runtime Control、审计与安全测试，给出完整工程防护框架。","inLanguage":"zh-CN","image":"https://www.xbstack.com/_astro/ai-agent-security.BUHvu_5K.webp","datePublished":"2026-04-24T00:00:00.000Z","author":{"@id":"https://www.xbstack.com/about/#person"},"publisher":{"@type":"Organization","name":"XBSTACK","logo":{"@type":"ImageObject","url":"https://www.xbstack.com/favicon/logo-light.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.xbstack.com/ai/ai-agent-security/"},"articleSection":"ai","keywords":["AI Agent Security","AI Agent 安全","Agentic AI Security","Prompt Injection","Indirect Prompt Injection","Agent Goal Hijack","Tool Misuse","MCP Security","MCP Tool Poisoning","Agentic Supply Chain","Agent Authorization","Agent Identity","Identity Privilege Abuse","Memory Poisoning","Context Poisoning","Agent Sandbox","Human in the Loop","Runtime Control","Agent Control Standard","Multi-Agent Security","Agent Audit","Agent Security Testing","Incident Response","Kill Switch"],"abstract":"AI Agent 安全如何落地？从 Prompt Injection、MCP/Tool 权限、Memory Poisoning 到 Sandbox、HITL、Runtime Control、审计与安全测试，给出完整工程防护框架。","about":[{"@type":"Thing","name":"AI Agent Security"},{"@type":"Thing","name":"OWASP Top 10 for Agentic Applications 2026"},{"@type":"Thing","name":"OWASP Agent Control Standard"},{"@type":"Thing","name":"NIST"},{"@type":"Thing","name":"Model Context Protocol"},{"@type":"Thing","name":"Prompt Injection"},{"@type":"Thing","name":"Goal Hijack"},{"@type":"Thing","name":"Tool Misuse"},{"@type":"Thing","name":"Memory Poisoning"},{"@type":"Thing","name":"Human-in-the-Loop"},{"@type":"Thing","name":"Runtime Control"}],"citation":["https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/","https://genai.owasp.org/resource/agent-control-standard-acs/","https://cheatsheetseries.owasp.org/cheatsheets/AI_Agent_Security_Cheat_Sheet.html","https://csrc.nist.gov/pubs/other/2026/02/05/accelerating-the-adoption-of-software-and-ai-agent/ipd","https://openai.com/index/designing-agents-to-resist-prompt-injection/","https://blog.modelcontextprotocol.io/posts/2026-07-28/"]},{"@type":"Person","@id":"https://www.xbstack.com/about/#person","name":"小白","alternateName":["Xiaobai"],"url":"https://www.xbstack.com/about/","image":"https://www.xbstack.com/_astro/avatar.BzDyfp9G.webp","jobTitle":"Full-Stack AI Engineer","worksFor":{"@type":"Organization","name":"XBSTACK","url":"https://www.xbstack.com"},"sameAs":["https://github.com/xbstack"],"knowsAbout":["AI Agents","LangGraph","Model Context Protocol","AI Workflows","Product Engineering"]}]}</script><meta property="article:published_time" content="Fri Apr 24 2026 08:00:00 GMT+0800 (China Standard Time)"><meta name="abstract" content="AI Agent 安全如何落地？从 Prompt Injection、MCP/Tool 权限、Memory Poisoning 到 Sandbox、HITL、Runtime Control、审计与安全测试，给出完整工程防护框架。"><meta name="speakable-selector" content=".markdown-content h2, .markdown-content p"><meta name="ai-content-access" content="allowed"><meta name="geo-optimized" content="true"><link id="xbstack-favicon" rel="icon" type="image/svg+xml" href="/favicon/logo-dark.svg"><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
 
           const productionAnalyticsHosts = new Set(['www.xbstack.com', 'xbstack.com']);
           const automationUserAgent = /HeadlessChrome|PhantomJS|Playwright|Puppeteer|Selenium|Lighthouse|PageSpeed|bot\b|crawler|spider|slurp|curl|wget|python-requests|axios|node-fetch|facebookexternalhit|Twitterbot|LinkedInBot|Bytespider|GPTBot|ClaudeBot|PerplexityBot/i;
@@ -943,153 +943,512 @@
     document.addEventListener('astro:page-load', bindHeader);
     document.addEventListener('astro:page-load', bindBrandLogoMotion);
     bindHeader();
-  </script>  </header> <div id="language-switch-notice" class="pointer-events-none fixed left-1/2 top-24 z-[700] hidden max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/95 px-5 py-3 text-center text-sm font-bold text-slate-700 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 dark:text-slate-200" role="status" aria-live="polite"></div> <main id="main-content" class="flex-1">  <div id="reading-progress" class="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 z-[110] transition-all duration-300 w-0 shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div> <main class="pt-24 md:pt-32 pb-20"> <script>(()=>{var a=(s,i,o)=>{let r=async()=>{await(await s())()},t=typeof i.value=="object"?i.value:void 0,c={rootMargin:t==null?void 0:t.rootMargin},n=new IntersectionObserver(e=>{for(let l of e)if(l.isIntersecting){n.disconnect(),r();break}},c);for(let e of o.children)n.observe(e)};(self.Astro||(self.Astro={})).visible=a;window.dispatchEvent(new Event("astro:visible"));})();</script><script type="module" src="/_astro/Comment.astro_astro_type_script_index_0_lang.C65OC043.js"></script><script type="module">function g(){const t=document.querySelector("header");return t?t.offsetHeight+32:140}function a(){document.querySelectorAll("[data-toc-link]").forEach(e=>{const n=e.cloneNode(!0);e.parentNode?.replaceChild(n,e),n.addEventListener("click",function(o){o.preventDefault();const r=o.currentTarget.getAttribute("href");if(!r)return;const c=r.substring(1),d=document.getElementById(c);if(d){const s=d.getBoundingClientRect(),i=window.pageYOffset||document.documentElement.scrollTop,u=g(),l=i+s.top-u;window.scrollTo({top:Math.max(0,l),behavior:"smooth"}),history.pushState(null,"",`#${c}`)}})})}document.addEventListener("DOMContentLoaded",a);document.addEventListener("astro:page-load",a);</script><div class="xb-article-grid py-8 md:py-10"> <aside class="xb-article-side"> <section class="border border-[var(--xb-line)] bg-[var(--xb-surface)] rounded-xl p-5 xb-article-panel !rounded-xl !shadow-none" aria-label="作者信息"> <a href="/about/" class="group flex flex-col items-center text-center"> <div class="overflow-hidden rounded-full border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] h-[72px] w-[72px]"> <img src="/_astro/avatar.BzDyfp9G_1dyxOT.webp" alt="小白 / Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="h-full w-full object-cover"> </div> <div class="mt-3"> <h3 class="m-0 text-[14px] font-bold tracking-tight text-[var(--xb-ink)] group-hover:text-blue-600 dark:group-hover:text-blue-400">小白 / Xiaobai</h3> <p class="mt-1 text-[9px] font-bold tracking-wide text-blue-600 dark:text-blue-400">开发者 · 产品构建者</p> </div> </a> <p class="text-[10px] leading-5 text-[var(--xb-muted)] mt-4 text-center">持续构建 AI 工程系统、开发者工具与长期数字资产。</p> <a href="/about/" class="mt-3 block text-center text-[9px] font-bold text-blue-600 hover:underline dark:text-blue-400">关于作者与 XBSTACK →</a> <div class="my-3 h-px bg-[var(--xb-line)]"></div> <ul class="flex items-center py-2 justify-center"><li class="inline-block px-1 intersect:animate-fade opacity-0"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/qrcode_guizhou_outdoor.png" aria-label="微信公众号"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="微信公众号" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="sr-only">微信公众号</span> </span>  </button> </a></li><li class="inline-block px-1 intersect:animate-fade opacity-0"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span class="sr-only">GitHub</span> </span>  </button> </a></li></ul> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">文章信息</div> <dl class="space-y-3 text-[10px] leading-5 text-[var(--xb-muted)]"> <div><dt class="font-bold text-[var(--xb-ink)]">发布</dt><dd>2026/4/24</dd></div> <div><dt class="font-bold text-[var(--xb-ink)]">主题</dt><dd><a href="/ai/ai-agent-complete-guide/" class="text-blue-600 dark:text-blue-400">agent</a></dd></div>  </dl> <div class="mt-4 flex flex-wrap gap-1.5"><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#AI Agent</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#Security</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#Prompt Injection</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#沙箱隔离</span><span class="rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[8px] text-[var(--xb-faint)]">#架构设计</span></div> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">相关</div> <p class="text-[10px] leading-5 text-[var(--xb-muted)]">继续查看主题、工具与内容更新。</p> <div class="mt-3 grid gap-2 text-[10px] font-bold text-blue-600 dark:text-blue-400"><nav data-cluster-hub-link><a href="/ai/ai-agent-complete-guide/">主题 →</a></nav><a href="/tools/">产品与工具 →</a><a href="/newsletter/">Newsletter →</a></div> </section> </aside> <main class="min-w-0"> <article class="xb-article-paper"> <div class="xl:hidden mb-6"><section class="border border-[var(--xb-line)] bg-[var(--xb-surface)] rounded-xl p-4 !rounded-xl !shadow-none" aria-label="作者信息"> <a href="/about/" class="group flex items-center gap-4"> <div class="overflow-hidden rounded-full border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] h-14 w-14 shrink-0"> <img src="/_astro/avatar.BzDyfp9G_1dyxOT.webp" alt="小白 / Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="h-full w-full object-cover"> </div> <div class="min-w-0"> <h3 class="m-0 text-[14px] font-bold tracking-tight text-[var(--xb-ink)] group-hover:text-blue-600 dark:group-hover:text-blue-400">小白 / Xiaobai</h3> <p class="mt-1 text-[9px] font-bold tracking-wide text-blue-600 dark:text-blue-400">开发者 · 产品构建者</p> </div> </a> <p class="text-[10px] leading-5 text-[var(--xb-muted)] mt-3">持续构建 AI 工程系统、开发者工具与长期数字资产。</p> <a href="/about/" class="mt-3 block text-center text-[9px] font-bold text-blue-600 hover:underline dark:text-blue-400">关于作者与 XBSTACK →</a> <div class="my-3 h-px bg-[var(--xb-line)]"></div> <ul class="flex items-center py-2 justify-center"><li class="inline-block px-1 intersect:animate-fade opacity-0"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/qrcode_guizhou_outdoor.png" aria-label="微信公众号"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="微信公众号" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="sr-only">微信公众号</span> </span>  </button> </a></li><li class="inline-block px-1 intersect:animate-fade opacity-0"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span class="sr-only">GitHub</span> </span>  </button> </a></li></ul> </section></div> <header class="mb-10 border-b border-[var(--xb-line)] pb-8"><div class="mb-8 overflow-hidden rounded-xl border border-[var(--xb-line)] bg-[var(--xb-surface-soft)]"><img src="/_astro/ai-agent-security.BUHvu_5K_Z2stTaM.webp" alt="AI Agent Security：防御提示词注入与工具滥用的安全全案：AI AGENT 工程文章封面" sizes="(min-width: 1280px) 860px, calc(100vw - 40px)" loading="eager" fetchpriority="high" decoding="async" width="1200" height="630" class="aspect-[40/21] w-full object-cover"></div><div class="mb-4 flex flex-wrap items-center gap-2"><a href="/ai/agent/" class="rounded-md border border-blue-500/15 bg-blue-500/[0.05] px-2.5 py-1 text-[10px] font-bold text-blue-600 dark:text-blue-400">ai</a></div><h1 class="m-0 text-[clamp(2rem,4vw,3.6rem)] font-black leading-[1.12] tracking-[-.045em] text-[var(--xb-ink)]">AI Agent Security：防御提示词注入与工具滥用的安全全案</h1><p class="mt-5 max-w-[760px] text-[15px] leading-7 text-[var(--xb-text)]">AI Agent Security：深入探讨 AI Agent 安全架构，涵盖提示词注入 (Prompt Injection) 防御、工具执行沙箱化、数据主权隔离及生产级安全审计策略。</p><div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] text-[var(--xb-faint)]"><span>发布 · 2026-04-24</span><span>5 分钟阅读</span><span>XBSTACK 原创</span></div><div class="mt-4 flex flex-wrap gap-2"><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#AI Agent</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#Security</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#Prompt Injection</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#沙箱隔离</span><span class="rounded-md border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] px-2 py-1 text-[9px] font-semibold text-[var(--xb-muted)]">#架构设计</span></div></header> <nav class="mb-7 flex items-center justify-between gap-4 border-y border-[var(--xb-line)] py-3 text-[10px] text-[var(--xb-muted)]" aria-label="文章语言版本"> <span>当前 URL 为中文版本。</span> <a href="/en/ai/ai-agent-security/" hreflang="en" class="font-bold text-blue-600 dark:text-blue-400">Read this article in English →</a> </nav>   <div class="prose prose-tech markdown-content max-w-none">  <aside class="mb-10 rounded-2xl border border-orange-500/20 bg-orange-500/[0.045] px-5 py-4 not-prose" data-analytics-area="article_body" aria-label="推荐下一步"> <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"> <div> <p class="text-xs font-black uppercase tracking-[0.18em] text-orange-600 dark:text-orange-400">专题入口 / AI Agent Hub</p> <p class="mt-1 text-sm font-bold leading-6 text-slate-700 dark:text-slate-300">从单个 Agent 问题继续进入完整生产体系</p> </div> <div class="flex shrink-0 flex-wrap gap-2"> <a href="/ai/agent/" class="rounded-full bg-orange-500 px-4 py-2 text-xs font-black text-white transition-colors hover:bg-orange-600">进入 AI Agent 专题 →</a> <a href="/ai/ai-agent-architecture/" class="rounded-full border border-slate-300 px-4 py-2 text-xs font-black text-slate-700 transition-colors hover:border-orange-500 hover:text-orange-500 dark:border-white/15 dark:text-slate-200">查看架构指南</a> </div> </div> </aside><h2 id="先给结论ai-agent-安全要从过滤输入升级到限制行动">先给结论：AI Agent 安全要从“过滤输入”升级到“限制行动”</h2>
-<p>AI Agent 的风险不止来自用户直接输入，也来自网页、PDF、邮件、知识库里隐藏的间接指令。真正可靠的防护不是靠几条正则把 Prompt Injection 挡住，而是把模型能做的动作压到最小：只给必要工具、只给必要数据、只在必要场景允许写操作。</p>
-<ul>
-<li>适合场景：高并发业务自动化、企业内网智能助手、涉及财务划转的自主交易 Agent。</li>
-<li>不适合场景：没有审计日志、没有权限分级、没有人工确认，却让 Agent 直接执行删除、转账、发布、改库等动作。</li>
-</ul>
-<h2 id="本文解决的问题query-意图锁定">本文解决的问题：Query 意图锁定</h2>
-<ul>
-<li>为什么传统的防火墙和正则过滤防不住 AI 智能体的攻击？</li>
-<li>黑客是如何通过“间接注入”在网页里埋伏陷阱劫持你的 Agent 的？</li>
-<li>如何设计一套能够物理隔离 AI 恶意代码生成的安全执行架构？</li>
-<li>在多智能体协作中，如何防止不同用户之间的“长期记忆”交叉泄露？</li>
-<li>面对模型幻觉引发的误操作，有哪些行之有效的硬性熔断机制？</li>
-</ul>
-<h2 id="适合谁阅读">适合谁阅读</h2>
-<ul>
-<li>AI 系统安全专家：正在制定企业级大模型应用的合规性与防护标准。</li>
-<li>全栈开发者：想为具备自主行动能力的 Agent 补齐最后一块“安全拼图”。</li>
-<li>技术负责人：需要评估 AI 自动化流程中的潜在法律与资产性风险。</li>
-</ul>
-<h2 id="一xiaobais-note">一、Xiaobai’s Note</h2>
-<p>这篇不是写给“研究 Prompt 技巧”的人，而是写给准备把 Agent 接到真实系统的人。只要 Agent 能读外部资料、调用内部 API、写数据库或触发审批，它就已经不是聊天工具，而是一个需要权限、审计和熔断的执行进程。</p>
-<h2 id="二ai-安全的本质是对抗概率性的逻辑劫持">二、AI 安全的本质是对抗“概率性”的逻辑劫持</h2>
-<p>传统的软件安全（如 SQL 注入）是确定性的逻辑错误；而 AI Agent 安全对付的是概率性的逻辑模糊。LLM 本质上是概率预测器，它的输入（Prompt）是自然语言，而自然语言天生带有歧义且难以被正则表达式完全过滤。</p>
-<p>因此，防御重点必须从“字符过滤”转向“意图审计”与“物理隔离”，确保即便大脑被“洗脑”，手脚也无法做出越权动作。</p>
-<h2 id="三传统-web-安全与-ai-agent-安全的差异">三、传统 Web 安全与 AI Agent 安全的差异</h2>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<table><thead><tr><th>维度</th><th>传统 Web 安全</th><th>AI Agent 安全</th></tr></thead><tbody><tr><td>核心威胁</td><td>代码注入 (SQL, XSS)</td><td>意图劫持 (Prompt Injection)</td></tr><tr><td>防御手段</td><td>输入转义、参数化查询</td><td>语义洗涤、执行层沙箱化</td></tr><tr><td>控制权限</td><td>静态分配的 RBAC</td><td>动态下发的 Tool Scope 与 HITL</td></tr><tr><td>风险后果</td><td>数据泄露、网页挂马</td><td>物理资产损毁、内网穿透跳板</td></tr><tr><td>成功率定义</td><td>只要漏洞存在即 100% 成功</td><td>依赖 Prompt 诱导的概率性触发</td></tr></tbody></table>
-<h2 id="四深度防御架构三层物理安全防线">四、深度防御架构：三层物理安全防线</h2>
-<ol>
-<li>输入洗涤层 (Sanitizer)：使用专门的小模型（如 Llama-Guard）扫描用户输入。如果发现“Ignore all instructions”等关键词，立即熔断。</li>
-<li>执行沙箱层 (Sandboxing)：所有的代码执行必须在物理隔离的环境中运行。
-<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token comment"># 2026 生产级沙箱配置示例</span>
-container <span class="token operator">=</span> client<span class="token punctuation">.</span>containers<span class="token punctuation">.</span>run<span class="token punctuation">(</span>
-    image<span class="token operator">=</span><span class="token string">"python:3.11-slim"</span><span class="token punctuation">,</span>
-    mem_limit<span class="token operator">=</span><span class="token string">"128m"</span><span class="token punctuation">,</span>
-    network_disabled<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> <span class="token comment"># 禁用网络防泄密</span>
-    read_only<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> <span class="token comment"># 根文件系统只读</span>
-    timeout<span class="token operator">=</span><span class="token number">5</span> <span class="token comment"># 防死循环</span>
-<span class="token punctuation">)</span>
+  </script>  </header> <div id="language-switch-notice" class="pointer-events-none fixed left-1/2 top-24 z-[700] hidden max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/95 px-5 py-3 text-center text-sm font-bold text-slate-700 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 dark:text-slate-200" role="status" aria-live="polite"></div> <main id="main-content" class="flex-1">  <div id="reading-progress" class="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 z-[110] transition-all duration-300 w-0 shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div> <main class="pt-24 md:pt-32 pb-20"> <script>(()=>{var a=(s,i,o)=>{let r=async()=>{await(await s())()},t=typeof i.value=="object"?i.value:void 0,c={rootMargin:t==null?void 0:t.rootMargin},n=new IntersectionObserver(e=>{for(let l of e)if(l.isIntersecting){n.disconnect(),r();break}},c);for(let e of o.children)n.observe(e)};(self.Astro||(self.Astro={})).visible=a;window.dispatchEvent(new Event("astro:visible"));})();</script><script type="module" src="/_astro/Comment.astro_astro_type_script_index_0_lang.C65OC043.js"></script><script type="module">function g(){const t=document.querySelector("header");return t?t.offsetHeight+32:140}function a(){document.querySelectorAll("[data-toc-link]").forEach(e=>{const n=e.cloneNode(!0);e.parentNode?.replaceChild(n,e),n.addEventListener("click",function(o){o.preventDefault();const r=o.currentTarget.getAttribute("href");if(!r)return;const c=r.substring(1),d=document.getElementById(c);if(d){const s=d.getBoundingClientRect(),i=window.pageYOffset||document.documentElement.scrollTop,u=g(),l=i+s.top-u;window.scrollTo({top:Math.max(0,l),behavior:"smooth"}),history.pushState(null,"",`#${c}`)}})})}document.addEventListener("DOMContentLoaded",a);document.addEventListener("astro:page-load",a);</script><div class="xb-article-grid py-8 md:py-10"> <aside class="xb-article-side"> <section class="border border-[var(--xb-line)] bg-[var(--xb-surface)] rounded-xl p-5 xb-article-panel !rounded-xl !shadow-none" aria-label="作者信息"> <a href="/about/" class="group flex flex-col items-center text-center"> <div class="overflow-hidden rounded-full border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] h-[72px] w-[72px]"> <img src="/_astro/avatar.BzDyfp9G_1dyxOT.webp" alt="小白 / Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="h-full w-full object-cover"> </div> <div class="mt-3"> <h3 class="m-0 text-[14px] font-bold tracking-tight text-[var(--xb-ink)] group-hover:text-blue-600 dark:group-hover:text-blue-400">小白 / Xiaobai</h3> <p class="mt-1 text-[9px] font-bold tracking-wide text-blue-600 dark:text-blue-400">开发者 · 产品构建者</p> </div> </a> <p class="text-[10px] leading-5 text-[var(--xb-muted)] mt-4 text-center">持续构建 AI 工程系统、开发者工具与长期数字资产。</p> <a href="/about/" class="mt-3 block text-center text-[9px] font-bold text-blue-600 hover:underline dark:text-blue-400">关于作者与 XBSTACK →</a> <div class="my-3 h-px bg-[var(--xb-line)]"></div> <ul class="flex items-center py-2 justify-center"><li class="inline-block px-1 intersect:animate-fade opacity-0"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/qrcode_guizhou_outdoor.png" aria-label="微信公众号"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="微信公众号" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="sr-only">微信公众号</span> </span>  </button> </a></li><li class="inline-block px-1 intersect:animate-fade opacity-0"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span class="sr-only">GitHub</span> </span>  </button> </a></li></ul> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">文章信息</div> <dl class="space-y-3 text-[10px] leading-5 text-[var(--xb-muted)]"> <div><dt class="font-bold text-[var(--xb-ink)]">发布</dt><dd>2026/4/24</dd></div> <div><dt class="font-bold text-[var(--xb-ink)]">主题</dt><dd><a href="/ai/security/" class="text-blue-600 dark:text-blue-400">security</a></dd></div>  </dl>  </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">相关</div> <p class="text-[10px] leading-5 text-[var(--xb-muted)]">继续查看主题、工具与内容更新。</p> <div class="mt-3 grid gap-2 text-[10px] font-bold text-blue-600 dark:text-blue-400"><nav data-cluster-hub-link><a href="/ai/security/">主题 →</a></nav><a href="/tools/">产品与工具 →</a><a href="/newsletter/">Newsletter →</a></div> </section> </aside> <main class="min-w-0"> <article class="xb-article-paper"> <div class="xl:hidden mb-6"><section class="border border-[var(--xb-line)] bg-[var(--xb-surface)] rounded-xl p-4 !rounded-xl !shadow-none" aria-label="作者信息"> <a href="/about/" class="group flex items-center gap-4"> <div class="overflow-hidden rounded-full border border-[var(--xb-line)] bg-[var(--xb-surface-soft)] h-14 w-14 shrink-0"> <img src="/_astro/avatar.BzDyfp9G_1dyxOT.webp" alt="小白 / Xiaobai" loading="lazy" decoding="async" fetchpriority="auto" width="1024" height="1024" class="h-full w-full object-cover"> </div> <div class="min-w-0"> <h3 class="m-0 text-[14px] font-bold tracking-tight text-[var(--xb-ink)] group-hover:text-blue-600 dark:group-hover:text-blue-400">小白 / Xiaobai</h3> <p class="mt-1 text-[9px] font-bold tracking-wide text-blue-600 dark:text-blue-400">开发者 · 产品构建者</p> </div> </a> <p class="text-[10px] leading-5 text-[var(--xb-muted)] mt-3">持续构建 AI 工程系统、开发者工具与长期数字资产。</p> <a href="/about/" class="mt-3 block text-center text-[9px] font-bold text-blue-600 hover:underline dark:text-blue-400">关于作者与 XBSTACK →</a> <div class="my-3 h-px bg-[var(--xb-line)]"></div> <ul class="flex items-center py-2 justify-center"><li class="inline-block px-1 intersect:animate-fade opacity-0"><a class="wechat-trigger block" href="/wechat/" data-wechat-qr="/assets/qrcode_guizhou_outdoor.png" aria-label="微信公众号"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="微信公众号" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" class="w-5 h-5 shrink-0 dark:hover:text-green-500 hover:text-green-600 transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M385.2 167.6c6.4 0 12.6.3 18.8 1.1C387.4 90.3 303.3 32 207.7 32 100.5 32 13 104.8 13 197.4c0 53.4 29.3 97.5 77.9 131.6l-19.3 58.6 68-34.1c24.4 4.8 43.8 9.7 68.2 9.7 6.2 0 12.1-.3 18.3-.8-4-12.9-6.2-26.6-6.2-40.8-.1-84.9 72.9-154 165.3-154zm-104.5-52.9c14.5 0 24.2 9.7 24.2 24.4 0 14.5-9.7 24.2-24.2 24.2-14.8 0-29.3-9.7-29.3-24.2.1-14.7 14.6-24.4 29.3-24.4zm-136.4 48.6c-14.5 0-29.3-9.7-29.3-24.2 0-14.8 14.8-24.4 29.3-24.4 14.8 0 24.4 9.7 24.4 24.4 0 14.6-9.6 24.2-24.4 24.2zM563 319.4c0-77.9-77.9-141.3-165.4-141.3-92.7 0-165.4 63.4-165.4 141.3S305 460.7 397.6 460.7c19.3 0 38.9-5.1 58.6-9.9l53.4 29.3-14.8-48.6C534 402.1 563 363.2 563 319.4zm-219.1-24.5c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.8 0 24.4 9.7 24.4 19.3 0 10-9.7 19.6-24.4 19.6zm107.1 0c-9.7 0-19.3-9.7-19.3-19.6 0-9.7 9.7-19.3 19.3-19.3 14.5 0 24.4 9.7 24.4 19.3.1 10-9.9 19.6-24.4 19.6z"></path></svg><span class="sr-only">微信公众号</span> </span>  </button> </a></li><li class="inline-block px-1 intersect:animate-fade opacity-0"><a href="https://github.com/xbstack/my-blog-public" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><button type="button" class="glass-button glass-button--info glass-button--sm select-none min-w-10 justify-center " title="GitHub" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;">   <span class="glass-button__content" data-astro-cid-xwnkcw7l style="--variantBase: rgb(244, 244, 244, 0.4);--variantHover: rgb(244, 244, 244, 0.6);--variantBorder: rgba(255, 255, 255, 0.8);--variantHoverBorder: rgba(255, 255, 255, 0.9);--variantColor: #383838;--variantHoverColor: #272727;--variantShadow: rgba(99, 102, 241, 0.25);--variantGradient: rgba(255, 255, 255, 0.3);--sizePadding: 0.5rem 0.75rem;--sizeFontSize: 0.875rem;--sizeIconSize: 0.875rem;--sizeGap: 0.375rem;--sizeBorderRadius: 999px;"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" class="w-5 h-5 shrink-0 dark:hover:text-white hover:text-black transition duration-300" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><span class="sr-only">GitHub</span> </span>  </button> </a></li></ul> </section></div> <header class="mb-10 border-b border-[var(--xb-line)] pb-8"><div class="mb-8 overflow-hidden rounded-xl border border-[var(--xb-line)] bg-[var(--xb-surface-soft)]"><img src="/_astro/ai-agent-security.BUHvu_5K_Z2stTaM.webp" alt="AI Agent Security 防护架构：从 Prompt Injection、MCP、Memory 到 Tool Authorization 与 Runtime Control" sizes="(min-width: 1280px) 860px, calc(100vw - 40px)" loading="eager" fetchpriority="high" decoding="async" width="1200" height="630" class="aspect-[40/21] w-full object-cover"></div><div class="mb-4 flex flex-wrap items-center gap-2"><a href="/ai/agent/" class="rounded-md border border-blue-500/15 bg-blue-500/[0.05] px-2.5 py-1 text-[10px] font-bold text-blue-600 dark:text-blue-400">ai</a></div><h1 class="m-0 text-[clamp(2rem,4vw,3.6rem)] font-black leading-[1.12] tracking-[-.045em] text-[var(--xb-ink)]">AI Agent 安全怎么做？Prompt Injection、MCP、Memory 与 Tool 权限完整指南</h1><p class="mt-5 max-w-[760px] text-[15px] leading-7 text-[var(--xb-text)]">AI Agent 安全不能只防 Prompt Injection。本文结合 OWASP Agentic Top 10、Agent Control Standard、NIST 与 MCP 官方资料，系统拆解 Tool/MCP 权限、Memory Poisoning、Identity、Sandbox、HITL、Runtime Control、审计、对抗测试与上线检查清单。</p><div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] text-[var(--xb-faint)]"><span>发布 · 2026-04-24</span><span>12 分钟阅读</span><span>XBSTACK 原创</span></div></header> <nav class="mb-7 flex items-center justify-between gap-4 border-y border-[var(--xb-line)] py-3 text-[10px] text-[var(--xb-muted)]" aria-label="文章语言版本"> <span>当前 URL 为中文版本。</span> <a href="/en/ai/ai-agent-security/" hreflang="en" class="font-bold text-blue-600 dark:text-blue-400">Read this article in English →</a> </nav> <aside class="mb-8 border-l-2 border-blue-500 bg-blue-500/[0.04] px-4 py-3"> <div class="text-[9px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">小白的说明</div> <p class="mt-1 text-[12px] leading-6 text-[var(--xb-text)]">本文是工程安全指南，不构成安全认证、渗透测试结论或法律合规意见。文章区分标准/官方事实与 XBSTACK 工程判断；具体实现必须根据 Agent 的权限、数据类型、部署环境和业务影响重新建模。</p> </aside>  <div class="prose prose-tech markdown-content max-w-none">  <aside class="mb-10 rounded-2xl border border-orange-500/20 bg-orange-500/[0.045] px-5 py-4 not-prose" data-analytics-area="article_body" aria-label="推荐下一步"> <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"> <div> <p class="text-xs font-black uppercase tracking-[0.18em] text-orange-600 dark:text-orange-400">专题入口 / AI Agent Hub</p> <p class="mt-1 text-sm font-bold leading-6 text-slate-700 dark:text-slate-300">从单个 Agent 问题继续进入完整生产体系</p> </div> <div class="flex shrink-0 flex-wrap gap-2"> <a href="/ai/agent/" class="rounded-full bg-orange-500 px-4 py-2 text-xs font-black text-white transition-colors hover:bg-orange-600">进入 AI Agent 专题 →</a> <a href="/ai/ai-agent-architecture/" class="rounded-full border border-slate-300 px-4 py-2 text-xs font-black text-slate-700 transition-colors hover:border-orange-500 hover:text-orange-500 dark:border-white/15 dark:text-slate-200">查看架构指南</a> </div> </div> </aside><h2 id="先给结论ai-agent-安全不是把恶意-prompt-过滤掉">先给结论：AI Agent 安全不是“把恶意 Prompt 过滤掉”</h2>
+<p>如果一个系统只能回答问题，模型说错话通常主要影响输出质量；一旦 Agent 能浏览网页、读取邮件和文件、访问长期 Memory、调用 MCP/Tool、写数据库、发消息、部署代码或修改业务状态，风险就从“回答错误”变成了“真实副作用”。</p>
+<p>因此，AI Agent Security 最重要的设计原则不是让模型变得绝对不会被骗，而是：</p>
+<blockquote>
+<p><strong>即使模型被误导，也不能自动获得不该拥有的权限；即使某次安全判断失败，真实执行层仍然要有独立的授权、审批、隔离、上限和审计。</strong></p>
+</blockquote>
+<p>2026 年的官方安全资料已经越来越接近这个方向。OWASP 的 <a href="https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/" rel="nofollow noopener noreferrer" target="_blank">Top 10 for Agentic Applications 2026</a> 把 Agent Goal Hijack、Tool Misuse、Identity &#x26; Privilege Abuse、Agentic Supply Chain、Memory &#x26; Context Poisoning 等风险单独组织成 Agentic 安全体系；OWASP 在 2026 年 9 月 1 日发布的 <a href="https://genai.owasp.org/resource/agent-control-standard-acs/" rel="nofollow noopener noreferrer" target="_blank">Agent Control Standard（ACS）</a> 又进一步强调 Agent 的可观察、可追踪和运行时策略执行。</p>
+<p>NIST 的 <a href="https://csrc.nist.gov/pubs/other/2026/02/05/accelerating-the-adoption-of-software-and-ai-agent/ipd" rel="nofollow noopener noreferrer" target="_blank">Agent Identity &#x26; Authorization Concept Paper</a> 则把另一个关键问题说得很清楚：当 Agent 能访问不同数据集、Tool 和应用时，必须明确它是谁、代表谁，以及它到底被授权做什么。</p>
+<p>这篇文章不把这些资料逐条翻译，而是把它们重新组织成开发者真正能落地的生产架构。</p>
+<h2 id="1-为什么-agent-比普通-chatbot-多了一层安全问题">1. 为什么 Agent 比普通 Chatbot 多了一层安全问题</h2>
+<p>普通 Chatbot 可以简化为：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">User Input
+   ↓
+Model
+   ↓
+Text Output
 </code></pre>
-</li>
-<li>人工确认层 (Human-in-the-loop)：涉及写库、删除、资产划转的操作，必须在工作流中插入阻塞式 Node，由人类管理员手动核准后方可放行。</li>
-</ol>
-<h3 id="上线前最小安全清单">上线前最小安全清单</h3>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<table><thead><tr><th>检查项</th><th>过线标准</th></tr></thead><tbody><tr><td>工具权限</td><td>默认只读，写操作单独授权</td></tr><tr><td>外部内容</td><td>网页、PDF、邮件进入 Agent 前先标记为不可信输入</td></tr><tr><td>数据边界</td><td>检索必须携带 <code>tenant_id</code> / <code>user_id</code> 过滤</td></tr><tr><td>执行环境</td><td>代码执行禁网、限时、限内存、只读文件系统</td></tr><tr><td>人工确认</td><td>删除、付款、发布、批量修改必须停在人工审批节点</td></tr></tbody></table>
-<h2 id="实战避坑与报错指南-error-logs">实战避坑与报错指南 (Error Logs)</h2>
+<p>而生产 Agent 更接近：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">User / Web / Email / PDF / RAG
+              ↓
+            Model
+              ↓
+   Memory / MCP / Tool / Agent
+              ↓
+Database / SaaS / Shell / Browser / Payment
+</code></pre>
+<p>这里至少多了四类边界：</p>
 <ol>
-<li>Error: <code>Indirect Prompt Injection (间接注入)</code>
-<ul>
-<li>现象：Agent 联网搜索时，读到了黑客在网页中埋伏的隐形指令，导致 Agent 自动关闭安全模块。</li>
-<li>对策：对所有外部检索回来的 Chunk 进行预处理，剥离其中的 Markdown 格式指令与特殊转义符。</li>
-</ul>
-</li>
-<li>Error: <code>Recursive Sandbox Escape (递归沙箱逃逸)</code>
-<ul>
-<li>现象：Agent 尝试在沙箱内构建二级沙箱以绕过资源限制。</li>
-<li>对策：在容器层面禁用特权模式 (<code>privileged=False</code>) 并严格限制内核调用。</li>
-</ul>
-</li>
-<li>Error: <code>Cross-Memory Leak (记忆交叉泄露)</code>
-<ul>
-<li>对策：在向量库检索时，强制携带 <code>user_id</code> 的 Metadata 过滤标签，实现真实的租户数据隔离。</li>
-</ul>
-</li>
+<li><strong>不可信内容边界</strong>：网页、邮件、PDF、RAG、Tool Result 不再只是“资料”，其中可能包含影响模型决策的指令。</li>
+<li><strong>身份与权限边界</strong>：Agent 可能代表用户、服务账号、组织或另一个 Agent 行动。</li>
+<li><strong>持久化边界</strong>：Memory、Vector Store、Conversation State 会把当前输入带到未来。</li>
+<li><strong>执行边界</strong>：Tool Call 会把模型输出转化为写库、发消息、转账、删文件等真实动作。</li>
 </ol>
-<h2 id="七-常见问题解答">七、 常见问题解答</h2>
-<h3 id="q-我在内网本地运行-agent是不是就-100-安全了">Q: 我在内网本地运行 Agent，是不是就 100% 安全了？</h3>
-<p>A: 不。如果你读了一个带病毒的本地文档（间接注入），Agent 依然可能被诱导去修改你的 SSH 配置或扫描你的内网局域网。本地运行也必须坚持“最小权限”与“沙箱执行”。</p>
-<h3 id="q-引入安全层会导致响应变慢吗">Q: 引入安全层会导致响应变慢吗？</h3>
-<p>A: 会有毫秒级的增加。但安全和性能永远是权衡。对于查询类操作可以适当放宽审计，但对于涉及“物理操作”的行为，牺牲 1 秒钟的延迟换取整个数据库的安全是绝对划算的投资。</p>
-<h2 id="推荐深度阅读">推荐深度阅读</h2>
+<p>所以不能把传统的“输入过滤器”直接当成 Agent Security 的全部。</p>
+<h2 id="2-prompt-injection-正在从字符串攻击变成上下文操纵">2. Prompt Injection 正在从字符串攻击变成上下文操纵</h2>
+<p>早期 Prompt Injection 经常表现为：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Ignore previous instructions...
+</code></pre>
+<p>但现实攻击并不一定包含这种明显字符串。OpenAI 在 2026 年的 <a href="https://openai.com/index/designing-agents-to-resist-prompt-injection/" rel="nofollow noopener noreferrer" target="_blank">Prompt Injection 文章</a> 中强调，现实攻击越来越像社会工程：攻击者把具有说服力的内容嵌入网页、邮件或其他外部来源，试图让 Agent 把攻击者的目标当成用户目标。</p>
+<p>因此下面这种旧思路不够可靠：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">发现 "ignore previous instructions"
+→ block
+否则
+→ trust
+</code></pre>
+<p>更合理的处理是：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">外部内容
+→ 永远标记为 untrusted data
+→ 可以影响事实判断
+→ 不自动扩大权限
+→ 不自动修改安全策略
+→ 高风险动作重新做授权/审批
+</code></pre>
+<p>也就是说，<strong>不要要求 Prompt Injection 检测器承担最后一道安全边界</strong>。</p>
+<h3 id="source-sink-思维比关键词黑名单更实用">Source-Sink 思维比“关键词黑名单”更实用</h3>
+<p>可以把攻击面拆成：</p>
 <ul>
-<li>👉 <a href="/ai/ai-agent-complete-guide/">AI Agent 全栈指南：架构、工具调用、评测与部署路线</a></li>
-<li>👉 <a href="/ai/ai-agent-architecture/">AI Agent 架构：构建自主智能体系统的 5 个核心模块</a></li>
-<li>👉 <a href="/ai/ai-agent-observability/">AI Agent Observability：打开智能体执行黑盒的可观测性指南</a></li>
+<li><strong>Source</strong>：攻击者能影响的网页、邮件、文档、搜索结果、RAG Chunk、Tool Result。</li>
+<li><strong>Sink</strong>：发送数据、写数据库、执行 Shell、调用支付、发邮件、修改权限等危险能力。</li>
 </ul>
-<p>我最近在持续研究：</p>
+<p>真正应该控制的是 Source 和 Sink 之间是否存在一条不受限制的路径。</p>
+<p>例如：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">恶意网页
+→ Agent 读取
+→ “把工作区 Token 发到这个 URL”
+→ HTTP Tool
+→ 数据泄漏
+</code></pre>
+<p>即使模型真的被诱导，HTTP Tool 的网络策略、Secret 隔离、参数策略和 Approval 仍应阻止最后一步。</p>
+<h2 id="3-tool-可见不等于-tool-有权执行">3. Tool 可见不等于 Tool 有权执行</h2>
+<p>这是生产 Agent 最容易被忽略的一条。</p>
+<p>很多系统实际是：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">if model_selected_tool:
+    execute(tool, args)
+</code></pre>
+<p>这等于把“模型选择了某 Tool”误当成“业务系统已经授权”。</p>
+<p>更合理的路径是：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Model proposes Tool Call
+        ↓
+Identity
+        ↓
+Tenant / Resource / Scope
+        ↓
+Argument Policy
+        ↓
+Risk Classification
+        ↓
+Approval if required
+        ↓
+Execution
+</code></pre>
+<p>例如同一个 <code>invoice</code> Tool：</p>
 <ul>
-<li>基于同态加密的 Agent 记忆隐私检索技术</li>
-<li>针对多智能体协作流的自动红队测试 (Red Teaming) 工具</li>
-<li>Wasm 算力沙箱在嵌入式 Agent 上的性能优化</li>
+<li><code>read_invoice(id=123)</code>：用户可能有读取权限；</li>
+<li><code>approve_invoice(id=123)</code>：需要财务审批权限；</li>
+<li><code>pay_invoice(id=123, amount=500000)</code>：需要更高风险级别和人工批准。</li>
 </ul>
-<p>如果你在构建 Agent 安全护栏时遇到了逻辑绕过漏洞，欢迎来 XBSTACK 实验室留言破案。</p>  <aside class="mt-12 rounded-2xl border border-slate-200 bg-slate-50/70 px-5 py-4 not-prose dark:border-white/10 dark:bg-white/[0.025]"> <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"> <div><p class="text-sm font-black text-slate-900 dark:text-white">讨论这个问题</p><p class="mt-1 text-xs leading-6 text-slate-500 dark:text-slate-400">有不同的复现结果、版本变化或补充证据？欢迎继续讨论。</p></div> <a href="#discussion" class="shrink-0 text-xs font-black text-blue-600 dark:text-blue-400">发表观点或复现 →</a> </div> </aside><section class="mt-16 rounded-[34px] border border-orange-500/20 bg-orange-500/[0.06] p-7 md:p-9 not-prose"> <div class="text-[10px] font-black uppercase tracking-[0.28em] text-orange-500 mb-4">专题入口 / AI Agent Hub</div> <h2 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-4">从单个 Agent 问题继续进入完整生产体系</h2> <p class="text-sm font-bold leading-7 text-slate-600 dark:text-slate-400 max-w-3xl">AI Agent 专题统一组织架构、记忆、工具调用、评测、安全、部署和多智能体协作，让每篇文章都回到明确的主题主页面。</p> <div class="mt-7 flex flex-wrap gap-3"> <a href="/ai/agent/" class="rounded-full bg-orange-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-white hover:bg-orange-600 transition-colors">进入 AI Agent 专题 →</a> <a href="/ai/ai-agent-architecture/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">查看架构指南</a> <a href="/newsletter/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">订阅</a> </div> </section> </div> <section class="mt-14 border-t border-[var(--xb-line)] pt-7" data-related-reading> <div class="mb-4 flex items-center justify-between gap-4"><h2 class="m-0 text-[17px] font-bold text-[var(--xb-ink)]">继续阅读</h2><a href="/ai/ai-agent-complete-guide/" class="text-[10px] font-bold text-blue-600 dark:text-blue-400">返回专题 →</a></div> <div class="xb-article-related"><a href="/ai/multi-agent-planning/" data-related-link><span class="font-bold text-[var(--xb-ink)]">Multi-Agent Planning 实战：任务拆解、动态路由、死锁与状态交接</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">Multi-Agent Planning 实战：多智能体协作中的 Planning 策略深度解析。对比顺序执行、并行协作与自适应编排在复杂业务场景下的优劣。</span></a><a href="/ai/openai-agents-sdk-duplicate-tool-names/" data-related-link><span class="font-bold text-[var(--xb-ink)]">OpenAI Agents SDK 重复 Tool 名称：为什么后注册工具会覆盖前一个？</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">OpenAI Agents SDK 重复 Tool 名称：实测 openai-agents 0.19.2：两个 FunctionTool 使用同名 lookup 时，SDK 校验不会报错，Agent 仍把两个工具交给模型，而本地分发表只保留后注册工具。本文给出离线复现、风险边界、启动前校验和修复方案。</span></a><a href="/ai/openai-agents-sdk-runstate-approval-resume/" data-related-link><span class="font-bold text-[var(--xb-ink)]">OpenAI Agents SDK RunState 怎么恢复 Tool Approval？跨进程审批与 Resume 实测</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">OpenAI Agents SDK RunState 怎么恢复 Tool Approval？本文用真实跨进程实验验证 to_json/from_json、approve/reject、Resume、重复投递和业务幂等，并解释 0.19.3 修复的流式恢复边界。</span></a><a href="/ai/ai-agent-memory-architecture/" data-related-link><span class="font-bold text-[var(--xb-ink)]">AI Agent Memory Retrieval 实战：混合检索、重排、时效性与冲突消解</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">系统拆解 AI Agent 记忆召回链路，覆盖身份与作用域过滤、结构化查询、向量召回、混合检索、多信号重排、时效性、冲突消解、Prompt 预算、可观测性与回归测试。</span></a></div> </section> <section class="mt-10 border-t border-[var(--xb-line)] pt-7"> <div class="grid grid-cols-1 gap-4 md:grid-cols-[1fr_260px] md:items-center"><div><h2 class="m-0 text-[16px] font-bold text-[var(--xb-ink)]">AI 工程周报</h2><p class="mt-1 text-[10px] leading-5 text-[var(--xb-muted)]">只发真正改变工程判断的变化、故障、实验和新资产。</p></div><astro-island uid="ZNxmiM" prefix="r22" component-url="/_astro/NewsletterForm.BrHNXF12.js" component-export="default" renderer-url="/_astro/client.CJCcxmqC.js" props="{&quot;compact&quot;:[0,true],&quot;lang&quot;:[0,&quot;zh-CN&quot;]}" ssr client="visible" opts="{&quot;name&quot;:&quot;NewsletterForm&quot;,&quot;value&quot;:true}" await-children><div class="w-full "><form class="flex flex-col gap-2 sm:flex-row"><input type="email" placeholder="输入你的邮箱" class="h-11 min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3.5 text-[12px] font-semibold text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-950 dark:text-white" required="" value=""/><button type="submit" class="h-11 shrink-0 rounded-lg px-5 text-[11px] font-bold transition bg-blue-600 text-white hover:bg-blue-700">订阅</button></form></div><!--astro:end--></astro-island></div> </section> </article> <section id="discussion" class="xb-article-comments scroll-mt-28"> <div class="mb-5 flex items-center gap-3 text-[11px] font-bold text-[var(--xb-ink)]"><span>评论与补充证据</span><span class="h-px flex-1 bg-[var(--xb-line)]"></span></div> <section class="xbstack-comments" data-xbstack-waline data-server-url="https://comments.xbstack.com" data-comment-path="/ai/ai-agent-security/" data-comment-lang="zh-CN" data-comment-mode="evidence" aria-labelledby="xbstack-comments-title"> <div class="xbstack-comments__header"> <div> <p class="xbstack-comments__eyebrow">参与讨论</p> <h2 id="xbstack-comments-title"> 问题、验证与勘误 </h2> <p class="xbstack-comments__description"> 登录后可发表评论。所有新评论先进入审核；审核期间仅评论者本人和管理员可见，通过后才公开。 </p> </div> <div class="xbstack-comments__policy" aria-label="评论规则"> <span>登录评论</span> <span>审核后公开</span> </div> </div> <div class="xbstack-comments__status" data-waline-status role="status" aria-live="polite"> <span class="xbstack-comments__spinner" aria-hidden="true"></span> <span>正在加载评论区…</span> </div> <div id="waline" class="xbstack-comments__mount" data-waline-mount></div> <noscript> <p class="xbstack-comments__noscript"> 评论区需要启用 JavaScript 才能查看和发布评论。 </p> </noscript> </section>  </section> </main> <aside class="xb-article-side"> <section class="xb-article-panel"> <div class="xb-article-panel__title">本文目录</div> <div class="liquid-glass-container "><div class="liquidGlass-wrapper dock !p-6"><div class="liquidGlass-effect-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-tint-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-shine  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-text  intersect:animate-fadeLeft transition-all duration-300 fast-slow"><div class="intersect:animate-fadeLeft" data-astro-cid-hop3l3kc><h2 class="text-2xl border-none mb-3" data-astro-cid-hop3l3kc>内容导航</h2><div class="max-h-96 overflow-y-auto" data-astro-cid-hop3l3kc><ul class="list-none m-0 space-y-1" data-astro-cid-hop3l3kc><li class="ml-0" data-astro-cid-hop3l3kc><a href="#先给结论ai-agent-安全要从过滤输入升级到限制行动" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>先给结论：AI Agent 安全要从“过滤输入”升级到“限制行动”</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#本文解决的问题query-意图锁定" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>本文解决的问题：Query 意图锁定</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#适合谁阅读" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>适合谁阅读</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#一xiaobais-note" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>一、Xiaobai’s Note</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#二ai-安全的本质是对抗概率性的逻辑劫持" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>二、AI 安全的本质是对抗“概率性”的逻辑劫持</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#三传统-web-安全与-ai-agent-安全的差异" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>三、传统 Web 安全与 AI Agent 安全的差异</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#四深度防御架构三层物理安全防线" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>四、深度防御架构：三层物理安全防线</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#上线前最小安全清单" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>上线前最小安全清单</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#实战避坑与报错指南-error-logs" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>实战避坑与报错指南 (Error Logs)</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#七-常见问题解答" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>七、 常见问题解答</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#q-我在内网本地运行-agent是不是就-100-安全了" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Q: 我在内网本地运行 Agent，是不是就 100% 安全了？</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#q-引入安全层会导致响应变慢吗" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Q: 引入安全层会导致响应变慢吗？</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#推荐深度阅读" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>推荐深度阅读</a></li></ul></div></div></div></div></div> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">文章工具</div> <div class="grid gap-1 text-[10px] text-[var(--xb-text)]"> <button type="button" data-copy-article class="flex items-center justify-between border-b border-[var(--xb-line)] py-2 text-left"><span>复制链接</span><span>↗</span></button> <a href="/ai/ai-agent-complete-guide/" class="flex items-center justify-between border-b border-[var(--xb-line)] py-2"><span>返回专题 Hub</span><span>→</span></a> <a href="/rss.xml" class="flex items-center justify-between border-b border-[var(--xb-line)] py-2"><span>RSS</span><span>→</span></a> <a href="/newsletter/" class="flex items-center justify-between py-2"><span>Newsletter</span><span>→</span></a> </div> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">相关文章</div> <div class="xb-article-related"><a href="/ai/multi-agent-planning/">Multi-Agent Planning 实战：任务拆解、动态路由、死锁与状态交接</a><a href="/ai/openai-agents-sdk-duplicate-tool-names/">OpenAI Agents SDK 重复 Tool 名称：为什么后注册工具会覆盖前一个？</a><a href="/ai/openai-agents-sdk-runstate-approval-resume/">OpenAI Agents SDK RunState 怎么恢复 Tool Approval？跨进程审批与 Resume 实测</a></div> </section> <nav class="rounded-[20px] border border-slate-200/80 dark:border-white/10 bg-white/55 dark:bg-white/[0.025] px-4 py-3 xb-article-panel !rounded-xl !shadow-none" aria-label="独立博客网络"><div class="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">独立博客网络</div><div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] font-bold text-slate-500 dark:text-slate-400"><a href="https://www.travellings.cn/go.html" target="_blank" rel="noopener noreferrer" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">开往下一站 →</a></div></nav> </aside> </div> <script>
+<p><strong>Tool Name 一样不代表风险一样，参数本身也是权限的一部分。</strong></p>
+<p>这也是为什么 XBSTACK 已经把 <a href="/ai/ai-agent-tool-authorization-policy-gate/">Tool Authorization Policy Gate</a> 独立拆出来：真正授权应该发生在 Tool 执行前，而不是模型 Prompt 里。</p>
+<h2 id="4-identityagent-到底代表谁在行动">4. Identity：Agent 到底代表谁在行动</h2>
+<p>Agent 访问资源时至少可能涉及：</p>
+<ul>
+<li>用户身份；</li>
+<li>Agent 自身身份；</li>
+<li>服务账号；</li>
+<li>企业组织身份；</li>
+<li>delegated identity（受委托身份）；</li>
+<li>下游 SaaS / MCP Resource Server 的凭据。</li>
+</ul>
+<p>最危险的实现之一是：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">用户登录后台
+→ Agent 自动继承用户全部 Token
+→ 所有 Tool 都用这个 Token 执行
+</code></pre>
+<p>这样做的问题是 Agent 的实际能力会直接等于用户的最大权限，而且 Tool 之间没有独立边界。</p>
+<p>生产环境更适合：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">User Intent
+→ Agent Identity / Delegation
+→ Narrow Scope
+→ Resource-level Authorization
+→ Short-lived Credential
+→ Tool Execution
+</code></pre>
+<p>NIST 2026 的 Agent Identity &#x26; Authorization 工作正是围绕这类问题展开：Agent 对数据、Tool 与应用的访问，需要明确身份标准与授权控制，而不能因为“已经登录”就默认所有后续动作合法。</p>
+<h2 id="5-mcp-security协议接通以后安全工作才刚开始">5. MCP Security：协议接通以后，安全工作才刚开始</h2>
+<p>MCP 把模型和外部能力连接起来，但“协议兼容”不等于“安全”。</p>
+<p>当前 MCP 生态里需要分别检查：</p>
+<ul>
+<li>MCP Server 来源是否可信；</li>
+<li>Tool Description 是否可能误导模型；</li>
+<li>Tool Input Schema 是否足够严格；</li>
+<li>Authorization Server 是否正确；</li>
+<li>Credential 是否绑定到正确 issuer；</li>
+<li>Tool 是否拥有过宽的文件、Shell、数据库或 SaaS 权限；</li>
+<li>Tool Result 是否被当作可信指令重新喂给模型；</li>
+<li>Remote MCP 是否引入新的数据保留和第三方信任边界。</li>
+</ul>
+<p>MCP 2026-07-28 规范更新还继续强化了 authorization，例如 issuer validation、credential 与 issuer 绑定等；这说明 MCP 的安全问题不能停在“配置一个 OAuth”上。</p>
+<p>站内可以继续看：</p>
+<ul>
+<li><a href="/ai/mcp-security-best-practices/">MCP Security Best Practices</a></li>
+<li><a href="/ai/mcp-config-secret-permission-security-audit/">MCP 配置怎么做安全检查？Secret、Shell、Remote MCP 与权限边界</a></li>
+<li><a href="/ai/mcp-server-production-governance/">MCP Server Production Governance</a></li>
+</ul>
+<h2 id="6-memory-poisoning一次输入为什么可能影响未来会话">6. Memory Poisoning：一次输入为什么可能影响未来会话</h2>
+<p>Memory 是 Agent 与普通一次性推理系统差异最大的安全面之一。</p>
+<p>如果 Agent 允许自动把网页、邮件、对话或 Tool Result 写入长期 Memory，攻击链可能变成：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">恶意外部内容
+→ Agent 读取
+→ 未校验写入 Memory
+→ 当前 Session 结束
+→ 未来 Session 检索到该 Memory
+→ 继续影响决策
+</code></pre>
+<p>这时攻击已经不再局限于单次 Prompt。</p>
+<h3 id="memory-写入前至少检查四件事">Memory 写入前至少检查四件事</h3>
+<p><strong>1. Source</strong></p>
+<p>这条 Memory 来自用户明确输入、系统事件、可信数据库，还是不可信网页？</p>
+<p><strong>2. Content</strong></p>
+<p>它是事实、偏好、任务状态，还是带有命令性质的文本？</p>
+<p><strong>3. Scope</strong></p>
+<p>它属于哪个 <code>user_id</code>、<code>tenant_id</code>、<code>agent_id</code>、<code>session_id</code>？</p>
+<p><strong>4. Lifecycle</strong></p>
+<p>它是否应该永久保留？能否过期、撤销、纠正和追踪来源？</p>
+<p>一个更安全的 Memory 记录至少应该类似：</p>
+<pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"value"</span><span class="token operator">:</span> <span class="token string">"User prefers weekly reports"</span><span class="token punctuation">,</span>
+  <span class="token property">"source"</span><span class="token operator">:</span> <span class="token string">"explicit_user_preference"</span><span class="token punctuation">,</span>
+  <span class="token property">"tenant_id"</span><span class="token operator">:</span> <span class="token string">"t_123"</span><span class="token punctuation">,</span>
+  <span class="token property">"user_id"</span><span class="token operator">:</span> <span class="token string">"u_456"</span><span class="token punctuation">,</span>
+  <span class="token property">"trust"</span><span class="token operator">:</span> <span class="token string">"high"</span><span class="token punctuation">,</span>
+  <span class="token property">"expires_at"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+  <span class="token property">"created_by"</span><span class="token operator">:</span> <span class="token string">"memory_policy_v3"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>而不是把所有文本无差别塞进 Vector Store。</p>
+<h2 id="7-approval批准的应该是具体动作不是一个-tool-名字">7. Approval：批准的应该是“具体动作”，不是一个 Tool 名字</h2>
+<p>Human-in-the-Loop（HITL）很重要，但实现得太粗同样会出问题。</p>
+<p>错误方式：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">用户批准 transfer_money Tool
+→ 后续所有 transfer_money 都视为已批准
+</code></pre>
+<p>更合理的是把 Approval 绑定到：</p>
+<ul>
+<li>Tool；</li>
+<li>Resource；</li>
+<li>参数；</li>
+<li>金额/影响范围；</li>
+<li>身份；</li>
+<li>过期时间；</li>
+<li>当前 Run / Task。</li>
+</ul>
+<p>例如：</p>
+<pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"tool"</span><span class="token operator">:</span> <span class="token string">"transfer_money"</span><span class="token punctuation">,</span>
+  <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"account_A"</span><span class="token punctuation">,</span>
+  <span class="token property">"to"</span><span class="token operator">:</span> <span class="token string">"vendor_B"</span><span class="token punctuation">,</span>
+  <span class="token property">"amount"</span><span class="token operator">:</span> <span class="token number">100</span><span class="token punctuation">,</span>
+  <span class="token property">"currency"</span><span class="token operator">:</span> <span class="token string">"USD"</span><span class="token punctuation">,</span>
+  <span class="token property">"expires_in"</span><span class="token operator">:</span> <span class="token number">300</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>如果 Agent 在审批后把 <code>amount</code> 改成 <code>10000</code>，原审批必须失效。</p>
+<p>这也是为什么“人在回路”不能只做一个 Yes/No 弹窗。</p>
+<h2 id="8-runtime-control真正的安全策略要放在模型之外">8. Runtime Control：真正的安全策略要放在模型之外</h2>
+<p>OWASP 2026-09-01 发布的 Agent Control Standard（ACS）值得重点关注，因为它强调的不是再加一条 Prompt，而是让 Agent 平台暴露可以执行安全策略的 middleware hooks。</p>
+<p>从工程上看，一个高风险 Tool Call 更适合经过：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Agent Decision
+    ↓
+Runtime Policy Middleware
+    ↓
+Identity Check
+    ↓
+Authorization
+    ↓
+Argument Validation
+    ↓
+Risk / Approval
+    ↓
+Rate / Cost / Retry Limits
+    ↓
+Sandbox / Network Policy
+    ↓
+Tool Execution
+    ↓
+Audit Event
+</code></pre>
+<p>这种架构的价值是：</p>
+<blockquote>
+<p><strong>模型可以提出动作，但不能自己决定自己是否有权执行这个动作。</strong></p>
+</blockquote>
+<p>这比在 System Prompt 里写“不要做危险操作”可靠得多。</p>
+<h2 id="9-sandbox限制的不是模型而是执行环境">9. Sandbox：限制的不是“模型”，而是执行环境</h2>
+<p>只要 Agent 可以执行代码、Shell、浏览器自动化或文件操作，就需要考虑隔离。</p>
+<p>常见控制包括：</p>
+<ul>
+<li>非特权运行；</li>
+<li>只读根文件系统；</li>
+<li>限定可写目录；</li>
+<li>CPU / Memory / Process 限制；</li>
+<li>超时；</li>
+<li>禁止或限制网络出口；</li>
+<li>域名 allowlist；</li>
+<li>Secret 不直接注入全局环境；</li>
+<li>禁止访问宿主 Docker Socket；</li>
+<li>临时工作区与任务结束销毁。</li>
+</ul>
+<p>例如代码执行环境可以把目标定义成：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Agent 能把代码跑起来
+≠
+Agent 能访问宿主机全部文件、内网和凭据
+</code></pre>
+<p>Sandbox 不能解决 Prompt Injection，但可以降低 Prompt Injection 成功后的影响。</p>
+<h2 id="10-secret-与数据边界不要把所有上下文都交给模型">10. Secret 与数据边界：不要把所有上下文都交给模型</h2>
+<p>生产 Agent 经常会接触：</p>
+<ul>
+<li>API Key；</li>
+<li>OAuth Token；</li>
+<li>数据库凭据；</li>
+<li>邮件；</li>
+<li>客户资料；</li>
+<li>内部文档；</li>
+<li>Audit Log；</li>
+<li>长期 Memory。</li>
+</ul>
+<p>安全设计不应该是“先全部放进 Context，再要求模型不要泄漏”。</p>
+<p>更合理的顺序是：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">任务需要什么数据？
+→ 最小化取数
+→ 必要字段脱敏
+→ Secret 留在 Tool/Runtime
+→ 模型只获得完成任务所需的结果
+</code></pre>
+<p>例如发邮件 Tool 可以在服务端持有 OAuth Credential，模型只产生：</p>
+<pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"to"</span><span class="token operator">:</span> <span class="token string">"approved@example.com"</span><span class="token punctuation">,</span>
+  <span class="token property">"subject"</span><span class="token operator">:</span> <span class="token string">"Weekly report"</span><span class="token punctuation">,</span>
+  <span class="token property">"body"</span><span class="token operator">:</span> <span class="token string">"..."</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>而不是把完整 OAuth Token 放进模型上下文。</p>
+<p>对于 Zero Data Retention、Remote MCP、Prompt Cache、Memory、Audit 的区别，可以看 <a href="/ai/openai-zero-data-retention-agent-data-boundary/">OpenAI Zero Data Retention 与 Agent 数据边界</a>。</p>
+<h2 id="11-multi-agentagent-之间也不能默认互相信任">11. Multi-Agent：Agent 之间也不能默认互相信任</h2>
+<p>Multi-Agent 架构经常出现一个危险假设：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">消息来自另一个内部 Agent
+→ 默认可信
+</code></pre>
+<p>但上游 Agent 可能已经被污染，也可能拥有与下游不同的租户、权限和数据范围。</p>
+<p>Agent 间通信至少应该携带：</p>
+<ul>
+<li>sender identity；</li>
+<li>task/run id；</li>
+<li>tenant；</li>
+<li>allowed action scope；</li>
+<li>structured schema；</li>
+<li>integrity / signature（适用时）；</li>
+<li>trace context。</li>
+</ul>
+<p>下游 Agent 仍然需要自己做 Authorization，而不是继承上游的“信任”。</p>
+<h2 id="12-audit必须知道-agent-实际做了什么">12. Audit：必须知道 Agent 实际做了什么</h2>
+<p>生产 Agent 至少应该能回答：</p>
+<ul>
+<li>谁发起了任务？</li>
+<li>使用哪个 Agent / Prompt / Model / Policy 版本？</li>
+<li>读取了哪些数据来源？</li>
+<li>调用了哪个 Tool？</li>
+<li>参数是什么？</li>
+<li>Authorization 为什么通过或拒绝？</li>
+<li>是否经过人工审批？</li>
+<li>Tool 最终执行结果是什么？</li>
+<li>是否产生外部副作用？</li>
+<li>哪个 <code>trace_id</code> 可以串起整条链路？</li>
+</ul>
+<p>但 Audit 也不能把所有敏感内容明文记录下来。日志本身同样要做 PII/Secret redaction、访问控制和 retention policy。</p>
+<h2 id="13-costretry-和-recursive-tool-chain-也是安全问题">13. Cost、Retry 和 Recursive Tool Chain 也是安全问题</h2>
+<p>Agent 可能没有“被黑”，但仍然因为错误规划进入：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Agent
+→ Tool
+→ Retry
+→ Agent
+→ Tool
+→ Retry
+→ ...
+</code></pre>
+<p>结果可能是：</p>
+<ul>
+<li>Token 成本失控；</li>
+<li>SaaS API 配额耗尽；</li>
+<li>重复发送消息；</li>
+<li>重复创建订单；</li>
+<li>下游服务被打满。</li>
+</ul>
+<p>因此至少设置：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">max_steps
+max_tool_calls
+max_retries
+wall_clock_timeout
+token_budget
+cost_budget
+concurrency_limit
+circuit_breaker
+</code></pre>
+<p>这类问题在安全领域通常可以归入 availability / denial-of-wallet / cascading failure 的控制范围。</p>
+<h2 id="14-security-testing安全测试必须做成回归测试">14. Security Testing：安全测试必须做成回归测试</h2>
+<p>一次红队测试不能代表以后一直安全。</p>
+<p>下面任何一项变化都可能改变攻击面：</p>
+<ul>
+<li>System Prompt；</li>
+<li>Model；</li>
+<li>Provider；</li>
+<li>Tool Description；</li>
+<li>Tool Schema；</li>
+<li>MCP Server；</li>
+<li>Retriever；</li>
+<li>Memory Policy；</li>
+<li>Authorization Policy；</li>
+<li>Agent topology。</li>
+</ul>
+<p>OWASP 的 <a href="https://cheatsheetseries.owasp.org/cheatsheets/AI_Agent_Security_Cheat_Sheet.html" rel="nofollow noopener noreferrer" target="_blank">AI Agent Security Cheat Sheet</a> 也明确建议在这类变化后重新做结构化对抗测试，并为生产部署设置 Release Gate。</p>
+<h3 id="建议至少固定这些测试用例">建议至少固定这些测试用例</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>测试</th><th>预期结果</th></tr></thead><tbody><tr><td>网页中嵌入间接 Prompt Injection</td><td>不自动扩大权限或发送敏感数据</td></tr><tr><td>Tool 参数越权</td><td>Policy Gate 拒绝</td></tr><tr><td>Approval 后参数被修改</td><td>原审批失效</td></tr><tr><td>跨 tenant Memory 检索</td><td>0 条越权结果</td></tr><tr><td>恶意 Memory 写入</td><td>被拒绝或降级为低信任</td></tr><tr><td>Shell 尝试访问非允许目录</td><td>Sandbox 拒绝</td></tr><tr><td>Tool 无限递归</td><td>Step/Cost/Retry Limit 中断</td></tr><tr><td>Remote MCP 返回恶意指令</td><td>不直接转化为高风险执行权限</td></tr></tbody></table>
+<h2 id="15-一套更实用的-agent-security-分层">15. 一套更实用的 Agent Security 分层</h2>
+<p>如果要把整篇文章压缩成架构图，可以使用下面这九层：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">1. Untrusted Input Boundary
+        ↓
+2. Identity
+        ↓
+3. Authorization
+        ↓
+4. Approval
+        ↓
+5. Runtime Policy
+        ↓
+6. Sandbox / Network / Secrets
+        ↓
+7. Memory &#x26; Data Isolation
+        ↓
+8. Audit / Monitoring
+        ↓
+9. Incident Response / Kill Switch
+</code></pre>
+<p>注意它不是线性的单次检查。Identity、Authorization、Audit 等控制需要贯穿整个 Run。</p>
+<h2 id="16-上线前-checklist">16. 上线前 Checklist</h2>
+<h3 id="input--context">Input / Context</h3>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled> 网页、邮件、PDF、RAG、Tool Result 默认按不可信输入处理。</li>
+<li class="task-list-item"><input type="checkbox" disabled> 不依赖关键词黑名单作为最后一道 Prompt Injection 防线。</li>
+<li class="task-list-item"><input type="checkbox" disabled> 外部内容不能直接修改 System Policy 或 Runtime Policy。</li>
+</ul>
+<h3 id="tool--mcp">Tool / MCP</h3>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled> Agent 只暴露完成任务必要的 Tool。</li>
+<li class="task-list-item"><input type="checkbox" disabled> Read / Write 权限分开。</li>
+<li class="task-list-item"><input type="checkbox" disabled> 每次高风险 Tool Call 都做执行时 Authorization。</li>
+<li class="task-list-item"><input type="checkbox" disabled> Tool 参数有严格 Schema 和业务约束。</li>
+<li class="task-list-item"><input type="checkbox" disabled> Remote MCP Server、Tool Description 和依赖来源经过信任评估。</li>
+</ul>
+<h3 id="identity--approval">Identity / Approval</h3>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled> Agent 有明确身份或 Delegation 模型。</li>
+<li class="task-list-item"><input type="checkbox" disabled> tenant / user / resource / scope 不依赖 Prompt 文本判断。</li>
+<li class="task-list-item"><input type="checkbox" disabled> 高风险 Approval 绑定具体 Tool + Resource + 参数 + 过期时间。</li>
+</ul>
+<h3 id="memory--data">Memory / Data</h3>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled> Memory 写入有来源、信任级别和 Scope。</li>
+<li class="task-list-item"><input type="checkbox" disabled> Memory 检索强制 tenant/user 隔离。</li>
+<li class="task-list-item"><input type="checkbox" disabled> 敏感 Memory 支持过期、撤销和审计。</li>
+<li class="task-list-item"><input type="checkbox" disabled> Secret 不直接放进模型 Context。</li>
+</ul>
+<h3 id="execution">Execution</h3>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled> 代码/Shell 在受限 Sandbox 中运行。</li>
+<li class="task-list-item"><input type="checkbox" disabled> 文件、网络出口和进程权限受控。</li>
+<li class="task-list-item"><input type="checkbox" disabled> 设置 Tool/Step/Retry/Token/Cost/Timeout 上限。</li>
+</ul>
+<h3 id="audit--response">Audit / Response</h3>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled> 高风险 Tool Call 有结构化审计日志。</li>
+<li class="task-list-item"><input type="checkbox" disabled> 日志做 Secret/PII 脱敏。</li>
+<li class="task-list-item"><input type="checkbox" disabled> 可以 revoke credential、disable tool、stop run。</li>
+<li class="task-list-item"><input type="checkbox" disabled> 有 Kill Switch 和 Incident Response 流程。</li>
+</ul>
+<h3 id="testing">Testing</h3>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled> 有 Indirect Prompt Injection 回归用例。</li>
+<li class="task-list-item"><input type="checkbox" disabled> 有 Tool Abuse / Approval Bypass 用例。</li>
+<li class="task-list-item"><input type="checkbox" disabled> 有 Memory Poisoning / Cross-tenant 用例。</li>
+<li class="task-list-item"><input type="checkbox" disabled> Prompt、Tool、Memory、Model、Provider、Policy 变化后重新跑安全测试。</li>
+</ul>
+<h2 id="17-现有-xbstack-security-cluster-怎么继续看">17. 现有 XBSTACK Security Cluster 怎么继续看</h2>
+<p>如果你正在做具体工程，不需要所有内容都塞在这一篇里：</p>
+<ul>
+<li><strong>专题入口</strong>：<a href="/ai/security/">AI Agent Security</a></li>
+<li><strong>Tool 授权</strong>：<a href="/ai/ai-agent-tool-authorization-policy-gate/">AI Agent Tool Authorization：Policy Gate、RBAC/ABAC、HITL 与审计</a></li>
+<li><strong>MCP 安全</strong>：<a href="/ai/mcp-security-best-practices/">MCP Security Best Practices</a></li>
+<li><strong>MCP 配置审计</strong>：<a href="/ai/mcp-config-secret-permission-security-audit/">Secret、Shell、Remote MCP 与权限边界</a></li>
+<li><strong>执行隔离</strong>：<a href="/ai/openclaw-mcp-sandbox-architecture/">MCP Sandbox Architecture</a></li>
+<li><strong>数据边界</strong>：<a href="/ai/openai-zero-data-retention-agent-data-boundary/">OpenAI Zero Data Retention 与 Agent 数据边界</a></li>
+<li><strong>审批恢复</strong>：<a href="/ai/openai-agents-sdk-runstate-approval-resume/">OpenAI Agents SDK RunState Approval / Resume</a></li>
+<li><strong>安全扫描工具</strong>：<a href="/tools/agent-security-auditor/">Agent Security Auditor</a></li>
+</ul>
+<h2 id="最终结论">最终结论</h2>
+<p>AI Agent Security 最容易犯的错误，是把安全问题简化成：</p>
+<blockquote>
+<p>“怎么识别恶意 Prompt？”</p>
+</blockquote>
+<p>真正的生产问题应该是：</p>
+<blockquote>
+<p><strong>当模型接触不可信内容、拥有 Memory、能调用 MCP/Tool 并代表用户行动时，系统如何保证它只能在被授权的范围内执行，而且每个高风险动作都可控制、可追踪、可停止？</strong></p>
+</blockquote>
+<p>所以更可靠的安全策略不是寻找一个万能 Guardrail，而是建立 defense-in-depth：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Untrusted Context
++ Identity
++ Authorization
++ Approval
++ Runtime Policy
++ Sandbox
++ Memory Isolation
++ Data / Secret Boundary
++ Audit
++ Adversarial Testing
++ Incident Response
+</code></pre>
+<p>模型最终仍可能判断错误，但执行系统不应该因为一次判断错误就自动失去边界。</p>  <aside class="mt-12 rounded-2xl border border-slate-200 bg-slate-50/70 px-5 py-4 not-prose dark:border-white/10 dark:bg-white/[0.025]"> <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"> <div><p class="text-sm font-black text-slate-900 dark:text-white">讨论这个问题</p><p class="mt-1 text-xs leading-6 text-slate-500 dark:text-slate-400">有不同的复现结果、版本变化或补充证据？欢迎继续讨论。</p></div> <a href="#discussion" class="shrink-0 text-xs font-black text-blue-600 dark:text-blue-400">发表观点或复现 →</a> </div> </aside><section class="mt-16 rounded-[34px] border border-orange-500/20 bg-orange-500/[0.06] p-7 md:p-9 not-prose"> <div class="text-[10px] font-black uppercase tracking-[0.28em] text-orange-500 mb-4">专题入口 / AI Agent Hub</div> <h2 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-4">从单个 Agent 问题继续进入完整生产体系</h2> <p class="text-sm font-bold leading-7 text-slate-600 dark:text-slate-400 max-w-3xl">AI Agent 专题统一组织架构、记忆、工具调用、评测、安全、部署和多智能体协作，让每篇文章都回到明确的主题主页面。</p> <div class="mt-7 flex flex-wrap gap-3"> <a href="/ai/agent/" class="rounded-full bg-orange-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-white hover:bg-orange-600 transition-colors">进入 AI Agent 专题 →</a> <a href="/ai/ai-agent-architecture/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">查看架构指南</a> <a href="/newsletter/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">订阅</a> </div> </section> </div> <section class="mt-14 border-t border-[var(--xb-line)] pt-7" data-related-reading> <div class="mb-4 flex items-center justify-between gap-4"><h2 class="m-0 text-[17px] font-bold text-[var(--xb-ink)]">继续阅读</h2><a href="/ai/security/" class="text-[10px] font-bold text-blue-600 dark:text-blue-400">返回专题 →</a></div> <div class="xb-article-related"><a href="/ai/openai-zero-data-retention-agent-data-boundary/" data-related-link><span class="font-bold text-[var(--xb-ink)]">OpenAI Zero Data Retention 怎么用？AI Agent、Responses API 与 MCP 数据保留边界</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">OpenAI Zero Data Retention（ZDR）并不等于整个 AI Agent 零留存。本文拆解 Responses API、Chat Completions、remote MCP、Prompt Cache、Background Mode 与 Data Residency 的真实数据保留边界。</span></a><a href="/ai/mcp-config-secret-permission-security-audit/" data-related-link><span class="font-bold text-[var(--xb-ink)]">MCP 配置怎么做安全检查？Secret、Shell、Remote MCP 与权限边界实测</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">MCP 配置文件最容易出问题的不是格式，而是明文 Secret、过宽 Shell、远程 MCP、权限和日志边界。本文按 MCP 官方授权要求与 OWASP MCP Security 做本地扫描示例，并用 Agent Security Auditor 给出整改前后检查。</span></a><a href="/ai/openai-outcome-based-pricing-ai-agent-roi/" data-related-link><span class="font-bold text-[var(--xb-ink)]">OpenAI 开始试验“按结果收费”：AI Agent 为什么可能不再只按 Token 计费？</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">OpenAI CFO Sarah Friar 表示，公司正在企业 AI 中试验基于业务结果而非单纯使用量的定价。本文结合 OpenAI、Intercom、Salesforce、AWS 等一手资料，分析 AI Agent 定价为何从 Token/Usage 走向 Task、Outcome 与 ROI，以及独立开发者应如何设计成本、评测、计费和模型路由。</span></a><a href="/ai/funes-coding-agent-memory/" data-related-link><span class="font-bold text-[var(--xb-ink)]">Funes Agent Memory 实测：Codex 长期记忆召回、旧记忆污染与本地隐私边界</span><span class="mt-1 block line-clamp-1 text-[9px] text-[var(--xb-faint)]">Hugging Face Funes 本地实测：5 个已知目标查询 Hit@1/Hit@5 均为 100%，平均 recall 约 3.14 秒；同时验证无关查询仍返回低分候选、过时记忆仍可能被召回，以及 Codex trace 索引、secret scrub 和本地运行边界。</span></a></div> </section> <section class="mt-10 border-t border-[var(--xb-line)] pt-7"> <div class="grid grid-cols-1 gap-4 md:grid-cols-[1fr_260px] md:items-center"><div><h2 class="m-0 text-[16px] font-bold text-[var(--xb-ink)]">AI 工程周报</h2><p class="mt-1 text-[10px] leading-5 text-[var(--xb-muted)]">只发真正改变工程判断的变化、故障、实验和新资产。</p></div><astro-island uid="ZNxmiM" prefix="r22" component-url="/_astro/NewsletterForm.BrHNXF12.js" component-export="default" renderer-url="/_astro/client.CJCcxmqC.js" props="{&quot;compact&quot;:[0,true],&quot;lang&quot;:[0,&quot;zh-CN&quot;]}" ssr client="visible" opts="{&quot;name&quot;:&quot;NewsletterForm&quot;,&quot;value&quot;:true}" await-children><div class="w-full "><form class="flex flex-col gap-2 sm:flex-row"><input type="email" placeholder="输入你的邮箱" class="h-11 min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3.5 text-[12px] font-semibold text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-950 dark:text-white" required="" value=""/><button type="submit" class="h-11 shrink-0 rounded-lg px-5 text-[11px] font-bold transition bg-blue-600 text-white hover:bg-blue-700">订阅</button></form></div><!--astro:end--></astro-island></div> </section> </article> <section id="discussion" class="xb-article-comments scroll-mt-28"> <div class="mb-5 flex items-center gap-3 text-[11px] font-bold text-[var(--xb-ink)]"><span>评论与补充证据</span><span class="h-px flex-1 bg-[var(--xb-line)]"></span></div> <section class="xbstack-comments" data-xbstack-waline data-server-url="https://comments.xbstack.com" data-comment-path="/ai/ai-agent-security/" data-comment-lang="zh-CN" data-comment-mode="evidence" aria-labelledby="xbstack-comments-title"> <div class="xbstack-comments__header"> <div> <p class="xbstack-comments__eyebrow">参与讨论</p> <h2 id="xbstack-comments-title"> 问题、验证与勘误 </h2> <p class="xbstack-comments__description"> 登录后可发表评论。所有新评论先进入审核；审核期间仅评论者本人和管理员可见，通过后才公开。 </p> </div> <div class="xbstack-comments__policy" aria-label="评论规则"> <span>登录评论</span> <span>审核后公开</span> </div> </div> <div class="xbstack-comments__status" data-waline-status role="status" aria-live="polite"> <span class="xbstack-comments__spinner" aria-hidden="true"></span> <span>正在加载评论区…</span> </div> <div id="waline" class="xbstack-comments__mount" data-waline-mount></div> <noscript> <p class="xbstack-comments__noscript"> 评论区需要启用 JavaScript 才能查看和发布评论。 </p> </noscript> </section>  </section> </main> <aside class="xb-article-side"> <section class="xb-article-panel"> <div class="xb-article-panel__title">本文目录</div> <div class="liquid-glass-container "><div class="liquidGlass-wrapper dock !p-6"><div class="liquidGlass-effect-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-tint-h  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-shine  intersect:animate-fadeLeft transition-all duration-300 fast-slow"></div><div class="liquidGlass-text  intersect:animate-fadeLeft transition-all duration-300 fast-slow"><div class="intersect:animate-fadeLeft" data-astro-cid-hop3l3kc><h2 class="text-2xl border-none mb-3" data-astro-cid-hop3l3kc>内容导航</h2><div class="max-h-96 overflow-y-auto" data-astro-cid-hop3l3kc><ul class="list-none m-0 space-y-1" data-astro-cid-hop3l3kc><li class="ml-0" data-astro-cid-hop3l3kc><a href="#先给结论ai-agent-安全不是把恶意-prompt-过滤掉" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>先给结论：AI Agent 安全不是“把恶意 Prompt 过滤掉”</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#1-为什么-agent-比普通-chatbot-多了一层安全问题" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>1. 为什么 Agent 比普通 Chatbot 多了一层安全问题</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#2-prompt-injection-正在从字符串攻击变成上下文操纵" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>2. Prompt Injection 正在从字符串攻击变成上下文操纵</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#source-sink-思维比关键词黑名单更实用" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Source-Sink 思维比“关键词黑名单”更实用</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#3-tool-可见不等于-tool-有权执行" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>3. Tool 可见不等于 Tool 有权执行</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#4-identityagent-到底代表谁在行动" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>4. Identity：Agent 到底代表谁在行动</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#5-mcp-security协议接通以后安全工作才刚开始" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>5. MCP Security：协议接通以后，安全工作才刚开始</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#6-memory-poisoning一次输入为什么可能影响未来会话" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>6. Memory Poisoning：一次输入为什么可能影响未来会话</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#memory-写入前至少检查四件事" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Memory 写入前至少检查四件事</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#7-approval批准的应该是具体动作不是一个-tool-名字" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>7. Approval：批准的应该是“具体动作”，不是一个 Tool 名字</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#8-runtime-control真正的安全策略要放在模型之外" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>8. Runtime Control：真正的安全策略要放在模型之外</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#9-sandbox限制的不是模型而是执行环境" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>9. Sandbox：限制的不是“模型”，而是执行环境</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#10-secret-与数据边界不要把所有上下文都交给模型" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>10. Secret 与数据边界：不要把所有上下文都交给模型</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#11-multi-agentagent-之间也不能默认互相信任" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>11. Multi-Agent：Agent 之间也不能默认互相信任</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#12-audit必须知道-agent-实际做了什么" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>12. Audit：必须知道 Agent 实际做了什么</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#13-costretry-和-recursive-tool-chain-也是安全问题" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>13. Cost、Retry 和 Recursive Tool Chain 也是安全问题</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#14-security-testing安全测试必须做成回归测试" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>14. Security Testing：安全测试必须做成回归测试</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#建议至少固定这些测试用例" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>建议至少固定这些测试用例</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#15-一套更实用的-agent-security-分层" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>15. 一套更实用的 Agent Security 分层</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#16-上线前-checklist" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>16. 上线前 Checklist</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#input--context" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Input / Context</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#tool--mcp" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Tool / MCP</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#identity--approval" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Identity / Approval</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#memory--data" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Memory / Data</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#execution" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Execution</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#audit--response" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Audit / Response</a></li><li class="ml-4" data-astro-cid-hop3l3kc><a href="#testing" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>Testing</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#17-现有-xbstack-security-cluster-怎么继续看" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>17. 现有 XBSTACK Security Cluster 怎么继续看</a></li><li class="ml-0" data-astro-cid-hop3l3kc><a href="#最终结论" class="block w-full leading-relaxed no-underline text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-primary transition-colors duration-200 py-1 font-medium" data-toc-link data-astro-cid-hop3l3kc>最终结论</a></li></ul></div></div></div></div></div> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">文章工具</div> <div class="grid gap-1 text-[10px] text-[var(--xb-text)]"> <button type="button" data-copy-article class="flex items-center justify-between border-b border-[var(--xb-line)] py-2 text-left"><span>复制链接</span><span>↗</span></button> <a href="/ai/security/" class="flex items-center justify-between border-b border-[var(--xb-line)] py-2"><span>返回专题 Hub</span><span>→</span></a> <a href="/rss.xml" class="flex items-center justify-between border-b border-[var(--xb-line)] py-2"><span>RSS</span><span>→</span></a> <a href="/newsletter/" class="flex items-center justify-between py-2"><span>Newsletter</span><span>→</span></a> </div> </section> <section class="xb-article-panel"> <div class="xb-article-panel__title">相关文章</div> <div class="xb-article-related"><a href="/ai/openai-zero-data-retention-agent-data-boundary/">OpenAI Zero Data Retention 怎么用？AI Agent、Responses API 与 MCP 数据保留边界</a><a href="/ai/mcp-config-secret-permission-security-audit/">MCP 配置怎么做安全检查？Secret、Shell、Remote MCP 与权限边界实测</a><a href="/ai/openai-outcome-based-pricing-ai-agent-roi/">OpenAI 开始试验“按结果收费”：AI Agent 为什么可能不再只按 Token 计费？</a></div> </section> <nav class="rounded-[20px] border border-slate-200/80 dark:border-white/10 bg-white/55 dark:bg-white/[0.025] px-4 py-3 xb-article-panel !rounded-xl !shadow-none" aria-label="独立博客网络"><div class="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">独立博客网络</div><div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] font-bold text-slate-500 dark:text-slate-400"><a href="https://www.travellings.cn/go.html" target="_blank" rel="noopener noreferrer" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">开往下一站 →</a></div></nav> </aside> </div> <script>
   const bindArticleTools=()=>{document.querySelectorAll('[data-copy-article]').forEach((button)=>{if(button.dataset.ready)return;button.dataset.ready='1';button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(window.location.href);const original=button.querySelector('span')?.textContent;if(button.querySelector('span'))button.querySelector('span').textContent='已复制';setTimeout(()=>{if(button.querySelector('span'))button.querySelector('span').textContent=original||'复制链接'},1200)}catch{}})})};document.addEventListener('astro:page-load',bindArticleTools);bindArticleTools();
 </script> </main> <script>
     function initProgress() {
