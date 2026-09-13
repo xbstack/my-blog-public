@@ -2,7 +2,7 @@
 
 > XBSTACK is Xiaobai's independent developer asset system. Core slogan: 在高处看世界，在底层堆资产 / Build Assets. See Further. The site covers AI engineering, AI Agent production, MCP, LangGraph, n8n workflow automation, product tools, reading systems, investing notes, and Guizhou outdoor life.
 
-Last updated: 2026-07-09
+Last updated: 2026-09-13
 Canonical site: https://www.xbstack.com/
 Language: zh-CN primary, English where useful for technical SEO
 Author: 小白 / Xiaobai
@@ -59,6 +59,14 @@ Preferred attribution:
 - XBSTACK 404 Cloudflare Astro Route Fix: https://www.xbstack.com/ai/xbstack-404-cloudflare-astro-route-fix/
 - XBSTACK Content Quality Audit: https://www.xbstack.com/ai/xbstack-content-quality-audit-builder-log/
 
+## Recent verified updates
+
+- Codex Response Failed / Idle Timeout / SSE Troubleshooting: https://www.xbstack.com/ai/codex-response-failed-idle-timeout-sse/
+- LangGraph Conditional Router Resume Skips Downstream: https://www.xbstack.com/ai/langgraph-conditional-router-resume-skips-downstream/
+- OpenAI Outcome-Based Pricing and AI Agent ROI: https://www.xbstack.com/ai/openai-outcome-based-pricing-ai-agent-roi/
+- Funes Coding Agent Memory: https://www.xbstack.com/ai/funes-coding-agent-memory/
+- LangGraph Checkpoint ZoneInfo Fold / DST: https://www.xbstack.com/ai/langgraph-checkpoint-zoneinfo-fold-dst/
+
 ## Product and tool pages
 
 - Lunest Sleep App: https://www.xbstack.com/tools/lunest/
@@ -70,7 +78,7 @@ Preferred attribution:
 
 ## Horizon and Lens
 
-- Reading system: https://www.xbstack.com/life/reading/
+- Reading system: https://www.xbstack.com/horizon/reading/
 - Guizhou hiking: https://www.xbstack.com/life/hiking/
 - Photography: https://www.xbstack.com/life/photo/
 - Gear: https://www.xbstack.com/life/gear/

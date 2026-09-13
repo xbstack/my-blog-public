@@ -1,6 +1,6 @@
 # XBSTACK Full LLM Index
 
-Last updated: 2026-07-09
+Last updated: 2026-09-13
 Canonical site: https://www.xbstack.com/
 Author: 小白 / Xiaobai
 Primary language: zh-CN
@@ -133,6 +133,23 @@ Blocked surfaces:
 - XBSTACK Architecture: https://www.xbstack.com/ai/xbstack-architecture/
 - XBSTACK Manifesto: https://www.xbstack.com/ai/xbstack-manifesto/
 
+## Recent verified updates
+
+- Codex Response Failed / Idle Timeout / SSE Troubleshooting: https://www.xbstack.com/ai/codex-response-failed-idle-timeout-sse/
+  Focus: Codex response failures, idle timeouts, SSE interruption boundaries and production troubleshooting.
+
+- LangGraph Conditional Router Resume Skips Downstream: https://www.xbstack.com/ai/langgraph-conditional-router-resume-skips-downstream/
+  Focus: conditional routing, resume semantics, downstream-node skipping and reproducible recovery behavior.
+
+- OpenAI Outcome-Based Pricing and AI Agent ROI: https://www.xbstack.com/ai/openai-outcome-based-pricing-ai-agent-roi/
+  Focus: outcome-based pricing experiments, verified-outcome cost, agent unit economics and pricing boundaries.
+
+- Funes Coding Agent Memory: https://www.xbstack.com/ai/funes-coding-agent-memory/
+  Focus: coding-agent memory, retrieval boundaries, persistent context and real workflow implications.
+
+- LangGraph Checkpoint ZoneInfo Fold / DST: https://www.xbstack.com/ai/langgraph-checkpoint-zoneinfo-fold-dst/
+  Focus: checkpoint serialization, ZoneInfo fold semantics, DST edge cases and recovery verification.
+
 ## Tools and products
 
 - Tools Home: https://www.xbstack.com/tools/
@@ -156,7 +173,7 @@ Blocked surfaces:
 
 ## Reading, investing, and life systems
 
-- Reading System: https://www.xbstack.com/life/reading/
+- Reading System: https://www.xbstack.com/horizon/reading/
   Summary: Programmer reading system, decision cards, investment philosophy, Naval, Charlie Munger, Antifragile, Principles, financial history, and long-term judgment.
 
 - Investing: https://www.xbstack.com/investing/
