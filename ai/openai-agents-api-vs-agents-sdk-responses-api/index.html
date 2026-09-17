@@ -1210,7 +1210,7 @@ Audit Log
 
 
 <table><thead><tr><th>现有任务</th><th>建议</th></tr></thead><tbody><tr><td>短请求、结构化输出、少量 Tool</td><td>保持 Responses API</td></tr><tr><td>应用内多 Tool / Guardrail / Handoff</td><td>保持或升级 Agents SDK</td></tr><tr><td>已有 LangGraph / Temporal / 自研工作流</td><td>不为 API 发布机械迁移；只评估 Harness 成本最高的任务</td></tr><tr><td>Coding / Research / Ops 长任务</td><td>单独做 Agents API PoC</td></tr><tr><td>高风险交易/生产写操作</td><td>无论哪条路线，业务状态与审批继续自持</td></tr></tbody></table>
-<p>最好的切入点不是“迁移整个系统”，而是选一个<strong>Harness 成本已经明显高于业务逻辑成本</strong>的任务。</p>
+<p>最好的切入点不是“迁移整个系统”，而是选一个<strong>Harness 成本已经明显高于业务逻辑成本</strong>的任务。如果你在进入 API 架构之前更关心 ChatGPT 里到底该用 Chat、Work 还是 Codex，可以先看 <a href="/ai/tools-lab/chatgpt-work-chat-codex-difference/">ChatGPT Chat、Work、Codex 真实工作流对比</a>，它把对话、长任务交付和仓库执行的边界单独拆开了。</p>
 <p>比如一个代码审查 Agent 需要：Clone 仓库、安装依赖、运行测试、拆 Subagent、保存报告、失败后恢复。这个任务很适合拿来评估 Agents API，因为它能真正检验托管 Harness 是否减少了工程量。</p>
 <p>反过来，一个“读取三条 CRM 记录然后生成销售摘要”的流程，用 Responses API 已经很简单，迁移没有明显价值。</p>
 <h2 id="十我们已经验证了什么哪些还没有">十、我们已经验证了什么，哪些还没有</h2>
