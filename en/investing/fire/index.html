@@ -272,6 +272,7 @@ const analyticsRequiresHumanInteraction = false;
                 if (explicitArea) return explicitArea.slice(0, 60);
                 if (target.closest('header, nav, [role="navigation"]')) return 'navigation';
                 if (target.closest('footer')) return 'footer';
+                if (target.closest('[data-related-link], [data-related-reading], [data-analytics-area="related_content"]')) return 'related_content';
                 if (target.closest('[class*="related"], [class*="recommend"], [class*="next-reading"]')) return 'related_content';
                 if (target.closest('[class*="sidebar"], aside')) return 'sidebar';
                 if (target.closest('.markdown-content, article')) return 'article_body';
@@ -487,6 +488,8 @@ const analyticsRequiresHumanInteraction = false;
                 page_path: window.location.pathname,
                 page_title: document.title || '',
               });
+              // Components that defer engagement events until a real interaction can retry now.
+              window.dispatchEvent(new CustomEvent('xb:ga4-human-verified'));
             };
 
             ['pointerdown', 'keydown', 'touchstart'].forEach((eventName) => {
