@@ -1028,7 +1028,7 @@ const analyticsRequiresHumanInteraction = false;
 <h2 id="ai-客服-agent一线问题解决">AI 客服 Agent：一线问题解决</h2>
 <p>基于高度受控的本地知识库快速应答高频咨询，是释放人工客服排障压力的前哨防线。</p>
 <p>一线客服智能体（AI Support Agent）负责处理大促和日常的顾客进线问答。智能体严格基于只读的知识库文档进行 RAG 检索，禁止在没有文档支持的情况下胡乱猜测。当用户咨询产品参数或退换货政策时，智能体自动匹配并返回包含出处引用的标准答复。如果用户的诉求涉及退款等写操作，智能体会自动收集用户上传的证据图片，打包成卡片并流向人工客服桌面。</p>
-<p>内链参考：<a href="/ai/ai-agent-customer-support-automation/">AI 客服智能体生产化实战：意图路由、工具调用、RAG 与人工升级闭环</a></p>
+<p>内链参考：<a href="/ai/ai-agent-customer-support-automation/">AI 客服智能体生产化实战：意图路由、工具调用、RAG 与人工升级闭环</a>。如果已经进入产品选型阶段，再看 <a href="/ai/best-ai-support-agents-2026/">2026 AI 客服 Agent 选型指南</a>，把 Zendesk、Intercom Fin、Freshdesk 与自建方案放到同一评估框架中。</p>
 <h2 id="工单路由-agent把问题分给正确团队">工单路由 Agent：把问题分给正确团队</h2>
 <p>根据故障严重程度与 SLA 承诺自动分拨并升级待办，是确保大企业服务时效的技术底盘。</p>
 <p>工单路由智能体（Ticket Routing Agent）解决跨部门分协作的指派痛点。当遇到“API 接口持续返回500错误”的技术求助时，智能体判定其为“系统故障级”，自动根据 CODEOWNERS 配置把工单指派给当值的后端工程师，并匹配 2 小时紧急 SLA 响应。如果是非技术性的发票报账问题，它则会在毫秒级分流给财务 AP 组，彻底杜绝了人工客服肉眼看单、分错团队的低效扯皮。</p>

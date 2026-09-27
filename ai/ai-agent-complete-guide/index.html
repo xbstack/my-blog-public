@@ -1000,7 +1000,7 @@ const analyticsRequiresHumanInteraction = false;
 <li>智能体工作流（Agentic Workflow）：使用状态机框架（如 LangGraph）将 Agent 节点与确定性的 Python 边连接起来，既保留了 AI 的语义理解，又锁定了宏观业务流程。</li>
 <li>多智能体协作（Multi-Agent Systems）：将复杂业务拆分为多个专业智能体（如项目经理、财务哨兵、ERP 写入者），利用层级分发和交接（Handoff）机制实现大协同。</li>
 </ul>
-<p>内链参考：<a href="/ai/ai-agent-architecture/">AI Agent 架构：构建自主智能体系统的 5 个核心模块</a>。如果你正在做编排框架选型，可以继续看 <a href="/ai/ai-agent-framework-comparison/">AI Agent 框架怎么选：LangGraph、AI SDK 7、Google ADK 与 Microsoft Agent Framework</a>，对比状态管理、恢复、HITL、语言栈和部署边界。</p>
+<p>内链参考：<a href="/ai/ai-agent-architecture/">AI Agent 架构：构建自主智能体系统的 5 个核心模块</a>。如果你正在做编排框架选型，可以继续看 <a href="/ai/ai-agent-framework-comparison/">AI Agent 框架怎么选：LangGraph、AI SDK 7、Google ADK 与 Microsoft Agent Framework</a>，对比状态管理、恢复、HITL、语言栈和部署边界；如果需要同时判断 MCP、Function Calling、A2A 与具体 Agent 框架的职责边界，再看 <a href="/ai/ai-agent-protocols-and-frameworks/">AI Agent 协议与框架选型</a>。</p>
 <h2 id="第二层任务规划-agent-planning">第二层：任务规划 (Agent Planning)</h2>
 <p>动态规划是 Agent 与传统自动化程序的关键区别，也是最容易失控的节点。</p>
 <p>一个合格的规划引擎需要具备：</p>
@@ -1018,7 +1018,7 @@ const analyticsRequiresHumanInteraction = false;
 <li>接口数字签名与 Scoped 权限：智能体调用 ERP 等敏感接口时，使用的 credentials 必须是基于提交人身份最小化授权的。</li>
 <li>幂等性校验：对所有写操作工具配置唯一的幂等性键（Idempotency Key），防止 Agent 因为网络抖动触发重试导致下游系统重复记账。</li>
 </ul>
-<p>内链参考：<a href="/ai/ai-agent-tool-use/">AI Agent Tool Use 实战：从参数解析到人在回路的安全策略</a>。</p>
+<p>内链参考：<a href="/ai/ai-agent-tool-use/">AI Agent Tool Use 实战：从参数解析到人在回路的安全策略</a>。如果工具调用包含跨进程人工审批、暂停后恢复与重放，还要看 <a href="/ai/openai-agents-sdk-runstate-approval-resume/">OpenAI Agents SDK RunState Tool Approval / Resume 实测</a>。</p>
 <h2 id="第四层记忆系统-memory-system">第四层：记忆系统 (Memory System)</h2>
 <p>记忆不是简单地把最近五次对话的历史记录（Chat History）塞入模型上下文。这会导致 Context Window 极速膨胀，拖慢响应并显著拉高算力成本。</p>
 <p>我们必须构建分层记忆架构：</p>
@@ -1028,7 +1028,7 @@ const analyticsRequiresHumanInteraction = false;
 <li>长期记忆（Long-term Memory）：从历史 Trace 中提取的有价值事实，持久化到向量库，并通过租户 ID 进行严格的数据隔离。</li>
 <li>遗忘机制：提供用户自主删除记忆的接口，确保符合全球隐私法规（如 GDPR）。</li>
 </ul>
-<p>内链参考：<a href="/ai/agent-memory-system/">AI Agent Memory System：构建具备长期记忆的智能体系统</a>。</p>
+<p>内链参考：<a href="/ai/agent-memory-system/">AI Agent Memory System：构建具备长期记忆的智能体系统</a>。当重点从“存不存记忆”进入“怎么召回、重排、处理时效和冲突”时，继续看 <a href="/ai/ai-agent-memory-architecture/">AI Agent Memory Retrieval 实战</a>。</p>
 <h2 id="第五层知识检索与-rag-接入">第五层：知识检索与 RAG 接入</h2>
 <p>当智能体需要获取外部的私域知识或特定文件时，需要接入检索增强生成机制。</p>
 <p>智能体环境下的 RAG 具有独特特征：</p>
@@ -1083,6 +1083,7 @@ const analyticsRequiresHumanInteraction = false;
 <li><a href="/ai/ai-agent-deployment/">AI Agent Deployment 实战：任务队列、状态持久化、模型路由与高并发部署</a></li>
 <li><a href="/ai/ai-agent-workflow/">LangGraph 实战：用状态机、Checkpoint 与 Human-in-the-loop 控制 Agent 工作流</a></li>
 <li><a href="/ai/ai-agent-protocol-ecosystem/">MCP vs A2A vs Function Calling：AI Agent 协议选型与系统集成指南</a></li>
+<li><a href="/ai/openai-assistants-api-vs-custom-agent/">OpenAI Assistants API 停用迁移：Responses API vs 自定义 Agent</a></li>
 </ul>
 <h2 id="agent-saas-化从-demo-到可收费产品">Agent SaaS 化：从 Demo 到可收费产品</h2>
 <p>将智能体打包为 SaaS 服务时，算力成本的控制是决定业务生死存亡的关键。</p>
