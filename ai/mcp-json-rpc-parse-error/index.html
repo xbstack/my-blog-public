@@ -1280,7 +1280,7 @@ path <span class="token operator">=</span> Path<span class="token punctuation">(
 <p>执行：</p>
 <pre class="language-bash" data-language="bash"><code is:raw="" class="language-bash">python3 validate_mcp_stdout.py
 </code></pre>
-<p>如果第一条失败内容是 banner、数据库连接提示或 DeprecationWarning，就先处理 stdout 污染；如果所有行都能解析，再继续检查生命周期、capabilities 和工具响应结构。</p>
+<p>如果第一条失败内容是 banner、数据库连接提示或 DeprecationWarning，就先处理 stdout 污染；如果所有行都能解析，再继续检查生命周期、capabilities 和工具响应结构。如果请求本身能正常完成、但返回证据不完整，应切换到独立的 <a href="/ai/mcp-tool-call-truncated-fix/">MCP Tool Call Result Truncated 排障路径</a>，不要把合法但过大的工具响应误判成 JSON-RPC 解析错误。</p>
 <h3 id="排查流程claude-和-cursor-内部是如何定位与抓取这些底层报错的">排查流程：Claude 和 Cursor 内部是如何定位与抓取这些底层报错的</h3>
 <p>在 IDE 客户端如 Claude Desktop 或 Cursor 连接失效时，通过终端裸跑、捕获 stderr 流以及查看本地客户端日志，是物理排障的唯一路径。在大模型应用生态中，客户端如 Claude Desktop 和 Cursor 在集成 MCP 时，由于运行在图形界面后台，其底层的网络与管道交互对用户来说是一个彻底的黑盒。当工具列表显示失败时，很多开发者只能在界面上看到红色的警告按钮，而无法直接查看到错误的源头。为了撕开这个黑盒，我总结了一套在本地环境对客户端进行全方位物理审计与日志抓取的标准排障流程。</p>
 <p>第一步，终端孤立调试法。

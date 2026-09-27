@@ -1280,7 +1280,7 @@ path <span class="token operator">=</span> Path<span class="token punctuation">(
 <p>Run it with:</p>
 <pre class="language-bash" data-language="bash"><code is:raw="" class="language-bash">python3 validate_mcp_stdout.py
 </code></pre>
-<p>If the first failing line is a banner, database connection notice, or <code>DeprecationWarning</code>, fix stdout contamination first. If every line parses, continue with lifecycle, capability, and tool-response checks.</p>
+<p>If the first failing line is a banner, database connection notice, or <code>DeprecationWarning</code>, fix stdout contamination first. If every line parses, continue with lifecycle, capability, and tool-response checks. If the request completes cleanly but the returned evidence is incomplete, switch to the separate <a href="/en/ai/mcp-tool-call-truncated-fix/">MCP Tool Call Result Truncated diagnostic path</a> instead of treating a valid oversized response as a JSON-RPC parse failure.</p>
 <h3 id="troubleshooting-workflow-how-to-find-and-capture-low-level-errors-in-claude-and-cursor">Troubleshooting Workflow: How to Find and Capture Low-Level Errors in Claude and Cursor</h3>
 <p>When an IDE client such as Claude Desktop or Cursor cannot connect, the only reliable diagnostic path is to run the server directly in a terminal, capture stderr, and inspect the client’s local logs. MCP integrations in these graphical clients run in the background, so their process and pipe interactions are largely opaque. When the tool list fails, many developers see only a red warning indicator and cannot inspect the underlying error. The following standard workflow provides a comprehensive local audit and captures the relevant client logs.</p>
 <p>Step 1: Isolate the server in a terminal.
