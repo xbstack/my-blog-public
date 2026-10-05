@@ -580,7 +580,7 @@ const analyticsRequiresHumanInteraction = false;
               window._hmt.push(['_trackPageview', pageKey]);
             });
           }
-        </script><link rel="stylesheet" href="/_astro/archive.BVq3DutQ.css">
+        </script><link rel="stylesheet" href="/_astro/archive.DnD-sPPJ.css">
 <style>h1,h2,h3,h4,h5,h6{scroll-margin-top:8rem}[data-astro-cid-hop3l3kc][data-toc-link]{cursor:pointer;transition:color .2s ease}[data-astro-cid-hop3l3kc][data-toc-link]:hover{color:var(--color-primary, #f97316)}.financial-disclaimer[data-astro-cid-qg2yevcq]{box-shadow:0 4px 20px -5px #f973161a}
 </style>
 <link rel="stylesheet" href="/_astro/_slug_.CoqtapaZ.css">
@@ -1093,7 +1093,7 @@ json-control:
 <blockquote>
 <p>截至 2026-09-01，v1 <code>@modelcontextprotocol/sdk</code> 的 2025-era <code>StreamableHTTPClientTransport</code> 在 #2739 描述的 request-scoped SSE premature EOF/error 边界上，最新 1.30.0 仍可本地复现 pending-until-timeout；v2 / 2026-07-28 路径需要独立测试。</p>
 </blockquote>
-<p>如果你正在迁移新协议，可以先看站内的 <a href="/ai/mcp-streamable-http-deployment/">MCP Streamable HTTP 远程部署与 2026-07-28 迁移说明</a>，不要拿本文 v1 workaround 反向设计新架构。若最终错误表现为 JSON-RPC 消息解析失败，转到 <a href="/ai/mcp-json-rpc-parse-error/">MCP -32700 Parse Error 排查</a>；如果请求能正常结束但 Tool 结果被截断，则属于另一条 <a href="/ai/mcp-tool-call-truncated-fix/">MCP Tool Call Result Truncated 排障路径</a>。完整 MCP 内容关系可以从 <a href="/ai/mcp/">MCP 工程与生产实践专题</a> 进入。</p>
+<p>如果你正在迁移新协议，可以先看站内的 <a href="/ai/mcp-streamable-http-deployment/">MCP Streamable HTTP 远程部署与 2026-07-28 迁移说明</a>，不要拿本文 v1 workaround 反向设计新架构。若最终错误表现为 JSON-RPC 消息解析失败，转到 <a href="/ai/mcp-json-rpc-parse-error/">MCP -32700 Parse Error 排查</a>；如果请求能正常结束但 Tool 结果被截断，则属于另一条 <a href="/ai/mcp-tool-call-truncated-fix/">MCP Tool Call Result Truncated 排障路径</a>。如果你要把这类单点故障升级成长期生产架构，继续看 <a href="/ai/mcp-config-secret-permission-security-audit/">MCP 配置与权限安全审计</a> 和 <a href="/ai/mcp-function-calling-api-gateway-architecture/">MCP、Function Calling、API Gateway 三层架构</a>；完整 MCP 内容关系可以从 <a href="/ai/mcp/">MCP 工程与生产实践专题</a> 进入。</p>
 <h2 id="生产环境排查顺序">生产环境排查顺序</h2>
 <p>遇到类似“Tool 调用像卡死，最后只报 timeout”时，我建议按这个顺序看：</p>
 <ol>

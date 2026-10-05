@@ -580,7 +580,7 @@ const analyticsRequiresHumanInteraction = false;
               window._hmt.push(['_trackPageview', pageKey]);
             });
           }
-        </script><link rel="stylesheet" href="/_astro/archive.BVq3DutQ.css">
+        </script><link rel="stylesheet" href="/_astro/archive.DnD-sPPJ.css">
 <style>h1,h2,h3,h4,h5,h6{scroll-margin-top:8rem}[data-astro-cid-hop3l3kc][data-toc-link]{cursor:pointer;transition:color .2s ease}[data-astro-cid-hop3l3kc][data-toc-link]:hover{color:var(--color-primary, #f97316)}.financial-disclaimer[data-astro-cid-qg2yevcq]{box-shadow:0 4px 20px -5px #f973161a}
 </style>
 <link rel="stylesheet" href="/_astro/_slug_.CoqtapaZ.css">
@@ -1094,7 +1094,7 @@ json-control:
 <blockquote>
 <p>As of September 1, 2026, the v1 <code>@modelcontextprotocol/sdk</code> 2025-era <code>StreamableHTTPClientTransport</code> still reproduces #2739’s pending-until-timeout behavior on current 1.30.0 when a request-scoped SSE response ends/errors before delivering the matching JSON-RPC result. The v2 / 2026-07-28 path needs separate testing.</p>
 </blockquote>
-<p>If you are already migrating, use the <a href="/en/ai/mcp-streamable-http-deployment/">MCP Streamable HTTP deployment and 2026-07-28 migration guide</a> rather than designing a new architecture around this v1 workaround. If the failure is a malformed JSON-RPC message rather than a pending request, use the <a href="/en/ai/mcp-json-rpc-parse-error/">MCP -32700 Parse Error guide</a>. If the request completes but the tool result is cut off, that is a different <a href="/en/ai/mcp-tool-call-truncated-fix/">MCP Tool Call Result Truncated path</a>. The <a href="/en/ai/mcp/">MCP engineering hub</a> connects these troubleshooting paths.</p>
+<p>If you are already migrating, use the <a href="/en/ai/mcp-streamable-http-deployment/">MCP Streamable HTTP deployment and 2026-07-28 migration guide</a> rather than designing a new architecture around this v1 workaround. If the failure is a malformed JSON-RPC message rather than a pending request, use the <a href="/en/ai/mcp-json-rpc-parse-error/">MCP -32700 Parse Error guide</a>. If the request completes but the tool result is cut off, that is a different <a href="/en/ai/mcp-tool-call-truncated-fix/">MCP Tool Call Result Truncated path</a>. For the durable production controls behind these point failures, continue with the <a href="/en/ai/mcp-config-secret-permission-security-audit/">MCP configuration and permission security audit</a> and the <a href="/en/ai/mcp-function-calling-api-gateway-architecture/">MCP, Function Calling, and API Gateway three-layer architecture</a>. The <a href="/en/ai/mcp/">MCP engineering hub</a> connects these troubleshooting paths.</p>
 <h2 id="production-troubleshooting-checklist">Production troubleshooting checklist</h2>
 <p>When a remote MCP tool call looks stuck and eventually reports only a timeout, I would inspect it in this order:</p>
 <ol>
