@@ -347,7 +347,8 @@ const analyticsRequiresHumanInteraction = false;
                     outbound: isExternalHttp,
                     link_type: linkType,
                     link_area: linkArea,
-                    link_position: linkArea,
+                    link_position: String(target.closest('[data-related-slot]')?.getAttribute('data-related-slot') || linkArea).slice(0, 60),
+                    link_context: String(target.getAttribute('data-related-reason') || target.closest('[data-related-reason]')?.getAttribute('data-related-reason') || '').slice(0, 100),
                     source_page_path: window.location.pathname,
                     target_page_path: url.pathname || '',
                   };

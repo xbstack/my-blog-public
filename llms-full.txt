@@ -153,7 +153,7 @@ Blocked surfaces:
 ## Tools and products
 
 - Tools Home: https://www.xbstack.com/tools/
-- Lunest Sleep App: https://www.xbstack.com/tools/lunest/
+- Lunest Sleep App: https://www.xbstack.com/products/lunest/
   Summary: Sleep recovery app with soundscapes, sleep tracking, reports, trends, privacy-aware health data handling, and subscription planning.
 
 - AI Financial Report Analyzer: https://www.xbstack.com/tools/ai-finance/

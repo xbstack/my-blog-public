@@ -69,7 +69,7 @@ Preferred attribution:
 
 ## Product and tool pages
 
-- Lunest Sleep App: https://www.xbstack.com/tools/lunest/
+- Lunest Sleep App: https://www.xbstack.com/products/lunest/
 - Compound Interest Calculator: https://www.xbstack.com/tools/compound-calculator/
 - AI Financial Report Analyzer: https://www.xbstack.com/tools/ai-finance/
 - UTM Builder: https://www.xbstack.com/tools/utm-builder/
