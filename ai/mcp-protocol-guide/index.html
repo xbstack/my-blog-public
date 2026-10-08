@@ -961,6 +961,7 @@ const analyticsRequiresHumanInteraction = false;
 <li>协议 stateless 不等于业务 stateless；审批、长任务、购物篮、上传等状态应使用显式业务 ID/handle 存储。</li>
 <li>MCP 不是万能插件市场，真正价值在标准化、可审计和可治理。</li>
 </ul>
+<p><strong>实测入口</strong>：XBSTACK 的 <a href="/ai/mcp-2026-07-28-stateless-migration/">MCP 2026-07-28 多副本无状态迁移实验</a> 使用本地 HTTP 代理对比 legacy Session 与自描述请求、外部状态 Handle。2026-10-08 重新运行现有确定性用例，6/6 通过。它<strong>不等于</strong>完整 MCP 规范符合性测试或第三方客户端认证；涉及副作用、丢失响应后的重试，仍需应用端幂等键与执行结果对账，不能把 Stateless 当成自动 exactly-once。</p>
 <h2 id="先给结论mcp-是-ai-调用本地工具的协议边界">先给结论：MCP 是 AI 调用本地工具的协议边界</h2>
 <p>MCP 的价值不是“让模型随便操作本机”，而是把本地工具、文件、数据库和远程服务封装成可发现、可限权、可审计的能力清单。它适合私有数据库挂载、企业内部工具链集成和自动化代码重构，但必须提前设计权限、日志、超时和隔离边界。</p>
 <ul>
