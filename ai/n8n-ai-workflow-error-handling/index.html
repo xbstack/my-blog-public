@@ -964,7 +964,7 @@ const analyticsRequiresHumanInteraction = false;
 <p>在 n8n 的自建拓扑中，防御故障的第一道防线是全局错误触发器（Error Trigger）与节点级重试退避的有机结合。</p>
 <p>n8n 在系统层面为我们提供了两个维度的错误自愈机制：</p>
 <h3 id="1-全局-error-trigger-节点">1. 全局 Error Trigger 节点</h3>
-<p>这是一个类似于编程语言中 try-catch 块的全局监听器。我们可以创建一个独立的「全局捕获工作流」，其首节点配置为 Error Trigger。当你的主工作流中任何节点发生未捕获的严重报错（如外部服务鉴权失败或数据库宕机）时，n8n 引擎会自动中断当前执行，并将包含 Workflow ID、Execution ID、Error Message 和失败节点名在内的元数据上下文直接抛给这个捕获流。利用这个机制，我们可以统一将异常元数据记录到本地 PostgreSQL 数据库中，实现系统级的错误可视化。</p>
+<p>这是一个类似于编程语言中 try-catch 块的全局监听器。我们可以创建一个独立的「全局捕获工作流」，其首节点配置为 Error Trigger。当你的主工作流中任何节点发生未捕获的严重报错（如外部服务鉴权失败或数据库宕机）时，n8n 引擎会自动中断当前执行，并将包含 Workflow ID、Execution ID、Error Message 和失败节点名在内的元数据上下文直接抛给这个捕获流。按 <a href="https://docs.n8n.io/build/flow-logic/handle-errors-gracefully/" rel="nofollow noopener noreferrer" target="_blank">n8n 官方错误处理文档</a>，主工作流需要显式配置对应 Error Workflow，它并非自动监听整个 n8n 实例中所有未关联的工作流。可以将允许保存的异常元数据记录到 PostgreSQL，但需对敏感字段脱敏并限制访问权限。</p>
 <h3 id="2-节点级有限重试retry-on-fail--wait-between-tries">2. 节点级有限重试：Retry On Fail + Wait Between Tries</h3>
 <p>对大模型 API、HTTP Request 和其他第三方服务，瞬时网络错误或限流可以在节点 Settings 中开启 Retry On Fail，同时设置有限的重试次数与 Wait Between Tries。当前 n8n 文档支持这种节点级有限重试，但不要把“指数退避”描述成所有节点都有一个统一开关。</p>
 <p>如果业务确实需要 5s → 10s → 20s 这类指数退避，可以用 Wait 节点、Code 节点或子工作流显式计算等待时间。更重要的是先区分错误类型：限流和临时 5xx 可以重试；无效参数、权限不足或业务校验失败通常应该直接进入 Error Workflow。任何会写数据库、发邮件、创建工单或扣费的步骤都需要幂等键，否则“重试成功”也可能变成“重复写入”。</p>
@@ -995,7 +995,7 @@ const analyticsRequiresHumanInteraction = false;
     created_at <span class="token keyword">TIMESTAMP</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CURRENT_TIMESTAMP</span>
 <span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<p>当全局 Error Trigger 触发时，n8n 会将出错的输入数据（payload）打包写入 JSONB 字段中，为我们提供了零数据丢失的防线。</p>
+<p>Error Workflow 获取的是 n8n 当前版本提供的失败上下文，并不会自动把所有上游原始输入打包写进自建的 JSONB 字段，更不能保证“零数据丢失”。上述 SQL 是业务侧自建审计表，需自行通过数据库节点写入经过授权和脱敏的字段；失败重跑还要结合持久化执行记录、业务幂等键、人工复核与访问权限。</p>
 <h2 id="token-消耗与成本监控建立账单防线">Token 消耗与成本监控：建立账单防线</h2>
 <p>对大模型响应数据中的 usage 字段进行提取与累加折算，是保证财务安全的关键手段。</p>
 <p>在 <a href="/ai/n8n-ai-notion-knowledge-base-agent/">Notion 知识库智能体</a> 的实际运行中，如果你的知识库里有大量的 PDF 或是上万字的长文段，在进行向量检索（RAG）时，如果 Top-K 限制失效或者用户发起了恶意长文本注入，单次执行消耗的上下文可能会瞬间飙升至几十万 Token。如果我们不为每一次大模型调用添加成本监控，直到月底收到大额账单时，项目可能早已因为成本失控而被迫停摆。</p>
@@ -1006,8 +1006,8 @@ const analyticsRequiresHumanInteraction = false;
   <span class="token keyword">const</span> data <span class="token operator">=</span> item<span class="token punctuation">.</span>json<span class="token punctuation">;</span>
   <span class="token keyword">const</span> usage <span class="token operator">=</span> data<span class="token punctuation">.</span>usage <span class="token operator">||</span> <span class="token punctuation">{</span> <span class="token literal-property property">prompt_tokens</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token literal-property property">completion_tokens</span><span class="token operator">:</span> <span class="token number">0</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
 
-  <span class="token keyword">const</span> promptTokens <span class="token operator">=</span> usage<span class="token punctuation">.</span>prompt_tokens <span class="token operator">||</span> <span class="token number">0</span><span class="token punctuation">;</span>
-  <span class="token keyword">const</span> completionTokens <span class="token operator">=</span> usage<span class="token punctuation">.</span>completion_tokens <span class="token operator">||</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> promptTokens <span class="token operator">=</span> <span class="token function">Number</span><span class="token punctuation">(</span>usage<span class="token punctuation">.</span>prompt_tokens <span class="token operator">??</span> usage<span class="token punctuation">.</span>input_tokens <span class="token operator">??</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> completionTokens <span class="token operator">=</span> <span class="token function">Number</span><span class="token punctuation">(</span>usage<span class="token punctuation">.</span>completion_tokens <span class="token operator">??</span> usage<span class="token punctuation">.</span>output_tokens <span class="token operator">??</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token keyword">const</span> totalTokens <span class="token operator">=</span> promptTokens <span class="token operator">+</span> completionTokens<span class="token punctuation">;</span>
 
   <span class="token comment">// 不把易变化的模型单价写死在长期运行的工作流里。</span>
@@ -1039,8 +1039,8 @@ const analyticsRequiresHumanInteraction = false;
 <h3 id="2-llm-429-限流保护-limit--wait">2. LLM 429 限流保护 (Limit &#x26; Wait)</h3>
 <p>大模型 API 均有 RPM（每分钟请求数）硬性限额。批量处理任务时，我们必须引入流量整形机制：</p>
 <ul>
-<li>在大模型节点前挂载一个 Limit 节点，控制每分钟进入模型的并发流。</li>
-<li>在 Loop 循环内部引入 Wait 节点，每次 API 调用后强制暂停 2 秒，确保请求在时间轴上均匀分布，规避 429 限流报错。</li>
+<li>Limit 节点主要限制一次运行中通过的数据条数，<strong>不是跨执行实例共享的 RPM 限速器</strong>；无法仅靠它控制所有并发工作流的模型调用频率。</li>
+<li>单次循环可以按 <a href="https://docs.n8n.io/integrations/builtin/handle-rate-limits" rel="nofollow noopener noreferrer" target="_blank">n8n 官方限流指南</a>用 Loop Over Items 配合 Wait 分批调用，但固定等待 2 秒并不能保证满足 Provider 的 RPM/TPM 上限；多 Worker 或多实例应使用共享队列/令牌桶并处理 <code>Retry-After</code>（如有）。对于 429 应进行有限重试和退避，不要无限重放。</li>
 </ul>
 <p>实际遇到的 429 报错长这样：</p>
 <pre class="language-text" data-language="text"><code is:raw="" class="language-text">NodeApiError: openai [openai_error]: 429 Too Many Requests
