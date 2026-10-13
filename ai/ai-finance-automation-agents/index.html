@@ -1039,11 +1039,11 @@ const analyticsRequiresHumanInteraction = false;
 <p>内链参考：<a href="/ai/how-to-build-ai-contract-review-agent/">AI 合同审查智能体实战：条款抽取、风险标注、版本比对与法务复核闭环</a></p>
 <h2 id="财务审计-agent勾稽异常与证据链">财务审计 Agent：勾稽、异常与证据链</h2>
 <p>对企业的年度和季度财务报告执行自动化的勾稽关系检查，是排查潜在欺诈与错报的终极过滤器。</p>
-<p>在财务流程的最后，财务审计智能体（Financial Audit Agent）发挥作用。该智能体将资产负债表、利润表和现金流量表进行全量对齐，在秒级运行上百项勾稽平衡公式验证。它能深入长达数百页的报表附注中，提取出可能藏在微小脚注里的对外连带责任担保、资产冻结诉讼、以及折旧年限变更等表外隐秘事项，并在本地自动生成详实的审计工作底稿（Working Paper）草稿，为签字会计师提供精准的核查导引。</p>
+<p>财务审计 Agent 可以设计为先解析三张主表及附注，再由确定性规则检查勾稽关系和会计期间；对于担保、诉讼、资产冻结与会计估计变动，仅输出带原文页码的待复核风险提示与底稿草稿。本文没有在标注年报样本上测量正确率或时延，不能承诺秒级扫描数百页、自动识别全部风险或代替签字会计师。</p>
 <p>内链参考：<a href="/ai/how-to-build-ai-financial-audit-agent/">AI 财务审计智能体实战：财报解析、勾稽检查、风险证据链与人工复核</a>。要验证模型是否稳定看对财报、抽取是否可回归，继续用 <a href="/ai/ai-financial-report-evaluation-golden-dataset/">AI 财报助手 Golden Dataset 评测体系</a> 建立固定样本与错误基线。</p>
 <h2 id="这些-agent-如何共用一套底层能力">这些 Agent 如何共用一套底层能力？</h2>
 <p>将基础能力封装成可复用的本地微服务，能最大化开发资源并保证各智能体决策的同源性。</p>
-<p>这些财务智能体并不是孤立开发的，它们共用着小白实验室的一套基石系统。文档结构化解析能力确保了合同、PO、发票等不同介质能被归一为同一格式；本地 RAG 知识库为所有 Agent 提供最新的财务合规准则查询；底层 Tool Use 与鉴权引擎规范了所有工具的调用边界；本地可观测性系统则全天候录屏并记录每一次模型决策的轨迹，为系统的质量评估与高并发部署提供了坚实支撑。</p>
+<p>在推荐架构中，各类财务 Agent 应共用可版本化的单据解析、主数据映射、受限知识检索、工具授权和审计能力。合同、PO、发票的字段归一化需要逐字段验证，不应宣称自动保证准确；合规规则库需要维护来源和生效日期。可观测性应优先记录经过脱敏的执行 Trace、审批和规则版本，而不是全天候录屏或暴露完整财务凭据。本段是目标系统设计，并非声称已由 XBSTACK 全面部署。</p>
 <p>底座能力参考：</p>
 <ul>
 <li>📄 文档解析底座：<a href="/ai/comparison-of-ai-document-analysis-agents/">AI 文档分析智能体实战：PDF 解析、表格抽取、引用定位与人工复核闭环</a></li>
@@ -1054,11 +1054,11 @@ const analyticsRequiresHumanInteraction = false;
 </ul>
 <h2 id="财务-agent-的权限分级">财务 Agent 的权限分级</h2>
 <p>把读取、草稿写入与外部扣放款动作实施隔离鉴权，是规避模型失控引起经济灾难的安全阀。</p>
-<p>我们在财务自动化架构中实施了最严苛的接口安全管控分级：</p>
+<p>建议在部署前按下列风险等级实现工具授权和审批，而不是假定示例已经接入真实财务系统：</p>
 <ul>
 <li>低风险动作（只读）：解析上传的单据图片、提取票面文本、查询 ERP 中的供应商税号与成本中心、在本地知识库检索费用报销政策、生成待审批的报销单草稿卡片。</li>
 <li>中风险动作（受控写入）：将核对一致的采购三单匹配报告作为 Draft 提交给 AP 数据库、将供应商状态在系统中更新为“挂起待人工复核”。</li>
-<li>高风险动作（禁止自主执行）：直接调用网上银行或第三方支付 API 汇出资金、修改已入账的往来明细、自动通过金额超过 500 元的费用报销、直接向监管机构出具审计结论。这些高风险动作的 API 在代码层面不向大模型提供任何入口，且必须由人类财务人员输入双因子令牌（2FA）后手动执行。</li>
+<li>高风险动作（禁止自主执行）：直接调用网上银行或第三方支付 API 汇出资金、修改已入账的往来明细、自动通过超过企业自定义审批阈值的费用报销、直接向监管机构出具审计结论。这些高风险动作的 API 在代码层面不向大模型提供任何入口，且必须由人类财务人员输入双因子令牌（2FA）后手动执行。</li>
 </ul>
 <h2 id="企业落地顺序">企业落地顺序</h2>
 <p>以最简单的发票验真与费用提取作为第一梯队，以跨流程协同与多维审计控制为最终目标。</p>
@@ -1069,7 +1069,7 @@ const analyticsRequiresHumanInteraction = false;
 第四阶段：构建财务治理看板。上线全流程的可观测性审计，完成成本优化建议，利用负面样本持续迭代模型的提示词和风控拦截系数。</p>
 <h2 id="传统单点财务软件-vs-xbstack-财务-agents-协同架构">传统单点财务软件 vs XBSTACK 财务 Agents 协同架构</h2>
 <p>传统软件无法处理跨业务线的非结构化信息，而协同智能体架构能提供全数据链的闭环审计。</p>
-<p>以下是两代财务自动化系统在真实复杂业务环境下的对比矩阵：</p>
+<p>以下是传统规则工具与拟议 AI 协同系统的职责对照，不是同样本性能测试；具体能力取决于供应商配置和实际验证：</p>
 
 
 
@@ -1105,7 +1105,7 @@ const analyticsRequiresHumanInteraction = false;
 
 
 
-<table><thead><tr><th align="left">评估维度指标</th><th align="left">传统单点财务软件 (ERP/OCR)</th><th align="left">XBSTACK 财务 Agents 协同架构</th></tr></thead><tbody><tr><td align="left">非结构化数据提取</td><td align="left">仅能机械扫描表头，无法理解合同或附注上下文条款</td><td align="left">Vision LLM 全文扫描合同里程碑、担保等语义指纹</td></tr><tr><td align="left">跨流程数据对账</td><td align="left">依靠财务专员多端导出 Excel 离线比对，耗时数天</td><td align="left">3-Way Match 智能体秒级核对 PO、入库单与发票明细</td></tr><tr><td align="left">规则匹配灵活度</td><td align="left">采用写死的 SQL 语句，遇到别名变更即报错失败</td><td align="left">科目标准化 Normalizer 结合语义别名库弹性映射</td></tr><tr><td align="left">异常拦截广度</td><td align="left">仅能根据总金额或预设超期阈值进行死板拦截</td><td align="left">风险分类器跨维度审计重复报销、供应商异常与预算超限</td></tr><tr><td align="left">安全风控门禁</td><td align="left">通常是全自动或全人工，缺乏细粒度的鉴权分级</td><td align="left">严格只读/写入/高危权限隔离，高风险 2FA 人工复核</td></tr></tbody></table>
+<table><thead><tr><th align="left">评估维度指标</th><th align="left">传统单点财务软件 (ERP/OCR)</th><th align="left">XBSTACK 财务 Agents 协同架构</th></tr></thead><tbody><tr><td align="left">非结构化数据提取</td><td align="left">仅能机械扫描表头，无法理解合同或附注上下文条款</td><td align="left">Vision LLM 全文扫描合同里程碑、担保等语义指纹</td></tr><tr><td align="left">跨流程数据对账</td><td align="left">依靠财务专员多端导出 Excel 离线比对，耗时数天</td><td align="left">可设计跨 PO、收货单、发票的确定性三单匹配，时延须实测</td></tr><tr><td align="left">规则匹配灵活度</td><td align="left">采用写死的 SQL 语句，遇到别名变更即报错失败</td><td align="left">科目标准化 Normalizer 结合语义别名库弹性映射</td></tr><tr><td align="left">异常拦截广度</td><td align="left">仅能根据总金额或预设超期阈值进行死板拦截</td><td align="left">风险分类器跨维度审计重复报销、供应商异常与预算超限</td></tr><tr><td align="left">安全风控门禁</td><td align="left">通常是全自动或全人工，缺乏细粒度的鉴权分级</td><td align="left">严格只读/写入/高危权限隔离，高风险 2FA 人工复核</td></tr></tbody></table>
 <h2 id="评估指标">评估指标</h2>
 <p>构建包含处理效率、发票错配率及内控漏判率的度量体系，为财务系统的演进提供数据支撑。</p>
 <p>我们主要通过以下三维指标评估财务治理系统的健康度：
