@@ -1001,7 +1001,7 @@ const analyticsRequiresHumanInteraction = false;
 
 <span class="token keyword">return</span> filteredItems<span class="token punctuation">;</span>
 </code></pre>
-<p>这段前置过滤在物理层面上帮我们拦截了大约百分之六十的无价值噪音，大大降低了后置大模型的推理负担。</p>
+<p>这段前置过滤能减少进入模型的无效消息，但实际压缩比例取决于频道内容、过滤规则及采样窗口。没有真实输入/输出计数就不应宣称固定“过滤 60%”，应在自己的工作流中测量消息数和 Token 变化。</p>
 <h2 id="多线程聚合与上下文排序">多线程聚合与上下文排序</h2>
 <p>在 Slack 的聊天场景中，大量的讨论是基于某个特定 Thread（回复线程）进行的。如果我们将消息按时间戳线性平铺送给大模型，模型会丢失对话的归属关系，误以为不相干的消息具有上下文关联。</p>
 <p>因此，我们需要在进入大模型前，通过 JavaScript 将零散的消息流聚合为「频道 - 主讨论 - 回复线程」的嵌套树状结构，以保持上下文的连续性：</p>
@@ -1026,7 +1026,7 @@ messages<span class="token punctuation">.</span><span class="token function">for
 </code></pre>
 <p>经过处理后，非结构化的消息变为了逻辑分明的对话单元，方便大模型精准跟踪讨论的演进过程。</p>
 <h2 id="大模型决策提炼与-json-格式化">大模型决策提炼与 JSON 格式化</h2>
-<p>我们将提炼整理好的格式化文本传入 OpenAI 节点。这里推荐选择 gpt-4o 或是 gpt-4o-mini。我们将 Temperature（温度）设置为 0.1。较低的温度能确保大模型只进行事实归纳，拒绝生成任何天马行空的编造。</p>
+<p>我们将提炼整理好的格式化文本传入 OpenAI 节点。模型应根据实际数据隐私、成本与结构化输出支持情况选择。较低的 Temperature（例如 0.1）可能降低表达波动，但<strong>不能保证</strong>模型不会遗漏决策、编造任务负责人或混淆线程；仍需保留消息来源链接并验证关键事实。</p>
 <p>我们的 Prompt 需明确要求模型只提取以下三类核心信息，并以强约束的 JSON 格式输出：</p>
 <pre class="language-text" data-language="text"><code is:raw="" class="language-text">你是一个资深项目秘书。请阅读以下 Slack 对话历史，提取出今日的以下事实：
 1. decisions：达成的核心决定或共识。
@@ -1040,7 +1040,7 @@ messages<span class="token punctuation">.</span><span class="token function">for
   "open_questions": ["问题一"]
 }
 </code></pre>
-<p>为了确保输出的格式百分之百不会因为模型的标点抽风而解析失败，建议开启 n8n OpenAI 节点的 JSON Schema 强约束选项，在底层直接限制模型的输出结构。</p>
+<p>在实际使用的 n8n/OpenAI 节点与模型支持严格 JSON Schema 时可以启用，但必须保留解析校验、截断/拒绝处理和失败分支。<strong>结构化格式正确不等于摘要事实正确</strong>，不能宣称“百分之百不会解析失败”。</p>
 <h2 id="卡片组装与-slack-自动推送">卡片组装与 Slack 自动推送</h2>
 <p>在获得结构化的 JSON 结果后，我们可以直接使用 n8n 的 Slack 节点，调用 <code>Post Message</code> 方法。为了让版面看起来高雅大方，我们应当配置 Slack 的 Block Kit（区块套件）进行卡片排版。</p>
 <p>我们可以将 JSON 拼装为多段的 Layout Blocks，比如用不同的颜色条区分决策（绿色）、待办（橙色）和待讨论项（灰色），最终推送至团队公共的 每日早报 频道。这不仅实现了数据沉淀，更让团队成员每天下班前只需花费十几秒，就能迅速同步所有项目的实际进展。</p>
@@ -1049,7 +1049,7 @@ messages<span class="token punctuation">.</span><span class="token function">for
 <pre class="language-text" data-language="text"><code is:raw="" class="language-text">Error: Request failed with status code 429 (Too Many Requests)
 </code></pre>
 <p>原因：由于你的工作流瞬间拉取并处理了大量频道，超出了 Slack API 的高频调用额度限制。
-解决方法：在获取频道历史消息的节点之间插入一个 Wait 节点（设置为等待 500 毫秒），对并发网络请求进行物理削峰，即可平稳度过限流阈值。</p>
+解决方法：首先确认是哪一个 Slack API、应用分发类型和安装方式触发限流；出现 HTTP 429 时按响应头 <code>Retry-After</code> 等待，再进行有上限的重试并持久化分页游标。固定等待 500 毫秒<strong>无法通用解决</strong>：对部分非 Marketplace 商业分发应用，<code>conversations.history</code> 和 <code>conversations.replies</code> 限制可能为<strong>每分钟 1 次</strong>，默认/最大返回条目仅 <strong>15</strong>；内部应用、其他安装与令牌类型限额可能不同。请参考 <a href="https://docs.slack.dev/reference/methods/conversations.history/" rel="nofollow noopener noreferrer" target="_blank">Slack conversations.history</a> 和 <a href="https://docs.slack.dev/reference/methods/conversations.replies/" rel="nofollow noopener noreferrer" target="_blank">conversations.replies</a>。</p>
 <h3 id="2-报错上下文超出最大长度限制">2. 报错：上下文超出最大长度限制</h3>
 <pre class="language-text" data-language="text"><code is:raw="" class="language-text">Error: context_length_exceeded
 </code></pre>

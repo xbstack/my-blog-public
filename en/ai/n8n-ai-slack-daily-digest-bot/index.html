@@ -1001,7 +1001,7 @@ const analyticsRequiresHumanInteraction = false;
 
 <span class="token keyword">return</span> filteredItems<span class="token punctuation">;</span>
 </code></pre>
-<p>This pre-filtering layer intercepts approximately 60% of low-value noise at the physical level, significantly reducing the inference burden on downstream large language models.</p>
+<p>This pre-filtering stage removes messages matching the configured rules before they reach the model. The actual reduction depends on channel activity, the filters, and the sample period; measure it from your own input/output counts rather than assuming a fixed percentage.</p>
 <h2 id="multi-thread-aggregation-and-context-sorting">Multi-thread Aggregation and Context Sorting</h2>
 <p>In Slack’s chat environment, most discussions occur within specific threads. If messages are flattened into a linear sequence based on timestamps before being sent to an LLM, the model loses track of conversational context and may incorrectly assume that unrelated messages are connected.</p>
 <p>To preserve contextual continuity, we aggregate fragmented message streams into a nested tree structure—organized by channel, main discussion, and reply thread—using JavaScript before passing them to the LLM:</p>
@@ -1024,7 +1024,7 @@ messages<span class="token punctuation">.</span><span class="token function">for
 </code></pre>
 <p>After processing, unstructured messages are transformed into logically distinct conversation units, enabling large language models to accurately track the evolution of discussions.</p>
 <h2 id="large-model-decision-extraction-and-json-formatting">Large Model Decision Extraction and JSON Formatting</h2>
-<p>We pass the refined, formatted text into an OpenAI node. We recommend selecting <code>gpt-4o</code> or <code>gpt-4o-mini</code>. Set the Temperature to <code>0.1</code>. A lower temperature ensures that the model performs factual summarization only, rejecting any speculative or hallucinated content.</p>
+<p>We pass the refined, formatted text into an OpenAI node. Choose a model that meets your workspace’s privacy, cost, and structured-output requirements. A low temperature such as <code>0.1</code> can reduce output variation, but does <strong>not</strong> prevent missing facts, invented decisions, or incorrect action owners; preserve source permalinks and validate extracted items before delivery.</p>
 <p>Our prompt explicitly requires the model to extract only the following three core pieces of information and output them in a strictly constrained JSON format:</p>
 <pre class="language-text" data-language="text"><code is:raw="" class="language-text">You are a senior project coordinator. Read the Slack conversation history and extract:
 1. decisions: decisions or agreements reached today.
@@ -1038,7 +1038,7 @@ Return valid JSON only:
   "open_questions": ["Who owns the final data migration?"]
 }
 </code></pre>
-<p>To ensure the output format is 100% immune to parsing failures caused by erratic model punctuation, it is recommended to enable the JSON Schema strict constraint option in the n8n OpenAI node, which restricts the model’s output structure at the underlying level.</p>
+<p>Where the selected n8n/OpenAI node and model support strict JSON Schema output, enable it and still validate the parsed result, handle refusals/truncation, and add an explicit failure branch. Schema conformance does <strong>not</strong> guarantee that the summarized facts themselves are correct.</p>
 <h2 id="card-assembly-and-automated-slack-push">Card Assembly and Automated Slack Push</h2>
 <p>Once you have the structured JSON result, you can directly use the n8n Slack node to invoke the <code>Post Message</code> method. To achieve a polished and professional layout, configure Slack’s Block Kit for card formatting.</p>
 <p>You can assemble the JSON into multi-section Layout Blocks—for example, using color-coded bars to distinguish decisions (green), action items (orange), and topics for discussion (gray)—and push them to your team’s public “Daily Briefing” channel. This not only captures data effectively but also allows team members to quickly sync on the actual progress of all projects in just a few seconds before getting off work each day.</p>
@@ -1047,7 +1047,7 @@ Return valid JSON only:
 <pre class="language-text" data-language="text"><code is:raw="" class="language-text">Error: Request failed with status code 429 (Too Many Requests)
 </code></pre>
 <p>Cause: Your workflow instantly pulled and processed a large number of channels, exceeding Slack API’s high-frequency call quota limits.</p>
-<p>Solution: Insert a Wait node (set to wait for 500 milliseconds) between the nodes that fetch channel history messages. This will physically smooth out concurrent network requests, allowing you to smoothly navigate the rate-limit threshold.</p>
+<p>Solution: Inspect the affected Slack method, app distribution/installation type, response headers and <code>Retry-After</code>; on HTTP 429, wait at least the server-specified duration, with bounded retries and a durable pagination cursor. A fixed 500 ms Wait is <strong>not</strong> a valid universal fix: for some non-Marketplace commercial installations, <code>conversations.history</code> and <code>conversations.replies</code> may be limited to <strong>one request per minute</strong>, with a default/maximum page size of <strong>15</strong>. Other token types/installations have different limits. See <a href="https://docs.slack.dev/reference/methods/conversations.history/" rel="nofollow noopener noreferrer" target="_blank">Slack conversations.history</a> and <a href="https://docs.slack.dev/reference/methods/conversations.replies/" rel="nofollow noopener noreferrer" target="_blank">conversations.replies</a>.</p>
 <h3 id="2-error-context-exceeds-maximum-length-limit">2. Error: Context exceeds maximum length limit</h3>
 <pre class="language-text" data-language="text"><code is:raw="" class="language-text">Error: context_length_exceeded
 </code></pre>
