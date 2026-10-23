@@ -1081,6 +1081,8 @@ Audit / Recovery / Feedback
 → 本地或云端生成
 </code></pre>
 <p>这是一套 Knowledge + RAG 数据面。未来即使 RecalAI 扩展成更完整的 Personal Agent，长期用户 Memory、当前任务 State、账户/权限状态也不应该全部混进这套索引。</p>
+<p>这里有一个容易被架构图忽略的工程取舍：<strong>资料导入成功、全文可检索、语义增强完成、模型生成带引用的答案，是四个不同的就绪状态</strong>。原件保存和解析成功后，FTS 可以先提供关键词检索；Embedding 尚未完成时，不应把语义搜索描述成已经可用；检索没有找到足够证据时，也不能让生成模型假装引用了原文。这类状态拆分有利于排查“文件已经导入，为什么 AI 仍回答不出来”，而不是把问题简单归咎于模型大小。它是 RecalAI 现有架构的设计原则，不代表所有文件格式和设备的处理结果都已完成一致性实测。</p>
+<p>如果希望从架构讨论继续了解具体的产品边界，可以查看 <a href="/products/recalia/">RecalAI 本地 AI 个人记忆库产品页</a>；该页会区分当前设计能力与尚未开放的商店下载，不将未来的跨 App 自主执行包装成已上线功能。</p>
 <h2 id="5-planner--reasoner模型负责建议怎么做不是决定有没有权做">5. Planner / Reasoner：模型负责“建议怎么做”，不是决定“有没有权做”</h2>
 <p>相关架构：<a href="/ai/jev-ai-agent-decision-layer/">AI Agent Decision Models / Decision Layer</a>。</p>
 <p>这一层可以是一个大模型，也可以是多模型路由、规则系统、小模型分类器或专门的 Planner。</p>
