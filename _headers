@@ -33,10 +33,22 @@
 /*.txt
   Content-Type: text/plain; charset=utf-8
 
-# HTML Files: Always fresh
+# HTML defaults: private/dynamic routes must never inherit shared CDN caching.
 /*
   ! Cache-Control
   Cache-Control: public, max-age=0, must-revalidate
+
+# Confirmed pre-rendered public landing pages. HTML cache eligibility must also
+# be enabled in Cloudflare Cache Rules; headers alone cannot override DYNAMIC.
+/
+  Cache-Control: public, max-age=0, must-revalidate
+  CDN-Cache-Control: public, max-age=900, stale-while-revalidate=86400
+  Cloudflare-CDN-Cache-Control: public, max-age=900, stale-while-revalidate=86400
+
+/en/
+  Cache-Control: public, max-age=0, must-revalidate
+  CDN-Cache-Control: public, max-age=900, stale-while-revalidate=86400
+  Cloudflare-CDN-Cache-Control: public, max-age=900, stale-while-revalidate=86400
 
 # Modern Security Headers (Lighthouse Best Practices 90+)
 /*
