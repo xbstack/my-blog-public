@@ -967,6 +967,7 @@ const analyticsRequiresHumanInteraction = false;
 <h2 id="1-production-grade-agents-will-fail">1. Production-Grade Agents Will Fail</h2>
 <h2 id="position-of-this-article-in-the-langgraph-series">Position of This Article in the LangGraph Series</h2>
 <p>This article exclusively handles “failure recovery, timeouts, retries, degradation, and manual fallbacks.” If you do not yet have complete tracing fields, read <a href="/en/ai/langgraph-observability-agent-trace/">LangGraph Observability in Practice</a> first; if failure recovery relies on state snapshots, read <a href="/en/ai/langgraph-checkpointer-memory-sqlite-redis/">LangGraph Checkpointer in Practice</a> next; if failures occur at approval nodes, return to <a href="/en/ai/langgraph-human-in-the-loop-approval/">Human-in-the-loop Approval Flows</a>.</p>
+<p>Tool failures and async concurrency limits are separate operational controls. If multiple tools share an API quota or connection pool, see the <a href="/en/ai/langgraph-toolnode-max-concurrency-ignored/">LangGraph ToolNode max_concurrency reproduction</a> for the tested sync/async distinction and the shared Semaphore mitigation; it does not describe every agent scheduler.</p>
 <h2 id="practical-review-checklist">Practical Review Checklist</h2>
 <p>Do not just write a <code>retry</code> decorator. In production environments, you must verify at least the following:</p>
 <ul>

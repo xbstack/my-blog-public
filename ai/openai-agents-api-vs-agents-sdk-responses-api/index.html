@@ -1140,6 +1140,7 @@ Sandbox / 文件 / 代码 / MCP / 外部系统
 <h3 id="2-几十秒到几分钟多-tool多-handoff优先-agents-sdk">2. 几十秒到几分钟，多 Tool、多 Handoff：优先 Agents SDK</h3>
 <p>如果任务会持续多个 Turn，需要 Guardrail、多个 Agent/Tool、人工审批或 Session，但你的服务本身就有稳定 Runtime，Agents SDK 是很自然的选择。</p>
 <p>你减少的是 Agent 胶水代码，同时保留业务代码和运行时控制权。</p>
+<p>Agents SDK 工具集合如果来自多个模块或运行时插件，需要先校验最终公开工具名称是否唯一。参见 <a href="/ai/openai-agents-sdk-duplicate-tool-names/">OpenAI Agents SDK 同名工具冲突实测</a>：这是一份限定版本的复现与预检查建议，不能把注册成功直接当作调用一定正确的证明。</p>
 <h3 id="3-几分钟到数小时文件代码环境密集认真评估-agents-api">3. 几分钟到数小时，文件/代码/环境密集：认真评估 Agents API</h3>
 <p>一旦任务开始像 Codex：要打开仓库、操作文件、安装包、跑命令、产出 Artifact、跨多个 Context Window、并行 Subagent，而且可能持续很久，自己维护 Harness 的成本会突然变高。</p>
 <p>这正是 Agents API 最有吸引力的区域。</p>
