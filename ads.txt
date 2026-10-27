@@ -1,3 +1,1 @@
-# XBSTACK Adsense Configuration
-# Once approved, replace the line below with your own publisher ID:
-# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+google.com, pub-2557606254410371, DIRECT, f08c47fec0942fa0
