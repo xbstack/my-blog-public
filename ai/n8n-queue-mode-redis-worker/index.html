@@ -981,7 +981,7 @@ const analyticsRequiresHumanInteraction = false;
 <li>对比正常完成、处理中关闭、Redis 暂断三类情形，核验失败重试及结果展示是否一致；<strong>上游修复不等于本站已完成 n8n 集群压力测试</strong>，目前这里没有提供自建集群的吞吐、重试率或 OOM 统计。</li>
 <li>对发送消息、创建订单或写数据库等动作，使用外部幂等键与业务对账；仅依赖队列 ACK、Redis Lock 或平台升级无法承诺 Exactly-once。</li>
 </ol>
-<p>这个补充服务于长期的“队列执行能否安全恢复”问题，不建议因为 2.44.5/2.44.6 两个版本再建立两个短期搜索 URL。遇到错误重跑，还可以继续看 <a href="/ai/n8n-ai-workflow-error-handling/">n8n 失败执行重试与错误工作流</a>。</p>
+<p>这个补充服务于长期的“队列执行能否安全恢复”问题，不建议因为 2.44.5/2.44.6 两个版本再建立两个短期搜索 URL。遇到错误重跑，还可以继续看 <a href="/ai/n8n-ai-workflow-error-handling/">n8n 失败执行重试与错误工作流</a>。<strong>不要把所有一直显示 Running 的记录都归因为 Redis 队列阻塞：</strong> 如果生产 Webhook 已返回 HTTP 200、业务节点确实完成，但 <code>execution_entity</code> 仍是 <code>finished=false</code>、<code>stoppedAt=NULL</code>，应单独核对成功执行保存设置，并参考 <a href="/ai/n8n-zombie-execution-save-none/">n8n Zombie Execution 的 SQLite A/B 复现与排查</a>。该复现针对 Regular Mode，不代表 Queue Mode 已发生同一故障。</p>
 <p>官方依据：<a href="https://docs.n8n.io/hosting/scaling/queue-mode/" rel="nofollow noopener noreferrer" target="_blank">Enable queue mode</a> · <a href="https://docs.n8n.io/deploy/host-n8n/configure-n8n/basic-configuration/use-environment-variables/queue-mode/" rel="nofollow noopener noreferrer" target="_blank">queue-mode environment variables</a> · <a href="https://github.com/n8n-io/n8n/releases/tag/n8n%402.44.5" rel="nofollow noopener noreferrer" target="_blank">2.44.5 稳定版修复</a> · <a href="https://github.com/n8n-io/n8n/releases/tag/n8n%402.44.6" rel="nofollow noopener noreferrer" target="_blank">2.44.6 稳定版修复</a>。</p>
 <h2 id="一为什么单机-n8n-后面会变慢">一、为什么单机 n8n 后面会变慢？</h2>
 <p>单进程架构是单机版 n8n 在并发和耗时任务面前的物理死穴。作为一个小白全栈，我刚开始折腾 AI 工作流的时候，觉得单容器部署（Regular Mode）简直完美。我在本地的 Mac mini 上几分钟就拉起了一个服务，把各种轻量级的自动化任务（比如定时抓取网页、同步 GitHub 提交、发送邮件通知）跑得顺顺当当。</p>
