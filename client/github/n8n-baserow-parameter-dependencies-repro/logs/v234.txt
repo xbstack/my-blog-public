@@ -1,8 +1,0 @@
-Case: n8n 2.34.2 pre-release dependency set
-n8n-workflow: 2.34.1
-n8n-nodes-base: 2.34.1
-Baserow nested filter children: field, operator, timezone, value
-timezone displayOptions dependency: ../operator
-
-RESULT: ERROR: Could not resolve parameter dependencies. Max iterations reached!
-Hint: If `displayOptions` are specified in any child parameter of a parent `collection` or `fixedCollection`, remove the `displayOptions` from the child parameter.

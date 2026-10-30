@@ -1,3 +1,0 @@
-content_id,language,canonical_url,platform,publish_status,publish_url,published_at,headline_version,utm_source,utm_medium,utm_campaign,utm_content,views_7d,engaged_sessions_7d,key_events_7d,notes
-example-ai-agent-memory,zh-CN,https://www.xbstack.com/ai/ai-agent-memory-architecture/,zhihu,draft,,,A,zhihu,social,article_distribution,headline_a,,,,Replace this example row before use
-example-ai-agent-memory,en,https://www.xbstack.com/en/ai/ai-agent-memory-architecture/,devto,planned,,,A,devto,community,english_article_distribution,headline_a,,,,Keep English and Chinese distribution records separate
