@@ -1,0 +1,108 @@
+{
+  "environment": {
+    "python": "3.10.2",
+    "openai_agents": "0.19.3",
+    "provider_api_used": false,
+    "app_state_version": "runstate-approval-lab/v1"
+  },
+  "pause": {
+    "interruption_count": 1,
+    "tool_name": "deploy_release",
+    "arguments": "{\"release\":\"2026.07.24\",\"idempotency_key\":\"tenant-a:release:2026.07.24\"}",
+    "sdk_schema_version": "1.13",
+    "serialized_bytes": 6367,
+    "secret_present": false,
+    "effect_count_before_approval": 0
+  },
+  "approval_decision": {
+    "approved": true,
+    "pending_after_decision": 1,
+    "serialized_bytes": 6440
+  },
+  "cross_process_approved_resume": {
+    "worker": "approved-worker",
+    "idempotent": true,
+    "final_output": "Release workflow finished: deployed:2026.07.24",
+    "effect_count": 1
+  },
+  "rejection": {
+    "final_output": "Release workflow finished: Deployment was denied by the release manager.",
+    "effect_count": 0
+  },
+  "redelivery_without_idempotency": {
+    "workers": [
+      {
+        "worker": "retry-a",
+        "idempotent": false,
+        "final_output": "Release workflow finished: deployed:2026.07.24",
+        "effect_count": 1
+      },
+      {
+        "worker": "retry-b",
+        "idempotent": false,
+        "final_output": "Release workflow finished: deployed:2026.07.24",
+        "effect_count": 2
+      }
+    ],
+    "effect_count": 2,
+    "rows": [
+      {
+        "id": 22,
+        "idempotency_key": "tenant-a:release:2026.07.24",
+        "release": "2026.07.24",
+        "worker": "retry-a",
+        "created_at": "2026-08-05 01:51:01"
+      },
+      {
+        "id": 23,
+        "idempotency_key": "tenant-a:release:2026.07.24",
+        "release": "2026.07.24",
+        "worker": "retry-b",
+        "created_at": "2026-08-05 01:51:02"
+      }
+    ]
+  },
+  "redelivery_with_idempotency": {
+    "workers": [
+      {
+        "worker": "retry-a",
+        "idempotent": true,
+        "final_output": "Release workflow finished: deployed:2026.07.24",
+        "effect_count": 1
+      },
+      {
+        "worker": "retry-b",
+        "idempotent": true,
+        "final_output": "Release workflow finished: reused:deployed:2026.07.24",
+        "effect_count": 1
+      }
+    ],
+    "effect_count": 1,
+    "rows": [
+      {
+        "id": 24,
+        "idempotency_key": "tenant-a:release:2026.07.24",
+        "release": "2026.07.24",
+        "worker": "retry-a",
+        "created_at": "2026-08-05 01:51:03"
+      }
+    ]
+  },
+  "context_serialization": {
+    "mapping_context_secret_present": true,
+    "custom_context_strict_error": "UserError: RunState serialization requires context to be a mapping when strict_context is True. Provide context_serializer to serialize custom contexts.",
+    "safe_serializer_secret_present": false,
+    "restored_tenant_id": "tenant-a",
+    "restored_token_source": "RESTORED_FROM_RUNTIME"
+  },
+  "assertions": {
+    "paused_before_effect": true,
+    "secret_removed_by_serializer": true,
+    "approved_resume_effect_once": true,
+    "rejection_effect_zero": true,
+    "redelivery_duplicates_without_ledger": true,
+    "redelivery_deduped_with_ledger": true,
+    "mapping_context_can_leak_secret": true,
+    "safe_custom_context_does_not_leak": true
+  }
+}

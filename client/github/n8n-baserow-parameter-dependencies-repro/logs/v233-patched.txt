@@ -1,0 +1,48 @@
+{
+  "case": "v233",
+  "n8nWorkflow": "2.33.1",
+  "n8nNodesBase": "2.33.1",
+  "baserowVersions": [
+    1,
+    1.1
+  ],
+  "childParameters": [
+    "field",
+    "operator",
+    "timezone",
+    "value"
+  ],
+  "timezoneDisplayOptions": {
+    "show": {
+      "operator": [
+        "date_is",
+        "date_is_not",
+        "date_is_before",
+        "date_is_on_or_before",
+        "date_is_after",
+        "date_is_on_or_after",
+        "date_is_within",
+        "date_within_days",
+        "date_within_weeks",
+        "date_within_months",
+        "date_equals_days_ago",
+        "date_equals_months_ago",
+        "date_equals_years_ago",
+        "date_equals_today",
+        "date_before_today",
+        "date_after_today",
+        "date_equals_week",
+        "date_equals_month",
+        "date_equals_year"
+      ]
+    }
+  },
+  "patchDisplayOptions": true
+}
+RESULT: OK
+{
+  "field": "1",
+  "operator": "date_is",
+  "timezone": "UTC",
+  "value": "2026-08-07"
+}

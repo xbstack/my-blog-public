@@ -1,0 +1,14 @@
+{
+  "id": "xbstack-n8n-raw-response-repro",
+  "name": "XBSTACK n8n raw body response stream repro",
+  "active": false,
+  "settings": {"executionOrder": "v1"},
+  "nodes": [
+    {"parameters": {}, "id": "trigger", "name": "When clicking Test workflow", "type": "n8n-nodes-base.manualTrigger", "typeVersion": 1, "position": [0, 0]},
+    {"parameters": {"method": "POST", "url": "https://postman-echo.com/post", "sendBody": true, "contentType": "raw", "rawContentType": "application/json", "body": "{\"case\":\"raw-json\"}", "options": {"response": {"response": {"responseFormat": "json"}}}}, "id": "raw-json", "name": "Raw body + JSON response", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [260, -240]},
+    {"parameters": {"method": "POST", "url": "https://postman-echo.com/post", "sendBody": true, "contentType": "json", "specifyBody": "json", "jsonBody": "{\"case\":\"json-json\"}", "options": {"response": {"response": {"responseFormat": "json"}}}}, "id": "json-json", "name": "JSON body + JSON response", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [260, -80]},
+    {"parameters": {"method": "POST", "url": "https://postman-echo.com/post", "sendBody": true, "contentType": "raw", "rawContentType": "application/json", "body": "{\"case\":\"raw-auto\"}", "options": {}}, "id": "raw-auto", "name": "Raw body + Auto response", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [260, 80]},
+    {"parameters": {"method": "POST", "url": "https://postman-echo.com/post", "sendBody": true, "contentType": "raw", "rawContentType": "application/json", "body": "{\"case\":\"raw-text\"}", "options": {"response": {"response": {"responseFormat": "text"}}}}, "id": "raw-text", "name": "Raw body + Text response", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [260, 240]}
+  ],
+  "connections": {"When clicking Test workflow": {"main": [[{"node": "Raw body + JSON response", "type": "main", "index": 0}, {"node": "JSON body + JSON response", "type": "main", "index": 0}, {"node": "Raw body + Auto response", "type": "main", "index": 0}, {"node": "Raw body + Text response", "type": "main", "index": 0}]]}}
+}

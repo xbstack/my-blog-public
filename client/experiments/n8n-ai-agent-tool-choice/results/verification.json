@@ -1,0 +1,67 @@
+{
+  "generated_at": "2026-07-26T13:24:52.442382+00:00",
+  "experiment_type": "deterministic_request_contract",
+  "scope": {
+    "verified": [
+      "An absent tool_choice is semantically different from required in the simulated compatible provider.",
+      "The proxy injects required only on the first iteration when tools exist.",
+      "The proxy preserves explicit non-default choices and stops forcing after a prior assistant tool call."
+    ],
+    "not_verified": [
+      "Current n8n source code or hosted n8n behavior.",
+      "Real Mistral, Ollama, vLLM, LM Studio, IONOS, or Infomaniak accuracy.",
+      "A general tool-calling success rate for any model family."
+    ]
+  },
+  "scenarios": {
+    "first_iteration_without_tool_choice": {
+      "runs": 20,
+      "tool_call_responses": 0,
+      "text_responses": 20,
+      "tool_call_rate": 0.0
+    },
+    "first_iteration_with_proxy": {
+      "runs": 20,
+      "tool_call_responses": 20,
+      "text_responses": 0,
+      "tool_call_rate": 1.0
+    },
+    "later_iteration_after_tool_result": {
+      "decision": {
+        "injected": false,
+        "reason": "later_agent_iteration",
+        "previous_tool_call_seen": true,
+        "original_tool_choice": null,
+        "resulting_tool_choice": null
+      },
+      "request_tool_choice": null
+    },
+    "explicit_none_is_preserved": {
+      "decision": {
+        "injected": false,
+        "reason": "explicit_non_default_choice",
+        "previous_tool_call_seen": false,
+        "original_tool_choice": "none",
+        "resulting_tool_choice": "none"
+      },
+      "request_tool_choice": "none"
+    },
+    "no_tools_is_unchanged": {
+      "decision": {
+        "injected": false,
+        "reason": "no_tools_bound",
+        "previous_tool_call_seen": false,
+        "original_tool_choice": null,
+        "resulting_tool_choice": null
+      },
+      "request_has_tool_choice": false
+    }
+  },
+  "proxy_decision": {
+    "injected": true,
+    "reason": "first_iteration_with_tools",
+    "previous_tool_call_seen": false,
+    "original_tool_choice": null,
+    "resulting_tool_choice": "required"
+  }
+}

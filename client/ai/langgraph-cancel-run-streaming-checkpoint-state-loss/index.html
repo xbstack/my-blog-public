@@ -1,0 +1,1450 @@
+<!DOCTYPE html><html lang="zh-CN" class="dark" data-analytics="ga4-baidu"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="google-adsense-account" content="ca-pub-2557606254410371"><script>
+      const applyTheme = () => {
+        const theme = localStorage.getItem("theme");
+        const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      };
+      applyTheme();
+      document.addEventListener("astro:page-load", applyTheme);
+    </script><title>LangGraph 取消运行后状态为什么丢失：实战指南 | AI - XBSTACK</title><meta name="description" content="LangGraph 取消运行后状态为什么丢失：LangGraph 流式运行取消后，为什么用户已看到的内容会在刷新时消失？本文用 LangGraph 1.2.9、SQLite Checkpointer、16 组流式矩阵与 interrupt 恢复实验，验证 Super-step、durability、partial state 和幂等边界。"><meta http-equiv="content-language" content="zh-CN"><meta name="keywords" content="LangGraph 取消运行状态丢失，LangGraph streaming checkpoint，LangGraph stop generation，LangGraph durability sync async exit，LangGraph interrupt resume，LangGraph partial state，LangGraph 取消后内容消失，LangGraph SQLite Checkpointer，LangGraph 取消运行后状态为什么丢失，LangGraph"><meta name="theme-color" content="#050608"><meta name="robots" content="index,follow,max-image-preview:large"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://www.xbstack.com/ai/langgraph-cancel-run-streaming-checkpoint-state-loss/"><meta property="og:title" content="LangGraph 取消运行后状态为什么丢失：实战指南 | AI - XBSTACK"><meta property="og:description" content="LangGraph 取消运行后状态为什么丢失：LangGraph 流式运行取消后，为什么用户已看到的内容会在刷新时消失？本文用 LangGraph 1.2.9、SQLite Checkpointer、16 组流式矩阵与 interrupt 恢复实验，验证 Super-step、durability、partial state 和幂等边界。"><meta property="og:image" content="https://www.xbstack.com/_astro/01-langgraph-cancel-checkpoint-cover.B79DaK26.webp"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:url" content="https://www.xbstack.com/ai/langgraph-cancel-run-streaming-checkpoint-state-loss/"><meta name="twitter:title" content="LangGraph 取消运行后状态为什么丢失：实战指南 | AI - XBSTACK"><meta name="twitter:description" content="LangGraph 取消运行后状态为什么丢失：LangGraph 流式运行取消后，为什么用户已看到的内容会在刷新时消失？本文用 LangGraph 1.2.9、SQLite Checkpointer、16 组流式矩阵与 interrupt 恢复实验，验证 Super-step、durability、partial state 和幂等边界。"><meta name="twitter:image" content="https://www.xbstack.com/_astro/01-langgraph-cancel-checkpoint-cover.B79DaK26.webp"><link rel="canonical" href="https://www.xbstack.com/ai/langgraph-cancel-run-streaming-checkpoint-state-loss/"><link rel="describedby" href="/llms.txt" type="text/plain"><link rel="alternate" hreflang="zh-CN" href="https://www.xbstack.com/ai/langgraph-cancel-run-streaming-checkpoint-state-loss/"><link rel="alternate" hreflang="en" href="https://www.xbstack.com/en/ai/langgraph-cancel-run-streaming-checkpoint-state-loss/"><link rel="alternate" hreflang="x-default" href="https://www.xbstack.com/ai/langgraph-cancel-run-streaming-checkpoint-state-loss/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI engineering organized around Agents, MCP, security, local AI and verified model/tool evaluations. LangGraph, workflows and model updates remain discoverable within their parent topics.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Products","alternateName":"Products and Tools","description":"Apps, AI products, developer tools and practical utilities built and maintained by XBSTACK.","url":"https://www.xbstack.com/products/"},{"@type":"SiteNavigationElement","position":3,"name":"Insights","alternateName":"Insights, Investing, Reading and Long-term Thinking","description":"Investment research, reading notes, decision reviews and long-term thinking with evidence and outcomes.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Travel, Photography and Gear","description":"Field notes from real hiking, travel, photography and gear use, with Guizhou as a core but not exclusive focus.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"Xiaobai's profile, current products, long-term research themes, working principles and the XBSTACK public asset system.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","additionalType":"https://schema.org/TechArticle","headline":"LangGraph 取消运行后状态为什么丢失？Streaming、Checkpoint 与恢复一致性实战","description":"LangGraph 取消运行后状态为什么丢失：LangGraph 流式运行取消后，为什么用户已看到的内容会在刷新时消失？本文用 LangGraph 1.2.9、SQLite Checkpointer、16 组流式矩阵与 interrupt 恢复实验，验证 Super-step、durability、partial state 和幂等边界。","inLanguage":"zh-CN","image":"https://www.xbstack.com/_astro/01-langgraph-cancel-checkpoint-cover.B79DaK26.webp","datePublished":"2026-07-30T00:00:00.000Z","author":{"@id":"https://www.xbstack.com/about/#person"},"publisher":{"@type":"Organization","name":"XBSTACK","logo":{"@type":"ImageObject","url":"https://www.xbstack.com/favicon/logo-light.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.xbstack.com/ai/langgraph-cancel-run-streaming-checkpoint-state-loss/"},"articleSection":"ai","keywords":["LangGraph 取消运行状态丢失，LangGraph streaming checkpoint，LangGraph stop generation，LangGraph durability sync async exit，LangGraph interrupt resume，LangGraph partial state，LangGraph 取消后内容消失，LangGraph SQLite Checkpointer，LangGraph 取消运行后状态为什么丢失，LangGraph"],"abstract":"LangGraph 取消运行后状态为什么丢失：LangGraph 流式运行取消后，为什么用户已看到的内容会在刷新时消失？本文用 LangGraph 1.2.9、SQLite Checkpointer、16 组流式矩阵与 interrupt 恢复实验，验证 Super-step、durability、partial state 和幂等边界。","about":[{"@type":"Thing","name":"LangGraph"},{"@type":"Thing","name":"Streaming"},{"@type":"Thing","name":"Checkpoint"},{"@type":"Thing","name":"Durability"},{"@type":"Thing","name":"Interrupt"},{"@type":"Thing","name":"Run Cancellation"},{"@type":"Thing","name":"Python"},{"@type":"Thing","name":"SQLite"},{"@type":"Thing","name":"AI Agent"},{"@type":"Thing","name":"Super-step"},{"@type":"Thing","name":"AsyncSqliteSaver"},{"@type":"Thing","name":"Idempotency"}],"citation":["https://docs.langchain.com/oss/python/langgraph/persistence","https://docs.langchain.com/oss/python/langgraph/streaming","https://docs.langchain.com/oss/python/langgraph/interrupts","https://reference.langchain.com/python/langgraph/types/Durability","https://reference.langchain.com/python/langgraph/pregel/main/Pregel/stream","https://github.com/langchain-ai/langgraph/issues/5672","https://github.com/langchain-ai/langgraph/issues/6792","https://github.com/langchain-ai/langgraph/issues/7361","https://pypi.org/project/langgraph/"]},{"@type":"Person","@id":"https://www.xbstack.com/about/#person","name":"小白","alternateName":["Xiaobai"],"url":"https://www.xbstack.com/about/","image":"https://www.xbstack.com/_astro/avatar.BzDyfp9G.webp","jobTitle":"Full-Stack AI Engineer","worksFor":{"@type":"Organization","name":"XBSTACK","url":"https://www.xbstack.com"},"sameAs":["https://github.com/xbstack"],"knowsAbout":["AI Agents","LangGraph","Model Context Protocol","AI Workflows","Product Engineering"]}]}</script><meta property="article:published_time" content="Thu Jul 30 2026 08:00:00 GMT+0800 (China Standard Time)"><meta name="abstract" content="LangGraph 取消运行后状态为什么丢失：LangGraph 流式运行取消后，为什么用户已看到的内容会在刷新时消失？本文用 LangGraph 1.2.9、SQLite Checkpointer、16 组流式矩阵与 interrupt 恢复实验，验证 Super-step、durability、partial state 和幂等边界。"><meta name="speakable-selector" content=".markdown-content h2, .markdown-content p"><meta name="ai-content-access" content="allowed"><meta name="geo-optimized" content="true"><link id="xbstack-favicon" rel="icon" type="image/svg+xml" href="/favicon/logo-dark-nav.svg"><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
+const analyticsRequiresHumanInteraction = false;
+
+          const productionAnalyticsHosts = new Set(['www.xbstack.com', 'xbstack.com']);
+          const automationUserAgent = /HeadlessChrome|PhantomJS|Playwright|Puppeteer|Selenium|Lighthouse|PageSpeed|bot\b|crawler|spider|slurp|curl|wget|python-requests|axios|node-fetch|facebookexternalhit|Twitterbot|LinkedInBot|Bytespider|GPTBot|ClaudeBot|PerplexityBot/i;
+          const analyticsUrl = new URL(window.location.href);
+          const analyticsSource = String(analyticsUrl.searchParams.get('utm_source') || '').toLowerCase();
+          const analyticsCampaign = String(analyticsUrl.searchParams.get('utm_campaign') || '').toLowerCase();
+          const internalAnalyticsAudit =
+            analyticsUrl.searchParams.has('ga4_audit') ||
+            analyticsUrl.searchParams.has('analytics_test') ||
+            ['internal', 'internal_test', 'qa', 'test'].includes(analyticsSource) ||
+            analyticsCampaign.includes('ga4_audit') ||
+            analyticsCampaign.includes('internal_test');
+          const shouldTrackAnalytics =
+            Boolean(googleAnalyticsId) &&
+            productionAnalyticsHosts.has(window.location.hostname.toLowerCase()) &&
+            navigator.webdriver !== true &&
+            !automationUserAgent.test(navigator.userAgent || '') &&
+            !internalAnalyticsAudit;
+
+          if (!shouldTrackAnalytics) {
+            window.__analytics_suppressed = true;
+            window.__analytics_suppression_reason = internalAnalyticsAudit ? 'internal_test' : 'environment_or_automation';
+          } else if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_id', 'utm_term', 'utm_content'];
+            const UTM_ALIASES = {
+              utmsource: 'utm_source',
+              utmmedium: 'utm_medium',
+              utmcampaign: 'utm_campaign',
+              utmcontent: 'utm_content',
+              utmterm: 'utm_term',
+              utmid: 'utm_id',
+            };
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.normalizeUtmAliases = () => {
+              try {
+                const url = new URL(window.location.href);
+                let changed = false;
+                Object.entries(UTM_ALIASES).forEach(([alias, canonical]) => {
+                  const aliasValue = url.searchParams.get(alias);
+                  if (aliasValue && !url.searchParams.get(canonical)) {
+                    url.searchParams.set(canonical, aliasValue);
+                    changed = true;
+                  }
+                  if (url.searchParams.has(alias)) {
+                    url.searchParams.delete(alias);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.normalizeUtmAliases();
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
+            window.__ga4_initialized = true;
+            window.__ga4_client_loaded = false;
+            window.__ga4_tracking_started = false;
+            window.__ga4_human_verified = false;
+            window.__ga4_session_class = '';
+            window.__ga4_requires_human_interaction = Boolean(analyticsRequiresHumanInteraction);
+            window.__lastGA4PageKey = "";
+            window.__lastGA4PageLocation = document.referrer || "";
+            window.__ga4_tracking_start_reason = '';
+            window.__scroll50Reported = false;
+            window.__scroll90Reported = false;
+
+            const getReferrerHost = () => {
+              try {
+                return document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+              } catch (err) {
+                return '';
+              }
+            };
+
+            const inferSourceHint = () => {
+              const refHost = getReferrerHost();
+              if (!refHost) return '';
+              if (refHost.includes('zhihu')) return 'zhihu_referrer';
+              if (refHost.includes('juejin')) return 'juejin_referrer';
+              if (refHost.includes('csdn')) return 'csdn_referrer';
+              if (refHost.includes('weixin') || refHost.includes('wechat')) return 'wechat_referrer';
+              if (refHost.includes('google')) return 'google_referrer';
+              if (refHost.includes('baidu')) return 'baidu_referrer';
+              return refHost;
+            };
+
+            const getAttributionPayload = () => {
+              const params = new URLSearchParams(window.location.search);
+              const current = {};
+              UTM_KEYS.forEach((key) => {
+                const value = params.get(key);
+                if (value) current[key] = value;
+              });
+
+              const referrerHost = getReferrerHost();
+              const currentHost = window.location.hostname.replace(/^www\./, '');
+              const sourceHint = inferSourceHint();
+              const hasExternalReferrer = Boolean(referrerHost && referrerHost !== currentHost);
+
+              let stored = {};
+              try {
+                stored = JSON.parse(sessionStorage.getItem('xbstack_attribution') || '{}');
+              } catch (err) {
+                stored = {};
+              }
+
+              if (Object.keys(current).length) {
+                stored = {
+                  ...stored,
+                  ...current,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: current.utm_source ? `utm:${current.utm_source}` : sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              } else if (hasExternalReferrer && !stored.captured_at) {
+                // Preserve first-touch referral attribution even when the platform strips UTM parameters.
+                stored = {
+                  ...stored,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              }
+
+              if (stored.captured_at) {
+                try {
+                  sessionStorage.setItem('xbstack_attribution', JSON.stringify(stored));
+                } catch (err) {}
+              }
+
+              return {
+                utm_source: stored.utm_source || '',
+                utm_medium: stored.utm_medium || '',
+                utm_campaign: stored.utm_campaign || '',
+                utm_id: stored.utm_id || '',
+                utm_term: stored.utm_term || '',
+                utm_content: stored.utm_content || '',
+                attribution_landing_page: stored.landing_page || '',
+                referrer_host: stored.referrer_host || referrerHost,
+                source_hint: stored.source_hint || (stored.utm_source ? `utm:${stored.utm_source}` : sourceHint),
+              };
+            };
+
+            const getAnalyticsPageContext = () => {
+              const url = new URL(window.location.href);
+              const isCompoundCalculator = [
+                '/tools/compound-calculator/',
+                '/en/tools/compound-calculator/',
+              ].includes(url.pathname);
+
+              if (isCompoundCalculator) {
+                ['scenario', 'principal', 'monthly', 'rate', 'years', 'volatility', 'inflation', 'm2_drag', 'target', 'compare_rate'].forEach((key) => {
+                  url.searchParams.delete(key);
+                });
+              }
+
+              return {
+                pagePath: url.pathname,
+                pageLocation: url.href,
+                pageSearch: url.search,
+              };
+            };
+
+            window.xbTrackEvent = (eventName, payload = {}) => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !eventName ||
+                !window.__ga4_tracking_started ||
+                !window.__ga4_human_verified
+              ) return;
+              const analyticsPage = getAnalyticsPageContext();
+              window.gtag('event', eventName, {
+                transport_type: 'beacon',
+                page_path: analyticsPage.pagePath,
+                page_title: document.title || '',
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+                ...payload,
+              });
+            };
+
+            window.sendGA4PageView = () => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !window.__ga4_tracking_started
+              ) return;
+
+              const analyticsPage = getAnalyticsPageContext();
+              const pageLocation = analyticsPage.pageLocation;
+              const pageTitle = document.title || '';
+              const pageKey = `${pageLocation}|${pageTitle}`;
+
+              if (pageKey === window.__lastGA4PageKey) return;
+              const pageReferrer = window.__lastGA4PageLocation;
+              window.__lastGA4PageKey = pageKey;
+              window.__lastGA4PageLocation = pageLocation;
+              window.__scroll50Reported = false;
+              window.__scroll90Reported = false;
+
+              window.gtag('event', 'page_view', {
+                page_title: pageTitle,
+                page_location: pageLocation,
+                page_path: analyticsPage.pagePath,
+                page_search: analyticsPage.pageSearch,
+                page_referrer: pageReferrer,
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+              });
+            };
+
+            window.initGA4Tracking = () => {
+              if (typeof window.gtag !== 'function') return;
+              if (window.__ga4_events_bound) return;
+              window.__ga4_events_bound = true;
+
+              // 1. 页面滚动深度上报
+              const handleScroll = (event) => {
+                if (!event?.isTrusted || !window.__ga4_human_verified) return;
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const progress = (scrollTop / scrollHeight) * 100;
+
+                if (progress >= 50 && !window.__scroll50Reported) {
+                  window.xbTrackEvent('scroll_50', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll50Reported = true;
+                }
+                if (progress >= 90 && !window.__scroll90Reported) {
+                  window.xbTrackEvent('scroll_90', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll90Reported = true;
+                }
+              };
+
+              window.addEventListener('scroll', handleScroll, { passive: true });
+
+              // 2. 完整链接与按钮点击上报。link_click 是统一事实表，旧事件继续保留用于历史对比。
+              const inferLinkArea = (target) => {
+                const explicitArea = target.closest('[data-analytics-area]')?.getAttribute('data-analytics-area');
+                if (explicitArea) return explicitArea.slice(0, 60);
+                if (target.closest('header, nav, [role="navigation"]')) return 'navigation';
+                if (target.closest('footer')) return 'footer';
+                if (target.closest('[data-related-link], [data-related-reading], [data-analytics-area="related_content"]')) return 'related_content';
+                if (target.closest('[class*="related"], [class*="recommend"], [class*="next-reading"]')) return 'related_content';
+                if (target.closest('[class*="sidebar"], aside')) return 'sidebar';
+                if (target.closest('.markdown-content, article')) return 'article_body';
+                if (target.closest('[class*="card"], [class*="grid"]')) return 'content_card';
+                return 'page_other';
+              };
+
+              const classifyLink = (target, url, linkArea) => {
+                const rawHref = String(target.getAttribute('href') || '');
+                const protocol = String(url.protocol || '').toLowerCase();
+                const path = String(url.pathname || '/');
+                const host = String(url.hostname || '').replace(/^www\./, '').toLowerCase();
+                const isHttp = protocol === 'http:' || protocol === 'https:';
+                const isExternal = isHttp && url.origin !== window.location.origin;
+                const isDownload =
+                  target.hasAttribute('download') ||
+                  /\.(pdf|zip|gz|tar|csv|xlsx?|docx?|pptx?|json|ya?ml|mp3|mp4|mov|webm)(?:$|[?#])/i.test(rawHref);
+
+                if (protocol === 'mailto:' || protocol === 'tel:') return 'contact';
+                if (isDownload) return 'download';
+                if (isExternal && host === 'github.com') return 'github';
+                if (isExternal) return 'external';
+                if (path.startsWith('/go/')) return 'affiliate';
+                if (path.startsWith('/tools/') || path.startsWith('/compound-interest/')) return 'tool';
+                if (path.startsWith('/newsletter/')) return 'newsletter';
+                if (url.origin === window.location.origin && path === window.location.pathname && url.hash) return 'anchor';
+                if (linkArea === 'related_content') return 'related_article';
+                if (linkArea === 'article_body') return 'internal_article';
+                return 'internal';
+              };
+
+              const handleClick = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const target = e.target.closest('a,button');
+                if (!target) return;
+
+                const label = (target.getAttribute('aria-label') || target.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 100);
+                if (target.tagName === 'BUTTON') {
+                  window.xbTrackEvent('click_button', {
+                    event_category: 'engagement',
+                    event_label: label,
+                    link_area: inferLinkArea(target),
+                    link_position: inferLinkArea(target),
+                    source_page_path: window.location.pathname,
+                  });
+                  return;
+                }
+
+                const rawHref = String(target.getAttribute('href') || '').trim();
+                if (!rawHref || rawHref.toLowerCase().startsWith('javascript:')) return;
+
+                try {
+                  const url = new URL(rawHref, window.location.href);
+                  const linkArea = inferLinkArea(target);
+                  const linkType = classifyLink(target, url, linkArea);
+                  const isExternalHttp =
+                    (url.protocol === 'http:' || url.protocol === 'https:') &&
+                    url.origin !== window.location.origin;
+                  const payload = {
+                    event_category:
+                      ['affiliate', 'tool', 'newsletter'].includes(linkType)
+                        ? 'conversion'
+                        : isExternalHttp
+                          ? 'outbound'
+                          : 'navigation',
+                    event_label: url.href,
+                    link_text: label,
+                    link_url: url.href,
+                    link_domain: url.hostname.replace(/^www\./, ''),
+                    link_id: target.id || '',
+                    link_classes: String(target.className || '').slice(0, 120),
+                    outbound: isExternalHttp,
+                    link_type: linkType,
+                    link_area: linkArea,
+                    link_position: String(target.closest('[data-related-slot]')?.getAttribute('data-related-slot') || linkArea).slice(0, 60),
+                    link_context: String(target.getAttribute('data-related-reason') || target.closest('[data-related-reason]')?.getAttribute('data-related-reason') || '').slice(0, 100),
+                    source_page_path: window.location.pathname,
+                    target_page_path: url.pathname || '',
+                  };
+
+                  // 所有真实链接统一进入 link_click，运营报表以该事件为准。
+                  window.xbTrackEvent('link_click', payload);
+
+                  if (linkType === 'external' || linkType === 'github') {
+                    window.xbTrackEvent('click_external', payload);
+                  }
+                  if (linkType === 'github') {
+                    window.xbTrackEvent('github_click', payload);
+                  }
+                  if (linkType === 'download') {
+                    window.xbTrackEvent('download_click', payload);
+                  }
+                  if (linkType === 'affiliate') {
+                    window.xbTrackEvent('affiliate_click', {
+                      ...payload,
+                      affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                    });
+                  }
+                  if (linkType === 'tool') {
+                    window.xbTrackEvent('click_tool', payload);
+                  }
+                  if (linkType === 'newsletter') {
+                    window.xbTrackEvent('newsletter_click', payload);
+                  }
+                  if (linkType === 'related_article') {
+                    window.xbTrackEvent('related_article_click', payload);
+                  }
+                  if (['internal', 'internal_article', 'related_article', 'anchor'].includes(linkType)) {
+                    window.xbTrackEvent('internal_link_click', payload);
+                  }
+                  if (
+                    !isExternalHttp &&
+                    ['/ai/', '/newsletter/', '/search/', '/life/', '/investing/'].some((prefix) => url.pathname.startsWith(prefix))
+                  ) {
+                    window.xbTrackEvent('click_internal_entry', payload);
+                  }
+                } catch (err) {}
+              };
+
+              const handleSubmit = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const form = e.target;
+                if (!form || form.tagName !== 'FORM') return;
+                const action = form.getAttribute('action') || '';
+                const formType = form.getAttribute('data-analytics-form') || '';
+                const formData = new FormData(form);
+                const searchTerm = String(formData.get('q') || '').trim();
+
+                if (action.includes('/search') || formType === 'site-search') {
+                  window.xbTrackEvent('view_search_results', {
+                    event_category: 'site_search',
+                    search_term: searchTerm,
+                  });
+                }
+
+                if (action.includes('buttondown.email') || formType === 'newsletter') {
+                  const provider = action.includes('buttondown.email') ? 'buttondown' : 'xbstack_api';
+                  window.xbTrackEvent('newsletter_subscribe_attempt', {
+                    event_category: 'conversion',
+                    event_label: window.location.pathname,
+                    newsletter_provider: provider,
+                  });
+                  window.xbTrackEvent('newsletter_subscribe', {
+                    event_category: 'conversion',
+                    event_label: 'submitted',
+                    newsletter_provider: provider,
+                    confirmation_status: 'submitted',
+                  });
+                }
+              };
+
+              document.addEventListener('click', handleClick);
+              document.addEventListener('submit', handleSubmit, true);
+            };
+
+            // 原始访问先进入 GA4，再通过 traffic_verification 区分未验证访问与真人互动。
+            // 这样既保留完整 page_view / session_start 基线，也能在报表层排除低质量流量。
+            window.loadGA4Client = () => {
+              if (window.__ga4_client_loaded) return;
+              window.__ga4_client_loaded = true;
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = function() {
+                window.dataLayer.push(arguments);
+              };
+
+              const ga4Script = document.createElement('script');
+              ga4Script.async = true;
+              ga4Script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(googleAnalyticsId)}`;
+              document.head.appendChild(ga4Script);
+
+              window.gtag('js', new Date());
+              window.gtag('config', googleAnalyticsId, {
+                send_page_view: false,
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+              });
+            };
+
+            window.startGA4Tracking = (
+              reason = 'page_load',
+              sessionClass = 'unverified_session',
+              humanVerified = false,
+            ) => {
+              if (window.__ga4_tracking_started) {
+                if (humanVerified && !window.__ga4_human_verified) {
+                  window.verifyGA4Human(reason, sessionClass);
+                }
+                return;
+              }
+              window.__ga4_tracking_start_reason = String(reason || 'page_load').slice(0, 60);
+              window.__ga4_session_class = String(sessionClass || 'unverified_session').slice(0, 40);
+              window.__ga4_human_verified = Boolean(humanVerified);
+              window.__ga4_tracking_started = true;
+              window.loadGA4Client();
+              window.sendGA4PageView();
+              window.initGA4Tracking();
+            };
+
+            window.verifyGA4Human = (reason = 'interaction', sessionClass = 'human_interaction') => {
+              if (!window.__ga4_tracking_started) {
+                window.startGA4Tracking(reason, sessionClass, true);
+                return;
+              }
+              if (window.__ga4_human_verified) return;
+
+              const previousClass = window.__ga4_session_class || 'unverified_session';
+              window.__ga4_human_verified = true;
+              window.__ga4_session_class = String(sessionClass || 'human_interaction').slice(0, 40);
+              window.__ga4_tracking_start_reason = String(reason || 'interaction').slice(0, 60);
+              window.gtag('event', 'traffic_verified', {
+                transport_type: 'beacon',
+                traffic_verification: window.__ga4_session_class,
+                previous_traffic_verification: previousClass,
+                verification_reason: window.__ga4_tracking_start_reason,
+                page_path: window.location.pathname,
+                page_title: document.title || '',
+              });
+              // Components that defer engagement events until a real interaction can retry now.
+              window.dispatchEvent(new CustomEvent('xb:ga4-human-verified'));
+            };
+
+            ['pointerdown', 'keydown', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(
+                eventName,
+                (event) => {
+                  if (!event?.isTrusted) return;
+                  window.verifyGA4Human(`interaction:${eventName}`, 'human_interaction');
+                },
+                { once: true, passive: true },
+              );
+            });
+
+            let pointerMoveCount = 0;
+            let pointerMoveDistance = 0;
+            let lastPointerX = null;
+            let lastPointerY = null;
+            const handleHumanPointerMove = (event) => {
+              if (
+                window.__ga4_human_verified ||
+                !event?.isTrusted ||
+                event.pointerType === 'touch'
+              ) return;
+              if (lastPointerX !== null && lastPointerY !== null) {
+                pointerMoveDistance += Math.hypot(event.clientX - lastPointerX, event.clientY - lastPointerY);
+              }
+              lastPointerX = event.clientX;
+              lastPointerY = event.clientY;
+              pointerMoveCount += 1;
+              if (pointerMoveCount >= 3 && pointerMoveDistance >= 120) {
+                window.removeEventListener('pointermove', handleHumanPointerMove);
+                window.verifyGA4Human('interaction:pointermove', 'human_interaction');
+              }
+            };
+            window.addEventListener('pointermove', handleHumanPointerMove, { passive: true });
+
+            // 放宽采集：所有可见前台页面都记录原始访问；真人互动后再升级质量标签。
+            window.setTimeout(() => {
+              if (
+                window.__ga4_tracking_started ||
+                window.__ga4_requires_human_interaction ||
+                document.visibilityState !== 'visible'
+              ) return;
+              window.startGA4Tracking('page_load:visible_800ms', 'unverified_session', false);
+            }, 800);
+
+            document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+              if (window.__ga4_tracking_started) {
+                window.sendGA4PageView();
+                window.initGA4Tracking();
+              }
+            });
+          } else {
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+            if (window.__ga4_tracking_started && typeof window.sendGA4PageView === 'function') {
+              window.sendGA4PageView();
+            }
+          }
+        })();</script><script data-baidu-id="c7bfaf645bfc8974405a85c2a55573a0">
+          const baiduId = document.currentScript?.dataset.baiduId || '';
+          if (!window.__baidu_analytics_initialized) {
+            window._hmt = window._hmt || [];
+            window.__baidu_analytics_initialized = true;
+            window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+
+            const loadBaiduAnalytics = () => {
+              if (window.__baidu_script_loaded || !baiduId) return;
+              window.__baidu_script_loaded = true;
+              const hm = document.createElement('script');
+              hm.async = true;
+              hm.src = "https://hm.baidu.com/hm.js?" + baiduId;
+              document.head.appendChild(hm);
+              window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+            };
+
+            // 百度统计不是首屏渲染依赖：首次交互时加载，若用户未交互则 12 秒后加载。
+            ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(eventName, loadBaiduAnalytics, { once: true, passive: true });
+            });
+            window.setTimeout(loadBaiduAnalytics, 12000);
+
+            document.addEventListener('astro:page-load', () => {
+              const pageKey = window.location.pathname + window.location.search;
+              if (!window.__baidu_script_loaded || pageKey === window.__lastBaiduPageKey) return;
+              window.__lastBaiduPageKey = pageKey;
+              window._hmt.push(['_trackPageview', pageKey]);
+            });
+          }
+        </script><link rel="stylesheet" href="/_astro/archive.BuzuzAey.css">
+<link rel="stylesheet" href="/_astro/archive.DnofH1Fl.css">
+<style>.financial-disclaimer[data-astro-cid-qg2yevcq]{box-shadow:0 4px 20px -5px #f973161a}.xb-article-grid.xb-article-v21{width:min(calc(100% - 40px),1180px);grid-template-columns:minmax(0,760px) 228px;gap:54px;justify-content:center}.xb-article-v21 .xb-article-paper{padding:36px 40px 40px}.xb-article-v21 .xb-article-side{top:126px}.xb-article-v21 .xb-article-panel{padding:17px;border-radius:10px}.xb-article-v21 .xb-article-panel__title{font-size:12px;margin-bottom:10px;letter-spacing:0;font-weight:760}.xb-v21-toc{display:flex;flex-direction:column;gap:0}.xb-v21-toc a,.xb-v21-toc button{display:flex;justify-content:space-between;gap:10px;text-align:left;padding:9px 0;border-bottom:1px solid var(--xb-line);font-size:13px;line-height:1.5;color:var(--xb-text)}.xb-v21-toc a:hover,.xb-v21-toc button:hover{color:var(--xb-blue)}.xb-v21-toc .xb-v21-toc-nested{padding-left:12px;font-size:12px}.xb-v21-evidence[data-astro-cid-ce2bgkb3]{margin:0 0 24px;border-block:1px solid var(--xb-line);padding:12px 0}.xb-v21-evidence[data-astro-cid-ce2bgkb3] summary[data-astro-cid-ce2bgkb3]{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--xb-muted);cursor:pointer}.xb-v21-evidence[data-astro-cid-ce2bgkb3] strong[data-astro-cid-ce2bgkb3]{font-size:13px;color:var(--xb-ink)}.xb-v21-evidence[data-astro-cid-ce2bgkb3] summary[data-astro-cid-ce2bgkb3]>span[data-astro-cid-ce2bgkb3]:last-child{margin-left:auto;color:var(--xb-blue)}.xb-v21-evidence-links[data-astro-cid-ce2bgkb3]{display:flex;gap:10px 18px;flex-wrap:wrap;margin-top:13px;padding-top:12px;border-top:1px solid var(--xb-line)}.xb-v21-evidence-links[data-astro-cid-ce2bgkb3] a[data-astro-cid-ce2bgkb3]{font-size:12px;line-height:1.5;color:var(--xb-blue)}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3]{display:none;border:1px solid var(--xb-line);border-radius:10px;margin:0 0 24px;padding:13px 16px;font-size:14px}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3] summary[data-astro-cid-ce2bgkb3]{display:flex;justify-content:space-between;cursor:pointer;font-weight:700}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3] nav[data-astro-cid-ce2bgkb3]{display:grid;gap:12px;padding-top:18px;color:var(--xb-text)}@media(max-width:1060px){.xb-article-grid.xb-article-v21{width:min(calc(100% - 32px),820px);display:block}.xb-article-grid.xb-article-v21>.xb-article-side{display:none}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3]{display:block}}@media(max-width:640px){.xb-article-v21 .xb-article-paper{padding:24px 18px 30px}}
+</style>
+<link rel="stylesheet" href="/_astro/_slug_.CeiCBDdi.css">
+<link rel="stylesheet" href="/_astro/_slug_.QFd94UQU.css">
+<link rel="stylesheet" href="/_astro/vendor-media.DSulWsr7.css"></head> <body class="bg-[var(--xb-bg)] text-[var(--xb-ink)] selection:bg-orange-500/20 selection:text-orange-500 overflow-x-hidden"> <style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value=="object"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};"requestIdleCallback"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event("astro:idle"));})();</script><script>(()=>{var A=Object.defineProperty;var g=(i,o,a)=>o in i?A(i,o,{enumerable:!0,configurable:!0,writable:!0,value:a}):i[o]=a;var d=(i,o,a)=>g(i,typeof o!="symbol"?o+"":o,a);{let i={0:t=>m(t),1:t=>a(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(a(t)),5:t=>new Set(a(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t),11:t=>1/0*t},o=t=>{let[l,e]=t;return l in i?i[l](e):void 0},a=t=>t.map(o),m=t=>typeof t!="object"||t===null?t:Object.fromEntries(Object.entries(t).map(([l,e])=>[l,o(e)]));class y extends HTMLElement{constructor(){super(...arguments);d(this,"Component");d(this,"hydrator");d(this,"hydrate",async()=>{var b;if(!this.hydrator||!this.isConnected)return;let e=(b=this.parentElement)==null?void 0:b.closest("astro-island[ssr]");if(e){e.addEventListener("astro:hydrate",this.hydrate,{once:!0});return}let c=this.querySelectorAll("astro-slot"),n={},h=this.querySelectorAll("template[data-astro-template]");for(let r of h){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("data-astro-template")||"default"]=r.innerHTML,r.remove())}for(let r of c){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("name")||"default"]=r.innerHTML)}let p;try{p=this.hasAttribute("props")?m(JSON.parse(this.getAttribute("props"))):{}}catch(r){let s=this.getAttribute("component-url")||"<unknown>",v=this.getAttribute("component-export");throw v&&(s+=` (export ${v})`),console.error(`[hydrate] Error parsing props for component ${s}`,this.getAttribute("props"),r),r}let u;await this.hydrator(this)(this.Component,p,n,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),this.dispatchEvent(new CustomEvent("astro:hydrate"))});d(this,"unmount",()=>{this.isConnected||this.dispatchEvent(new CustomEvent("astro:unmount"))})}disconnectedCallback(){document.removeEventListener("astro:after-swap",this.unmount),document.addEventListener("astro:after-swap",this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute("await-children")||document.readyState==="interactive"||document.readyState==="complete")this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener("DOMContentLoaded",e),c.disconnect(),this.childrenConnectedCallback()},c=new MutationObserver(()=>{var n;((n=this.lastChild)==null?void 0:n.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue==="astro:end"&&(this.lastChild.remove(),e())});c.observe(this,{childList:!0}),document.addEventListener("DOMContentLoaded",e)}}async childrenConnectedCallback(){let e=this.getAttribute("before-hydration-url");e&&await import(e),this.start()}async start(){let e=JSON.parse(this.getAttribute("opts")),c=this.getAttribute("client");if(Astro[c]===void 0){window.addEventListener(`astro:${c}`,()=>this.start(),{once:!0});return}try{await Astro[c](async()=>{let n=this.getAttribute("renderer-url"),[h,{default:p}]=await Promise.all([import(this.getAttribute("component-url")),n?import(n):()=>()=>{}]),u=this.getAttribute("component-export")||"default";if(!u.includes("."))this.Component=h[u];else{this.Component=h;for(let f of u.split("."))this.Component=this.Component[f]}return this.hydrator=p,this.hydrate},e,this)}catch(n){console.error(`[astro-island] Error hydrating ${this.getAttribute("component-url")}`,n)}}attributeChangedCallback(){this.hydrate()}}d(y,"observedAttributes",["props"]),customElements.get("astro-island")||customElements.define("astro-island",y)}})();</script><astro-island uid="ZWjsVO" prefix="r17" component-url="/_astro/GlobalLightbox.CqZePd56.js" component-export="default" renderer-url="/_astro/client.CJCcxmqC.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;GlobalLightbox&quot;,&quot;value&quot;:true}"></astro-island> <div id="app-background" class="fixed inset-0 z-[-1] h-full w-full pointer-events-none bg-slate-50 dark:bg-slate-950 transition-colors duration-500"> <div id="app-background-image" class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-500" data-day="/_astro/macos2.hYF-Pyun.webp" data-night="/_astro/macos2-night.DwJ7amhx.webp" aria-hidden="true"></div> <div class="absolute inset-0 bg-[#DFE1E6]/90 dark:bg-transparent backdrop-blur-[6px] pointer-events-none"></div> <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b82f611,transparent_50%)] dark:hidden pointer-events-none"></div> <div class="absolute inset-0 opacity-[0.08] dark:opacity-[0.03] pointer-events-none mix-blend-multiply" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+');"></div> </div> <script>
+  (() => {
+    const bindBackground = () => {
+      const root = document.documentElement;
+      const background = document.getElementById('app-background-image');
+      if (!background || background.dataset.themeObserverBound === 'true') return;
+
+      const applyBackground = () => {
+        const source = root.classList.contains('dark') ? background.dataset.night : background.dataset.day;
+        if (!source) return;
+        const nextValue = `url("${source}")`;
+        if (background.style.backgroundImage !== nextValue) {
+          background.style.backgroundImage = nextValue;
+        }
+      };
+
+      applyBackground();
+      const observer = new MutationObserver(applyBackground);
+      observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+      background.dataset.themeObserverBound = 'true';
+    };
+
+    bindBackground();
+    document.addEventListener('astro:page-load', bindBackground);
+  })();
+</script> <header id="site-header" class="sticky top-0 z-[500] border-b border-[var(--xb-line)] bg-[color:var(--xb-bg)]/95 backdrop-blur-xl"> <div class="xb-shell flex min-h-[66px] items-center gap-7"> <a href="/" class="flex shrink-0 items-center gap-2.5 font-black tracking-[-0.035em] text-[var(--xb-ink)]" aria-label="XBSTACK Home"> <span class="xb-brand-logo" data-xbstack-logo-motion="load" aria-hidden="true"> <span class="xb-brand-logo__variant inline-flex dark:hidden"> <img src="/favicon/logo-light-nav.svg" alt="" width="32" height="32" decoding="async"> <span class="xb-brand-logo__shine" style="--xb-logo-mask: url(&#34;/favicon/logo-light-nav.svg&#34;)"></span> </span> <span class="xb-brand-logo__variant hidden dark:inline-flex"> <img src="/favicon/logo-dark-nav.svg" alt="" width="32" height="32" decoding="async"> <span class="xb-brand-logo__shine" style="--xb-logo-mask: url(&#34;/favicon/logo-dark-nav.svg&#34;)"></span> </span> </span> <span class="text-[17px]">XBSTACK</span> </a> <nav id="primary-navigation" class="hidden items-center gap-1 lg:flex" aria-label="主导航" data-active-menu-index="0"> <a href="/ai/" data-primary-nav-index="0" data-has-secondary="true" aria-current="page" aria-controls="secondary-preview-menu-0" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors bg-blue-500/[0.06] text-blue-600 dark:text-blue-400"> AI <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[9px] opacity-45" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a><a href="/products/" data-primary-nav-index="1" data-has-secondary="true" aria-controls="secondary-preview-menu-1" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Products <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[9px] opacity-45" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a><a href="/horizon/" data-primary-nav-index="2" data-has-secondary="true" aria-controls="secondary-preview-menu-2" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Insights <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[9px] opacity-45" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a><a href="/life/" data-primary-nav-index="3" data-has-secondary="true" aria-controls="secondary-preview-menu-3" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Lens <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[9px] opacity-45" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a><a href="/about/" data-primary-nav-index="4" data-has-secondary="false" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> About  </a> </nav> <div class="ml-auto flex items-center gap-2"> <a id="global-search-trigger" data-xbstack-search-trigger href="/search/" aria-label="打开站内搜索" class="hidden h-9 min-w-[190px] items-center gap-2 rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)] px-3 text-left text-[11px] text-[var(--xb-muted)] transition-colors hover:border-blue-400 md:flex"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="shrink-0" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.81 173.81 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.81 173.81 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3zM97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8z"></path></svg> <span class="truncate">搜索文章、工具、主题…</span> <kbd class="ml-auto rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[9px] text-[var(--xb-faint)]">⌘K</kbd> </a> <div class="hidden sm:block"> <nav data-visible-language-alternate aria-label="选择语言" data-astro-cid-iemtoba4> <details class="language-switcher-details relative" data-language-switcher-details data-astro-cid-iemtoba4> <summary class="language-switcher-summary flex h-10 min-w-[88px] cursor-pointer list-none items-center justify-center gap-2 rounded-full border border-slate-200/60 bg-white/50 px-3 text-[12px] font-bold text-slate-600 shadow-sm backdrop-blur-md transition-all hover:border-blue-300 hover:bg-blue-50/80 hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-blue-400/50 dark:hover:bg-blue-500/10 dark:hover:text-blue-400 dark:focus-visible:ring-offset-slate-950" aria-label="选择语言" title="选择语言" data-astro-cid-iemtoba4> <svg aria-hidden="true" viewBox="0 0 24 24" class="h-3.5 w-3.5 flex-none" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4> <circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle> <path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path> </svg> <span class="whitespace-nowrap" data-astro-cid-iemtoba4>中文</span> <svg aria-hidden="true" viewBox="0 0 20 20" class="language-chevron h-3 w-3 flex-none text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-iemtoba4> <path d="m5 7.5 5 5 5-5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path> </svg> </summary> <div class="language-switcher-menu absolute right-0 top-[calc(100%+0.65rem)] z-[520] w-44 overflow-hidden rounded-2xl border border-slate-200/80 bg-white/95 p-2 shadow-[0_18px_50px_-18px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0B1020]/95" role="menu" aria-label="选择语言" data-astro-cid-iemtoba4> <div class="px-3 pb-1.5 pt-1 text-[9px] font-black uppercase tracking-[0.22em] text-slate-400 dark:text-slate-500" data-astro-cid-iemtoba4> 语言 </div> <a href="/ai/langgraph-cancel-run-streaming-checkpoint-state-loss/" data-language-choice="zh-CN" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" role="menuitemradio" aria-checked="true" title="当前语言：中文" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors cursor-default bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" data-astro-cid-iemtoba4> <span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4> <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" data-astro-cid-iemtoba4> <path d="m4.5 10 3.2 3.2 7.8-7.8" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path> </svg> </span> <span class="flex-1" data-astro-cid-iemtoba4>中文</span> <span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>ZH</span> </a><a href="/en/ai/langgraph-cancel-run-streaming-checkpoint-state-loss/" data-language-choice="en" data-language-current="false" data-language-available="true" role="menuitemradio" aria-checked="false" title="Switch to the English version" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors text-slate-600 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-blue-400" data-astro-cid-iemtoba4> <span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4> <span class="h-1.5 w-1.5 rounded-full bg-slate-300 dark:bg-slate-700" data-astro-cid-iemtoba4></span> </span> <span class="flex-1" data-astro-cid-iemtoba4>English</span> <span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>EN</span> </a> </div> </details> </nav>  <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> <div class="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)]"> <div class="relative flex items-center justify-center w-full h-full"> <input class="sr-only" id="theme-switcher" data-theme-switcher type="checkbox"> <label class="flex items-center justify-center cursor-pointer w-full h-full group/theme" for="theme-switcher" aria-label="切换主题">  <svg class="w-5 h-5 transition-all duration-500 scale-100 dark:scale-0 opacity-100 dark:opacity-0 absolute text-orange-500 group-hover/theme:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg>  <svg class="w-5 h-5 transition-all duration-500 scale-0 dark:scale-100 opacity-0 dark:opacity-100 absolute text-sky-400 group-hover/theme:-rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </label> </div> <script>
+  // 立即执行以防止闪烁
+  (function() {
+    const theme = localStorage.getItem("theme");
+    const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  })();
+
+  // 页面加载和切换后的初始化逻辑
+  function initTheme() {
+    const themeSwitchers = document.querySelectorAll("[data-theme-switcher]");
+    const isDark = document.documentElement.classList.contains("dark");
+
+    const favicon = document.getElementById("xbstack-favicon");
+    if (favicon) {
+      favicon.setAttribute(
+        "href",
+        isDark
+          ? "/favicon/logo-dark.svg"
+          : "/favicon/logo-light.svg",
+      );
+    }
+
+    // 同步所有切换按钮的状态
+    themeSwitchers.forEach((el) => {
+      el.checked = isDark;
+      
+      // 移除旧的监听器（如果存在），防止重复绑定
+      // 由于是匿名函数难以移除，我们采用 cloneNode 或者简单的标志位
+      // Astro 的 View Transitions 会重新运行脚本，所以只需确保不累积
+      // 最简单的方式是直接覆盖 onclick 或 onchange，但这里用 addEventListener
+      // 我们可以给元素加个标记
+      if (el.dataset.initialized) return;
+      
+      el.addEventListener("change", (e) => {
+        const checked = e.target.checked;
+        if (checked) {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        }
+
+        const favicon = document.getElementById("xbstack-favicon");
+        if (favicon) {
+          favicon.setAttribute(
+            "href",
+            checked
+              ? "/favicon/logo-dark.svg"
+              : "/favicon/logo-light.svg",
+          );
+        }
+        
+        // 同步其他可能存在的切换按钮（例如移动端和桌面端各有一个）
+        document.querySelectorAll("[data-theme-switcher]").forEach(other => {
+            if (other !== el) other.checked = checked;
+        });
+      });
+      
+      el.dataset.initialized = "true";
+    });
+  }
+
+  // 绑定事件
+  document.addEventListener("DOMContentLoaded", initTheme);
+  document.addEventListener("astro:page-load", initTheme);
+  document.addEventListener("astro:after-swap", initTheme);
+</script> </div> <button id="mobile-menu-trigger" type="button" aria-label="打开导航菜单" aria-controls="mobile-menu" aria-expanded="false" class="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)] text-[var(--xb-text)] lg:hidden"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path></svg></button> </div> </div> <div id="desktop-secondary-navigation"> <div class="xb-shell min-h-[45px] overflow-x-auto"> <nav class="flex min-w-max items-center gap-1 py-2" aria-label="AI 二级导航"> <a href="/ai/agent/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> Agents </a><a href="/ai/mcp/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> MCP </a><a href="/ai/security/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> Security </a><a href="/ai/local-ai/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> Local AI </a><a href="/ai/tools-lab/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> Tools Lab </a> </nav> </div> </div> <div id="desktop-secondary-preview" data-visible="false" aria-hidden="true" class="pointer-events-none absolute left-0 right-0 top-[66px] z-30 hidden bg-[color:var(--xb-bg)] shadow-lg lg:block"> <div class="xb-shell min-h-[45px] overflow-x-auto pointer-events-none"> <nav id="secondary-preview-menu-0" data-secondary-preview-index="0" class="pointer-events-auto hidden min-w-max items-center gap-1 py-2" aria-label="AI 二级导航预览"> <a href="/ai/agent/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Agents </a><a href="/ai/mcp/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> MCP </a><a href="/ai/security/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Security </a><a href="/ai/local-ai/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Local AI </a><a href="/ai/tools-lab/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Tools Lab </a> </nav><nav id="secondary-preview-menu-1" data-secondary-preview-index="1" class="pointer-events-auto hidden min-w-max items-center gap-1 py-2" aria-label="Products 二级导航预览"> <a href="/products/lunest/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Lunest </a><a href="/products/recalia/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Recalia </a><a href="/tools/ai-finance/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> AI Finance </a><a href="/tools/mcp-inspector/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> MCP Inspector </a><a href="/tools/agent-readiness-auditor/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Agent Readiness </a><a href="/tools/agent-security-auditor/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Agent Security </a><a href="/tools/compound-calculator/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Compound Calculator </a><a href="/tools/utm-builder/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> UTM Builder </a> </nav><nav id="secondary-preview-menu-2" data-secondary-preview-index="2" class="pointer-events-auto hidden min-w-max items-center gap-1 py-2" aria-label="Insights 二级导航预览"> <a href="/investing/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Investing </a><a href="/horizon/reading/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Reading </a><a href="/investing/thoughts/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Thinking </a> </nav><nav id="secondary-preview-menu-3" data-secondary-preview-index="3" class="pointer-events-auto hidden min-w-max items-center gap-1 py-2" aria-label="Lens 二级导航预览"> <a href="/life/hiking/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Outdoor </a><a href="/life/road-trip/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Travel </a><a href="/life/photo/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Photography </a><a href="/life/gear/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Gear </a> </nav> </div> </div> <div id="mobile-menu" class="invisible fixed inset-0 z-[600] pointer-events-none"> <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/50 opacity-0 backdrop-blur-sm transition-opacity"></div> <aside id="mobile-menu-panel" class="absolute right-0 top-0 flex h-full w-[300px] translate-x-full flex-col border-l border-[var(--xb-line)] bg-[var(--xb-surface)] transition-transform"> <div class="flex h-16 items-center justify-between border-b border-[var(--xb-line)] px-5"> <strong class="text-sm tracking-tight text-[var(--xb-ink)]">XBSTACK</strong> <button id="mobile-menu-close" type="button" aria-label="关闭导航菜单" class="text-[var(--xb-muted)]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg></button> </div> <div class="border-b border-[var(--xb-line)] p-4"> <a id="mobile-search-trigger" data-xbstack-search-trigger href="/search/" class="flex h-10 w-full items-center gap-2 rounded-lg border border-[var(--xb-line)] px-3 text-[12px] text-[var(--xb-muted)]"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.81 173.81 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.81 173.81 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3zM97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8z"></path></svg> 搜索 XBSTACK </a> </div> <nav class="flex flex-1 flex-col gap-2 overflow-y-auto p-4"> <details class="group/mobile" open> <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-4 py-3 text-[15px] font-semibold [&#38;::-webkit-details-marker]:hidden bg-blue-500/[0.07] text-blue-600 dark:text-blue-400"> <span>AI</span> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[10px] opacity-50 transition-transform group-open/mobile:rotate-180" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </summary> <div class="ml-4 mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3"> <a href="/ai/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">AI Overview</a> <a href="/ai/agent/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Agents</a><a href="/ai/mcp/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">MCP</a><a href="/ai/security/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Security</a><a href="/ai/local-ai/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Local AI</a><a href="/ai/tools-lab/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Tools Lab</a> </div> </details><details class="group/mobile"> <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-4 py-3 text-[15px] font-semibold [&#38;::-webkit-details-marker]:hidden text-[var(--xb-text)]"> <span>Products</span> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[10px] opacity-50 transition-transform group-open/mobile:rotate-180" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </summary> <div class="ml-4 mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3"> <a href="/products/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Products Overview</a> <a href="/products/lunest/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Lunest</a><a href="/products/recalia/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Recalia</a><a href="/tools/ai-finance/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">AI Finance</a><a href="/tools/mcp-inspector/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">MCP Inspector</a><a href="/tools/agent-readiness-auditor/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Agent Readiness</a><a href="/tools/agent-security-auditor/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Agent Security</a><a href="/tools/compound-calculator/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Compound Calculator</a><a href="/tools/utm-builder/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">UTM Builder</a> </div> </details><details class="group/mobile"> <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-4 py-3 text-[15px] font-semibold [&#38;::-webkit-details-marker]:hidden text-[var(--xb-text)]"> <span>Insights</span> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[10px] opacity-50 transition-transform group-open/mobile:rotate-180" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </summary> <div class="ml-4 mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3"> <a href="/horizon/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Insights Overview</a> <a href="/investing/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Investing</a><a href="/horizon/reading/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Reading</a><a href="/investing/thoughts/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Thinking</a> </div> </details><details class="group/mobile"> <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-4 py-3 text-[15px] font-semibold [&#38;::-webkit-details-marker]:hidden text-[var(--xb-text)]"> <span>Lens</span> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[10px] opacity-50 transition-transform group-open/mobile:rotate-180" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </summary> <div class="ml-4 mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3"> <a href="/life/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Lens Overview</a> <a href="/life/hiking/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Outdoor</a><a href="/life/road-trip/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Travel</a><a href="/life/photo/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Photography</a><a href="/life/gear/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Gear</a> </div> </details><a href="/about/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">About</a> </nav> <div class="border-t border-[var(--xb-line)] p-4 sm:hidden"> <nav data-visible-language-alternate aria-label="选择语言" data-astro-cid-iemtoba4> <div class="flex w-full items-center justify-between gap-4" aria-label="选择语言" data-astro-cid-iemtoba4> <div class="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300" data-astro-cid-iemtoba4> <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4> <circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle> <path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path> </svg> <span data-astro-cid-iemtoba4>语言</span> </div> <div class="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 p-1 dark:border-white/10 dark:bg-white/5" data-astro-cid-iemtoba4> <a href="/ai/langgraph-cancel-run-streaming-checkpoint-state-loss/" data-language-choice="zh-CN" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="当前语言：中文" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all cursor-default bg-white text-blue-600 shadow-sm dark:bg-blue-500/15 dark:text-blue-400" data-astro-cid-iemtoba4> 中文 </a><a href="/en/ai/langgraph-cancel-run-streaming-checkpoint-state-loss/" data-language-choice="en" data-language-current="false" data-language-available="true" title="Switch to the English version" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400" data-astro-cid-iemtoba4> English </a> </div> </div> </nav>  <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> </aside> </div> <script>
+    if (!window.__xbstackSearchShortcutReady) {
+      window.__xbstackSearchShortcutReady = true;
+      window.addEventListener('keydown', (event) => {
+        const target = event.target;
+        const isTyping = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target?.isContentEditable;
+        const isCommandK = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
+        const isSlash = event.key === '/' && !isTyping;
+        if (!isCommandK && !isSlash) return;
+        event.preventDefault();
+        window.location.href = window.location.pathname.startsWith('/en/') ? '/en/search/' : '/search/';
+      });
+    }
+
+    const bindHeader = () => {
+      const header = document.getElementById('site-header');
+      const trigger = document.getElementById('mobile-menu-trigger');
+      const close = document.getElementById('mobile-menu-close');
+      const menu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const panel = document.getElementById('mobile-menu-panel');
+      const primaryNavigation = document.getElementById('primary-navigation');
+      const persistentSecondaryNavigation = document.getElementById('desktop-secondary-navigation');
+      const secondaryPreview = document.getElementById('desktop-secondary-preview');
+      const primaryLinks = Array.from(primaryNavigation?.querySelectorAll('[data-primary-nav-index]') || []);
+      const previewMenus = Array.from(secondaryPreview?.querySelectorAll('[data-secondary-preview-index]') || []);
+      const activeMenuIndex = Number(primaryNavigation?.dataset.activeMenuIndex ?? '-1');
+
+      const hideSecondaryPreview = () => {
+        if (!secondaryPreview) return;
+        previewMenus.forEach((item) => {
+          item.classList.add('hidden');
+          item.classList.remove('flex');
+        });
+        secondaryPreview.dataset.visible = 'false';
+        secondaryPreview.setAttribute('aria-hidden', 'true');
+        if (persistentSecondaryNavigation) {
+          persistentSecondaryNavigation.classList.remove('invisible', 'pointer-events-none');
+          persistentSecondaryNavigation.setAttribute('aria-hidden', 'false');
+        }
+      };
+
+      const showSecondaryPreview = (index) => {
+        if (!secondaryPreview || index === activeMenuIndex) {
+          hideSecondaryPreview();
+          return;
+        }
+        const target = previewMenus.find((item) => Number(item.dataset.secondaryPreviewIndex) === index);
+        previewMenus.forEach((item) => {
+          const visible = item === target;
+          item.classList.toggle('hidden', !visible);
+          item.classList.toggle('flex', visible);
+        });
+        secondaryPreview.dataset.visible = target ? 'true' : 'false';
+        secondaryPreview.setAttribute('aria-hidden', target ? 'false' : 'true');
+        if (persistentSecondaryNavigation) {
+          persistentSecondaryNavigation.classList.toggle('invisible', Boolean(target));
+          persistentSecondaryNavigation.classList.toggle('pointer-events-none', Boolean(target));
+          persistentSecondaryNavigation.setAttribute('aria-hidden', target ? 'true' : 'false');
+        }
+      };
+
+      primaryLinks.forEach((link) => {
+        if (link.dataset.secondaryPreviewBound === '1') return;
+        link.dataset.secondaryPreviewBound = '1';
+        const index = Number(link.dataset.primaryNavIndex);
+        const preview = () => {
+          if (link.dataset.hasSecondary === 'true') showSecondaryPreview(index);
+          else hideSecondaryPreview();
+        };
+        link.addEventListener('mouseenter', preview);
+        link.addEventListener('focus', preview);
+      });
+
+      if (header && header.dataset.secondaryRestoreBound !== '1') {
+        header.dataset.secondaryRestoreBound = '1';
+        header.addEventListener('mouseleave', hideSecondaryPreview);
+        header.addEventListener('focusout', () => {
+          requestAnimationFrame(() => {
+            if (!header.contains(document.activeElement)) hideSecondaryPreview();
+          });
+        });
+        header.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') hideSecondaryPreview();
+        });
+      }
+
+      hideSecondaryPreview();
+
+      const setOpen = (open) => {
+        if (!menu || !overlay || !panel) return;
+        trigger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) {
+          menu.classList.remove('invisible', 'pointer-events-none');
+          overlay.classList.add('opacity-100');
+          panel.classList.remove('translate-x-full');
+          document.body.style.overflow = 'hidden';
+        } else {
+          overlay.classList.remove('opacity-100');
+          panel.classList.add('translate-x-full');
+          document.body.style.overflow = '';
+          setTimeout(() => menu.classList.add('invisible', 'pointer-events-none'), 220);
+        }
+      };
+      if (trigger && trigger.dataset.mobileMenuBound !== '1') {
+        trigger.dataset.mobileMenuBound = '1';
+        trigger.addEventListener('click', () => setOpen(true));
+      }
+      if (close && close.dataset.mobileMenuBound !== '1') {
+        close.dataset.mobileMenuBound = '1';
+        close.addEventListener('click', () => setOpen(false));
+      }
+      if (overlay && overlay.dataset.mobileMenuBound !== '1') {
+        overlay.dataset.mobileMenuBound = '1';
+        overlay.addEventListener('click', () => setOpen(false));
+      }
+    };
+    const bindBrandLogoMotion = () => {
+      const logos = document.querySelectorAll('[data-xbstack-logo-motion]');
+      logos.forEach((logo) => {
+        if (logo.dataset.logoMotionBound === '1') return;
+        logo.dataset.logoMotionBound = '1';
+
+        const play = () => {
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+          requestAnimationFrame(() => logo.classList.add('is-animating'));
+        };
+
+        if (logo.dataset.xbstackLogoMotion === 'view' && 'IntersectionObserver' in window) {
+          const observer = new IntersectionObserver((entries) => {
+            if (!entries.some((entry) => entry.isIntersecting)) return;
+            observer.disconnect();
+            play();
+          }, { threshold: 0.35 });
+          observer.observe(logo);
+        } else {
+          play();
+        }
+      });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindBrandLogoMotion, { once: true });
+    } else {
+      bindBrandLogoMotion();
+    }
+    document.addEventListener('astro:page-load', bindHeader);
+    document.addEventListener('astro:page-load', bindBrandLogoMotion);
+    bindHeader();
+  </script>  </header> <div id="language-switch-notice" class="pointer-events-none fixed left-1/2 top-24 z-[700] hidden max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/95 px-5 py-3 text-center text-sm font-bold text-slate-700 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 dark:text-slate-200" role="status" aria-live="polite"></div> <main id="main-content" class="flex-1">  <div id="reading-progress" class="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 z-[110] transition-all duration-300 w-0 shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div> <main class="pt-24 md:pt-32 pb-20"> <script type="module" src="/_astro/Comment.astro_astro_type_script_index_0_lang.C65OC043.js"></script><div class="xb-article-grid xb-article-v21 py-8 md:py-10" data-astro-cid-ce2bgkb3> <main class="min-w-0" data-astro-cid-ce2bgkb3> <article class="xb-article-paper" data-astro-cid-ce2bgkb3> <header class="mb-10 border-b border-[var(--xb-line)] pb-8"><div class="mb-4 flex flex-wrap items-center gap-2"><a href="/ai/agent/" class="rounded-md border border-blue-500/15 bg-blue-500/[0.05] px-2.5 py-1 text-[10px] font-bold text-blue-600 dark:text-blue-400">ai</a></div><h1 class="m-0 text-[clamp(2rem,4vw,3.6rem)] font-black leading-[1.12] tracking-[-.045em] text-[var(--xb-ink)]">LangGraph 取消运行后状态为什么丢失？Streaming、Checkpoint 与恢复一致性实战</h1><p class="mt-5 max-w-[760px] text-[15px] leading-7 text-[var(--xb-text)]">LangGraph 取消运行后状态为什么丢失：LangGraph 流式运行取消后，为什么用户已看到的内容会在刷新时消失？本文用 LangGraph 1.2.9、SQLite Checkpointer、16 组流式矩阵与 interrupt 恢复实验，验证 Super-step、durability、partial state 和幂等边界。</p><div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] text-[var(--xb-faint)]"><span>发布 · 2026-07-30</span><span>24 分钟阅读</span><span>XBSTACK 原创</span></div></header> <details class="xb-v21-evidence" data-astro-cid-ce2bgkb3> <summary data-astro-cid-ce2bgkb3> <strong data-astro-cid-ce2bgkb3>Evidence</strong> <span data-astro-cid-ce2bgkb3>9 条资料来源</span>  <span aria-hidden="true" data-astro-cid-ce2bgkb3>⌄</span> </summary> <div class="xb-v21-evidence-links" data-astro-cid-ce2bgkb3>  <a href="https://docs.langchain.com/oss/python/langgraph/persistence" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>docs.langchain.com ↗</a><a href="https://docs.langchain.com/oss/python/langgraph/streaming" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>docs.langchain.com ↗</a><a href="https://docs.langchain.com/oss/python/langgraph/interrupts" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>docs.langchain.com ↗</a><a href="https://reference.langchain.com/python/langgraph/types/Durability" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>reference.langchain.com ↗</a><a href="https://reference.langchain.com/python/langgraph/pregel/main/Pregel/stream" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>reference.langchain.com ↗</a><a href="https://github.com/langchain-ai/langgraph/issues/5672" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>github.com ↗</a><a href="https://github.com/langchain-ai/langgraph/issues/6792" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>github.com ↗</a><a href="https://github.com/langchain-ai/langgraph/issues/7361" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>github.com ↗</a><a href="https://pypi.org/project/langgraph/" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>pypi.org ↗</a> </div> </details> <nav data-cluster-hub-link class="mb-6 text-[13px] font-semibold text-[var(--xb-blue)]" aria-label="工程专题" data-astro-cid-ce2bgkb3><a href="/ai/langgraph/" data-astro-cid-ce2bgkb3>返回工程专题 →</a></nav> <details class="xb-v21-mobile-toc" data-astro-cid-ce2bgkb3> <summary data-astro-cid-ce2bgkb3>本文目录 <span aria-hidden="true" data-astro-cid-ce2bgkb3>⌄</span></summary> <nav aria-label="本文目录" data-astro-cid-ce2bgkb3><a href="#langgraph-取消运行后状态为什么丢失streamingcheckpoint-与恢复一致性实战" data-astro-cid-ce2bgkb3>LangGraph 取消运行后状态为什么丢失？Streaming、Checkpoint 与恢复一致性实战</a><a href="#测试任务环境与边界" data-astro-cid-ce2bgkb3>测试任务、环境与边界</a><a href="#官方持久化模型checkpoint-写在-super-step-边界" data-astro-cid-ce2bgkb3>官方持久化模型：Checkpoint 写在 Super-step 边界</a><a href="#实验一单个长节点取消后3-个可见片段全部未进入-checkpoint" data-astro-cid-ce2bgkb3>实验一：单个长节点取消后，3 个可见片段全部未进入 Checkpoint</a><a href="#实验二把进度变成-graph-step-后取消时可以恢复-3-个片段" data-astro-cid-ce2bgkb3>实验二：把进度变成 Graph Step 后，取消时可以恢复 3 个片段</a><a href="#syncasyncexit-到底改变了什么" data-astro-cid-ce2bgkb3>sync、async、exit 到底改变了什么</a><a href="#interrupt-和普通取消不是一回事" data-astro-cid-ce2bgkb3>interrupt() 和普通取消不是一回事</a><a href="#生产修复把可见进度和权威状态分开设计" data-astro-cid-ce2bgkb3>生产修复：把“可见进度”和“权威状态”分开设计</a><a href="#什么时候不应该把每个进度都拆成节点" data-astro-cid-ce2bgkb3>什么时候不应该把每个进度都拆成节点</a><a href="#修复完成后必须怎么回归验证" data-astro-cid-ce2bgkb3>修复完成后，必须怎么回归验证</a><a href="#实验失败限制与不能推广的结论" data-astro-cid-ce2bgkb3>实验失败、限制与不能推广的结论</a><a href="#最终决策不要让-stream-充当数据库" data-astro-cid-ce2bgkb3>最终决策：不要让 Stream 充当数据库</a><a href="#faq" data-astro-cid-ce2bgkb3>FAQ</a><a href="#langgraph-设置-durabilitysync-能避免取消后状态丢失吗" data-astro-cid-ce2bgkb3>LangGraph 设置 durability=&quot;sync&quot; 能避免取消后状态丢失吗？</a><a href="#interrupt-是否会从暂停的那一行继续执行" data-astro-cid-ce2bgkb3>interrupt() 是否会从暂停的那一行继续执行？</a><a href="#应不应该把每个-token-都写入-checkpoint" data-astro-cid-ce2bgkb3>应不应该把每个 Token 都写入 Checkpoint？</a><a href="#exit-durability-为什么在分步取消实验中也保存了-3-个片段" data-astro-cid-ce2bgkb3>exit durability 为什么在分步取消实验中也保存了 3 个片段？</a><a href="#前端本地保存-partial-response-能解决问题吗" data-astro-cid-ce2bgkb3>前端本地保存 partial response 能解决问题吗？</a><a href="#官方资料与继续阅读" data-astro-cid-ce2bgkb3>官方资料与继续阅读</a></nav> </details> <nav class="mb-7 flex items-center justify-between gap-4 border-y border-[var(--xb-line)] py-3 text-[12px] text-[var(--xb-muted)]" aria-label="文章语言版本" data-astro-cid-ce2bgkb3> <span data-astro-cid-ce2bgkb3>当前 URL 为中文版本。</span> <a href="/en/ai/langgraph-cancel-run-streaming-checkpoint-state-loss/" hreflang="en" class="font-bold text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>Read this article in English →</a> </nav> <aside class="mb-8 border-l-2 border-blue-500 bg-blue-500/[0.04] px-4 py-3" data-astro-cid-ce2bgkb3> <div class="text-[12px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>小白的说明</div> <p class="mt-1 text-[12px] leading-6 text-[var(--xb-text)]" data-astro-cid-ce2bgkb3>本文基于 Python 3.11.15、LangGraph 1.2.9、langgraph-checkpoint-sqlite 3.1.0 与本地 AsyncSqliteSaver。17 个案例不调用模型或外部 API。关闭本地 async iterator 用于模拟客户端在第三个可见更新后停止消费，不代表所有 Agent Server、反向代理或分布式 Checkpointer 的取消语义。</p> </aside> <div class="prose prose-tech markdown-content max-w-none" data-astro-cid-ce2bgkb3>  <aside class="mb-10 rounded-2xl border border-orange-500/20 bg-orange-500/[0.045] px-5 py-4 not-prose" data-analytics-area="article_body" aria-label="推荐下一步"> <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"> <div> <p class="text-xs font-black uppercase tracking-[0.18em] text-orange-600 dark:text-orange-400">专题入口 / LangGraph Hub</p> <p class="mt-1 text-sm font-bold leading-6 text-slate-700 dark:text-slate-300">继续按生产级 LangGraph 路线读，不再重复看泛入门</p> </div> <div class="flex shrink-0 flex-wrap gap-2"> <a href="/ai/langgraph/" class="rounded-full bg-orange-500 px-4 py-2 text-xs font-black text-white transition-colors hover:bg-orange-600">进入 LangGraph 专题 →</a> <a href="/ai/langgraph-thread-session-state-isolation/" class="rounded-full border border-slate-300 px-4 py-2 text-xs font-black text-slate-700 transition-colors hover:border-orange-500 hover:text-orange-500 dark:border-white/15 dark:text-slate-200">从状态隔离开始</a> </div> </div> </aside><h2 id="langgraph-取消运行后状态为什么丢失streamingcheckpoint-与恢复一致性实战">LangGraph 取消运行后状态为什么丢失？Streaming、Checkpoint 与恢复一致性实战</h2>
+<p>用户已经在页面上看到了半段回答，点击“停止生成”后，这半段内容却在下一次刷新或发送消息时消失了。这个现象很容易被归因于前端状态管理，也容易被误判为 <code>async</code> durability 不可靠。但我把问题缩小到 LangGraph 1.2.9、Python 3.11.15 和本地 SQLite Checkpointer 后，得到的结论更具体：</p>
+<p><strong>前端已经接收到的 Stream，不等于 LangGraph 已经提交的 Checkpoint。真正决定状态能否恢复的，不只是 <code>sync</code>、<code>async</code> 或 <code>exit</code>，而是这段进度有没有跨过一个完成的 Graph Step，也就是节点是否已经返回了状态更新。</strong></p>
+<p>我用两种图结构、四种 durability 和两种退出方式跑了 16 组流式实验，再补了一组 <code>interrupt()</code> 恢复实验。完整运行时，所有组合都是 6 个可见片段、6 个 checkpoint 片段；在第三个片段后取消时，单个长节点的四种 durability 都出现了“UI 看到 3 个，Checkpoint 保存 0 个”，而把进度拆成独立 graph step 后，四种模式都恢复到了 3 个。<code>interrupt()</code> 的结果也说明了另一条边界：它确实保存了此前完成的状态，但恢复时会从被中断节点的开头重新执行，所以 <code>interrupt()</code> 之前的代码跑了两次。</p>
+<p>这篇文章不讨论模型好坏，也不依赖任何 LLM。所有文本片段、SQLite 写入、事件日志和断言都来自可重复执行的本地 Fixture。核心问题只有一个：<strong>当用户取消一个正在流式运行的 LangGraph 任务时，怎样让“用户最后看到的内容”和“系统下一次能恢复的权威状态”保持一致？</strong></p>
+<h2 id="测试任务环境与边界">测试任务、环境与边界</h2>
+<p>我没有直接拿一个聊天模型做实验，因为模型响应速度、Provider 流式协议、网络抖动和 Token 批次都会引入额外变量。实验使用六段固定文本：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">LangGraph | streams | visible | progress | before | checkpoint.
+</code></pre>
+<p>每段之间等待 60 毫秒。用户侧在看到第三段后关闭异步流，用来模拟浏览器断开、客户端停止消费或应用主动取消后的最小行为。实验不需要 API Key，也不会调用 LangSmith、OpenAI 或任何外部服务。</p>
+<p>测试环境固定为：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>项目</th><th>版本或口径</th></tr></thead><tbody><tr><td>Python</td><td>3.11.15</td></tr><tr><td>LangGraph</td><td>1.2.9</td></tr><tr><td>langgraph-checkpoint-sqlite</td><td>3.1.0</td></tr><tr><td>Checkpointer</td><td><code>AsyncSqliteSaver</code></td></tr><tr><td>外部模型调用</td><td>0</td></tr><tr><td>外部 API 调用</td><td>0</td></tr><tr><td>流格式</td><td><code>version="v2"</code></td></tr><tr><td>流模式</td><td><code>custom</code> + <code>updates</code></td></tr><tr><td>取消点</td><td>第 3 个可见片段后</td></tr><tr><td>Durability</td><td>default、sync、async、exit</td></tr></tbody></table>
+<p>四种 durability 中，<code>default</code> 没有显式传值。LangGraph 当前参考文档说明它默认采用 <code>async</code>：已完成步骤的变化在下一步执行时异步持久化；<code>sync</code> 会在下一步开始前完成持久化；<code>exit</code> 则在 Graph 退出时持久化。这个定义很重要，因为它描述的是<strong>已形成的状态变化何时写入</strong>，并没有承诺节点内部任意一段流式输出都会自动变成 Graph State。</p>
+<p>我设计了三组任务。</p>
+<p>第一组是“单个长节点”。节点内部通过 <code>get_stream_writer()</code> 连续发出六个 <code>custom</code> 片段，直到最后才一次性返回 <code>emitted_chunks</code> 和 <code>final_text</code>。这接近很多聊天应用的写法：一个节点负责整段模型生成，前端持续显示 Token，但 Graph 只在节点结束时拿到完整返回值。</p>
+<p>第二组是“分步节点”。每次只追加一个片段并返回状态，然后通过条件边再次进入同一个节点。它看起来更啰嗦，也会产生更多 checkpoint 和 write 记录，但每个可见片段都对应一个完成的 Graph Step。</p>
+<p>第三组使用 <code>interrupt()</code>。<code>prepare</code> 节点先返回待审批对象，<code>approval</code> 节点在 <code>interrupt()</code> 前记录一次副作用标记，暂停后使用同一个 <code>thread_id</code> 和 <code>Command(resume=True)</code> 恢复。这个实验不是为了比较速度，而是验证“暂停保存”和“节点原地续跑”是不是一回事。</p>
+<p>本次没有测试 LangSmith Agent Server 的 <code>disconnect_mode</code>、远程 Postgres Checkpointer、浏览器代理断连、多个进程竞争同一 Thread，也没有调用真实模型的 Token Stream。因此，文章能证明本地 LangGraph Runtime 与 SQLite Checkpointer 的状态边界，不能把结论扩大成所有托管部署的协议一致性结论。</p>
+<p><img alt="测试范围：官方文档、官方 Issue、本地 Fixture 与未测试边界" loading="lazy" decoding="async" fetchpriority="auto" width="1200" height="720" src="/_astro/02-test-scope.DWnA7iiQ_1mP0XA.webp" ></p>
+<h2 id="官方持久化模型checkpoint-写在-super-step-边界">官方持久化模型：Checkpoint 写在 Super-step 边界</h2>
+<p>LangGraph 官方持久化文档把 Checkpoint 定义为某个 Thread 在执行过程中的状态快照，并明确说明完整 <code>StateSnapshot</code> 形成于 Super-step 边界。运行中也可能存在 per-task pending writes：同一 Super-step 中，如果某个节点已经成功完成，而另一个节点失败，成功节点的写入可以被保留，恢复时不必重新计算；但这些 task writes 不等于一个可用于任意时间点恢复的完整 Checkpoint。</p>
+<p>这一区分解释了很多“前端看到、数据库却没有”的现象。</p>
+<p>Stream 是一个交付通道。<code>stream_mode="custom"</code> 可以让节点内部随时向消费者发送自定义进度；<code>messages</code> 可以发送模型 Token；<code>updates</code> 可以在节点完成后发送状态增量；<code>checkpoints</code> 则在 Checkpoint 创建时发送事件。它们可以发生在不同时间，也承担不同责任。</p>
+<p>Checkpoint 是权威恢复状态。下一次调用使用相同 <code>thread_id</code> 时，Checkpointer 读取的是已经提交的状态，而不是浏览器内存里最后渲染的字符串，更不会自动知道用户已经读到了哪个 Token。</p>
+<p>因此，一个长节点可能存在三个同时成立的事实：</p>
+<ol>
+<li>模型或工具仍在节点内部运行；</li>
+<li>前端已经收到了若干 Stream 事件；</li>
+<li>节点尚未返回，Graph State 还没有这批更新。</li>
+</ol>
+<p>此时点击停止，前端终止显示没有问题；真正的问题是，产品是否把“最后显示的 Stream”误当成了“已经持久化的会话历史”。如果下一次渲染以后端 Checkpoint 为准，界面就会回到最后一个完成步骤。</p>
+<p>官方 Issue #5672 描述的正是这种用户体验：流式内容已经显示，取消后重新同步，后台仍只有上一个 Checkpoint，于是可见内容消失。该 Issue 最初报告的是 LangGraph Platform / API 0.3.31。本文没有声称复现了同一服务端实现缺陷，而是在 1.2.9 的本地 Runtime 上验证了更底层的状态边界：<strong>未完成节点发出的自定义 Stream 不会因为消费者看见了它，就自动进入节点返回值或 Checkpoint。</strong></p>
+<p><img alt="单个长节点取消：UI 已显示三个片段，节点未返回，Checkpoint 仍停在上一步" loading="lazy" decoding="async" fetchpriority="auto" width="1200" height="720" src="/_astro/03-monolithic-stream-cancel.Cm7DJQXc_ZqqIjT.webp" ></p>
+<h2 id="实验一单个长节点取消后3-个可见片段全部未进入-checkpoint">实验一：单个长节点取消后，3 个可见片段全部未进入 Checkpoint</h2>
+<p>长节点的核心代码很短：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">long_streaming_node</span><span class="token punctuation">(</span>state<span class="token punctuation">:</span> StreamState<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> StreamState<span class="token punctuation">:</span>
+    writer <span class="token operator">=</span> get_stream_writer<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    emitted <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+
+    <span class="token keyword">for</span> token <span class="token keyword">in</span> TOKENS<span class="token punctuation">:</span>
+        emitted<span class="token punctuation">.</span>append<span class="token punctuation">(</span>token<span class="token punctuation">)</span>
+        writer<span class="token punctuation">(</span><span class="token punctuation">{</span>
+            <span class="token string">"kind"</span><span class="token punctuation">:</span> <span class="token string">"visible_chunk"</span><span class="token punctuation">,</span>
+            <span class="token string">"token"</span><span class="token punctuation">:</span> token<span class="token punctuation">,</span>
+            <span class="token string">"visible_text"</span><span class="token punctuation">:</span> <span class="token string">""</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span>emitted<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token keyword">await</span> asyncio<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">0.06</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+        <span class="token string">"status"</span><span class="token punctuation">:</span> <span class="token string">"completed"</span><span class="token punctuation">,</span>
+        <span class="token string">"emitted_chunks"</span><span class="token punctuation">:</span> emitted<span class="token punctuation">,</span>
+        <span class="token string">"final_text"</span><span class="token punctuation">:</span> <span class="token string">""</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span>emitted<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token string">"step_index"</span><span class="token punctuation">:</span> <span class="token builtin">len</span><span class="token punctuation">(</span>emitted<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+</code></pre>
+<p>如果让它自然完成，default、<code>sync</code>、<code>async</code>、<code>exit</code> 四种组合都得到相同业务结果：消费者收到 6 个片段，<code>get_state()</code> 读取到 6 个片段，<code>final_text</code> 完整，UI 与 Checkpoint 一致。不同之处主要出现在数据库写入节奏：default、<code>sync</code>、<code>async</code> 的 SQLite 中记录了 3 个 Checkpoint 和 10 条 Writes；<code>exit</code> 只有 1 个最终 Checkpoint，没有中间 Writes。这个差异符合 durability 的设计目的，但不能被理解成某种性能排名。</p>
+<p>当消费者在第三个 <code>custom</code> 片段后关闭流，结果发生了分裂：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Durability</th><th align="right">UI 可见片段</th><th align="right">Checkpoint 片段</th><th align="right">丢失片段</th><th>是否一致</th></tr></thead><tbody><tr><td>default</td><td align="right">3</td><td align="right">0</td><td align="right">3</td><td>否</td></tr><tr><td>sync</td><td align="right">3</td><td align="right">0</td><td align="right">3</td><td>否</td></tr><tr><td>async</td><td align="right">3</td><td align="right">0</td><td align="right">3</td><td>否</td></tr><tr><td>exit</td><td align="right">3</td><td align="right">0</td><td align="right">3</td><td>否</td></tr></tbody></table>
+<p>四种模式都没有保存节点内部的 <code>emitted</code>。原因不是 <code>sync</code> 没生效，而是 <code>sync</code> 没有一个已经完成的节点更新可以同步提交。节点准备在循环结束后返回状态，但第三段时运行已经被关闭，返回语句从未执行。对 Graph 来说，<code>visible_text</code> 只存在于 custom event 中，不是 State Update。</p>
+<p>SQLite 仍然不是空的。default、<code>sync</code>、<code>async</code> 的取消案例各有 2 个 Checkpoint 和 7 条 Writes，说明 Thread 输入和运行基础信息已经写入；<code>exit</code> 有 1 个 Checkpoint。可这些记录里没有三段文本，因为节点没有把它们返回给 State。这一点比“数据库有没有写”更重要：<strong>写入存在，不代表用户正在看的业务字段已经成为权威状态。</strong></p>
+<p>这组失败案例直接否定了一个常见修复：“把 durability 从 async 改成 sync 就好了。”<code>sync</code> 能缩短完成步骤进入持久层的时间窗口，却不能把节点局部变量变成 Checkpoint。只改参数，不改状态边界，用户依然会看到回滚。</p>
+<p><img alt="真实实验矩阵：完整运行 6/6；长节点取消 3/0；分步节点取消 3/3" loading="lazy" decoding="async" fetchpriority="auto" width="1200" height="720" src="/_astro/04-cancellation-matrix.DmQ0NKHz_Z28lCoV.webp" ></p>
+<h2 id="实验二把进度变成-graph-step-后取消时可以恢复-3-个片段">实验二：把进度变成 Graph Step 后，取消时可以恢复 3 个片段</h2>
+<p>第二个图没有在一个节点里完成全部六段，而是每次只处理一段：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">durable_step</span><span class="token punctuation">(</span>state<span class="token punctuation">:</span> StreamState<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> StreamState<span class="token punctuation">:</span>
+    index <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span>state<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"step_index"</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    chunks <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span>state<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"emitted_chunks"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    chunks<span class="token punctuation">.</span>append<span class="token punctuation">(</span>TOKENS<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+        <span class="token string">"status"</span><span class="token punctuation">:</span> <span class="token string">"running"</span> <span class="token keyword">if</span> index <span class="token operator">+</span> <span class="token number">1</span> <span class="token operator">&#x3C;</span> <span class="token builtin">len</span><span class="token punctuation">(</span>TOKENS<span class="token punctuation">)</span> <span class="token keyword">else</span> <span class="token string">"completed"</span><span class="token punctuation">,</span>
+        <span class="token string">"emitted_chunks"</span><span class="token punctuation">:</span> chunks<span class="token punctuation">,</span>
+        <span class="token string">"final_text"</span><span class="token punctuation">:</span> <span class="token string">""</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span>chunks<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token string">"step_index"</span><span class="token punctuation">:</span> index <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+</code></pre>
+<p>节点返回后，条件边检查 <code>step_index</code>。没到 6 就再次执行 <code>durable_step</code>，达到 6 才进入 <code>END</code>。消费者不再把任意 custom event 当作权威内容，而是读取每个 <code>updates</code> 事件中的已提交状态增量。</p>
+<p>完整运行时，四种 durability 仍然全部得到 6/6。default、<code>sync</code>、<code>async</code> 每个案例产生 8 个 Checkpoint 和 35 条 Writes，比长节点明显更多。这个写放大不是缺陷，它是把恢复粒度从“一整段回答”缩小成“一个片段”的直接成本。生产环境不应该真的为每个 Token 建一个 Graph Step；这里故意使用极小粒度，只为把边界测清楚。</p>
+<p>第三次更新后关闭流，结果变成：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Durability</th><th align="right">UI 可见片段</th><th align="right">Checkpoint 片段</th><th align="right">丢失片段</th><th>是否一致</th></tr></thead><tbody><tr><td>default</td><td align="right">3</td><td align="right">3</td><td align="right">0</td><td>是</td></tr><tr><td>sync</td><td align="right">3</td><td align="right">3</td><td align="right">0</td><td>是</td></tr><tr><td>async</td><td align="right">3</td><td align="right">3</td><td align="right">0</td><td>是</td></tr><tr><td>exit</td><td align="right">3</td><td align="right">3</td><td align="right">0</td><td>是</td></tr></tbody></table>
+<p>default、<code>sync</code>、<code>async</code> 都留下 4 个 Checkpoint 和 21 条 Writes。<code>exit</code> 的表现值得单独说明：它在流关闭、Graph 退出时保存了当前状态，因此也得到 3 个片段，但数据库只有 1 个 Checkpoint 和 5 条 Writes。不能据此写成“exit 平时也会逐步保存”；本次看到的是取消导致 Graph 退出时的最终提交。若进程被强杀、事件循环没有完成退出清理，结果可能不同，这不在本地 Fixture 的证明范围内。</p>
+<p>这组对照说明，恢复一致性来自两个条件：</p>
+<ul>
+<li>用户看到的进度已经被节点返回为 State Update；</li>
+<li>Runtime 有机会把该完成步骤写入 Checkpointer，或者在退出时完成提交。</li>
+</ul>
+<p>把进度拆成 Graph Step 是最直接的办法，但不是唯一办法。长任务还可以把业务进度写入独立事件表、任务表或对象存储，由 <code>run_id + sequence</code> 形成追加日志；Graph Checkpoint 只保存最后确认的 sequence。关键不是“所有 token 都塞进 checkpoint”，而是产品必须定义哪个存储是可见进度的权威来源。</p>
+<p><img alt="分步结构：每次返回状态形成恢复边界，取消后从最后完成步骤继续" loading="lazy" decoding="async" fetchpriority="auto" width="1200" height="720" src="/_astro/05-stepwise-checkpoint-boundary.CfujlKLf_ZvrCf7.webp" ></p>
+<h2 id="syncasyncexit-到底改变了什么"><code>sync</code>、<code>async</code>、<code>exit</code> 到底改变了什么</h2>
+<p>在这次实验里，durability 影响的是写入时机和记录数量，不是状态语义。</p>
+<p><code>sync</code> 的承诺最强：完成步骤的状态先持久化，再开始下一步。它适合审批、支付、生产写入前的关键边界，代价是每一步都等待存储完成。若 Checkpointer 延迟高，Graph 吞吐会直接受到影响。</p>
+<p><code>async</code> 是默认模式：已完成步骤的状态在下一步运行时异步写入。它通常能在持久性和吞吐之间取得平衡，但进程突然退出时，后台写任务是否已经完成会形成一个窗口。Issue #5672 在 2026 年的讨论中也有人指出，取消路径上的异步清理与 pending write 刷新可能影响结果。不过本文没有修改 Runtime，也没有模拟进程在清理任务完成前被杀，因此只把它作为官方仓库中的问题线索，不把社区分析写成本地已验证结论。</p>
+<p><code>exit</code> 只在 Graph 退出时持久化。适合失败后可以整体重跑、无需中间恢复的短任务，不适合把每一步都当成审计事实的流程。我们的长节点完整运行和分步完整运行都只产生一个最终 Checkpoint；分步取消也在退出时得到 3 个片段。若应用要求断电、进程崩溃或容器被强制回收后仍恢复到最后一个小步骤，不能只依赖 exit。</p>
+<p>把三种模式放回生产设计，可以得到一个更实用的选择表：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>场景</th><th>推荐思路</th><th>原因</th></tr></thead><tbody><tr><td>高风险审批前状态</td><td><code>sync</code> + 独立节点</td><td>下一步开始前确认写入</td></tr><tr><td>普通多步骤 Agent</td><td>默认/<code>async</code> + 幂等节点</td><td>吞吐和恢复平衡</td></tr><tr><td>可整体重跑的短计算</td><td><code>exit</code></td><td>减少中间持久化</td></tr><tr><td>Token 级显示</td><td>Stream + 应用事件日志</td><td>不应为每个 Token 建 Checkpoint</td></tr><tr><td>长工具任务进度</td><td>业务任务表 + sequence</td><td>跨进程、跨页面恢复</td></tr><tr><td>不可逆副作用</td><td>幂等键 + 权威业务库</td><td>Checkpoint 不能替代业务事务</td></tr></tbody></table>
+<p>所以，排查“停止生成后内容消失”时，正确顺序不是先换 durability，而是先回答三个问题：</p>
+<ol>
+<li>消失的内容属于 Stream Event 还是 Graph State？</li>
+<li>它所在的节点是否已经返回？</li>
+<li>用户刷新时读取的是 Checkpoint、业务事件表，还是浏览器内存？</li>
+</ol>
+<p>只有第一步是 State Update，第二步跨过完成边界，第三步从同一权威来源读取，durability 参数才有意义。</p>
+<p><img alt="Durability 只决定完成步骤的持久化时机，不会自动保存未返回的节点局部状态" loading="lazy" decoding="async" fetchpriority="auto" width="1200" height="720" src="/_astro/06-durability-timing.CcSn96-o_2j2418.webp" ></p>
+<h2 id="interrupt-和普通取消不是一回事"><code>interrupt()</code> 和普通取消不是一回事</h2>
+<p>普通取消的含义通常是“停止当前运行”。<code>interrupt()</code> 的含义是“在一个可恢复位置暂停，等待外部输入”。官方文档要求配置 Checkpointer 和稳定的 <code>thread_id</code>；恢复时使用同一个 Thread，并把 <code>Command(resume=...)</code> 的值作为 <code>interrupt()</code> 的返回值。</p>
+<p>实验图先执行 <code>prepare</code>：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">prepare</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+        <span class="token string">"prepared_payload"</span><span class="token punctuation">:</span> <span class="token string">"draft-action-v1"</span><span class="token punctuation">,</span>
+        <span class="token string">"status"</span><span class="token punctuation">:</span> <span class="token string">"prepared"</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+</code></pre>
+<p>随后进入审批节点：</p>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">def</span> <span class="token function">approval</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    side_effect_events<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token string">"before_interrupt"</span><span class="token punctuation">)</span>
+
+    approved <span class="token operator">=</span> interrupt<span class="token punctuation">(</span><span class="token punctuation">{</span>
+        <span class="token string">"question"</span><span class="token punctuation">:</span> <span class="token string">"Approve draft-action-v1?"</span><span class="token punctuation">,</span>
+        <span class="token string">"request_id"</span><span class="token punctuation">:</span> state<span class="token punctuation">[</span><span class="token string">"request_id"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string">"prepared_payload"</span><span class="token punctuation">:</span> state<span class="token punctuation">[</span><span class="token string">"prepared_payload"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+    side_effect_events<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token string">"after_interrupt"</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+        <span class="token string">"approved"</span><span class="token punctuation">:</span> <span class="token builtin">bool</span><span class="token punctuation">(</span>approved<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token string">"status"</span><span class="token punctuation">:</span> <span class="token string">"approved"</span> <span class="token keyword">if</span> approved <span class="token keyword">else</span> <span class="token string">"rejected"</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+</code></pre>
+<p>第一次调用停在 <code>interrupt()</code>。读取 Checkpoint 时，<code>prepared_payload</code> 已经存在，下一节点位置也被保存。使用同一个 <code>thread_id</code> 恢复后，最终状态变为 <code>approved</code>。</p>
+<p>但事件计数非常关键：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>事件</th><th align="right">次数</th></tr></thead><tbody><tr><td><code>before_interrupt</code></td><td align="right">2</td></tr><tr><td><code>after_interrupt</code></td><td align="right">1</td></tr></tbody></table>
+<p>这和官方文档一致：恢复不是从 Python 调用栈中 <code>interrupt()</code> 的下一行继续，Runtime 会从该节点开头重新执行，然后用已提供的 resume value 匹配 <code>interrupt()</code>。所以它保存的是 Graph 状态和执行位置，不是整个进程的内存栈。</p>
+<p>这条规则会直接影响生产副作用。如果在 <code>interrupt()</code> 前先调用“创建订单”“发送邮件”或“扣减库存”，恢复时可能重复执行。安全写法有三种：</p>
+<ul>
+<li>把副作用放到 <code>interrupt()</code> 之后；</li>
+<li>把副作用拆成独立节点，让它拥有明确 Checkpoint 边界；</li>
+<li>必须提前执行时，使用稳定的 <code>operation_id</code> 做幂等 upsert，而不是每次创建新记录。</li>
+</ul>
+<p>官方 Issue #6792 和 #7361 进一步说明，子图、特定 checkpoint 和 replay/resume 的组合仍需要逐版本验证。本文不把这些 Issue 当成本地结果，但它们提醒开发者：只要流程包含嵌套子图、多个中断或指定 <code>checkpoint_id</code>，就必须用真实任务测试哪些节点会重跑，不能只凭“已经有 Checkpointer”推断副作用只执行一次。</p>
+<p><img alt="interrupt 暂停与恢复：前一步状态保留，但被中断节点从头执行，前缀副作用重复" loading="lazy" decoding="async" fetchpriority="auto" width="1200" height="720" src="/_astro/07-interrupt-resume-rerun.CZGs1BI1_Z22AWoN.webp" ></p>
+<h2 id="生产修复把可见进度和权威状态分开设计">生产修复：把“可见进度”和“权威状态”分开设计</h2>
+<p>一个可靠的取消流程不应该只有 <code>running</code> 和 <code>completed</code> 两个状态。用户点击停止时，系统可能处在模型生成、工具调用、外部 API 已成功但本地结果未写入、Checkpointer 正在刷盘等不同阶段。简单地把任务标成 <code>cancelled</code>，可能会掩盖已经发生的副作用。</p>
+<p>更稳妥的状态机至少包括：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">queued
+  -> running
+  -> cancel_requested
+      -> cancelled_confirmed
+      -> completed_before_cancel
+      -> externally_completed_local_pending
+      -> cancel_failed
+  -> failed
+  -> completed
+</code></pre>
+<p><code>cancel_requested</code> 表示用户意图，不等于执行已经停止。若正在调用不可取消的第三方 API，服务端必须等待结果或查询对方状态，确认后再进入最终状态。对支付、工单、邮件、文件上传等任务，<code>externally_completed_local_pending</code> 尤其重要：外部世界已经改变，本地 Checkpoint 却可能还没记录，直接重试会产生重复操作。</p>
+<p>我建议把数据分成三层。</p>
+<p>第一层是 UI Stream。它追求低延迟，可丢弃，可在页面上即时展示。每个事件至少带 <code>run_id</code>、<code>sequence</code>、<code>event_type</code> 和时间戳，避免前端只按字符串拼接。</p>
+<p>第二层是应用事件日志。它记录用户已经看到且产品承诺保留的消息段、工具进度和取消请求。可以是 append-only 表：</p>
+<pre class="language-sql" data-language="sql"><code is:raw="" class="language-sql">run_events<span class="token punctuation">(</span>
+  run_id<span class="token punctuation">,</span>
+  sequence<span class="token punctuation">,</span>
+  event_type<span class="token punctuation">,</span>
+  payload_hash<span class="token punctuation">,</span>
+  safe_payload<span class="token punctuation">,</span>
+  created_at<span class="token punctuation">,</span>
+  <span class="token keyword">UNIQUE</span><span class="token punctuation">(</span>run_id<span class="token punctuation">,</span> sequence<span class="token punctuation">)</span>
+<span class="token punctuation">)</span>
+</code></pre>
+<p>这里不一定保存每个 Token。可以每 200–500 毫秒合并一次，或按句子、工具阶段、节点进度写入。它的职责是页面刷新后复原“用户最后看到了什么”。</p>
+<p>第三层是 LangGraph Checkpoint。它保存可恢复的 Graph State、下一节点、task writes 和 Thread 历史。它适合恢复工作流，不应该被迫承担所有前端渲染事件，也不能替代业务订单、审批和任务表。</p>
+<p>取消流程可以这样实现：</p>
+<ol>
+<li>前端发送带 <code>run_id</code> 的 cancel 请求，不只关闭 SSE。</li>
+<li>后端把任务原子更新为 <code>cancel_requested</code>，记录请求时间和请求者。</li>
+<li>Runtime 收到取消信号，停止可取消节点；不可取消工具进入状态确认。</li>
+<li>关闭运行前，应用事件日志写入最后确认 sequence。</li>
+<li>已完成 Graph Step 由 Checkpointer 按 durability 提交。</li>
+<li>后端生成 <code>cancelled_confirmed</code> 或其他最终状态。</li>
+<li>前端重新加载时，先读取权威 Thread State，再按 run sequence 合并应用事件，不信任单个浏览器内存副本。</li>
+</ol>
+<p>这里必须定义去重规则。相同 <code>run_id + sequence</code> 只能写一次；工具副作用使用 <code>operation_id</code>；恢复或重试前先查权威业务结果。否则即使 Stream 和 Checkpoint 一致，副作用仍可能重复。</p>
+<p><img alt="生产级取消状态机：请求取消、确认停止、外部已完成与本地待写必须分开" loading="lazy" decoding="async" fetchpriority="auto" width="1200" height="720" src="/_astro/08-production-cancellation-state-machine.DKg7PYxx_ZjxPU2.webp" ></p>
+<h2 id="什么时候不应该把每个进度都拆成节点">什么时候不应该把每个进度都拆成节点</h2>
+<p>第二组实验的 3/3 很漂亮，但不能机械推广成“每个 Token 一个节点”。这样会制造大量 Checkpoint、序列化和数据库写入。在本次固定六段实验中，default、<code>sync</code>、<code>async</code> 的分步完整运行产生 8 个 Checkpoint、35 条 Writes，而长节点完整运行只有 3 个 Checkpoint、10 条 Writes。数字只说明本 Fixture 的写放大，不代表生产性能倍率，但方向非常明确：恢复粒度越细，持久化成本通常越高。</p>
+<p>适合拆节点的，是具有业务语义的边界：</p>
+<ul>
+<li>查询计划已经确定；</li>
+<li>某个工具调用完成；</li>
+<li>文档的一批页面解析完成；</li>
+<li>审批材料已经生成；</li>
+<li>外部对象已创建并拿到 ID；</li>
+<li>长任务完成一个可独立重试的分片。</li>
+</ul>
+<p>不适合拆节点的，是纯显示细节：</p>
+<ul>
+<li>每个模型 Token；</li>
+<li>动画进度百分比；</li>
+<li>没有业务意义的字符块；</li>
+<li>可以从结果重新推导的临时 UI 状态。</li>
+</ul>
+<p>对于长文本生成，可以把 Token 继续走 Stream，同时每完成一个段落或消息对象就写应用事件表；节点完成后再把完整 AI Message 返回 Graph State。用户取消时，未完成段落可以标成 <code>aborted_partial</code>，明确告诉下一次会话它不是完整模型回复，而不是悄悄丢失或伪装成最终答案。</p>
+<p>对于长工具任务，可以让工具自身维护 <code>task_id</code> 和阶段状态。LangGraph State 只保存 <code>task_id</code>、最后确认阶段和恢复策略；页面通过任务 API 读取实时进度。这样即使 Graph Runtime 重启，任务进度也不会只存在于某个节点局部变量里。</p>
+<h2 id="修复完成后必须怎么回归验证">修复完成后，必须怎么回归验证</h2>
+<p>修复不能只看一次正常结束。至少建立四条自动化用例，并且把“前端最后可见 sequence”和“后端最后权威 sequence”同时写入断言。</p>
+<p>第一条是自然完成：运行产生六个进度事件，页面显示六个，应用事件表保存六个，Graph State 也应在节点完成后包含完整结果。它确认正常路径没有因为新增取消逻辑而丢数据。</p>
+<p>第二条是在固定 sequence 取消：例如收到第三个事件后发送 cancel 请求，等待后端返回最终状态，再重新创建客户端读取同一 <code>thread_id</code>。重新加载后的可见内容必须符合产品约定：要么明确保留三段并标成 partial，要么明确不保留并在 UI 中删除，不能先显示三段、刷新后无说明地回退。</p>
+<p>第三条是取消与外部副作用竞争：让工具在取消请求前后分别完成，检查 <code>operation_id</code> 是否只产生一个订单、工单或文件对象。测试重点不是 Graph 返回什么，而是外部系统有没有重复事实。</p>
+<p>第四条是进程级故障：在已完成一个业务步骤后强制结束 Worker，重新启动后用相同 Thread 恢复。这里要分别跑 <code>sync</code>、默认 <code>async</code> 和 <code>exit</code>，记录最后可恢复步骤，而不是根据参数说明推测。</p>
+<p>每条用例还应核对五个 ID：<code>thread_id</code> 标识长期任务，<code>run_id</code> 标识本次尝试，<code>sequence</code> 标识可见事件顺序，<code>checkpoint_id</code> 标识恢复快照，<code>operation_id</code> 标识外部副作用。日志若只能看到一个 <code>thread_id</code>，取消、重试和恢复混在一起后仍然无法审计。</p>
+<p>线上监控也不应只统计“取消次数”。更有用的指标包括：取消请求到确认停止的延迟、取消后 UI/Checkpoint sequence 差值、partial message 恢复成功率、重复副作用拦截次数，以及恢复后被重新执行的节点数。只有这些指标长期为零或处于可解释范围，才能说取消流程真正稳定。</p>
+<h2 id="实验失败限制与不能推广的结论">实验失败、限制与不能推广的结论</h2>
+<p>这次实验至少保留了三类失败和边界。</p>
+<p>第一，单个长节点的四个取消案例全部失败：UI 3、Checkpoint 0。它证明换 durability 不能弥补未完成节点没有返回状态的问题。</p>
+<p>第二，最初的测试加载器使用 <code>importlib</code> 动态载入实验模块，却没有先注册到 <code>sys.modules</code>，Python 3.11 的 <code>dataclass</code> 类型解析因此报错。修复测试 Harness 后，回归测试通过。这个错误与 LangGraph 无关，所以没有被包装成框架缺陷，但它保留在开发记录中，避免把“测试脚本写错”误报为运行时问题。</p>
+<p>第三，本机曾有多个遗留 Astro 开发进程占用大量文件描述符，第一次隔离安装出现 <code>Too many open files in system</code>。关闭项目遗留进程后，Python 3.11 环境安装成功。这同样不是 LangGraph 结论，因此正式实验只采用清理后的 3.11 运行。</p>
+<p>此外，本次没有验证以下内容：</p>
+<ul>
+<li>Agent Server 的取消接口是否会额外刷写 partial state；</li>
+<li><code>disconnect_mode="continue"</code> 与 <code>"cancel"</code> 的服务端差异；</li>
+<li>Postgres Checkpointer 在进程崩溃时的提交窗口；</li>
+<li>多节点并行 Super-step 的 pending writes；</li>
+<li>子图嵌套中断的所有重放路径；</li>
+<li>真实模型 Token Stream 与 Provider 中断信号；</li>
+<li>反向代理断开但后端继续运行的情况；</li>
+<li>每种 durability 的性能、吞吐和成本差异。</li>
+</ul>
+<p>因此，不能写“LangGraph 1.2.9 仍有官方 Issue #5672 的同一个 Bug”，也不能写“stepwise 方案解决所有取消丢状态”。准确说法是：<strong>在本地 1.2.9 Runtime 中，我们复现了相同用户体验背后的基础边界；产品仍需根据托管 Runtime、Checkpointer 和业务事件存储做二次验证。</strong></p>
+<p><img alt="实验输出与回归测试：17 个案例、完整矩阵与 unittest 通过" loading="lazy" decoding="async" fetchpriority="auto" width="1200" height="720" src="/_astro/09-experiment-verification.CKBmXnFO_Nl9Wb.webp" ></p>
+<h2 id="最终决策不要让-stream-充当数据库">最终决策：不要让 Stream 充当数据库</h2>
+<p>如果系统只是一个允许重新生成的个人 Demo，取消后丢失未完成回答可能可以接受。前端清空 partial response，下一次从最后 Checkpoint 继续，逻辑简单，也避免保存不完整内容。</p>
+<p>如果系统面向客服、研究、财报、审批、长工具任务或任何需要审计的场景，就不能让用户看到一套状态、后端恢复另一套状态。此时至少要做到：</p>
+<ul>
+<li>明确区分 Stream Event、Graph State 和业务事实；</li>
+<li>在有业务意义的步骤返回 State Update；</li>
+<li>为已承诺保留的可见进度建立应用事件日志；</li>
+<li>用稳定 <code>thread_id</code>、<code>run_id</code>、<code>sequence</code> 和 <code>operation_id</code> 关联各层；</li>
+<li>取消使用 <code>cancel_requested</code> 到最终状态的确认流程；</li>
+<li><code>interrupt()</code> 前的副作用保持幂等，或拆到独立节点；</li>
+<li>用真实断连、进程重启和同一 Thread 的后续消息做回归测试。</li>
+</ul>
+<p>本次实验最有价值的结论，不是某个参数“最好”，而是把一个模糊问题拆成了可验证的边界：</p>
+<blockquote>
+<p><strong>Stream 负责让用户尽快看到，Checkpoint 负责让 Graph 以后能恢复，业务存储负责证明外部世界发生了什么。三者可以互相引用，但不能互相冒充。</strong></p>
+</blockquote>
+<p>当用户点击停止时，先决定你要保留的是显示片段、工作流状态，还是已经发生的业务事实。只有把这三层分别设计清楚，取消、恢复和刷新后的一致性才不会依赖运气。</p>
+<h2 id="faq">FAQ</h2>
+<h3 id="langgraph-设置-durabilitysync-能避免取消后状态丢失吗">LangGraph 设置 <code>durability="sync"</code> 能避免取消后状态丢失吗？</h3>
+<p>只能保证已经完成的 Graph Step 在下一步开始前持久化。若节点内部已经 Stream 了内容但尚未返回 State Update，<code>sync</code> 没有这部分状态可写。本地四种 durability 的长节点取消案例都是 UI 3、Checkpoint 0。</p>
+<h3 id="interrupt-是否会从暂停的那一行继续执行"><code>interrupt()</code> 是否会从暂停的那一行继续执行？</h3>
+<p>不会。官方文档和本地实验都显示，被中断节点在恢复时从开头重新执行，<code>interrupt()</code> 前的代码会再次运行。副作用应当幂等、放到中断后，或拆成独立节点。</p>
+<h3 id="应不应该把每个-token-都写入-checkpoint">应不应该把每个 Token 都写入 Checkpoint？</h3>
+<p>通常不应该。Token 级 Checkpoint 会造成大量写入。更常见的做法是 Token 走 Stream，段落或消息走应用事件日志，节点完成后把完整消息写入 Graph State。</p>
+<h3 id="exit-durability-为什么在分步取消实验中也保存了-3-个片段"><code>exit</code> durability 为什么在分步取消实验中也保存了 3 个片段？</h3>
+<p>因为关闭异步流使本次 Graph 退出，Runtime 有机会在退出路径提交当前状态。它不代表运行中每一步都已持久化，也不能证明进程被强杀时仍会保存。</p>
+<h3 id="前端本地保存-partial-response-能解决问题吗">前端本地保存 partial response 能解决问题吗？</h3>
+<p>可以缓解当前标签页的显示回滚，但页面刷新、换设备和多实例同步仍需要后端权威存储。若产品承诺保留用户已经看到的内容，应把它写入应用事件日志，而不是只放浏览器内存。</p>
+<h2 id="官方资料与继续阅读">官方资料与继续阅读</h2>
+<ul>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/persistence" rel="nofollow noopener noreferrer" target="_blank">LangGraph Persistence 官方文档</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/streaming" rel="nofollow noopener noreferrer" target="_blank">LangGraph Streaming 官方文档</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/interrupts" rel="nofollow noopener noreferrer" target="_blank">LangGraph Interrupts 官方文档</a></li>
+<li><a href="https://reference.langchain.com/python/langgraph/types/Durability" rel="nofollow noopener noreferrer" target="_blank">LangGraph Durability 参考</a></li>
+<li><a href="https://github.com/langchain-ai/langgraph/issues/5672" rel="nofollow noopener noreferrer" target="_blank">官方 Issue #5672：取消后未 Checkpoint 的 Streamed State 丢失</a></li>
+<li><a href="https://github.com/langchain-ai/langgraph/issues/6792" rel="nofollow noopener noreferrer" target="_blank">官方 Issue #6792：子图 Interrupt 恢复时任务重复执行</a></li>
+<li><a href="https://github.com/langchain-ai/langgraph/issues/7361" rel="nofollow noopener noreferrer" target="_blank">官方 Issue #7361：指定 Checkpoint Resume 与 Replay 边界</a></li>
+<li><a href="/ai/langgraph-checkpointer-memory-sqlite-redis/">LangGraph Checkpointer 怎么选：Memory、SQLite、Redis 与生产边界</a></li>
+<li><a href="/ai/langgraph-human-in-the-loop-approval/">LangGraph Human-in-the-loop：多智能体审批流怎么做？</a></li>
+<li><a href="/ai/langgraph-agent-error-recovery-retry-timeout/">LangGraph 多智能体失败恢复：Tool Error、Timeout 与重试策略</a></li>
+<li><a href="/ai/langgraph-observability-agent-trace/">LangGraph Observability：如何追踪每个 Agent 的决策路径？</a></li>
+</ul>  <aside class="mt-12 rounded-2xl border border-slate-200 bg-slate-50/70 px-5 py-4 not-prose dark:border-white/10 dark:bg-white/[0.025]"> <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"> <div><p class="text-sm font-black text-slate-900 dark:text-white">讨论这个问题</p><p class="mt-1 text-xs leading-6 text-slate-500 dark:text-slate-400">有不同的复现结果、版本变化或补充证据？欢迎继续讨论。</p></div> <a href="#discussion" class="shrink-0 text-xs font-black text-blue-600 dark:text-blue-400">发表观点或复现 →</a> </div> </aside><section class="mt-16 rounded-[34px] border border-orange-500/20 bg-orange-500/[0.06] p-7 md:p-9 not-prose"> <div class="text-[10px] font-black uppercase tracking-[0.28em] text-orange-500 mb-4">专题入口 / LangGraph Hub</div> <h2 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-4">继续按生产级 LangGraph 路线读，不再重复看泛入门</h2> <p class="text-sm font-bold leading-7 text-slate-600 dark:text-slate-400 max-w-3xl">这一类文章统一沉淀到 LangGraph 专题页，按状态隔离、Checkpointer、HITL、失败恢复、Observability、Supervisor/Worker、Subgraph 和 Memory 顺序阅读。</p> <div class="mt-7 flex flex-wrap gap-3"> <a href="/ai/langgraph/" class="rounded-full bg-orange-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-white hover:bg-orange-600 transition-colors">进入 LangGraph 专题 →</a> <a href="/ai/langgraph-thread-session-state-isolation/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">从状态隔离开始</a> <a href="/newsletter/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">订阅</a> </div> </section> </div> <section class="mt-14 border-t border-[var(--xb-line)] pt-7" data-related-reading data-analytics-area="related_content" data-related-slot="article_end" data-astro-cid-ce2bgkb3> <div class="mb-2 flex items-center justify-between gap-4" data-astro-cid-ce2bgkb3><h2 class="m-0 text-[17px] font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3>下一步：继续处理状态与恢复</h2><a href="/ai/langgraph/" class="text-[12px] font-bold text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>完整专题路径 →</a></div> <p class="mb-4 max-w-3xl text-[12px] leading-5 text-[var(--xb-muted)]" data-astro-cid-ce2bgkb3>从当前问题继续走到 State、Checkpoint、Resume 或失败恢复边界，避免只修表面症状。</p> <div class="xb-article-related" data-astro-cid-ce2bgkb3><a href="/ai/langgraph-checkpoint-zoneinfo-fold-dst/" data-related-link data-related-reason="继续处理状态与记忆" data-astro-cid-ce2bgkb3><span class="mb-1 block text-[12px] font-extrabold uppercase tracking-[0.08em] text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>继续处理状态与记忆</span><span class="font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3>LangGraph Checkpoint 恢复后时间为什么会错一小时？ZoneInfo / fold 丢失问题复现与临时方案</span><span class="mt-1 block line-clamp-2 text-[12px] text-[var(--xb-faint)]" data-astro-cid-ce2bgkb3>LangGraph checkpoint 恢复后时间错一小时怎么排查？本文独立复现 JsonPlusSerializer round-trip 后 ZoneInfo 退化为固定 UTC offset、fold=1 变成 0，并展示 DST 跨日运算从 09:00 变成 10:00 的风险与应用层临时方案。</span></a><a href="/ai/langgraph-first-checkpoint-crash-accepted-run-lost/" data-related-link data-related-reason="继续处理状态与记忆" data-astro-cid-ce2bgkb3><span class="mb-1 block text-[12px] font-extrabold uppercase tracking-[0.08em] text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>继续处理状态与记忆</span><span class="font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3>LangGraph 第一个 Checkpoint 前崩溃会丢任务吗？EmptyInputError 与 Accepted Run 恢复实战</span><span class="mt-1 block line-clamp-2 text-[12px] text-[var(--xb-faint)]" data-astro-cid-ce2bgkb3>复现 LangGraph 第一个 Checkpoint 前进程崩溃：0 Checkpoint、EmptyInputError 与 accepted run 丢失，并验证 application-owned acceptance ledger 的恢复边界。</span></a><a href="/ai/langgraph-conditional-router-resume-skips-downstream/" data-related-link data-related-reason="继续处理状态与记忆" data-astro-cid-ce2bgkb3><span class="mb-1 block text-[12px] font-extrabold uppercase tracking-[0.08em] text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>继续处理状态与记忆</span><span class="font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3>LangGraph Conditional Router 异常后 Resume 为什么跳过下游节点？1.2.11 复现与临时方案</span><span class="mt-1 block line-clamp-2 text-[12px] text-[var(--xb-faint)]" data-astro-cid-ce2bgkb3>LangGraph conditional router 抛异常后，invoke(None, config) 为什么看似恢复成功却不再执行 router 和下游节点？本文在 langgraph 1.2.11 上用 InMemorySaver 与 SqliteSaver 独立复现，并验证把可失败路由逻辑移入普通 node 的临时方案。</span></a></div> </section> </article> <section id="discussion" class="xb-article-comments scroll-mt-28" data-astro-cid-ce2bgkb3> <div class="mb-5 flex items-center gap-3 text-[11px] font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3><span data-astro-cid-ce2bgkb3>评论与补充证据</span><span class="h-px flex-1 bg-[var(--xb-line)]" data-astro-cid-ce2bgkb3></span></div> <section class="xbstack-comments" data-xbstack-waline data-server-url="https://comments.xbstack.com" data-comment-path="/ai/langgraph-cancel-run-streaming-checkpoint-state-loss/" data-comment-lang="zh-CN" data-comment-mode="evidence" aria-labelledby="xbstack-comments-title"> <div class="xbstack-comments__header"> <div> <p class="xbstack-comments__eyebrow">参与讨论</p> <h2 id="xbstack-comments-title"> 问题、验证与勘误 </h2> <p class="xbstack-comments__description"> 登录后可发表评论。所有新评论先进入审核；审核期间仅评论者本人和管理员可见，通过后才公开。 </p> </div> <div class="xbstack-comments__policy" aria-label="评论规则"> <span>登录评论</span> <span>审核后公开</span> </div> </div> <div class="xbstack-comments__status" data-waline-status role="status" aria-live="polite"> <span class="xbstack-comments__spinner" aria-hidden="true"></span> <span>正在加载评论区…</span> </div> <div id="waline" class="xbstack-comments__mount" data-waline-mount></div> <noscript> <p class="xbstack-comments__noscript"> 评论区需要启用 JavaScript 才能查看和发布评论。 </p> </noscript> </section>  </section> </main> <aside class="xb-article-side xb-article-v21-side" aria-label="文章导航" data-astro-cid-ce2bgkb3> <section class="xb-article-panel" data-astro-cid-ce2bgkb3> <h2 class="xb-article-panel__title" data-astro-cid-ce2bgkb3>本文目录</h2> <nav class="xb-v21-toc" aria-label="本文目录" data-astro-cid-ce2bgkb3> <a href="#langgraph-取消运行后状态为什么丢失streamingcheckpoint-与恢复一致性实战" data-astro-cid-ce2bgkb3>LangGraph 取消运行后状态为什么丢失？Streaming、Checkpoint 与恢复一致性实战</a><a href="#测试任务环境与边界" data-astro-cid-ce2bgkb3>测试任务、环境与边界</a><a href="#官方持久化模型checkpoint-写在-super-step-边界" data-astro-cid-ce2bgkb3>官方持久化模型：Checkpoint 写在 Super-step 边界</a><a href="#实验一单个长节点取消后3-个可见片段全部未进入-checkpoint" data-astro-cid-ce2bgkb3>实验一：单个长节点取消后，3 个可见片段全部未进入 Checkpoint</a><a href="#实验二把进度变成-graph-step-后取消时可以恢复-3-个片段" data-astro-cid-ce2bgkb3>实验二：把进度变成 Graph Step 后，取消时可以恢复 3 个片段</a><a href="#syncasyncexit-到底改变了什么" data-astro-cid-ce2bgkb3>sync、async、exit 到底改变了什么</a><a href="#interrupt-和普通取消不是一回事" data-astro-cid-ce2bgkb3>interrupt() 和普通取消不是一回事</a><a href="#生产修复把可见进度和权威状态分开设计" data-astro-cid-ce2bgkb3>生产修复：把“可见进度”和“权威状态”分开设计</a><a href="#什么时候不应该把每个进度都拆成节点" data-astro-cid-ce2bgkb3>什么时候不应该把每个进度都拆成节点</a><a href="#修复完成后必须怎么回归验证" data-astro-cid-ce2bgkb3>修复完成后，必须怎么回归验证</a><a href="#实验失败限制与不能推广的结论" data-astro-cid-ce2bgkb3>实验失败、限制与不能推广的结论</a><a href="#最终决策不要让-stream-充当数据库" data-astro-cid-ce2bgkb3>最终决策：不要让 Stream 充当数据库</a><a href="#faq" data-astro-cid-ce2bgkb3>FAQ</a><a href="#langgraph-设置-durabilitysync-能避免取消后状态丢失吗" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>LangGraph 设置 durability=&quot;sync&quot; 能避免取消后状态丢失吗？</a><a href="#interrupt-是否会从暂停的那一行继续执行" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>interrupt() 是否会从暂停的那一行继续执行？</a><a href="#应不应该把每个-token-都写入-checkpoint" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>应不应该把每个 Token 都写入 Checkpoint？</a><a href="#exit-durability-为什么在分步取消实验中也保存了-3-个片段" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>exit durability 为什么在分步取消实验中也保存了 3 个片段？</a><a href="#前端本地保存-partial-response-能解决问题吗" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>前端本地保存 partial response 能解决问题吗？</a><a href="#官方资料与继续阅读" data-astro-cid-ce2bgkb3>官方资料与继续阅读</a> </nav> </section> <section class="xb-article-panel" data-astro-cid-ce2bgkb3> <h2 class="xb-article-panel__title" data-astro-cid-ce2bgkb3>文章工具</h2> <div class="xb-v21-toc" data-astro-cid-ce2bgkb3> <button type="button" data-copy-article data-astro-cid-ce2bgkb3><span data-astro-cid-ce2bgkb3>复制链接</span><span aria-hidden="true" data-astro-cid-ce2bgkb3>↗</span></button> <a href="/ai/langgraph/" data-astro-cid-ce2bgkb3>返回专题 →</a> </div> </section> </aside> </div>  <script>
+  const bindArticleTools=()=>{document.querySelectorAll('[data-copy-article]').forEach((button)=>{if(button.dataset.ready)return;button.dataset.ready='1';button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(window.location.href);const original=button.querySelector('span')?.textContent;if(button.querySelector('span'))button.querySelector('span').textContent='已复制';setTimeout(()=>{if(button.querySelector('span'))button.querySelector('span').textContent=original||'复制链接'},1200)}catch{}})})};
+  const trackRelatedContentView=(section)=>{if(!section||section.dataset.viewTracked||!window.__ga4_human_verified||typeof window.xbTrackEvent!=='function')return false;section.dataset.viewTracked='1';window.xbTrackEvent('related_content_view',{event_category:'engagement',link_area:'related_content',link_position:section.getAttribute('data-related-slot')||'unknown',source_page_path:window.location.pathname});return true};
+  const bindRelatedContentViews=()=>{document.querySelectorAll('[data-analytics-area="related_content"]').forEach((section)=>{if(section.dataset.viewObserverReady)return;section.dataset.viewObserverReady='1';const observer=new IntersectionObserver((entries)=>{entries.forEach((entry)=>{if(!entry.isIntersecting||entry.intersectionRatio<0.35||section.dataset.viewTracked)return;if(trackRelatedContentView(section))observer.disconnect()})},{threshold:[0.35]});observer.observe(section)})};
+  const retryVisibleRelatedContentViews=()=>{document.querySelectorAll('[data-analytics-area="related_content"]').forEach((section)=>{if(section.dataset.viewTracked)return;const rect=section.getBoundingClientRect();const viewportHeight=window.innerHeight||document.documentElement.clientHeight;if(rect.bottom<=0||rect.top>=viewportHeight)return;const visible=Math.min(rect.bottom,viewportHeight)-Math.max(rect.top,0);if(visible/Math.max(rect.height,1)>=0.35)trackRelatedContentView(section)})};
+  const bindArticlePageTools=()=>{bindArticleTools();bindRelatedContentViews();retryVisibleRelatedContentViews()};document.addEventListener('astro:page-load',bindArticlePageTools);window.addEventListener('xb:ga4-human-verified',retryVisibleRelatedContentViews);bindArticlePageTools();
+</script> </main> <script>
+    function initProgress() {
+      const progressBar = document.getElementById('reading-progress');
+      if (!progressBar) return;
+      window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = scrolled + "%";
+      });
+    }
+    document.addEventListener('astro:page-load', initProgress);
+    initProgress();
+  </script>  </main> <footer class="xb-v21-footer mt-12 border-t border-[var(--xb-line)] bg-[var(--xb-surface)]"> <div class="xb-shell py-10 md:py-12"> <div class="grid gap-10 lg:grid-cols-[minmax(260px,0.9fr)_minmax(0,1.6fr)] lg:gap-16"> <div class="max-w-[430px]"> <a href="/" class="inline-flex items-center gap-2.5 font-black tracking-[-0.035em] text-[var(--xb-ink)]"> <span class="xb-brand-logo" data-xbstack-logo-motion="view" aria-hidden="true"> <span class="xb-brand-logo__variant inline-flex dark:hidden"> <img src="/favicon/logo-light-nav.svg" alt="" width="32" height="32" loading="lazy" decoding="async"> <span class="xb-brand-logo__shine" style="--xb-logo-mask: url(&#34;/favicon/logo-light-nav.svg&#34;)"></span> </span> <span class="xb-brand-logo__variant hidden dark:inline-flex"> <img src="/favicon/logo-dark-nav.svg" alt="" width="32" height="32" loading="lazy" decoding="async"> <span class="xb-brand-logo__shine" style="--xb-logo-mask: url(&#34;/favicon/logo-dark-nav.svg&#34;)"></span> </span> </span> <span class="text-[17px]">XBSTACK</span> </a> <p class="mt-5 text-[18px] font-bold leading-7 tracking-[-0.02em] text-[var(--xb-ink)]"> 在高处看世界，在底层堆资产。 </p> <p class="mt-3 text-[12px] leading-6 text-[var(--xb-muted)]"> 工程实践、可用产品、投资与阅读记录，以及旅行和户外现场。 </p> </div> <nav class="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-4" aria-label="页脚导航"> <div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">主题</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/ai/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">AI</a><a href="/products/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Products</a><a href="/horizon/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Insights</a><a href="/life/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Lens</a><a href="/about/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">About</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">AI 工程</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/ai/agent/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Agents</a><a href="/ai/mcp/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">MCP</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">资源</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/search/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">搜索</a><a href="/archive/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">归档</a><a href="/newsletter/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Newsletter</a><a href="/rss.xml" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">RSS</a><a href="/friends/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">朋友与独立站</a><a href="https://github.com/xbstack" target="_blank" rel="noopener noreferrer" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">GitHub：@xbstack</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">联系</h2> <div class="flex flex-col items-start gap-2.5"> <a href="mailto:xbstack@163.com" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">邮箱：xbstack@163.com</a><a href="/wechat/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 wechat-trigger" data-wechat-qr="/assets/qrcode_guizhou_outdoor.png">微信公众号：贵州户外</a><a href="/contact/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">商务合作</a> </div> </div> </nav> </div> <div class="mt-9 flex flex-col gap-3 border-t border-[var(--xb-line)] pt-5 sm:flex-row sm:items-center sm:justify-between"> <div class="text-[10px] text-[var(--xb-faint)]">© 2026 XBSTACK. All rights reserved.</div> <div class="flex flex-wrap gap-x-4 gap-y-2"> <a href="/privacy/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">隐私政策</a><a href="/tos/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">服务条款</a><a href="/disclosure/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">免责声明</a><a href="/advertising/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">广告政策</a><a href="/cookies/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">Cookie 政策</a> </div> </div> <div class="mt-4 text-center text-[11px] leading-6 text-[var(--xb-faint)]"> <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--xb-ink)]">黔ICP备2026019006号-1</a> </div> </div> </footer> <!-- 桌面悬停卡：由全局脚本定位到当前公众号入口附近 --><div id="wechat-hover-card" class="fixed z-[9998] hidden w-[390px] pointer-events-none opacity-0 translate-y-2 transition-all duration-200" aria-hidden="true"> <div class="rounded-[30px] border border-white/15 bg-[#0d1728]/95 p-6 text-white shadow-[0_28px_80px_rgba(2,6,23,0.48)] backdrop-blur-2xl"> <div class="text-[10px] font-black uppercase tracking-[0.34em] text-orange-400">XBSTACK 微信公众号</div> <div class="mt-2 text-[24px] font-black tracking-tight">关注内容更新</div> <div class="mt-1 text-[12px] font-bold tracking-[0.12em] text-slate-400">AI 工程 · 产品构建 · 户外实践</div> <div class="mt-5 grid grid-cols-[148px_1fr] items-center gap-5"> <img id="wechat-hover-qr" data-src="/assets/qrcode_guizhou_outdoor.png" loading="lazy" decoding="async" width="360" height="360" alt="微信公众号贵州户外二维码" class="block aspect-square w-full object-contain"> <div class="space-y-3 text-[13px] font-bold leading-relaxed text-slate-300"> <p>贵州徒步与路线实测</p> <p>AI 工具与独立产品</p> <p>投资体系与长期复盘</p> </div> </div> <div class="mt-5 border-t border-white/10 pt-4 text-center text-[12px] font-black text-slate-300"> 点击查看完整名片 </div> </div> </div> <!-- 全局点击弹窗 --> <div id="wechat-modal" class="fixed inset-0 z-[10000] hidden items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="wechat-modal-title" aria-hidden="true"> <button id="wechat-modal-backdrop" type="button" aria-label="关闭微信公众号弹窗" class="absolute inset-0 cursor-default bg-slate-950/86 backdrop-blur-xl"></button> <div id="wechat-modal-content" class="relative max-h-[94vh] w-full max-w-[620px] scale-95 overflow-y-auto rounded-[38px] border border-slate-500/45 bg-[#0d1728] text-white opacity-0 shadow-[0_40px_140px_rgba(0,0,0,0.68)] transition-all duration-300 sm:rounded-[50px]"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"> <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px]"></div> <div class="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-orange-500/10 blur-[80px]"></div> </div> <button id="wechat-modal-close" type="button" aria-label="关闭微信公众号弹窗" class="absolute right-5 top-5 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 transition hover:bg-white/10 hover:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg> </button> <div class="relative z-10 px-6 pb-6 pt-10 sm:px-10 sm:pb-9 sm:pt-12"> <header class="text-center"> <div class="text-[10px] font-black uppercase tracking-[0.44em] text-orange-400 sm:text-xs">XBSTACK 微信公众号</div> <h2 id="wechat-modal-title" class="mt-4 text-3xl font-black tracking-tight text-white sm:text-[38px]" style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;">关注内容更新</h2> <p class="mt-3 text-sm font-bold tracking-[0.16em] text-slate-400 sm:text-base">AI 工程 · 产品构建 · 户外实践</p> </header> <div class="mt-8 grid items-center gap-7 sm:grid-cols-[210px_1fr] sm:gap-8"> <img id="wechat-modal-qr" data-src="/assets/qrcode_guizhou_outdoor.png" loading="lazy" decoding="async" width="360" height="360" alt="微信公众号贵州户外二维码" class="mx-auto block aspect-square w-full max-w-[210px] object-contain sm:max-w-none"> <div class="divide-y divide-white/10"> <div class="grid grid-cols-[38px_1fr] gap-3 py-3 first:pt-0"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M634.92 462.7l-288-448C341.03 5.54 330.89 0 320 0s-21.03 5.54-26.92 14.7l-288 448a32.001 32.001 0 0 0-1.17 32.64A32.004 32.004 0 0 0 32 512h576c11.71 0 22.48-6.39 28.09-16.67a31.983 31.983 0 0 0-1.17-32.63zM320 91.18L405.39 224H320l-64 64-38.06-38.06L320 91.18z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">户外徒步 · 贵州路线实探与分享</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">记录每一次出发，提供真实路况、补给、风险和下撤信息。</p> </div> </div> <div class="grid grid-cols-[38px_1fr] gap-3 py-3"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M278.9 511.5l-61-17.7c-6.4-1.8-10-8.5-8.2-14.9L346.2 8.7c1.8-6.4 8.5-10 14.9-8.2l61 17.7c6.4 1.8 10 8.5 8.2 14.9L293.8 503.3c-1.9 6.4-8.5 10.1-14.9 8.2zm-114-112.2l43.5-46.4c4.6-4.9 4.3-12.7-.8-17.2L117 256l90.6-79.7c5.1-4.5 5.5-12.3.8-17.2l-43.5-46.4c-4.5-4.8-12.1-5.1-17-.5L3.8 247.2c-5.1 4.7-5.1 12.8 0 17.5l144.1 135.1c4.9 4.6 12.5 4.4 17-.5zm327.2.6l144.1-135.1c5.1-4.7 5.1-12.8 0-17.5L492.1 112.1c-4.8-4.5-12.4-4.3-17 .5L431.6 159c-4.6 4.9-4.3 12.7.8 17.2L523 256l-90.6 79.7c-5.1 4.5-5.5 12.3-.8 17.2l43.5 46.4c4.5 4.9 12.1 5.1 17 .6z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">独立开发 · AI、工具与产品实战</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">从真实需求到上线复盘，持续构建可长期积累的数字产品。</p> </div> </div> <div class="grid grid-cols-[38px_1fr] gap-3 py-3 last:pb-0"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16zM464 96H345.94c-21.38 0-32.09 25.85-16.97 40.97l32.4 32.4L288 242.75l-73.37-73.37c-12.5-12.5-32.76-12.5-45.25 0l-68.69 68.69c-6.25 6.25-6.25 16.38 0 22.63l22.62 22.62c6.25 6.25 16.38 6.25 22.63 0L192 237.25l73.37 73.37c12.5 12.5 32.76 12.5 45.25 0l96-96 32.4 32.4c15.12 15.12 40.97 4.41 40.97-16.97V112c.01-8.84-7.15-16-15.99-16z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">投资思考 · 复利、风险与长期主义</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">分享投资体系、市场观察和个人决策复盘，不构成投资建议。</p> </div> </div> </div> </div> <div class="mt-6 text-center text-sm font-black leading-relaxed text-slate-300"> 扫码关注微信公众号 <span class="text-orange-400">“贵州户外”</span> <p class="mt-1 text-xs font-bold text-slate-500">获取户外路线、独立开发与投资复盘的最新内容</p> </div> <button id="wechat-modal-confirm" type="button" class="mt-7 w-full rounded-[24px] bg-white px-6 py-4 text-sm font-black tracking-[0.12em] text-slate-950 shadow-xl transition hover:-translate-y-0.5 hover:bg-slate-100 active:translate-y-0"> 知道了 / CLOSE </button> </div> </div> </div> <script type="module">const b="/assets/qrcode_guizhou_outdoor.png";function f(){const t=document.getElementById("wechat-modal"),y=document.getElementById("wechat-modal-backdrop"),d=document.getElementById("wechat-modal-content"),u=document.getElementById("wechat-modal-close"),E=document.getElementById("wechat-modal-confirm"),c=document.getElementById("wechat-modal-qr"),o=document.getElementById("wechat-hover-card"),i=document.getElementById("wechat-hover-qr");if(!t||!d||!o)return;let l=0;const p=window.matchMedia("(hover: hover) and (pointer: fine)"),w=e=>{const n=e.dataset.wechatQr||b;c&&c.src!==new URL(n,window.location.href).href&&(c.src=n),i&&i.src!==new URL(n,window.location.href).href&&(i.src=n)},s=()=>{window.clearTimeout(l),o.classList.add("opacity-0","translate-y-2"),l=window.setTimeout(()=>o.classList.add("hidden"),180)},v=e=>{if(!p.matches||!t.classList.contains("hidden"))return;window.clearTimeout(l),w(e),o.classList.remove("hidden");const n=e.getBoundingClientRect(),L=390,B=310,r=12;let m=n.left+n.width/2-L/2;m=Math.max(r,Math.min(m,window.innerWidth-L-r));let h=n.top-B-12;h<r&&(h=n.bottom+12),o.style.left=`${m}px`,o.style.top=`${h}px`,requestAnimationFrame(()=>o.classList.remove("opacity-0","translate-y-2"))},I=e=>{s(),w(e),t.classList.remove("hidden"),t.classList.add("flex"),t.setAttribute("aria-hidden","false"),document.body.style.overflow="hidden",requestAnimationFrame(()=>{d.classList.remove("scale-95","opacity-0"),d.classList.add("scale-100","opacity-100"),u?.focus()})},a=()=>{d.classList.remove("scale-100","opacity-100"),d.classList.add("scale-95","opacity-0"),window.setTimeout(()=>{t.classList.add("hidden"),t.classList.remove("flex"),t.setAttribute("aria-hidden","true"),document.body.style.overflow=""},260)};document.querySelectorAll(".wechat-trigger").forEach(e=>{e.dataset.wechatInitialized!=="true"&&(e.dataset.wechatInitialized="true",e.addEventListener("mouseenter",()=>v(e)),e.addEventListener("mouseleave",s),e.addEventListener("focus",()=>v(e)),e.addEventListener("blur",s),e.addEventListener("click",n=>{n.preventDefault(),I(e)}))}),t.dataset.wechatInitialized!=="true"&&(t.dataset.wechatInitialized="true",u?.addEventListener("click",a),E?.addEventListener("click",a),y?.addEventListener("click",a),document.addEventListener("keydown",e=>{e.key==="Escape"&&!t.classList.contains("hidden")&&a()}),window.addEventListener("scroll",s,{passive:!0}),window.addEventListener("resize",s))}f();document.addEventListener("astro:page-load",f);</script> <script>
+      const showLanguageSwitchNotice = () => {
+        let payload = null;
+        try {
+          const raw = sessionStorage.getItem('xbstack_language_notice');
+          if (!raw) return;
+          payload = JSON.parse(raw);
+          sessionStorage.removeItem('xbstack_language_notice');
+        } catch (error) {
+          return;
+        }
+
+        const notice = document.getElementById('language-switch-notice');
+        if (!notice) return;
+
+        const targetIsEnglish = String(payload?.language || '').toLowerCase().startsWith('en');
+        notice.textContent = targetIsEnglish
+          ? 'This page does not have an English version yet. You have been taken to the English home page.'
+          : '当前页面暂未提供中文版本，已为你打开中文首页。';
+        notice.classList.remove('hidden');
+        window.setTimeout(() => notice.classList.add('hidden'), 4800);
+      };
+
+      document.addEventListener('astro:page-load', showLanguageSwitchNotice);
+      showLanguageSwitchNotice();
+    </script> </body> </html>

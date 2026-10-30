@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "type": "commonjs",
+  "dependencies": {
+    "n8n-workflow": "2.32.1",
+    "n8n-nodes-base": "2.32.4"
+  }
+}

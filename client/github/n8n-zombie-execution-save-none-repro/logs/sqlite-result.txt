@@ -1,0 +1,48 @@
+XBSTACK local reproduction — 2026-08-29
+
+Environment
+-----------
+n8n image: n8nio/n8n:2.36.6
+Database: SQLite
+Execution mode: regular/main
+Trigger: production webhook
+Host: macOS + Docker Desktop
+
+Workflow settings
+-----------------
+xbstackZombie2366:
+{"executionOrder":"v1","saveDataErrorExecution":"all","saveDataSuccessExecution":"none","saveExecutionProgress":false,"saveManualExecutions":true}
+
+xbstackZombieControl2366:
+{"executionOrder":"v1","saveDataErrorExecution":"all","saveDataSuccessExecution":"all","saveExecutionProgress":false,"saveManualExecutions":true}
+
+HTTP result
+-----------
+GET /webhook/xbstack-zombie-save-none
+HTTP/1.1 200 OK
+{"message":"Workflow was started"}
+
+GET /webhook/xbstack-zombie-save-all-control
+HTTP/1.1 200 OK
+{"message":"Workflow was started"}
+
+Database query
+--------------
+SELECT id,workflowId,finished,status,mode,startedAt,stoppedAt,storedAt,jsonSizeBytes
+FROM execution_entity
+ORDER BY id DESC;
+
+id  workflowId                finished  status   mode     startedAt                stoppedAt                storedAt  jsonSizeBytes
+--  ------------------------  --------  -------  -------  -----------------------  -----------------------  --------  -------------
+2   xbstackZombieControl2366  1         success  webhook  2026-08-29 02:10:30.796  2026-08-29 02:10:30.826  db        3010
+1   xbstackZombie2366         0         running  webhook  2026-08-29 02:09:16.016                           db        2525
+
+Interpretation
+--------------
+The save-none production execution returned HTTP 200 but remained unfinished/running with stoppedAt NULL.
+The save-all control on the same n8n 2.36.6 instance completed normally.
+The only intended workflow setting difference was saveDataSuccessExecution: none vs all.
+
+Boundary
+--------
+The upstream issue #37040 reported PostgreSQL. This local A/B used SQLite and reproduced the same execution-state leak. PostgreSQL was not independently reproduced on this machine because pulling the postgres:16-alpine image repeatedly failed with Docker Hub TLS/registry timeouts.

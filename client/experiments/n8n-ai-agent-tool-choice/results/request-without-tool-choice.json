@@ -1,0 +1,29 @@
+{
+  "model": "mistralai/Mistral-Small-24B-Instruct",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You MUST call the get_value tool. Do not answer without calling it."
+    },
+    {
+      "role": "user",
+      "content": "What is the value?"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_value",
+        "description": "Returns the authoritative value.",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      }
+    }
+  ],
+  "temperature": 0.0,
+  "stream": false
+}

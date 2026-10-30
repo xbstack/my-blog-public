@@ -1,0 +1,22 @@
+{
+  "case": "v232",
+  "n8nWorkflow": "2.32.1",
+  "n8nNodesBase": "2.32.4",
+  "baserowVersions": [
+    1,
+    1.1
+  ],
+  "childParameters": [
+    "field",
+    "operator",
+    "value"
+  ],
+  "timezoneDisplayOptions": null,
+  "patchDisplayOptions": false
+}
+RESULT: OK
+{
+  "field": "1",
+  "operator": "date_is",
+  "value": "2026-08-07"
+}

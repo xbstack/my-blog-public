@@ -1,0 +1,46 @@
+{
+  "environment": {
+    "python": "3.10.2",
+    "openai_agents": "0.19.3",
+    "provider_api_used": false
+  },
+  "tripwire_error": "OutputGuardrailTripwireTriggered: Guardrail OutputGuardrail triggered tripwire",
+  "tool_effect_count": 1,
+  "saved_after_tripwire_types": [
+    "user",
+    "function_call",
+    "function_call_output"
+  ],
+  "saved_tool_items": [
+    {
+      "type": "function_call",
+      "call_id": "call-approved-xbstack",
+      "output": null
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call-approved-xbstack",
+      "output": "approved-result"
+    }
+  ],
+  "continued_final_output": "continued-after-tripwire",
+  "replayed_tool_items": [
+    {
+      "type": "function_call",
+      "call_id": "call-approved-xbstack",
+      "output": null
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call-approved-xbstack",
+      "output": "approved-result"
+    }
+  ],
+  "assertions": {
+    "approval_paused_before_effect": true,
+    "tripwire_triggered": true,
+    "approved_tool_call_persisted": true,
+    "approved_tool_output_persisted": true,
+    "approved_pair_replayed_next_turn": true
+  }
+}

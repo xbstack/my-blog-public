@@ -1,0 +1,72 @@
+{
+  "categories": [
+    { "id": "cat-ai", "name": "AI / 开发", "code": "ai", "sort_order": 1 },
+    { "id": "cat-tool", "name": "产品 / 工具", "code": "tool", "sort_order": 2 },
+    { "id": "cat-life", "name": "创作 / 生活", "code": "life", "sort_order": 3 },
+    { "id": "cat-invest", "name": "投资 / 商业", "code": "invest", "sort_order": 4 },
+    { "id": "cat-outdoor", "name": "户外 / 旅行", "code": "outdoor", "sort_order": 5 },
+    { "id": "cat-community", "name": "博客社区", "code": "community", "sort_order": 6 }
+  ],
+  "links": [
+    {
+      "id": "1",
+      "name": "猫普的精神世界",
+      "url": "https://maplezz.com",
+      "description": "一个独立开发者的精神自留地",
+      "avatar": "https://maplezz.com/favicon/apple-touch-icon.png",
+      "status": "active",
+      "category_code": "ai",
+      "sort_order": 1
+    },
+    {
+      "id": "2",
+      "name": "ECWU's Notebook",
+      "url": "https://ecwuuuuu.com",
+      "description": "AI、开源、自托管、工程实践与摄影记录",
+      "avatar": "https://ecwuuuuu.com/favicon.ico",
+      "status": "active",
+      "category_code": "ai",
+      "sort_order": 2
+    },
+    {
+      "id": "3",
+      "name": "Strike Freedom",
+      "url": "https://strikefreedom.top",
+      "description": "Go、Linux、网络与开源源码深度技术博客",
+      "avatar": "https://img.icons8.com/fluency/48/pokeball.png",
+      "status": "active",
+      "category_code": "ai",
+      "sort_order": 3
+    },
+    {
+      "id": "5",
+      "name": "博友圈",
+      "url": "https://www.boyouquan.com/certificates/www.xbstack.com",
+      "description": "让我们跨越山海彼此相连，一起用文字打败时间",
+      "avatar": "https://www.boyouquan.com/images/logo/performance.svg?domainName=www.xbstack.com",
+      "status": "active",
+      "category_code": "community",
+      "sort_order": 5
+    },
+    {
+      "id": "6",
+      "name": "中文独立博客列表",
+      "url": "https://github.com/timqian/chinese-independent-blogs",
+      "description": "中文独立博客与 RSS 公开列表，XBSTACK 已收录",
+      "avatar": "https://github.githubassets.com/favicons/favicon.svg",
+      "status": "active",
+      "category_code": "community",
+      "sort_order": 6
+    },
+    {
+      "id": "7",
+      "name": "博客故事",
+      "url": "https://bk.gs.cn/",
+      "description": "收录有故事的独立博客！",
+      "avatar": "https://bk.gs.cn/assets/img/logo.png",
+      "status": "active",
+      "category_code": "community",
+      "sort_order": 7
+    }
+  ]
+}

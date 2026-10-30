@@ -1,0 +1,120 @@
+{
+  "environment": {
+    "os": "macOS-26.5.2-arm64-arm-64bit",
+    "python": "3.11.15 (main, Mar  3 2026, 00:52:57) [Clang 21.0.0 (clang-2100.0.123.102)]",
+    "langgraph": "1.2.10",
+    "langgraph-prebuilt": "1.1.0",
+    "langchain-core": "1.5.3",
+    "pytest": "9.1.1"
+  },
+  "results": [
+    {
+      "mode": "sync",
+      "max_concurrency": 1,
+      "tool_count": 4,
+      "max_active": 1,
+      "elapsed_seconds": 0.3461,
+      "trace": [
+        "sync_tool_0:start",
+        "sync_tool_0:end",
+        "sync_tool_1:start",
+        "sync_tool_1:end",
+        "sync_tool_2:start",
+        "sync_tool_2:end",
+        "sync_tool_3:start",
+        "sync_tool_3:end"
+      ],
+      "respected_limit": true
+    },
+    {
+      "mode": "async",
+      "max_concurrency": 1,
+      "tool_count": 4,
+      "max_active": 4,
+      "elapsed_seconds": 0.0877,
+      "trace": [
+        "async_tool_0:start",
+        "async_tool_1:start",
+        "async_tool_2:start",
+        "async_tool_3:start",
+        "async_tool_0:end",
+        "async_tool_1:end",
+        "async_tool_2:end",
+        "async_tool_3:end"
+      ],
+      "respected_limit": false
+    },
+    {
+      "mode": "sync",
+      "max_concurrency": 2,
+      "tool_count": 4,
+      "max_active": 2,
+      "elapsed_seconds": 0.1727,
+      "trace": [
+        "sync_tool_0:start",
+        "sync_tool_1:start",
+        "sync_tool_0:end",
+        "sync_tool_2:start",
+        "sync_tool_1:end",
+        "sync_tool_3:start",
+        "sync_tool_2:end",
+        "sync_tool_3:end"
+      ],
+      "respected_limit": true
+    },
+    {
+      "mode": "async",
+      "max_concurrency": 2,
+      "tool_count": 4,
+      "max_active": 4,
+      "elapsed_seconds": 0.0845,
+      "trace": [
+        "async_tool_0:start",
+        "async_tool_1:start",
+        "async_tool_2:start",
+        "async_tool_3:start",
+        "async_tool_0:end",
+        "async_tool_1:end",
+        "async_tool_2:end",
+        "async_tool_3:end"
+      ],
+      "respected_limit": false
+    },
+    {
+      "mode": "sync",
+      "max_concurrency": 4,
+      "tool_count": 4,
+      "max_active": 4,
+      "elapsed_seconds": 0.0913,
+      "trace": [
+        "sync_tool_0:start",
+        "sync_tool_1:start",
+        "sync_tool_2:start",
+        "sync_tool_3:start",
+        "sync_tool_0:end",
+        "sync_tool_1:end",
+        "sync_tool_2:end",
+        "sync_tool_3:end"
+      ],
+      "respected_limit": true
+    },
+    {
+      "mode": "async",
+      "max_concurrency": 4,
+      "tool_count": 4,
+      "max_active": 4,
+      "elapsed_seconds": 0.0953,
+      "trace": [
+        "async_tool_0:start",
+        "async_tool_1:start",
+        "async_tool_2:start",
+        "async_tool_3:start",
+        "async_tool_0:end",
+        "async_tool_1:end",
+        "async_tool_2:end",
+        "async_tool_3:end"
+      ],
+      "respected_limit": true
+    }
+  ]
+}
