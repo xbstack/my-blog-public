@@ -1,0 +1,1187 @@
+<!DOCTYPE html><html lang="zh-CN" class="dark" data-analytics="ga4-baidu"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="google-adsense-account" content="ca-pub-2557606254410371"><script>
+      const applyTheme = () => {
+        const theme = localStorage.getItem("theme");
+        const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      };
+      applyTheme();
+      document.addEventListener("astro:page-load", applyTheme);
+    </script><title>AI Agent 为什么总是失败？先换模型还是优化 Harness | AI - XBSTACK</title><meta name="description" content="AI Agent 为什么总是执行失败？先检查工具调用、上下文、权限和结果验证，还是直接升级大模型？结合研究与可复核示例给出排查与选择方法。"><meta http-equiv="content-language" content="zh-CN"><meta name="keywords" content="AI Agent 为什么总是执行失败, AI Agent 任务做不完怎么办, AI Agent 任务失败原因, AI 智能体为什么执行不稳定, AI Agent 如何提高任务完成率, AI Agent 一直重复执行, AI Agent 工具调用失败, Agent 工具调用失败, 大模型升级能解决 Agent 失败吗, Agent Harness 是什么, Agent Harness 有什么用, Agent Harness 和大模型有什么区别, AI Agent 执行系统, Agent Harness vs model upgrade, Agent Harness 怎么优化, Agent Harness 如何选择, AI Agent 工具筛选, Agent 执行流程排障, Agent 上下文截断, Agent 思考内容回传, Agent finish_reason length, Agent 工具返回截断, Agent 状态恢复, Agent 超时与幂等重试, Agent 人工审批 HITL, Agent 工具授权与权限控制, AI Agent 结果验证, 任务正确率与完成率区别, Agent Harness 基准评测, 模型和 Harness 2x2 对照实验, Agent Model-Harness Fit, Valid Completion Rate VCR, Cost per Validated Task, AppWorld CUGA Hermes Deep Agents, GLM-5.3-flash, Agent 运行时安全, Coding Agent 任务成功率"><meta name="theme-color" content="#050608"><meta name="robots" content="index,follow,max-image-preview:large"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://www.xbstack.com/ai/tools-lab/agent-harness-vs-model-upgrade/"><meta property="og:title" content="AI Agent 为什么总是失败？先换模型还是优化 Harness | AI - XBSTACK"><meta property="og:description" content="AI Agent 为什么总是执行失败？先检查工具调用、上下文、权限和结果验证，还是直接升级大模型？结合研究与可复核示例给出排查与选择方法。"><meta property="og:image" content="https://www.xbstack.com/_astro/cover.-Yj93AZx.webp"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:url" content="https://www.xbstack.com/ai/tools-lab/agent-harness-vs-model-upgrade/"><meta name="twitter:title" content="AI Agent 为什么总是失败？先换模型还是优化 Harness | AI - XBSTACK"><meta name="twitter:description" content="AI Agent 为什么总是执行失败？先检查工具调用、上下文、权限和结果验证，还是直接升级大模型？结合研究与可复核示例给出排查与选择方法。"><meta name="twitter:image" content="https://www.xbstack.com/_astro/cover.-Yj93AZx.webp"><link rel="canonical" href="https://www.xbstack.com/ai/tools-lab/agent-harness-vs-model-upgrade/"><link rel="describedby" href="/llms.txt" type="text/plain"><link rel="alternate" hreflang="zh-CN" href="https://www.xbstack.com/ai/tools-lab/agent-harness-vs-model-upgrade/"><link rel="alternate" hreflang="en" href="https://www.xbstack.com/en/ai/tools-lab/agent-harness-vs-model-upgrade/"><link rel="alternate" hreflang="x-default" href="https://www.xbstack.com/ai/tools-lab/agent-harness-vs-model-upgrade/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI engineering organized around Agents, MCP, security, local AI and verified model/tool evaluations. LangGraph, workflows and model updates remain discoverable within their parent topics.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Products","alternateName":"Products and Tools","description":"Apps, AI products, developer tools and practical utilities built and maintained by XBSTACK.","url":"https://www.xbstack.com/products/"},{"@type":"SiteNavigationElement","position":3,"name":"Insights","alternateName":"Insights, Investing, Reading and Long-term Thinking","description":"Investment research, reading notes, decision reviews and long-term thinking with evidence and outcomes.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Travel, Photography and Gear","description":"Field notes from real hiking, travel, photography and gear use, with Guizhou as a core but not exclusive focus.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"Xiaobai's profile, current products, long-term research themes, working principles and the XBSTACK public asset system.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","additionalType":"https://schema.org/TechArticle","headline":"AI Agent 总是执行失败？问题出在大模型还是 Agent Harness","description":"AI Agent 为什么总是执行失败？先检查工具调用、上下文、权限和结果验证，还是直接升级大模型？结合研究与可复核示例给出排查与选择方法。","inLanguage":"zh-CN","image":"https://www.xbstack.com/_astro/cover.-Yj93AZx.webp","datePublished":"2026-11-04T00:00:00.000Z","author":{"@id":"https://www.xbstack.com/about/#person"},"publisher":{"@type":"Organization","name":"XBSTACK","logo":{"@type":"ImageObject","url":"https://www.xbstack.com/favicon/logo-light.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.xbstack.com/ai/tools-lab/agent-harness-vs-model-upgrade/"},"articleSection":"ai","keywords":["AI Agent 为什么总是执行失败","AI Agent 任务做不完怎么办","AI Agent 任务失败原因","AI 智能体为什么执行不稳定","AI Agent 如何提高任务完成率","AI Agent 一直重复执行","AI Agent 工具调用失败","Agent 工具调用失败","大模型升级能解决 Agent 失败吗","Agent Harness 是什么","Agent Harness 有什么用","Agent Harness 和大模型有什么区别","AI Agent 执行系统","Agent Harness vs model upgrade","Agent Harness 怎么优化","Agent Harness 如何选择","AI Agent 工具筛选","Agent 执行流程排障","Agent 上下文截断","Agent 思考内容回传","Agent finish_reason length","Agent 工具返回截断","Agent 状态恢复","Agent 超时与幂等重试","Agent 人工审批 HITL","Agent 工具授权与权限控制","AI Agent 结果验证","任务正确率与完成率区别","Agent Harness 基准评测","模型和 Harness 2x2 对照实验","Agent Model-Harness Fit","Valid Completion Rate VCR","Cost per Validated Task","AppWorld CUGA Hermes Deep Agents","GLM-5.3-flash","Agent 运行时安全","Coding Agent 任务成功率"],"abstract":"AI Agent 在任务执行中失败，并不一定意味着需要升级大模型。工具接口、上下文截断、审批权限、超时恢复与结果验证同样决定任务能否正确完成。2026 年 11 月 IBM Research 在固定 GLM-5.3-flash 的 90 项 AppWorld 任务中报告 CUGA、Hermes、Deep Agents 分别完成 73、42、27 项，但各运行配置不同且该测试未衡量策略执行，因此不是通用排名。XBSTACK 仅完成五项模拟工具的控制机制回放，尚未进行商业 Harness 与大模型横向实测。工程选型应结合失败定位、2×2 对照、真实验收和每个已验证正确任务的成本。","about":[{"@type":"Thing","name":"AI Agent"},{"@type":"Thing","name":"Agent Harness"},{"@type":"Thing","name":"Agent 评估"},{"@type":"Thing","name":"工具调用"},{"@type":"Thing","name":"模型选型"},{"@type":"Thing","name":"Agent 可靠性"},{"@type":"Thing","name":"上下文管理"},{"@type":"Thing","name":"实验设计"},{"@type":"Thing","name":"Model-Harness Fit"},{"@type":"Thing","name":"AppWorld"},{"@type":"Thing","name":"CUGA"},{"@type":"Thing","name":"Hermes"},{"@type":"Thing","name":"Deep Agents"},{"@type":"Thing","name":"GLM-5.3-flash"},{"@type":"Thing","name":"Valid Completion Rate"}],"citation":["https://huggingface.co/blog/ibm-research/cuga-harness","https://composio.dev/bench/research/agent-harness-benchmark","https://arxiv.org/abs/2608.26218","https://arxiv.org/abs/2610.00917","https://arxiv.org/abs/2609.11987","https://arxiv.org/abs/2610.32483","https://arxiv.org/abs/2607.12227","https://arxiv.org/abs/2610.14224","https://github.com/google-research/harness2","https://arxiv.org/abs/2610.21412","https://openai.com/index/harness-engineering/","https://www.anthropic.com/research/demystifying-evals-for-ai-agents","https://www.anthropic.com/research/harness-design-long-running-apps","https://console.volcengine.com/ark/region%3Acn-beijing/docs/agent-model-invocation-practice"]},{"@type":"Person","@id":"https://www.xbstack.com/about/#person","name":"小白","alternateName":["Xiaobai"],"url":"https://www.xbstack.com/about/","image":"https://www.xbstack.com/_astro/avatar.BzDyfp9G.webp","jobTitle":"Full-Stack AI Engineer","worksFor":{"@type":"Organization","name":"XBSTACK","url":"https://www.xbstack.com"},"sameAs":["https://github.com/xbstack"],"knowsAbout":["AI Agents","LangGraph","Model Context Protocol","AI Workflows","Product Engineering"]}]}</script><meta property="article:published_time" content="Wed Nov 04 2026 08:00:00 GMT+0800 (China Standard Time)"><meta name="abstract" content="AI Agent 为什么总是执行失败？先检查工具调用、上下文、权限和结果验证，还是直接升级大模型？结合研究与可复核示例给出排查与选择方法。"><meta name="speakable-selector" content=".markdown-content h2, .markdown-content p"><meta name="ai-content-access" content="allowed"><meta name="geo-optimized" content="true"><link id="xbstack-favicon" rel="icon" type="image/svg+xml" href="/favicon/logo-dark-nav.svg"><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
+const analyticsRequiresHumanInteraction = false;
+
+          const productionAnalyticsHosts = new Set(['www.xbstack.com', 'xbstack.com']);
+          const automationUserAgent = /HeadlessChrome|PhantomJS|Playwright|Puppeteer|Selenium|Lighthouse|PageSpeed|bot\b|crawler|spider|slurp|curl|wget|python-requests|axios|node-fetch|facebookexternalhit|Twitterbot|LinkedInBot|Bytespider|GPTBot|ClaudeBot|PerplexityBot/i;
+          const analyticsUrl = new URL(window.location.href);
+          const analyticsSource = String(analyticsUrl.searchParams.get('utm_source') || '').toLowerCase();
+          const analyticsCampaign = String(analyticsUrl.searchParams.get('utm_campaign') || '').toLowerCase();
+          const internalAnalyticsAudit =
+            analyticsUrl.searchParams.has('ga4_audit') ||
+            analyticsUrl.searchParams.has('analytics_test') ||
+            ['internal', 'internal_test', 'qa', 'test'].includes(analyticsSource) ||
+            analyticsCampaign.includes('ga4_audit') ||
+            analyticsCampaign.includes('internal_test');
+          const shouldTrackAnalytics =
+            Boolean(googleAnalyticsId) &&
+            productionAnalyticsHosts.has(window.location.hostname.toLowerCase()) &&
+            navigator.webdriver !== true &&
+            !automationUserAgent.test(navigator.userAgent || '') &&
+            !internalAnalyticsAudit;
+
+          if (!shouldTrackAnalytics) {
+            window.__analytics_suppressed = true;
+            window.__analytics_suppression_reason = internalAnalyticsAudit ? 'internal_test' : 'environment_or_automation';
+          } else if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_id', 'utm_term', 'utm_content'];
+            const UTM_ALIASES = {
+              utmsource: 'utm_source',
+              utmmedium: 'utm_medium',
+              utmcampaign: 'utm_campaign',
+              utmcontent: 'utm_content',
+              utmterm: 'utm_term',
+              utmid: 'utm_id',
+            };
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.normalizeUtmAliases = () => {
+              try {
+                const url = new URL(window.location.href);
+                let changed = false;
+                Object.entries(UTM_ALIASES).forEach(([alias, canonical]) => {
+                  const aliasValue = url.searchParams.get(alias);
+                  if (aliasValue && !url.searchParams.get(canonical)) {
+                    url.searchParams.set(canonical, aliasValue);
+                    changed = true;
+                  }
+                  if (url.searchParams.has(alias)) {
+                    url.searchParams.delete(alias);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.normalizeUtmAliases();
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
+            window.__ga4_initialized = true;
+            window.__ga4_client_loaded = false;
+            window.__ga4_tracking_started = false;
+            window.__ga4_human_verified = false;
+            window.__ga4_session_class = '';
+            window.__ga4_requires_human_interaction = Boolean(analyticsRequiresHumanInteraction);
+            window.__lastGA4PageKey = "";
+            window.__lastGA4PageLocation = document.referrer || "";
+            window.__ga4_tracking_start_reason = '';
+            window.__scroll50Reported = false;
+            window.__scroll90Reported = false;
+
+            const getReferrerHost = () => {
+              try {
+                return document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+              } catch (err) {
+                return '';
+              }
+            };
+
+            const inferSourceHint = () => {
+              const refHost = getReferrerHost();
+              if (!refHost) return '';
+              if (refHost.includes('zhihu')) return 'zhihu_referrer';
+              if (refHost.includes('juejin')) return 'juejin_referrer';
+              if (refHost.includes('csdn')) return 'csdn_referrer';
+              if (refHost.includes('weixin') || refHost.includes('wechat')) return 'wechat_referrer';
+              if (refHost.includes('google')) return 'google_referrer';
+              if (refHost.includes('baidu')) return 'baidu_referrer';
+              return refHost;
+            };
+
+            const getAttributionPayload = () => {
+              const params = new URLSearchParams(window.location.search);
+              const current = {};
+              UTM_KEYS.forEach((key) => {
+                const value = params.get(key);
+                if (value) current[key] = value;
+              });
+
+              const referrerHost = getReferrerHost();
+              const currentHost = window.location.hostname.replace(/^www\./, '');
+              const sourceHint = inferSourceHint();
+              const hasExternalReferrer = Boolean(referrerHost && referrerHost !== currentHost);
+
+              let stored = {};
+              try {
+                stored = JSON.parse(sessionStorage.getItem('xbstack_attribution') || '{}');
+              } catch (err) {
+                stored = {};
+              }
+
+              if (Object.keys(current).length) {
+                stored = {
+                  ...stored,
+                  ...current,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: current.utm_source ? `utm:${current.utm_source}` : sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              } else if (hasExternalReferrer && !stored.captured_at) {
+                // Preserve first-touch referral attribution even when the platform strips UTM parameters.
+                stored = {
+                  ...stored,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              }
+
+              if (stored.captured_at) {
+                try {
+                  sessionStorage.setItem('xbstack_attribution', JSON.stringify(stored));
+                } catch (err) {}
+              }
+
+              return {
+                utm_source: stored.utm_source || '',
+                utm_medium: stored.utm_medium || '',
+                utm_campaign: stored.utm_campaign || '',
+                utm_id: stored.utm_id || '',
+                utm_term: stored.utm_term || '',
+                utm_content: stored.utm_content || '',
+                attribution_landing_page: stored.landing_page || '',
+                referrer_host: stored.referrer_host || referrerHost,
+                source_hint: stored.source_hint || (stored.utm_source ? `utm:${stored.utm_source}` : sourceHint),
+              };
+            };
+
+            const getAnalyticsPageContext = () => {
+              const url = new URL(window.location.href);
+              const isCompoundCalculator = [
+                '/tools/compound-calculator/',
+                '/en/tools/compound-calculator/',
+              ].includes(url.pathname);
+
+              if (isCompoundCalculator) {
+                ['scenario', 'principal', 'monthly', 'rate', 'years', 'volatility', 'inflation', 'm2_drag', 'target', 'compare_rate'].forEach((key) => {
+                  url.searchParams.delete(key);
+                });
+              }
+
+              return {
+                pagePath: url.pathname,
+                pageLocation: url.href,
+                pageSearch: url.search,
+              };
+            };
+
+            window.xbTrackEvent = (eventName, payload = {}) => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !eventName ||
+                !window.__ga4_tracking_started ||
+                !window.__ga4_human_verified
+              ) return;
+              const analyticsPage = getAnalyticsPageContext();
+              window.gtag('event', eventName, {
+                transport_type: 'beacon',
+                page_path: analyticsPage.pagePath,
+                page_title: document.title || '',
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+                ...payload,
+              });
+            };
+
+            window.sendGA4PageView = () => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !window.__ga4_tracking_started
+              ) return;
+
+              const analyticsPage = getAnalyticsPageContext();
+              const pageLocation = analyticsPage.pageLocation;
+              const pageTitle = document.title || '';
+              const pageKey = `${pageLocation}|${pageTitle}`;
+
+              if (pageKey === window.__lastGA4PageKey) return;
+              const pageReferrer = window.__lastGA4PageLocation;
+              window.__lastGA4PageKey = pageKey;
+              window.__lastGA4PageLocation = pageLocation;
+              window.__scroll50Reported = false;
+              window.__scroll90Reported = false;
+
+              window.gtag('event', 'page_view', {
+                page_title: pageTitle,
+                page_location: pageLocation,
+                page_path: analyticsPage.pagePath,
+                page_search: analyticsPage.pageSearch,
+                page_referrer: pageReferrer,
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+              });
+            };
+
+            window.initGA4Tracking = () => {
+              if (typeof window.gtag !== 'function') return;
+              if (window.__ga4_events_bound) return;
+              window.__ga4_events_bound = true;
+
+              // 1. 页面滚动深度上报
+              const handleScroll = (event) => {
+                if (!event?.isTrusted || !window.__ga4_human_verified) return;
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const progress = (scrollTop / scrollHeight) * 100;
+
+                if (progress >= 50 && !window.__scroll50Reported) {
+                  window.xbTrackEvent('scroll_50', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll50Reported = true;
+                }
+                if (progress >= 90 && !window.__scroll90Reported) {
+                  window.xbTrackEvent('scroll_90', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll90Reported = true;
+                }
+              };
+
+              window.addEventListener('scroll', handleScroll, { passive: true });
+
+              // 2. 完整链接与按钮点击上报。link_click 是统一事实表，旧事件继续保留用于历史对比。
+              const inferLinkArea = (target) => {
+                const explicitArea = target.closest('[data-analytics-area]')?.getAttribute('data-analytics-area');
+                if (explicitArea) return explicitArea.slice(0, 60);
+                if (target.closest('header, nav, [role="navigation"]')) return 'navigation';
+                if (target.closest('footer')) return 'footer';
+                if (target.closest('[data-related-link], [data-related-reading], [data-analytics-area="related_content"]')) return 'related_content';
+                if (target.closest('[class*="related"], [class*="recommend"], [class*="next-reading"]')) return 'related_content';
+                if (target.closest('[class*="sidebar"], aside')) return 'sidebar';
+                if (target.closest('.markdown-content, article')) return 'article_body';
+                if (target.closest('[class*="card"], [class*="grid"]')) return 'content_card';
+                return 'page_other';
+              };
+
+              const classifyLink = (target, url, linkArea) => {
+                const rawHref = String(target.getAttribute('href') || '');
+                const protocol = String(url.protocol || '').toLowerCase();
+                const path = String(url.pathname || '/');
+                const host = String(url.hostname || '').replace(/^www\./, '').toLowerCase();
+                const isHttp = protocol === 'http:' || protocol === 'https:';
+                const isExternal = isHttp && url.origin !== window.location.origin;
+                const isDownload =
+                  target.hasAttribute('download') ||
+                  /\.(pdf|zip|gz|tar|csv|xlsx?|docx?|pptx?|json|ya?ml|mp3|mp4|mov|webm)(?:$|[?#])/i.test(rawHref);
+
+                if (protocol === 'mailto:' || protocol === 'tel:') return 'contact';
+                if (isDownload) return 'download';
+                if (isExternal && host === 'github.com') return 'github';
+                if (isExternal) return 'external';
+                if (path.startsWith('/go/')) return 'affiliate';
+                if (path.startsWith('/tools/') || path.startsWith('/compound-interest/')) return 'tool';
+                if (path.startsWith('/newsletter/')) return 'newsletter';
+                if (url.origin === window.location.origin && path === window.location.pathname && url.hash) return 'anchor';
+                if (linkArea === 'related_content') return 'related_article';
+                if (linkArea === 'article_body') return 'internal_article';
+                return 'internal';
+              };
+
+              const handleClick = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const target = e.target.closest('a,button');
+                if (!target) return;
+
+                const label = (target.getAttribute('aria-label') || target.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 100);
+                if (target.tagName === 'BUTTON') {
+                  window.xbTrackEvent('click_button', {
+                    event_category: 'engagement',
+                    event_label: label,
+                    link_area: inferLinkArea(target),
+                    link_position: inferLinkArea(target),
+                    source_page_path: window.location.pathname,
+                  });
+                  return;
+                }
+
+                const rawHref = String(target.getAttribute('href') || '').trim();
+                if (!rawHref || rawHref.toLowerCase().startsWith('javascript:')) return;
+
+                try {
+                  const url = new URL(rawHref, window.location.href);
+                  const linkArea = inferLinkArea(target);
+                  const linkType = classifyLink(target, url, linkArea);
+                  const isExternalHttp =
+                    (url.protocol === 'http:' || url.protocol === 'https:') &&
+                    url.origin !== window.location.origin;
+                  const payload = {
+                    event_category:
+                      ['affiliate', 'tool', 'newsletter'].includes(linkType)
+                        ? 'conversion'
+                        : isExternalHttp
+                          ? 'outbound'
+                          : 'navigation',
+                    event_label: url.href,
+                    link_text: label,
+                    link_url: url.href,
+                    link_domain: url.hostname.replace(/^www\./, ''),
+                    link_id: target.id || '',
+                    link_classes: String(target.className || '').slice(0, 120),
+                    outbound: isExternalHttp,
+                    link_type: linkType,
+                    link_area: linkArea,
+                    link_position: String(target.closest('[data-related-slot]')?.getAttribute('data-related-slot') || linkArea).slice(0, 60),
+                    link_context: String(target.getAttribute('data-related-reason') || target.closest('[data-related-reason]')?.getAttribute('data-related-reason') || '').slice(0, 100),
+                    source_page_path: window.location.pathname,
+                    target_page_path: url.pathname || '',
+                  };
+
+                  // 所有真实链接统一进入 link_click，运营报表以该事件为准。
+                  window.xbTrackEvent('link_click', payload);
+
+                  if (linkType === 'external' || linkType === 'github') {
+                    window.xbTrackEvent('click_external', payload);
+                  }
+                  if (linkType === 'github') {
+                    window.xbTrackEvent('github_click', payload);
+                  }
+                  if (linkType === 'download') {
+                    window.xbTrackEvent('download_click', payload);
+                  }
+                  if (linkType === 'affiliate') {
+                    window.xbTrackEvent('affiliate_click', {
+                      ...payload,
+                      affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                    });
+                  }
+                  if (linkType === 'tool') {
+                    window.xbTrackEvent('click_tool', payload);
+                  }
+                  if (linkType === 'newsletter') {
+                    window.xbTrackEvent('newsletter_click', payload);
+                  }
+                  if (linkType === 'related_article') {
+                    window.xbTrackEvent('related_article_click', payload);
+                  }
+                  if (['internal', 'internal_article', 'related_article', 'anchor'].includes(linkType)) {
+                    window.xbTrackEvent('internal_link_click', payload);
+                  }
+                  if (
+                    !isExternalHttp &&
+                    ['/ai/', '/newsletter/', '/search/', '/life/', '/investing/'].some((prefix) => url.pathname.startsWith(prefix))
+                  ) {
+                    window.xbTrackEvent('click_internal_entry', payload);
+                  }
+                } catch (err) {}
+              };
+
+              const handleSubmit = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const form = e.target;
+                if (!form || form.tagName !== 'FORM') return;
+                const action = form.getAttribute('action') || '';
+                const formType = form.getAttribute('data-analytics-form') || '';
+                const formData = new FormData(form);
+                const searchTerm = String(formData.get('q') || '').trim();
+
+                if (action.includes('/search') || formType === 'site-search') {
+                  window.xbTrackEvent('view_search_results', {
+                    event_category: 'site_search',
+                    search_term: searchTerm,
+                  });
+                }
+
+                if (action.includes('buttondown.email') || formType === 'newsletter') {
+                  const provider = action.includes('buttondown.email') ? 'buttondown' : 'xbstack_api';
+                  window.xbTrackEvent('newsletter_subscribe_attempt', {
+                    event_category: 'conversion',
+                    event_label: window.location.pathname,
+                    newsletter_provider: provider,
+                  });
+                  window.xbTrackEvent('newsletter_subscribe', {
+                    event_category: 'conversion',
+                    event_label: 'submitted',
+                    newsletter_provider: provider,
+                    confirmation_status: 'submitted',
+                  });
+                }
+              };
+
+              document.addEventListener('click', handleClick);
+              document.addEventListener('submit', handleSubmit, true);
+            };
+
+            // 原始访问先进入 GA4，再通过 traffic_verification 区分未验证访问与真人互动。
+            // 这样既保留完整 page_view / session_start 基线，也能在报表层排除低质量流量。
+            window.loadGA4Client = () => {
+              if (window.__ga4_client_loaded) return;
+              window.__ga4_client_loaded = true;
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = function() {
+                window.dataLayer.push(arguments);
+              };
+
+              const ga4Script = document.createElement('script');
+              ga4Script.async = true;
+              ga4Script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(googleAnalyticsId)}`;
+              document.head.appendChild(ga4Script);
+
+              window.gtag('js', new Date());
+              window.gtag('config', googleAnalyticsId, {
+                send_page_view: false,
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+              });
+            };
+
+            window.startGA4Tracking = (
+              reason = 'page_load',
+              sessionClass = 'unverified_session',
+              humanVerified = false,
+            ) => {
+              if (window.__ga4_tracking_started) {
+                if (humanVerified && !window.__ga4_human_verified) {
+                  window.verifyGA4Human(reason, sessionClass);
+                }
+                return;
+              }
+              window.__ga4_tracking_start_reason = String(reason || 'page_load').slice(0, 60);
+              window.__ga4_session_class = String(sessionClass || 'unverified_session').slice(0, 40);
+              window.__ga4_human_verified = Boolean(humanVerified);
+              window.__ga4_tracking_started = true;
+              window.loadGA4Client();
+              window.sendGA4PageView();
+              window.initGA4Tracking();
+            };
+
+            window.verifyGA4Human = (reason = 'interaction', sessionClass = 'human_interaction') => {
+              if (!window.__ga4_tracking_started) {
+                window.startGA4Tracking(reason, sessionClass, true);
+                return;
+              }
+              if (window.__ga4_human_verified) return;
+
+              const previousClass = window.__ga4_session_class || 'unverified_session';
+              window.__ga4_human_verified = true;
+              window.__ga4_session_class = String(sessionClass || 'human_interaction').slice(0, 40);
+              window.__ga4_tracking_start_reason = String(reason || 'interaction').slice(0, 60);
+              window.gtag('event', 'traffic_verified', {
+                transport_type: 'beacon',
+                traffic_verification: window.__ga4_session_class,
+                previous_traffic_verification: previousClass,
+                verification_reason: window.__ga4_tracking_start_reason,
+                page_path: window.location.pathname,
+                page_title: document.title || '',
+              });
+              // Components that defer engagement events until a real interaction can retry now.
+              window.dispatchEvent(new CustomEvent('xb:ga4-human-verified'));
+            };
+
+            ['pointerdown', 'keydown', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(
+                eventName,
+                (event) => {
+                  if (!event?.isTrusted) return;
+                  window.verifyGA4Human(`interaction:${eventName}`, 'human_interaction');
+                },
+                { once: true, passive: true },
+              );
+            });
+
+            let pointerMoveCount = 0;
+            let pointerMoveDistance = 0;
+            let lastPointerX = null;
+            let lastPointerY = null;
+            const handleHumanPointerMove = (event) => {
+              if (
+                window.__ga4_human_verified ||
+                !event?.isTrusted ||
+                event.pointerType === 'touch'
+              ) return;
+              if (lastPointerX !== null && lastPointerY !== null) {
+                pointerMoveDistance += Math.hypot(event.clientX - lastPointerX, event.clientY - lastPointerY);
+              }
+              lastPointerX = event.clientX;
+              lastPointerY = event.clientY;
+              pointerMoveCount += 1;
+              if (pointerMoveCount >= 3 && pointerMoveDistance >= 120) {
+                window.removeEventListener('pointermove', handleHumanPointerMove);
+                window.verifyGA4Human('interaction:pointermove', 'human_interaction');
+              }
+            };
+            window.addEventListener('pointermove', handleHumanPointerMove, { passive: true });
+
+            // 放宽采集：所有可见前台页面都记录原始访问；真人互动后再升级质量标签。
+            window.setTimeout(() => {
+              if (
+                window.__ga4_tracking_started ||
+                window.__ga4_requires_human_interaction ||
+                document.visibilityState !== 'visible'
+              ) return;
+              window.startGA4Tracking('page_load:visible_800ms', 'unverified_session', false);
+            }, 800);
+
+            document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+              if (window.__ga4_tracking_started) {
+                window.sendGA4PageView();
+                window.initGA4Tracking();
+              }
+            });
+          } else {
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+            if (window.__ga4_tracking_started && typeof window.sendGA4PageView === 'function') {
+              window.sendGA4PageView();
+            }
+          }
+        })();</script><script data-baidu-id="c7bfaf645bfc8974405a85c2a55573a0">
+          const baiduId = document.currentScript?.dataset.baiduId || '';
+          if (!window.__baidu_analytics_initialized) {
+            window._hmt = window._hmt || [];
+            window.__baidu_analytics_initialized = true;
+            window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+
+            const loadBaiduAnalytics = () => {
+              if (window.__baidu_script_loaded || !baiduId) return;
+              window.__baidu_script_loaded = true;
+              const hm = document.createElement('script');
+              hm.async = true;
+              hm.src = "https://hm.baidu.com/hm.js?" + baiduId;
+              document.head.appendChild(hm);
+              window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+            };
+
+            // 百度统计不是首屏渲染依赖：首次交互时加载，若用户未交互则 12 秒后加载。
+            ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(eventName, loadBaiduAnalytics, { once: true, passive: true });
+            });
+            window.setTimeout(loadBaiduAnalytics, 12000);
+
+            document.addEventListener('astro:page-load', () => {
+              const pageKey = window.location.pathname + window.location.search;
+              if (!window.__baidu_script_loaded || pageKey === window.__lastBaiduPageKey) return;
+              window.__lastBaiduPageKey = pageKey;
+              window._hmt.push(['_trackPageview', pageKey]);
+            });
+          }
+        </script><link rel="stylesheet" href="/_astro/archive.KEouAcMS.css">
+<style>.financial-disclaimer[data-astro-cid-qg2yevcq]{box-shadow:0 4px 20px -5px #f973161a}.xb-article-grid.xb-article-v21{width:min(calc(100% - 40px),1180px);grid-template-columns:minmax(0,760px) 228px;gap:54px;justify-content:center}.xb-article-v21 .xb-article-paper{padding:36px 40px 40px}.xb-article-v21 .xb-article-side{top:126px}.xb-article-v21 .xb-article-panel{padding:17px;border-radius:10px}.xb-article-v21 .xb-article-panel__title{font-size:12px;margin-bottom:10px;letter-spacing:0;font-weight:760}.xb-v21-toc{display:flex;flex-direction:column;gap:0}.xb-v21-toc a,.xb-v21-toc button{display:flex;justify-content:space-between;gap:10px;text-align:left;padding:9px 0;border-bottom:1px solid var(--xb-line);font-size:13px;line-height:1.5;color:var(--xb-text)}.xb-v21-toc a:hover,.xb-v21-toc button:hover{color:var(--xb-blue)}.xb-v21-toc .xb-v21-toc-nested{padding-left:12px;font-size:12px}.xb-v21-evidence[data-astro-cid-ce2bgkb3]{margin:0 0 24px;border-block:1px solid var(--xb-line);padding:12px 0}.xb-v21-evidence[data-astro-cid-ce2bgkb3] summary[data-astro-cid-ce2bgkb3]{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--xb-muted);cursor:pointer}.xb-v21-evidence[data-astro-cid-ce2bgkb3] strong[data-astro-cid-ce2bgkb3]{font-size:13px;color:var(--xb-ink)}.xb-v21-evidence[data-astro-cid-ce2bgkb3] summary[data-astro-cid-ce2bgkb3]>span[data-astro-cid-ce2bgkb3]:last-child{margin-left:auto;color:var(--xb-blue)}.xb-v21-evidence-links[data-astro-cid-ce2bgkb3]{display:flex;gap:10px 18px;flex-wrap:wrap;margin-top:13px;padding-top:12px;border-top:1px solid var(--xb-line)}.xb-v21-evidence-links[data-astro-cid-ce2bgkb3] a[data-astro-cid-ce2bgkb3]{font-size:12px;line-height:1.5;color:var(--xb-blue)}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3]{display:none;border:1px solid var(--xb-line);border-radius:10px;margin:0 0 24px;padding:13px 16px;font-size:14px}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3] summary[data-astro-cid-ce2bgkb3]{display:flex;justify-content:space-between;cursor:pointer;font-weight:700}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3] nav[data-astro-cid-ce2bgkb3]{display:grid;gap:12px;padding-top:18px;color:var(--xb-text)}@media(max-width:1060px){.xb-article-grid.xb-article-v21{width:min(calc(100% - 32px),820px);display:block}.xb-article-grid.xb-article-v21>.xb-article-side{display:none}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3]{display:block}}@media(max-width:640px){.xb-article-v21 .xb-article-paper{padding:24px 18px 30px}}
+</style>
+<link rel="stylesheet" href="/_astro/_slug_.CoqtapaZ.css">
+<link rel="stylesheet" href="/_astro/_slug_.QFd94UQU.css">
+<link rel="stylesheet" href="/_astro/vendor-media.DSulWsr7.css"></head> <body class="bg-[var(--xb-bg)] text-[var(--xb-ink)] selection:bg-orange-500/20 selection:text-orange-500 overflow-x-hidden"> <style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value=="object"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};"requestIdleCallback"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event("astro:idle"));})();</script><script>(()=>{var A=Object.defineProperty;var g=(i,o,a)=>o in i?A(i,o,{enumerable:!0,configurable:!0,writable:!0,value:a}):i[o]=a;var d=(i,o,a)=>g(i,typeof o!="symbol"?o+"":o,a);{let i={0:t=>m(t),1:t=>a(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(a(t)),5:t=>new Set(a(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t),11:t=>1/0*t},o=t=>{let[l,e]=t;return l in i?i[l](e):void 0},a=t=>t.map(o),m=t=>typeof t!="object"||t===null?t:Object.fromEntries(Object.entries(t).map(([l,e])=>[l,o(e)]));class y extends HTMLElement{constructor(){super(...arguments);d(this,"Component");d(this,"hydrator");d(this,"hydrate",async()=>{var b;if(!this.hydrator||!this.isConnected)return;let e=(b=this.parentElement)==null?void 0:b.closest("astro-island[ssr]");if(e){e.addEventListener("astro:hydrate",this.hydrate,{once:!0});return}let c=this.querySelectorAll("astro-slot"),n={},h=this.querySelectorAll("template[data-astro-template]");for(let r of h){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("data-astro-template")||"default"]=r.innerHTML,r.remove())}for(let r of c){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("name")||"default"]=r.innerHTML)}let p;try{p=this.hasAttribute("props")?m(JSON.parse(this.getAttribute("props"))):{}}catch(r){let s=this.getAttribute("component-url")||"<unknown>",v=this.getAttribute("component-export");throw v&&(s+=` (export ${v})`),console.error(`[hydrate] Error parsing props for component ${s}`,this.getAttribute("props"),r),r}let u;await this.hydrator(this)(this.Component,p,n,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),this.dispatchEvent(new CustomEvent("astro:hydrate"))});d(this,"unmount",()=>{this.isConnected||this.dispatchEvent(new CustomEvent("astro:unmount"))})}disconnectedCallback(){document.removeEventListener("astro:after-swap",this.unmount),document.addEventListener("astro:after-swap",this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute("await-children")||document.readyState==="interactive"||document.readyState==="complete")this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener("DOMContentLoaded",e),c.disconnect(),this.childrenConnectedCallback()},c=new MutationObserver(()=>{var n;((n=this.lastChild)==null?void 0:n.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue==="astro:end"&&(this.lastChild.remove(),e())});c.observe(this,{childList:!0}),document.addEventListener("DOMContentLoaded",e)}}async childrenConnectedCallback(){let e=this.getAttribute("before-hydration-url");e&&await import(e),this.start()}async start(){let e=JSON.parse(this.getAttribute("opts")),c=this.getAttribute("client");if(Astro[c]===void 0){window.addEventListener(`astro:${c}`,()=>this.start(),{once:!0});return}try{await Astro[c](async()=>{let n=this.getAttribute("renderer-url"),[h,{default:p}]=await Promise.all([import(this.getAttribute("component-url")),n?import(n):()=>()=>{}]),u=this.getAttribute("component-export")||"default";if(!u.includes("."))this.Component=h[u];else{this.Component=h;for(let f of u.split("."))this.Component=this.Component[f]}return this.hydrator=p,this.hydrate},e,this)}catch(n){console.error(`[astro-island] Error hydrating ${this.getAttribute("component-url")}`,n)}}attributeChangedCallback(){this.hydrate()}}d(y,"observedAttributes",["props"]),customElements.get("astro-island")||customElements.define("astro-island",y)}})();</script><astro-island uid="ZWjsVO" prefix="r17" component-url="/_astro/GlobalLightbox.CqZePd56.js" component-export="default" renderer-url="/_astro/client.CJCcxmqC.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;GlobalLightbox&quot;,&quot;value&quot;:true}"></astro-island> <div id="app-background" class="fixed inset-0 z-[-1] h-full w-full pointer-events-none bg-slate-50 dark:bg-slate-950 transition-colors duration-500"> <div id="app-background-image" class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-500" data-day="/_astro/macos2.hYF-Pyun.webp" data-night="/_astro/macos2-night.DwJ7amhx.webp" aria-hidden="true"></div> <div class="absolute inset-0 bg-[#DFE1E6]/90 dark:bg-transparent backdrop-blur-[6px] pointer-events-none"></div> <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b82f611,transparent_50%)] dark:hidden pointer-events-none"></div> <div class="absolute inset-0 opacity-[0.08] dark:opacity-[0.03] pointer-events-none mix-blend-multiply" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+');"></div> </div> <script>
+  (() => {
+    const bindBackground = () => {
+      const root = document.documentElement;
+      const background = document.getElementById('app-background-image');
+      if (!background || background.dataset.themeObserverBound === 'true') return;
+
+      const applyBackground = () => {
+        const source = root.classList.contains('dark') ? background.dataset.night : background.dataset.day;
+        if (!source) return;
+        const nextValue = `url("${source}")`;
+        if (background.style.backgroundImage !== nextValue) {
+          background.style.backgroundImage = nextValue;
+        }
+      };
+
+      applyBackground();
+      const observer = new MutationObserver(applyBackground);
+      observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+      background.dataset.themeObserverBound = 'true';
+    };
+
+    bindBackground();
+    document.addEventListener('astro:page-load', bindBackground);
+  })();
+</script> <header id="site-header" class="sticky top-0 z-[500] border-b border-[var(--xb-line)] bg-[color:var(--xb-bg)]/95 backdrop-blur-xl"> <div class="xb-shell flex min-h-[66px] items-center gap-7"> <a href="/" class="flex shrink-0 items-center gap-2.5 font-black tracking-[-0.035em] text-[var(--xb-ink)]" aria-label="XBSTACK Home"> <span class="xb-brand-logo" data-xbstack-logo-motion="load" aria-hidden="true"> <span class="xb-brand-logo__variant inline-flex dark:hidden"> <img src="/favicon/logo-light-nav.svg" alt="" width="32" height="32" decoding="async"> <span class="xb-brand-logo__shine" style="--xb-logo-mask: url(&#34;/favicon/logo-light-nav.svg&#34;)"></span> </span> <span class="xb-brand-logo__variant hidden dark:inline-flex"> <img src="/favicon/logo-dark-nav.svg" alt="" width="32" height="32" decoding="async"> <span class="xb-brand-logo__shine" style="--xb-logo-mask: url(&#34;/favicon/logo-dark-nav.svg&#34;)"></span> </span> </span> <span class="text-[17px]">XBSTACK</span> </a> <nav id="primary-navigation" class="hidden items-center gap-1 lg:flex" aria-label="主导航" data-active-menu-index="0"> <a href="/ai/" data-primary-nav-index="0" data-has-secondary="true" aria-current="page" aria-controls="secondary-preview-menu-0" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors bg-blue-500/[0.06] text-blue-600 dark:text-blue-400"> AI <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[9px] opacity-45" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a><a href="/products/" data-primary-nav-index="1" data-has-secondary="true" aria-controls="secondary-preview-menu-1" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Products <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[9px] opacity-45" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a><a href="/horizon/" data-primary-nav-index="2" data-has-secondary="true" aria-controls="secondary-preview-menu-2" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Insights <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[9px] opacity-45" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a><a href="/life/" data-primary-nav-index="3" data-has-secondary="true" aria-controls="secondary-preview-menu-3" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Lens <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[9px] opacity-45" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a><a href="/about/" data-primary-nav-index="4" data-has-secondary="false" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> About  </a> </nav> <div class="ml-auto flex items-center gap-2"> <a id="global-search-trigger" data-xbstack-search-trigger href="/search/" aria-label="打开站内搜索" class="hidden h-9 min-w-[190px] items-center gap-2 rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)] px-3 text-left text-[11px] text-[var(--xb-muted)] transition-colors hover:border-blue-400 md:flex"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="shrink-0" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.81 173.81 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.81 173.81 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3zM97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8z"></path></svg> <span class="truncate">搜索文章、工具、主题…</span> <kbd class="ml-auto rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[9px] text-[var(--xb-faint)]">⌘K</kbd> </a> <div class="hidden sm:block"> <nav data-visible-language-alternate aria-label="选择语言" data-astro-cid-iemtoba4> <details class="language-switcher-details relative" data-language-switcher-details data-astro-cid-iemtoba4> <summary class="language-switcher-summary flex h-10 min-w-[88px] cursor-pointer list-none items-center justify-center gap-2 rounded-full border border-slate-200/60 bg-white/50 px-3 text-[12px] font-bold text-slate-600 shadow-sm backdrop-blur-md transition-all hover:border-blue-300 hover:bg-blue-50/80 hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-blue-400/50 dark:hover:bg-blue-500/10 dark:hover:text-blue-400 dark:focus-visible:ring-offset-slate-950" aria-label="选择语言" title="选择语言" data-astro-cid-iemtoba4> <svg aria-hidden="true" viewBox="0 0 24 24" class="h-3.5 w-3.5 flex-none" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4> <circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle> <path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path> </svg> <span class="whitespace-nowrap" data-astro-cid-iemtoba4>中文</span> <svg aria-hidden="true" viewBox="0 0 20 20" class="language-chevron h-3 w-3 flex-none text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-iemtoba4> <path d="m5 7.5 5 5 5-5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path> </svg> </summary> <div class="language-switcher-menu absolute right-0 top-[calc(100%+0.65rem)] z-[520] w-44 overflow-hidden rounded-2xl border border-slate-200/80 bg-white/95 p-2 shadow-[0_18px_50px_-18px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0B1020]/95" role="menu" aria-label="选择语言" data-astro-cid-iemtoba4> <div class="px-3 pb-1.5 pt-1 text-[9px] font-black uppercase tracking-[0.22em] text-slate-400 dark:text-slate-500" data-astro-cid-iemtoba4> 语言 </div> <a href="/ai/tools-lab/agent-harness-vs-model-upgrade/" data-language-choice="zh-CN" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" role="menuitemradio" aria-checked="true" title="当前语言：中文" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors cursor-default bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" data-astro-cid-iemtoba4> <span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4> <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" data-astro-cid-iemtoba4> <path d="m4.5 10 3.2 3.2 7.8-7.8" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path> </svg> </span> <span class="flex-1" data-astro-cid-iemtoba4>中文</span> <span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>ZH</span> </a><a href="/en/ai/tools-lab/agent-harness-vs-model-upgrade/" data-language-choice="en" data-language-current="false" data-language-available="true" role="menuitemradio" aria-checked="false" title="Switch to the English version" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors text-slate-600 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-blue-400" data-astro-cid-iemtoba4> <span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4> <span class="h-1.5 w-1.5 rounded-full bg-slate-300 dark:bg-slate-700" data-astro-cid-iemtoba4></span> </span> <span class="flex-1" data-astro-cid-iemtoba4>English</span> <span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>EN</span> </a> </div> </details> </nav>  <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> <div class="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)]"> <div class="relative flex items-center justify-center w-full h-full"> <input class="sr-only" id="theme-switcher" data-theme-switcher type="checkbox"> <label class="flex items-center justify-center cursor-pointer w-full h-full group/theme" for="theme-switcher" aria-label="切换主题">  <svg class="w-5 h-5 transition-all duration-500 scale-100 dark:scale-0 opacity-100 dark:opacity-0 absolute text-orange-500 group-hover/theme:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg>  <svg class="w-5 h-5 transition-all duration-500 scale-0 dark:scale-100 opacity-0 dark:opacity-100 absolute text-sky-400 group-hover/theme:-rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </label> </div> <script>
+  // 立即执行以防止闪烁
+  (function() {
+    const theme = localStorage.getItem("theme");
+    const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  })();
+
+  // 页面加载和切换后的初始化逻辑
+  function initTheme() {
+    const themeSwitchers = document.querySelectorAll("[data-theme-switcher]");
+    const isDark = document.documentElement.classList.contains("dark");
+
+    const favicon = document.getElementById("xbstack-favicon");
+    if (favicon) {
+      favicon.setAttribute(
+        "href",
+        isDark
+          ? "/favicon/logo-dark.svg"
+          : "/favicon/logo-light.svg",
+      );
+    }
+
+    // 同步所有切换按钮的状态
+    themeSwitchers.forEach((el) => {
+      el.checked = isDark;
+      
+      // 移除旧的监听器（如果存在），防止重复绑定
+      // 由于是匿名函数难以移除，我们采用 cloneNode 或者简单的标志位
+      // Astro 的 View Transitions 会重新运行脚本，所以只需确保不累积
+      // 最简单的方式是直接覆盖 onclick 或 onchange，但这里用 addEventListener
+      // 我们可以给元素加个标记
+      if (el.dataset.initialized) return;
+      
+      el.addEventListener("change", (e) => {
+        const checked = e.target.checked;
+        if (checked) {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        }
+
+        const favicon = document.getElementById("xbstack-favicon");
+        if (favicon) {
+          favicon.setAttribute(
+            "href",
+            checked
+              ? "/favicon/logo-dark.svg"
+              : "/favicon/logo-light.svg",
+          );
+        }
+        
+        // 同步其他可能存在的切换按钮（例如移动端和桌面端各有一个）
+        document.querySelectorAll("[data-theme-switcher]").forEach(other => {
+            if (other !== el) other.checked = checked;
+        });
+      });
+      
+      el.dataset.initialized = "true";
+    });
+  }
+
+  // 绑定事件
+  document.addEventListener("DOMContentLoaded", initTheme);
+  document.addEventListener("astro:page-load", initTheme);
+  document.addEventListener("astro:after-swap", initTheme);
+</script> </div> <button id="mobile-menu-trigger" type="button" aria-label="打开导航菜单" aria-controls="mobile-menu" aria-expanded="false" class="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)] text-[var(--xb-text)] lg:hidden"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path></svg></button> </div> </div> <div id="desktop-secondary-navigation"> <div class="xb-shell min-h-[45px] overflow-x-auto"> <nav class="flex min-w-max items-center gap-1 py-2" aria-label="AI 二级导航"> <a href="/ai/agent/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> Agents </a><a href="/ai/mcp/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> MCP </a><a href="/ai/security/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> Security </a><a href="/ai/local-ai/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> Local AI </a><a href="/ai/tools-lab/" aria-current="page" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors bg-blue-500/[0.08] text-blue-600 dark:text-blue-400"> Tools Lab </a> </nav> </div> </div> <div id="desktop-secondary-preview" data-visible="false" aria-hidden="true" class="pointer-events-none absolute left-0 right-0 top-[66px] z-30 hidden bg-[color:var(--xb-bg)] shadow-lg lg:block"> <div class="xb-shell min-h-[45px] overflow-x-auto pointer-events-none"> <nav id="secondary-preview-menu-0" data-secondary-preview-index="0" class="pointer-events-auto hidden min-w-max items-center gap-1 py-2" aria-label="AI 二级导航预览"> <a href="/ai/agent/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Agents </a><a href="/ai/mcp/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> MCP </a><a href="/ai/security/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Security </a><a href="/ai/local-ai/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Local AI </a><a href="/ai/tools-lab/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Tools Lab </a> </nav><nav id="secondary-preview-menu-1" data-secondary-preview-index="1" class="pointer-events-auto hidden min-w-max items-center gap-1 py-2" aria-label="Products 二级导航预览"> <a href="/products/lunest/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Lunest </a><a href="/products/recalia/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Recalia </a><a href="/tools/ai-finance/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> AI Finance </a><a href="/tools/mcp-inspector/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> MCP Inspector </a><a href="/tools/agent-readiness-auditor/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Agent Readiness </a><a href="/tools/agent-security-auditor/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Agent Security </a><a href="/tools/compound-calculator/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Compound Calculator </a><a href="/tools/utm-builder/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> UTM Builder </a> </nav><nav id="secondary-preview-menu-2" data-secondary-preview-index="2" class="pointer-events-auto hidden min-w-max items-center gap-1 py-2" aria-label="Insights 二级导航预览"> <a href="/investing/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Investing </a><a href="/horizon/reading/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Reading </a><a href="/investing/thoughts/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Thinking </a> </nav><nav id="secondary-preview-menu-3" data-secondary-preview-index="3" class="pointer-events-auto hidden min-w-max items-center gap-1 py-2" aria-label="Lens 二级导航预览"> <a href="/life/hiking/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Outdoor </a><a href="/life/road-trip/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Travel </a><a href="/life/photo/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Photography </a><a href="/life/gear/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Gear </a> </nav> </div> </div> <div id="mobile-menu" class="invisible fixed inset-0 z-[600] pointer-events-none"> <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/50 opacity-0 backdrop-blur-sm transition-opacity"></div> <aside id="mobile-menu-panel" class="absolute right-0 top-0 flex h-full w-[300px] translate-x-full flex-col border-l border-[var(--xb-line)] bg-[var(--xb-surface)] transition-transform"> <div class="flex h-16 items-center justify-between border-b border-[var(--xb-line)] px-5"> <strong class="text-sm tracking-tight text-[var(--xb-ink)]">XBSTACK</strong> <button id="mobile-menu-close" type="button" aria-label="关闭导航菜单" class="text-[var(--xb-muted)]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg></button> </div> <div class="border-b border-[var(--xb-line)] p-4"> <a id="mobile-search-trigger" data-xbstack-search-trigger href="/search/" class="flex h-10 w-full items-center gap-2 rounded-lg border border-[var(--xb-line)] px-3 text-[12px] text-[var(--xb-muted)]"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.81 173.81 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.81 173.81 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3zM97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8z"></path></svg> 搜索 XBSTACK </a> </div> <nav class="flex flex-1 flex-col gap-2 overflow-y-auto p-4"> <details class="group/mobile" open> <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-4 py-3 text-[15px] font-semibold [&#38;::-webkit-details-marker]:hidden bg-blue-500/[0.07] text-blue-600 dark:text-blue-400"> <span>AI</span> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[10px] opacity-50 transition-transform group-open/mobile:rotate-180" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </summary> <div class="ml-4 mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3"> <a href="/ai/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">AI Overview</a> <a href="/ai/agent/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Agents</a><a href="/ai/mcp/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">MCP</a><a href="/ai/security/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Security</a><a href="/ai/local-ai/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Local AI</a><a href="/ai/tools-lab/" class="rounded-md px-3 py-2 text-[12px] font-semibold text-blue-600 dark:text-blue-400">Tools Lab</a> </div> </details><details class="group/mobile"> <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-4 py-3 text-[15px] font-semibold [&#38;::-webkit-details-marker]:hidden text-[var(--xb-text)]"> <span>Products</span> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[10px] opacity-50 transition-transform group-open/mobile:rotate-180" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </summary> <div class="ml-4 mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3"> <a href="/products/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Products Overview</a> <a href="/products/lunest/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Lunest</a><a href="/products/recalia/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Recalia</a><a href="/tools/ai-finance/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">AI Finance</a><a href="/tools/mcp-inspector/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">MCP Inspector</a><a href="/tools/agent-readiness-auditor/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Agent Readiness</a><a href="/tools/agent-security-auditor/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Agent Security</a><a href="/tools/compound-calculator/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Compound Calculator</a><a href="/tools/utm-builder/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">UTM Builder</a> </div> </details><details class="group/mobile"> <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-4 py-3 text-[15px] font-semibold [&#38;::-webkit-details-marker]:hidden text-[var(--xb-text)]"> <span>Insights</span> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[10px] opacity-50 transition-transform group-open/mobile:rotate-180" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </summary> <div class="ml-4 mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3"> <a href="/horizon/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Insights Overview</a> <a href="/investing/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Investing</a><a href="/horizon/reading/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Reading</a><a href="/investing/thoughts/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Thinking</a> </div> </details><details class="group/mobile"> <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-4 py-3 text-[15px] font-semibold [&#38;::-webkit-details-marker]:hidden text-[var(--xb-text)]"> <span>Lens</span> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[10px] opacity-50 transition-transform group-open/mobile:rotate-180" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </summary> <div class="ml-4 mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3"> <a href="/life/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Lens Overview</a> <a href="/life/hiking/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Outdoor</a><a href="/life/road-trip/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Travel</a><a href="/life/photo/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Photography</a><a href="/life/gear/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Gear</a> </div> </details><a href="/about/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">About</a> </nav> <div class="border-t border-[var(--xb-line)] p-4 sm:hidden"> <nav data-visible-language-alternate aria-label="选择语言" data-astro-cid-iemtoba4> <div class="flex w-full items-center justify-between gap-4" aria-label="选择语言" data-astro-cid-iemtoba4> <div class="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300" data-astro-cid-iemtoba4> <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4> <circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle> <path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path> </svg> <span data-astro-cid-iemtoba4>语言</span> </div> <div class="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 p-1 dark:border-white/10 dark:bg-white/5" data-astro-cid-iemtoba4> <a href="/ai/tools-lab/agent-harness-vs-model-upgrade/" data-language-choice="zh-CN" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="当前语言：中文" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all cursor-default bg-white text-blue-600 shadow-sm dark:bg-blue-500/15 dark:text-blue-400" data-astro-cid-iemtoba4> 中文 </a><a href="/en/ai/tools-lab/agent-harness-vs-model-upgrade/" data-language-choice="en" data-language-current="false" data-language-available="true" title="Switch to the English version" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400" data-astro-cid-iemtoba4> English </a> </div> </div> </nav>  <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> </aside> </div> <script>
+    if (!window.__xbstackSearchShortcutReady) {
+      window.__xbstackSearchShortcutReady = true;
+      window.addEventListener('keydown', (event) => {
+        const target = event.target;
+        const isTyping = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target?.isContentEditable;
+        const isCommandK = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
+        const isSlash = event.key === '/' && !isTyping;
+        if (!isCommandK && !isSlash) return;
+        event.preventDefault();
+        window.location.href = window.location.pathname.startsWith('/en/') ? '/en/search/' : '/search/';
+      });
+    }
+
+    const bindHeader = () => {
+      const header = document.getElementById('site-header');
+      const trigger = document.getElementById('mobile-menu-trigger');
+      const close = document.getElementById('mobile-menu-close');
+      const menu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const panel = document.getElementById('mobile-menu-panel');
+      const primaryNavigation = document.getElementById('primary-navigation');
+      const persistentSecondaryNavigation = document.getElementById('desktop-secondary-navigation');
+      const secondaryPreview = document.getElementById('desktop-secondary-preview');
+      const primaryLinks = Array.from(primaryNavigation?.querySelectorAll('[data-primary-nav-index]') || []);
+      const previewMenus = Array.from(secondaryPreview?.querySelectorAll('[data-secondary-preview-index]') || []);
+      const activeMenuIndex = Number(primaryNavigation?.dataset.activeMenuIndex ?? '-1');
+
+      const hideSecondaryPreview = () => {
+        if (!secondaryPreview) return;
+        previewMenus.forEach((item) => {
+          item.classList.add('hidden');
+          item.classList.remove('flex');
+        });
+        secondaryPreview.dataset.visible = 'false';
+        secondaryPreview.setAttribute('aria-hidden', 'true');
+        if (persistentSecondaryNavigation) {
+          persistentSecondaryNavigation.classList.remove('invisible', 'pointer-events-none');
+          persistentSecondaryNavigation.setAttribute('aria-hidden', 'false');
+        }
+      };
+
+      const showSecondaryPreview = (index) => {
+        if (!secondaryPreview || index === activeMenuIndex) {
+          hideSecondaryPreview();
+          return;
+        }
+        const target = previewMenus.find((item) => Number(item.dataset.secondaryPreviewIndex) === index);
+        previewMenus.forEach((item) => {
+          const visible = item === target;
+          item.classList.toggle('hidden', !visible);
+          item.classList.toggle('flex', visible);
+        });
+        secondaryPreview.dataset.visible = target ? 'true' : 'false';
+        secondaryPreview.setAttribute('aria-hidden', target ? 'false' : 'true');
+        if (persistentSecondaryNavigation) {
+          persistentSecondaryNavigation.classList.toggle('invisible', Boolean(target));
+          persistentSecondaryNavigation.classList.toggle('pointer-events-none', Boolean(target));
+          persistentSecondaryNavigation.setAttribute('aria-hidden', target ? 'true' : 'false');
+        }
+      };
+
+      primaryLinks.forEach((link) => {
+        if (link.dataset.secondaryPreviewBound === '1') return;
+        link.dataset.secondaryPreviewBound = '1';
+        const index = Number(link.dataset.primaryNavIndex);
+        const preview = () => {
+          if (link.dataset.hasSecondary === 'true') showSecondaryPreview(index);
+          else hideSecondaryPreview();
+        };
+        link.addEventListener('mouseenter', preview);
+        link.addEventListener('focus', preview);
+      });
+
+      if (header && header.dataset.secondaryRestoreBound !== '1') {
+        header.dataset.secondaryRestoreBound = '1';
+        header.addEventListener('mouseleave', hideSecondaryPreview);
+        header.addEventListener('focusout', () => {
+          requestAnimationFrame(() => {
+            if (!header.contains(document.activeElement)) hideSecondaryPreview();
+          });
+        });
+        header.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') hideSecondaryPreview();
+        });
+      }
+
+      hideSecondaryPreview();
+
+      const setOpen = (open) => {
+        if (!menu || !overlay || !panel) return;
+        trigger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) {
+          menu.classList.remove('invisible', 'pointer-events-none');
+          overlay.classList.add('opacity-100');
+          panel.classList.remove('translate-x-full');
+          document.body.style.overflow = 'hidden';
+        } else {
+          overlay.classList.remove('opacity-100');
+          panel.classList.add('translate-x-full');
+          document.body.style.overflow = '';
+          setTimeout(() => menu.classList.add('invisible', 'pointer-events-none'), 220);
+        }
+      };
+      if (trigger && trigger.dataset.mobileMenuBound !== '1') {
+        trigger.dataset.mobileMenuBound = '1';
+        trigger.addEventListener('click', () => setOpen(true));
+      }
+      if (close && close.dataset.mobileMenuBound !== '1') {
+        close.dataset.mobileMenuBound = '1';
+        close.addEventListener('click', () => setOpen(false));
+      }
+      if (overlay && overlay.dataset.mobileMenuBound !== '1') {
+        overlay.dataset.mobileMenuBound = '1';
+        overlay.addEventListener('click', () => setOpen(false));
+      }
+    };
+    const bindBrandLogoMotion = () => {
+      const logos = document.querySelectorAll('[data-xbstack-logo-motion]');
+      logos.forEach((logo) => {
+        if (logo.dataset.logoMotionBound === '1') return;
+        logo.dataset.logoMotionBound = '1';
+
+        const play = () => {
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+          requestAnimationFrame(() => logo.classList.add('is-animating'));
+        };
+
+        if (logo.dataset.xbstackLogoMotion === 'view' && 'IntersectionObserver' in window) {
+          const observer = new IntersectionObserver((entries) => {
+            if (!entries.some((entry) => entry.isIntersecting)) return;
+            observer.disconnect();
+            play();
+          }, { threshold: 0.35 });
+          observer.observe(logo);
+        } else {
+          play();
+        }
+      });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindBrandLogoMotion, { once: true });
+    } else {
+      bindBrandLogoMotion();
+    }
+    document.addEventListener('astro:page-load', bindHeader);
+    document.addEventListener('astro:page-load', bindBrandLogoMotion);
+    bindHeader();
+  </script>  </header> <div id="language-switch-notice" class="pointer-events-none fixed left-1/2 top-24 z-[700] hidden max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/95 px-5 py-3 text-center text-sm font-bold text-slate-700 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 dark:text-slate-200" role="status" aria-live="polite"></div> <main id="main-content" class="flex-1">  <div id="reading-progress" class="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 z-[110] transition-all duration-300 w-0 shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div> <main class="pt-24 md:pt-32 pb-20"> <script type="module" src="/_astro/Comment.astro_astro_type_script_index_0_lang.C65OC043.js"></script><div class="xb-article-grid xb-article-v21 py-8 md:py-10" data-astro-cid-ce2bgkb3> <main class="min-w-0" data-astro-cid-ce2bgkb3> <article class="xb-article-paper" data-astro-cid-ce2bgkb3> <header class="mb-10 border-b border-[var(--xb-line)] pb-8"><div class="mb-4 flex flex-wrap items-center gap-2"><a href="/ai/agent/" class="rounded-md border border-blue-500/15 bg-blue-500/[0.05] px-2.5 py-1 text-[10px] font-bold text-blue-600 dark:text-blue-400">ai</a></div><h1 class="m-0 text-[clamp(2rem,4vw,3.6rem)] font-black leading-[1.12] tracking-[-.045em] text-[var(--xb-ink)]">AI Agent 总是执行失败？问题出在大模型还是 Agent Harness</h1><p class="mt-5 max-w-[760px] text-[15px] leading-7 text-[var(--xb-text)]">AI Agent 为什么反复重试、工具调用失败、无法完成任务？结合 IBM 同模型 Harness 对照、独立研究和五项模拟控制测试，给出排查方法与模型升级决策。</p><div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] text-[var(--xb-faint)]"><span>发布 · 2026-11-04</span><span>24 分钟阅读</span><span>XBSTACK 原创</span></div></header> <details class="xb-v21-evidence" data-astro-cid-ce2bgkb3> <summary data-astro-cid-ce2bgkb3> <strong data-astro-cid-ce2bgkb3>Evidence</strong> <span data-astro-cid-ce2bgkb3>14 条资料来源</span>  <span aria-hidden="true" data-astro-cid-ce2bgkb3>⌄</span> </summary> <div class="xb-v21-evidence-links" data-astro-cid-ce2bgkb3>  <a href="https://huggingface.co/blog/ibm-research/cuga-harness" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>huggingface.co ↗</a><a href="https://composio.dev/bench/research/agent-harness-benchmark" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>composio.dev ↗</a><a href="https://arxiv.org/abs/2608.26218" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>arxiv.org ↗</a><a href="https://arxiv.org/abs/2610.00917" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>arxiv.org ↗</a><a href="https://arxiv.org/abs/2609.11987" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>arxiv.org ↗</a><a href="https://arxiv.org/abs/2610.32483" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>arxiv.org ↗</a><a href="https://arxiv.org/abs/2607.12227" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>arxiv.org ↗</a><a href="https://arxiv.org/abs/2610.14224" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>arxiv.org ↗</a><a href="https://github.com/google-research/harness2" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>github.com ↗</a><a href="https://arxiv.org/abs/2610.21412" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>arxiv.org ↗</a><a href="https://openai.com/index/harness-engineering/" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>openai.com ↗</a><a href="https://www.anthropic.com/research/demystifying-evals-for-ai-agents" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>anthropic.com ↗</a> </div> </details> <nav data-cluster-hub-link class="mb-6 text-[13px] font-semibold text-[var(--xb-blue)]" aria-label="工程专题" data-astro-cid-ce2bgkb3><a href="/ai/tools-lab/" data-astro-cid-ce2bgkb3>返回工程专题 →</a></nav> <details class="xb-v21-mobile-toc" data-astro-cid-ce2bgkb3> <summary data-astro-cid-ce2bgkb3>本文目录 <span aria-hidden="true" data-astro-cid-ce2bgkb3>⌄</span></summary> <nav aria-label="本文目录" data-astro-cid-ce2bgkb3><a href="#30-到-81同一个模型为什么会跑出三份不同成绩" data-astro-cid-ce2bgkb3>30% 到 81%：同一个模型为什么会跑出三份不同成绩</a><a href="#别只看一份厂商实验另一批研究给出了不同答案" data-astro-cid-ce2bgkb3>别只看一份厂商实验：另一批研究给出了不同答案</a><a href="#什么是-harness-失效什么才是模型能力不足" data-astro-cid-ce2bgkb3>什么是 Harness 失效，什么才是模型能力不足</a><a href="#xbstack-做了什么五项没有大模型参与的故障回放" data-astro-cid-ce2bgkb3>XBSTACK 做了什么：五项没有大模型参与的故障回放</a><a href="#真正比较换模型和改-harness要做一张-22-对照矩阵" data-astro-cid-ce2bgkb3>真正比较“换模型”和“改 Harness”，要做一张 2×2 对照矩阵</a><a href="#先做哪些-harness-改造才可能有真实回报" data-astro-cid-ce2bgkb3>先做哪些 Harness 改造，才可能有真实回报</a><a href="#五个典型场景什么时候应该立即换模型" data-astro-cid-ce2bgkb3>五个典型场景，什么时候应该立即换模型</a><a href="#新方向harness-可能自己改进但更要谨慎验收" data-astro-cid-ce2bgkb3>新方向：Harness 可能自己改进，但更要谨慎验收</a><a href="#结论不是先换模型或先改-harness而是先找出失败发生的层" data-astro-cid-ce2bgkb3>结论：不是先换模型或先改 Harness，而是先找出失败发生的层</a><a href="#参考资料" data-astro-cid-ce2bgkb3>参考资料</a><a href="#继续阅读" data-astro-cid-ce2bgkb3>继续阅读</a></nav> </details> <nav class="mb-7 flex items-center justify-between gap-4 border-y border-[var(--xb-line)] py-3 text-[12px] text-[var(--xb-muted)]" aria-label="文章语言版本" data-astro-cid-ce2bgkb3> <span data-astro-cid-ce2bgkb3>当前 URL 为中文版本。</span> <a href="/en/ai/tools-lab/agent-harness-vs-model-upgrade/" hreflang="en" class="font-bold text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>Read this article in English →</a> </nav>  <div class="prose prose-tech markdown-content max-w-none" data-astro-cid-ce2bgkb3>  <aside class="mb-10 rounded-2xl border border-orange-500/20 bg-orange-500/[0.045] px-5 py-4 not-prose" data-analytics-area="article_body" aria-label="推荐下一步"> <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"> <div> <p class="text-xs font-black uppercase tracking-[0.18em] text-orange-600 dark:text-orange-400">专题入口 / AI Agent Hub</p> <p class="mt-1 text-sm font-bold leading-6 text-slate-700 dark:text-slate-300">从单个 Agent 问题继续进入完整生产体系</p> </div> <div class="flex shrink-0 flex-wrap gap-2"> <a href="/ai/agent/" class="rounded-full bg-orange-500 px-4 py-2 text-xs font-black text-white transition-colors hover:bg-orange-600">进入 AI Agent 专题 →</a> <a href="/ai/ai-agent-architecture/" class="rounded-full border border-slate-300 px-4 py-2 text-xs font-black text-slate-700 transition-colors hover:border-orange-500 hover:text-orange-500 dark:border-white/15 dark:text-slate-200">查看架构指南</a> </div> </div> </aside> <p>AI Agent 为什么总是执行失败，甚至反复调用工具却做不完任务？先不要急着换更贵的大模型：如果问题来自工具选错、分页漏取、上下文截断、超时重试、未经授权的写入，或者没有检查结果就宣布完成，更强模型也不能替代可靠的执行控制。Agent Harness（智能体运行层）负责工具调用、状态管理、审批、错误恢复和结果验证；先定位失败发生在模型推理还是执行系统，才能决定优化哪一层。本文结合真实论文与五项小型模拟控制回放，给出可用于工程排查的判断方法，并明确哪些结论还没有经过本站模型实测。</p>
+<p>如果一个 AI Agent 在简单问答中表现不错，一旦要跨页面检索、分页读取 API、更新数据、调用命令和验证结果，完成率就急剧下降，你首先应该换一款更强的模型，还是检查包在模型外面的执行系统？这个问题不能凭模型排行榜回答。模型负责理解、推理和决策；Harness（智能体执行运行层）负责把任务变成有状态、有工具权限、有失败处理、有验收结果的实际行动。二者都会影响结果，但<strong>先优化哪一层，取决于失败究竟来自推理不足还是执行链断裂</strong>。</p>
+<p>2026 年 11 月 3 日，IBM Research 在 Hugging Face 发表了一组很有冲击力的数据：同一 <code>GLM-5.3-flash</code> 模型，分别交给 CUGA、Hermes、Deep Agents 执行 AppWorld 的 90 项任务，三者分别完成 73、42 和 27 项，也就是 81.1%、46.7% 和 30.0%。这不是说 CUGA 永远比其他 Harness 强，更不是说换模型不再有意义。IBM 自己就说明，三套配置并不一致、每项只尝试一次、只覆盖一个基准，而且没有在该轮任务中测试策略约束。真正重要的是：模型权重不变，执行系统的不同足以让同一组任务出现巨大结果差异。<a href="https://huggingface.co/blog/ibm-research/cuga-harness" rel="nofollow noopener noreferrer" target="_blank">IBM Research，2026-11-03</a></p>
+<p>本文不是换一批产品名字重写“什么是 Agent Harness”。XBSTACK 已有 <a href="/ai/tools-lab/deepseek-v4-pro-0813-harness/">DeepSeek V4-Pro 与 DeepSeek Harness</a> 介绍，也讨论过 <a href="/ai/openai-agents-api-vs-agents-sdk-responses-api/">OpenAI Agents API、Agents SDK 与 Responses API 的控制权分工</a>。这一次只做一件事：先把外部可验证的同模型对照研究拆开，找出最容易被误读的地方；然后以五项可运行、可复核的执行失败回放，说明哪些问题即使换了模型也不应该交给模型自由发挥；最后提供一套可直接用于真实项目的“是否该换模型”决策和对照实验协议。</p>
+<h2 id="30-到-81同一个模型为什么会跑出三份不同成绩">30% 到 81%：同一个模型为什么会跑出三份不同成绩</h2>
+<p>先看实验究竟比较了什么。IBM 选择 AppWorld，一个模拟多应用操作的任务集，涉及邮件、付款和文件存储等 9 个应用、457 个 API。实验使用其中 30 个场景、90 项任务，保持模型为 <code>GLM-5.3-flash</code>，每题一次，统一由 Harbor 框架评估。CUGA 的配置包含按应用分解任务、先验证再执行、自动反思、聚焦工具和工具搜索；Hermes 使用 Harbor 的默认设置，通过 MCP 暴露 AppWorld 工具；Deep Agents 使用工具搜索、上下文摘要、待办列表、重试和调用上限等 Middleware，研究者还为格式异常回复加了两个小修补。</p>
+<p><img src="/images/articles/agent-harness-vs-model-upgrade/zh/same-model-different-harness.webp" alt="GPT 原创示意图：同一个大模型通过不同 Agent Harness 的工具筛选、审批、失败恢复与结果校验后得到不同执行路径；不代表 XBSTACK 实际横评。"></p>
+<p><em>图 1｜固定模型、改变运行层可能产生不同执行路径。为结构概念图，非 IBM AppWorld 实际结果截图。</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>该研究中的 Harness</th><th align="right">通过任务 TGC</th><th align="right">完成全部三种变体的场景 SGC</th><th>需要读懂的限制</th></tr></thead><tbody><tr><td>CUGA</td><td align="right">73/90（81.1%）</td><td align="right">20/30（66.7%）</td><td>配置针对 AppWorld 设计，包含特定拆解和校验</td></tr><tr><td>Hermes</td><td align="right">42/90（46.7%）</td><td align="right">8/30（26.7%）</td><td>默认配置更偏常驻个人助手场景</td></tr><tr><td>Deep Agents</td><td align="right">27/90（30.0%）</td><td align="right">2/30（6.7%）</td><td>面向通用长任务的 Middleware，并非专门为该基准优化</td></tr></tbody></table>
+<p>TGC 统计单项任务通过数量，SGC 则要求一个场景的三个变体全部成功。后者有助于观察同一类任务能否稳定通过，而不是偶然对一道题奏效。IBM 公开了实验配置链接，复核者可以尝试在相同任务上调整其他 Harness。值得注意的是，即使固定了模型，<strong>Harness 自身的配置不同也是比较变量的一部分</strong>。它不等于在严格相同的提示词、工具描述、上下文组织、预算和错误处理条件下只替换一个“产品名称”。因此这项研究可以支持“执行系统会显著影响完成率”，却不能把所有差距归因于某一个具体 Middleware，更不能据此推导其他模型、企业环境或编程任务的排名。</p>
+<p>当一套系统接入 469 个可用工具时，它在每一轮给模型暴露多少工具、如何缩小候选、何时检查分页、哪一步可以执行写操作，都会改变模型看到的问题难度。模型并不是每次都面对同一个选择空间。假如 A 运行时会提前筛选出 8 个相关工具，B 运行时直接暴露几百个定义，那么“同一模型”的确成立，但它接收到的上下文和行动空间已经不同。这既是 Harness 可以发挥价值的机制，也是评测需要披露差异的原因。</p>
+<p>IBM 文章里还有一个特别容易被误读的安全结论。CUGA 提供 Tool Approval、ToolGuard 等策略控制点，但上述 90 任务没有启用策略测试。<strong>任务完成率高，不自动等于授权隔离更安全、隐私更好，也不等于付款之类的副作用一定可控。</strong> 这些必须通过独立的拒绝访问、审批暂停、撤销与审计测试证明。把“有这个组件”当成“这个基准已经验证安全性”，会把工程方案最关键的证据门槛抹掉。</p>
+<h2 id="别只看一份厂商实验另一批研究给出了不同答案">别只看一份厂商实验：另一批研究给出了不同答案</h2>
+<p>同模型切换 Harness 会改变表现，并不是 IBM 独有观察。Composio 公开的 Harness 与 Connector 对照覆盖约 1,800 次试验，其中 DeepSeek V4 Pro 的 30 项任务设置下，不同 Harness 成功率分布为 30%—60%；在 GPT-6 Astra 的另一组 29 项可比任务中，六个 Harness 的成功率区间却只有约 66%—72%。Composio 还记录到很大的成本差距，但部分 Harness 的用量数据覆盖任务数不等，个别价格为估算而不是实际账单。<strong>不能把成本倍数直接当成同一任务、相同计费口径下的普遍规律</strong>。<a href="https://composio.dev/bench/research/agent-harness-benchmark" rel="nofollow noopener noreferrer" target="_blank">Composio 研究与方法说明</a></p>
+<p>另一份 2026 年 8 月预印本 <a href="https://arxiv.org/abs/2608.26218" rel="nofollow noopener noreferrer" target="_blank">Same Model, Different Harness: Different Coding-Agent Results</a> 提供了更接近“只改执行策略”的证据：作者保持模型权重与任务不变，仅让旧工具记录在接近上下文上限时机械裁剪，并对重复卡住的执行给出反馈。在 SWE-bench Verified 的 169 题紧上下文设置（20,480 token、每题 480 秒）中，完整解题数由 43 增至 72；但作者也指出，宽上下文下部分任务的差距显著缩小。它表明 Harness 改造的收益可能集中在<strong>上下文受限与流程卡住</strong>的场景，并不能把某一种策略推广为总有收益的通用优化。这里引用的是公开预印本数据，不是 XBSTACK 的复现实验。</p>
+<p>同一个 Harness 在某个模型上排名靠前，换一款模型后位置可能掉下去，这是比“哪个 Harness 第一”更重要的发现。论文 <a href="https://arxiv.org/abs/2610.00917" rel="nofollow noopener noreferrer" target="_blank">Finding the Right Fit</a> 针对多种模型、Harness 和任务基准构造了 66 种配置；在 Terminal-Bench 4 上，Claude 与 GPT 的相对差距会随着 OpenHands 和 PI 等执行层改变而出现方向反转。这不意味着某款模型“被误测”，而是模型产生动作、理解工具错误、使用上下文和自我修复的习惯，与运行层提供的接口之间存在交互。选择时必须评估 <strong>模型 × Harness × 任务类型</strong> 这个组合，而不是单独给模型和 Harness 各贴一个等级。</p>
+<p>还有一篇值得并列阅读的污染控制研究 <a href="https://arxiv.org/abs/2609.11987" rel="nofollow noopener noreferrer" target="_blank">Harness or Model?</a>：研究者在同模型、同题目的成对实验中比较原生 SDK 与 Deep Agents，在所报告的平均结果上，没有得到可确认的一方显著优于另一方的证据。例如 GPT-5.5 的两组结果约为 55.6% 与 54.4%，差异的置信区间跨过零；Opus 4.8 的对照也没有证明稳定的平均优势。某些任务子集可能呈现相反方向的差别。这提醒我们：<strong>“Harness 有影响”与“任何时候先换 Harness 都更划算”是两件完全不同的命题</strong>。前者已有大量支持，后者还需要每个团队自己的任务与成本证据。</p>
+<p>2026 年 10 月的论文 <a href="https://arxiv.org/abs/2610.32483" rel="nofollow noopener noreferrer" target="_blank">When Agents Fail: Model or Harness—Who’s to Blame?</a> 进一步提出 Valid Completion Rate（有效完成率，指运行正常结束且产物可评分，不一定答对）与最终任务正确率应当分开记录。它强调有的系统能顺利返回结果却答错，有的任务虽被运行超时中断，却已经生成可通过测试的补丁。把所有失败都丢进一个“成功率”字段，会让人根本分不清问题在思考、工具、结束状态还是验证器。</p>
+<h2 id="什么是-harness-失效什么才是模型能力不足">什么是 Harness 失效，什么才是模型能力不足</h2>
+<p>为了决定该优化哪一层，可以沿着任务链逐项追问。第一种是模型本身选错了目标：输入信息齐全，工具调用也执行成功，模型仍然不能理解用户真实意图、生成错误的 SQL 或代码逻辑。这可能需要更好的问题表述、领域示例、检索证据，若经过控制后仍失败，才更有理由升级模型。第二种是工具和上下文接口的问题：正确工具没有被暴露，参数 Schema 描述含糊，网页结果截断但未告知，模型拿到的资料不完整。此时直接换模型，仍可能让更强模型在错误输入上作出自信结论。</p>
+<p><img src="/images/articles/agent-harness-vs-model-upgrade/zh/agent-failure-diagnostic.webp" alt="GPT 原创故障排查图：当 AI Agent 失败时分别检查模型推理、检索与证据、工具调用、权限副作用及任务结果验收。"></p>
+<p><em>图 3｜分层诊断清单：先定位失败发生在哪一层，再决定换模型还是修执行流程。</em></p>
+<p>第三种是状态和恢复问题：请求超时后 Harness 不知道操作到底是否成功，重试重复创建订单；子任务已经修改文件，主任务却只拿到“执行完成”字样；会话压缩后遗失先前人工批准或撤销的决定。这些问题的底线不是模型智力，而是幂等键、事务边界、持久化状态机、可观察的错误类型和可靠的恢复协议。第四种是授权与副作用问题：用户只要求出方案，模型却能直接调用删除、付款、发布、写入生产数据库等工具。无论模型多么擅长服从提示词，都不应让“请别删”这类自然语言指令代替服务端硬授权与暂停审批。</p>
+<p>第五种是验证器缺失：AI Agent 告诉你“已修复”“已上线”“全部推送成功”，但它没有跑测试，也没有检查公开 URL、Build 结果、第三方最终状态。这类错误很容易在演示中被掩盖，因为模型产生的解释文字看起来已经完整。一个工程 Harness 应要求证据指向特定命令退出码、状态变化、部署记录或可重复的验收结果；如果只记录自然语言答案，再好的大模型也可能把“它认为完成”混同“事实上完成”。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>失败表现</th><th>先核查哪一层</th><th>必须补充的验证</th><th>何时再考虑换模型</th></tr></thead><tbody><tr><td>工具没找到、错选工具</td><td>Tool Search、Schema 与上下文筛选</td><td>正确工具是否可见、参数是否可解</td><td>接口稳定仍持续误选</td></tr><tr><td>分页未完成、结果截断</td><td>分页状态与 <code>truncated</code> 标志</td><td>总数/游标/末页是否核对</td><td>完整数据仍无法正确推理</td></tr><tr><td>超时后重复写入</td><td>幂等、Retry、Checkpoint</td><td>中途断开、恢复、重试测试</td><td>状态机安全但决策持续错误</td></tr><tr><td>未授权删除或付款</td><td>服务端策略与人工审批</td><td>拒绝是否确实阻断工具执行</td><td>不应只靠换模型补救</td></tr><tr><td>说已修复却未运行测试</td><td>构建/验收器与 Evidence Gate</td><td>日志、Diff、真实公开状态</td><td>验证充分仍产出错误修改</td></tr><tr><td>明确证据齐全却不能规划</td><td>任务分解、Prompt 与模型推理</td><td>同输入重复运行、人工基线</td><td>推理能力可能已成为瓶颈</td></tr></tbody></table>
+<p>还有一类“Agent 做不完任务”的问题发生在模型 API 适配层，而不是模型权重或复杂的编排策略。火山方舟在 2026 年 11 月更新的 <a href="https://console.volcengine.com/ark/region%3Acn-beijing/docs/agent-model-invocation-practice" rel="nofollow noopener noreferrer" target="_blank">Agent 模型调用实践</a> 明确列出：多轮工具调用时没有正确回传需要保留的思考内容、输出 token 上限过小导致 <code>finish_reason</code> 为 <code>length</code>、同一会话频繁改变工具定义与采样参数影响缓存命中，都可能造成表现下滑。对这些问题，第一步应按具体提供商的协议检查请求、响应和轮次回传，再谈重做 Harness 或换模型；不同厂商对思考内容的可回传形式、隐私和存储约束并不相同，不能直接照搬某一家参数设置。Anthropic 的<a href="https://www.anthropic.com/research/harness-design-long-running-apps" rel="nofollow noopener noreferrer" target="_blank">长任务 Harness 设计复盘</a>还指出，任务拉长时上下文压缩未必足以防止提前收工，受控状态交接与上下文重启也是值得对比的执行策略。两项都是外部公开实践，不是本站对所有模型的统一实测结论。</p>
+<h2 id="xbstack-做了什么五项没有大模型参与的故障回放">XBSTACK 做了什么：五项没有大模型参与的故障回放</h2>
+<p>为了把这些问题从纸面概念变成可以检查的程序行为，我在 XBSTACK 工作区新增了 <code>experiments/agent-harness-vs-model-20261104/harness-replay.mjs</code>。这不是一个伪装成模型跑分的演示。它没有调用 OpenAI、DeepSeek、Gemini、Claude，也没有安装并实测 IBM CUGA、Hermes 或 Deep Agents。程序使用预先写好的相同任务动作和模拟工具响应，让一套极简运行层与一套加入控制规则的运行层分别处理五种故障，再由同一个断言检查结果。它的用途仅仅是证明五个运行机制的行为差异是可执行、可复核的，而不是估计任何商业 Agent 的总体完成率。</p>
+<p>第一项测试模拟分页账单：API 第一页只有两条，第二页还有一条。极简执行路径直接接受第一页，控制路径看到还有数据就继续取回第二页；验收器不检查“回答看起来是否自然”，只判断最终是否包含三个预先定义的 ID。第二项是未经审批的删除动作：输入要求准备一个删除方案，模型拟议了删除调用，但用户并未授权执行。极简路径调用了有副作用的工具，受控路径只返回需要审批。这里不测试提示词能否诱导模型听话，而是测试工具执行边界能否从模型输出之外硬性建立。</p>
+<p>第三项是读取请求第一次超时、第二次成功。受控路径在确认它属于可以安全重复的只读请求后重试；极简路径结束为错误。<strong>这不能被推广为“遇到超时自动重试所有工具”</strong>。写入支付、下单或不可逆发布时，必须先确认幂等键、远端状态与用户授权，否则重试反而制造第二次副作用。第四项模拟工具返回 <code>truncated:true</code>，极简路径把不完整结果视为成功，受控路径补取完整数据。第五项模拟最终报告声称“99% 通过率”，而证据只有 93%，控制路径拒绝无出处数字，返回带证据引用的 93%。</p>
+<p>运行命令和断言结果可以独立核对：</p>
+<pre class="language-bash" data-language="bash"><code is:raw="" class="language-bash"><span class="token function">node</span> experiments/agent-harness-vs-model-20261104/harness-replay.mjs
+<span class="token comment"># {"cases":5,"baselinePassed":0,"guardedPassed":5}</span>
+<span class="token comment"># All assertions passed. Read replay-results.json for per-case evidence and limits.</span>
+</code></pre>
+<p>这里出现的 0/5 与 5/5 是<strong>五个专门构造的模拟故障的断言结果</strong>，不是所谓“普通 Harness 0% 成功、高级 Harness 100% 成功”；也没有统计意义上的模型性能差异。程序刻意让受控路径满足这些事先定义的规则，所以其结果只能说明实现了预期的检测、重试、拦截、分页和证据检查。完整运行记录保存在 <code>replay-results.json</code>，并附有这一限制声明。把这组数字当成真实 LLM 准确率、生产安全率或成本收益率都是错误的。</p>
+<p>这项小实验的价值在于帮助团队写出自己的验收器。比如对 XBSTACK 网站运营，搜索引擎接受一条 URL 提交不能算已经收录；浏览器编辑器里有文章不等于正式公开；构建通过也不代表所有关键路由可用。如果执行系统只等待模型说“完成”，就会出现大量漂亮但无法追溯的结论。把真实验收信号接入流程，才是值得优化的 Harness 部分。不过，本实验没有触及真实平台权限、网络失败概率或长期 Agent 任务，因此不能把这些机制局部通过写成整条业务链已经通过。</p>
+<h2 id="真正比较换模型和改-harness要做一张-22-对照矩阵">真正比较“换模型”和“改 Harness”，要做一张 2×2 对照矩阵</h2>
+<p>要回答标题里的“哪个更值得优先投入”，必须把两种优化做成可分辨的实验因素。假定已有模型 A 和候选升级模型 B，以及当前 Harness H0 和改善后的 Harness H1，就形成 A×H0、A×H1、B×H0、B×H1 四个单元。三组固定任务分别测：一项真实仓库的代码修改及测试，一项跨 API 工具检索与安全写入，一项长时间任务的中断和恢复。每组任务使用相同初始快照、工具权限和数据，至少多次重复，保存模型版本、运行时 Commit、Prompt、预算、人工介入和全部结果，不允许只上传最好的一次。</p>
+<p><img src="/images/articles/agent-harness-vs-model-upgrade/zh/evaluation-metrics.webp" alt="GPT 原创评估指标图：任务正确率、独立验收完成率、未授权副作用、人工接管次数和每个正确任务成本。"></p>
+<p><em>图 4｜这张图的“验证完成率”指通过独立验收的完成比例，不等于研究论文中“正常结束且可评分”的 Valid Completion Rate（VCR）；两项必须分别统计。</em></p>
+<p><img src="/images/articles/agent-harness-vs-model-upgrade/zh/two-by-two-experiment.webp" alt="GPT 原创 2×2 因子实验图：当前和升级模型 A/B，与旧版和改进版 Harness H0/H1 配对，对比模型收益、Harness 收益和组合效应。"></p>
+<p><em>图 2｜四组对照是待执行的评估设计，不是 XBSTACK 已完成的跨模型跑分。</em></p>
+<p>第一条对比是 A×H0 与 A×H1，估计<strong>同一个模型下 Harness 改造的效果</strong>；第二条是 A×H0 与 B×H0，估计<strong>不修改 Harness、只升级模型的效果</strong>。第三条很容易被忽略：B×H1 相对 B×H0 可能受益，也可能因为两个组件不适配而更差。只有把四组都跑出来，才知道“先升级模型”是否真正更划算，还是当前系统只是把工具、上下文或错误信号处理坏了。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>实验单元</th><th>模型</th><th>Harness</th><th>能支持的判断</th></tr></thead><tbody><tr><td>A / H0</td><td>现用模型</td><td>旧运行层</td><td>当前真实基线</td></tr><tr><td>A / H1</td><td>现用模型</td><td>改进运行层</td><td>Harness 改造增量</td></tr><tr><td>B / H0</td><td>新模型</td><td>旧运行层</td><td>纯模型升级增量</td></tr><tr><td>B / H1</td><td>新模型</td><td>改进运行层</td><td>交互效果与组合上限</td></tr></tbody></table>
+<p>同样重要的是评分规则。任务通过率必须来自程序验证、明确人工复核标准或独立评估器；“能正常结束”的 Valid Completion Rate 不能当成“任务正确”；任何未授权副作用、错误写入和凭据外泄都应独立计数，即使最终回答看起来正确也不能抹掉。成本既记录 Token、缓存与实际模型费用，也要记录总工具次数、运行时长、必要的人工作业与失败重试。更稳妥的经营指标是 <strong>Cost per Validated Task（每个已验证正确任务的成本）</strong>，用总成本除以通过独立验收的任务数，分母必须为真实成功结果，不能用全部请求数稀释成本。</p>
+<p>需要特别防范一个方法学陷阱：如果 H1 的新配置是研究者根据同一套公开问题反复调试出来的，再用这些问题证明 H1 进步，就可能只是对这批题过拟合。应该保留未参与优化的任务族，并在测试时冻结提示词、代码和评估器；否则多花推理和反馈预算也会让结果更好，却被错误归功于 Harness 设计。<a href="https://arxiv.org/abs/2607.12227" rel="nofollow noopener noreferrer" target="_blank">Rethinking the Evaluation of Harness Evolution</a> 提醒过这个问题。</p>
+<h2 id="先做哪些-harness-改造才可能有真实回报">先做哪些 Harness 改造，才可能有真实回报</h2>
+<p>我会按故障风险和改造收益排序，而不是见到“自我进化 Agent”就替换整套执行器。第一优先级是<strong>授权与结果验收</strong>。凡涉及删除、付款、发布、生产数据库和私有资料外发，策略必须在可信边界检查工具名、参数、用户授权、资源范围和审计事件；允许模型提出建议，不允许模型单靠一句自然语言解释给自己授予执行权。对普通工程任务，应让测试、构建、静态校验和实际状态核查成为“完成”的必要条件。这里投入不一定提高一次生成的漂亮程度，却能直接减少代价高昂的误操作与虚假完成。</p>
+<p>第二优先级是 Tool Interface：逐个检查工具描述、参数类型、失败码、游标、截断标志、目标资源和副作用语义。能用一个清晰、窄范围的工具解决，就不要一次暴露几十个看似相似的动作；能返回结构化 <code>tool_error</code> 与 <code>retryable</code>，就不要把所有错误压成“操作失败，请重试”。模型需要的不是更多工具名称，而是下一步可判断的有效信号。模型反复选错工具时，先做一组工具选择准确性测试，再决定是改工具设计还是换模型。</p>
+<p>第三优先级才是上下文工程和长任务管理。重要事实、指令、用户许可和证据来源应以可恢复记录保存，压缩上下文不得悄悄改变用户授权或抹掉执行结果；真正耗费 Token 的大日志可以在文件侧聚合后仅把关键异常返回给模型。第四优先级是失败恢复与资源调度：Checkpoint 恢复要考虑副作用已发生但本地状态未落盘，重试要考虑幂等，时间预算和取消动作也需要稳定语义。更复杂的多 Agent 分工、自动 Skill 选择和自优化 Harness，应该在前四层可观察且能回滚以后再引入，否则很容易把一个问题扩展成多个难以诊断的故障。</p>
+<h2 id="五个典型场景什么时候应该立即换模型">五个典型场景，什么时候应该立即换模型</h2>
+<p>有些团队当前的瓶颈确实不在 Harness。比如代码库规模和工具输入都合理，测试日志完整，Agent 能正确找到文件、运行测试并接收明确失败反馈，但它仍长期无法理解复杂算法、不同业务规则的冲突或跨组件时序问题。你可以通过人工给出同一组有效上下文让几个候选模型直接回答，并在相同校验下比较，判断是不是模型推理能力到了边界。这个时候继续堆 Middleware 也许只增加延迟，真正需要的是更强模型、任务拆分或者专用求解方法。</p>
+<p>又比如多语言资料的知识检索，文档导入、切块、FTS、Embedding、Rerank 和证据片段选择已经稳定，引用也指向正确原文，但模型总是把限定条件总结错、生成矛盾答案。这属于可以尝试升级生成模型或改变模型路由的情况。反过来，如果问答失真来自检索漏掉了关键片段，或者来源引用在上一轮对话后丢失，那么直接换生成模型不会自动把证据找回来；需要先修召回和 Evidence Selection。对 Personal AI / Local RAG 产品尤其如此，模型规格不能代替证据链质量。</p>
+<p>再比如一个 Coding Agent 能稳定返回完整 Diff，静态检查与单元测试都能运行，失败来自它无法在多步修改中保持抽象层次、持续引入回归；此时在同一 Harness 下比较不同模型、不同推理预算、单 Agent 和多阶段 review，是合理的模型升级实验。相反，如果所有模型都在工具执行时被环境权限、路径错误或错误状态卡住，就不该一再付更高的推理费用去解释同一段基础设施故障。</p>
+<h2 id="新方向harness-可能自己改进但更要谨慎验收">新方向：Harness 可能自己改进，但更要谨慎验收</h2>
+<p>Agent Harness 不再只是一组手写提示词。Google 研究团队公开的 <a href="https://arxiv.org/abs/2610.14224" rel="nofollow noopener noreferrer" target="_blank">Harness²</a> 提出两层递归：任务内提出候选配置、试跑并比较；跨任务再整理经验，供后续 Harness 使用。论文报告在特定基准和模型组合上存在增益，代码可在 <a href="https://github.com/google-research/harness2" rel="nofollow noopener noreferrer" target="_blank">google-research/harness2</a> 查看。它对开发者的启发并不是“以后不用写 Harness”，而是配置、工具说明、Skills、子任务组织可以成为持续实验的对象。<strong>但优化器自己反复看到的题目不能再直接当作独立验收集</strong>，自动化试跑也需要预算、权限和回滚边界。</p>
+<p>另一条方向是将轻量决策模型嵌入 Harness，处理某些工具选择或简单路由，同时把困难状态留给主模型。论文 <a href="https://arxiv.org/abs/2610.21412" rel="nofollow noopener noreferrer" target="_blank">JevAgentHarness</a> 报告了任务相关的成本与速度改善，但不同负载、置信度门限和训练分布都会改变风险。真实团队不应只把它理解成“用小模型省钱”；如果决策模型在错误状态下高置信度选择了有副作用的工具，所谓节省可能变成更高的业务损失。推理加速要与安全约束、校验器和失败成本一起核算。</p>
+<p>这些研究同时揭示了一个有趣的方向：<strong>未来的 Agent 产品不一定靠每一步调用最大的模型竞争，而可能靠“对该任务最合适的模型 × 有证据约束的 Harness × 可回滚的业务流程”竞争。</strong> 这仍然是一个需要在生产任务上验证的技术趋势，不是对所有产品通用的赢家名单。XBSTACK 当前更合适的动作是复用已有 Agent 安全、LangGraph、MCP、RecalAI 与工具链资产，沉淀小而可靠的实验，而不是因为出现一个新论文就匆忙增加一个没人维护的工具页面。</p>
+<h2 id="结论不是先换模型或先改-harness而是先找出失败发生的层">结论：不是先换模型或先改 Harness，而是先找出失败发生的层</h2>
+<p>我的决策顺序很简单。若 Agent 的错误来自分页、截断、无效工具 Schema、授权、幂等、重试、Checkpoint 或“没验收却宣布完成”，先优化 Harness；若工具、证据、状态与验收都稳定，而在相同任务输入下仍持续出现理解和推理错误，优先比较模型；若两者同时有问题，就做 2×2 矩阵，而不是在新模型上叠加新 Harness 后，把全部收益算给其中一个。任何一次改动都应留有回滚方案和相同任务的前后结果。</p>
+<p>IBM 的 30%—81% 很值得关注，但那是<strong>特定模型、特定基准与特定配置</strong>下的外部研究；另一批独立研究也显示 Harness 排名会随任务和模型反转。XBSTACK 的五项本地回放只验证了几项基础控制机制，<strong>尚未进行真实模型 A/B、CUGA/Hermes/Deep Agents 实机横评、商业 API 成本比较或生产安全审计</strong>。这条证据边界比一个整齐的“最强 Harness 排行榜”更重要。只有把要完成的用户任务、失败代价、执行证据和每次验证成本一起放到桌面上，才有资格回答“哪一种优化更值”。</p>
+<h3 id="参考资料">参考资料</h3>
+<ul>
+<li><a href="https://huggingface.co/blog/ibm-research/cuga-harness" rel="nofollow noopener noreferrer" target="_blank">IBM Research，Same Model, Different Harness（2026-11-03）</a></li>
+<li><a href="https://composio.dev/bench/research/agent-harness-benchmark" rel="nofollow noopener noreferrer" target="_blank">Composio，Harness and connector choices across 1,800 trials</a></li>
+<li><a href="https://arxiv.org/abs/2608.26218" rel="nofollow noopener noreferrer" target="_blank">Same Model, Different Harness: Different Coding-Agent Results（2026-08）</a></li>
+<li><a href="https://arxiv.org/abs/2610.00917" rel="nofollow noopener noreferrer" target="_blank">Finding the Right Fit: Model-Harness Interactions across Agent Tasks（2026-10）</a></li>
+<li><a href="https://arxiv.org/abs/2610.32483" rel="nofollow noopener noreferrer" target="_blank">When Agents Fail: Model or Harness—Who’s to Blame?（2026-10）</a></li>
+<li><a href="https://arxiv.org/abs/2609.11987" rel="nofollow noopener noreferrer" target="_blank">Harness or Model? Contamination-Controlled Private Suite（2026-09）</a></li>
+<li><a href="https://arxiv.org/abs/2607.12227" rel="nofollow noopener noreferrer" target="_blank">Rethinking the Evaluation of Harness Evolution（2026-07）</a></li>
+<li><a href="https://github.com/google-research/harness2" rel="nofollow noopener noreferrer" target="_blank">Harness²：Google Research GitHub 与论文</a></li>
+<li><a href="https://openai.com/index/harness-engineering/" rel="nofollow noopener noreferrer" target="_blank">OpenAI：Harness Engineering（2026-02）</a></li>
+<li>XBSTACK 本地可复核脚本：<code>experiments/agent-harness-vs-model-20261104/harness-replay.mjs</code>（仓库内部实验资产；尚无公开 URL，不把本地路径冒充读者可访问链接）</li>
+</ul>
+<h3 id="继续阅读">继续阅读</h3>
+<ul>
+<li><a href="/ai/tools-lab/deepseek-v4-pro-0813-harness/">DeepSeek Harness 的接入及预览状态</a></li>
+<li><a href="/ai/openai-agents-api-vs-agents-sdk-responses-api/">Agents API / Agents SDK / Responses API 的控制权选择</a></li>
+<li><a href="/ai/ai-agent-tool-authorization-policy-gate/">Agent 工具授权 Policy Gate</a></li>
+<li><a href="/ai/langgraph-checkpointer-memory-sqlite-redis/">LangGraph Checkpointer 的状态与恢复</a></li>
+</ul>  <aside class="mt-12 rounded-2xl border border-slate-200 bg-slate-50/70 px-5 py-4 not-prose dark:border-white/10 dark:bg-white/[0.025]"> <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"> <div><p class="text-sm font-black text-slate-900 dark:text-white">讨论这个问题</p><p class="mt-1 text-xs leading-6 text-slate-500 dark:text-slate-400">有不同的复现结果、版本变化或补充证据？欢迎继续讨论。</p></div> <a href="#discussion" class="shrink-0 text-xs font-black text-blue-600 dark:text-blue-400">发表观点或复现 →</a> </div> </aside><section class="mt-16 rounded-[34px] border border-orange-500/20 bg-orange-500/[0.06] p-7 md:p-9 not-prose"> <div class="text-[10px] font-black uppercase tracking-[0.28em] text-orange-500 mb-4">专题入口 / AI Agent Hub</div> <h2 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-4">从单个 Agent 问题继续进入完整生产体系</h2> <p class="text-sm font-bold leading-7 text-slate-600 dark:text-slate-400 max-w-3xl">AI Agent 专题统一组织架构、记忆、工具调用、评测、安全、部署和多智能体协作，让每篇文章都回到明确的主题主页面。</p> <div class="mt-7 flex flex-wrap gap-3"> <a href="/ai/agent/" class="rounded-full bg-orange-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-white hover:bg-orange-600 transition-colors">进入 AI Agent 专题 →</a> <a href="/ai/ai-agent-architecture/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">查看架构指南</a> <a href="/newsletter/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">订阅</a> </div> </section> </div> <section class="mt-14 border-t border-[var(--xb-line)] pt-7" data-related-reading data-analytics-area="related_content" data-related-slot="article_end" data-astro-cid-ce2bgkb3> <div class="mb-2 flex items-center justify-between gap-4" data-astro-cid-ce2bgkb3><h2 class="m-0 text-[17px] font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3>下一步：继续搭建 Agent 系统</h2><a href="/ai/tools-lab/" class="text-[12px] font-bold text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>完整专题路径 →</a></div> <p class="mb-4 max-w-3xl text-[12px] leading-5 text-[var(--xb-muted)]" data-astro-cid-ce2bgkb3>沿着架构、工具、Memory、评测、安全或生产治理继续推进，不必重新从头找资料。</p> <div class="xb-article-related" data-astro-cid-ce2bgkb3><a href="/ai/tools-lab/chatgpt-work-chat-codex-difference/" data-related-link data-related-reason="继续处理工具与协议边界" data-astro-cid-ce2bgkb3><span class="mb-1 block text-[12px] font-extrabold uppercase tracking-[0.08em] text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>继续处理工具与协议边界</span><span class="font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3>ChatGPT Chat、Work、Codex 有什么区别？怎么选与真实任务对比</span><span class="mt-1 block line-clamp-2 text-[12px] text-[var(--xb-faint)]" data-astro-cid-ce2bgkb3>ChatGPT Chat 和 Work 区别是什么？本文同时对比 Chat、Work、Codex 的任务边界，并补充 Cloud/Local、Mobile Remote 与 Voice 的 2026 最新变化。</span></a><a href="/ai/tools-lab/transformers-gguf-dequantizing-whole-model-fix/" data-related-link data-related-reason="继续处理工具与协议边界" data-astro-cid-ce2bgkb3><span class="mb-1 block text-[12px] font-extrabold uppercase tracking-[0.08em] text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>继续处理工具与协议边界</span><span class="font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3>Transformers 跑 GGUF 出现 “Dequantizing the whole model” 怎么解决？PyTorch 版本实测</span><span class="mt-1 block line-clamp-2 text-[12px] text-[var(--xb-faint)]" data-astro-cid-ce2bgkb3>Transformers 直接加载 GGUF 时出现 Dequantizing the whole model / no GGUF matmul kernel 警告怎么办？本文在 M1 Pro 上用同一 Qwen3.5 Q4_K_M 对比 PyTorch 2.14、2.13 与 llama.cpp，给出验证方法、版本兼容根因和修复方案。</span></a><a href="/ai/tools-lab/vercel-ai-sdk-streamobject-error-promise-hang/" data-related-link data-related-reason="推进到生产治理" data-astro-cid-ce2bgkb3><span class="mb-1 block text-[12px] font-extrabold uppercase tracking-[0.08em] text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>推进到生产治理</span><span class="font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3>AI SDK streamObject() 出错后一直不返回：result.object 为什么会挂住？</span><span class="mt-1 block line-clamp-2 text-[12px] text-[var(--xb-faint)]" data-astro-cid-ce2bgkb3>实测 Vercel AI SDK 7.0.66：streamObject 在 provider 提前失败或流中返回 error part 后，object、usage、finishReason、response、warnings 可能一直不 settle；包含可复现代码、streamText 对照和应用层 failure fence。</span></a></div> </section> </article> <section id="discussion" class="xb-article-comments scroll-mt-28" data-astro-cid-ce2bgkb3> <div class="mb-5 flex items-center gap-3 text-[11px] font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3><span data-astro-cid-ce2bgkb3>评论与补充证据</span><span class="h-px flex-1 bg-[var(--xb-line)]" data-astro-cid-ce2bgkb3></span></div> <section class="xbstack-comments" data-xbstack-waline data-server-url="https://comments.xbstack.com" data-comment-path="/ai/tools-lab/agent-harness-vs-model-upgrade/" data-comment-lang="zh-CN" data-comment-mode="evidence" aria-labelledby="xbstack-comments-title"> <div class="xbstack-comments__header"> <div> <p class="xbstack-comments__eyebrow">参与讨论</p> <h2 id="xbstack-comments-title"> 问题、验证与勘误 </h2> <p class="xbstack-comments__description"> 登录后可发表评论。所有新评论先进入审核；审核期间仅评论者本人和管理员可见，通过后才公开。 </p> </div> <div class="xbstack-comments__policy" aria-label="评论规则"> <span>登录评论</span> <span>审核后公开</span> </div> </div> <div class="xbstack-comments__status" data-waline-status role="status" aria-live="polite"> <span class="xbstack-comments__spinner" aria-hidden="true"></span> <span>正在加载评论区…</span> </div> <div id="waline" class="xbstack-comments__mount" data-waline-mount></div> <noscript> <p class="xbstack-comments__noscript"> 评论区需要启用 JavaScript 才能查看和发布评论。 </p> </noscript> </section>  </section> </main> <aside class="xb-article-side xb-article-v21-side" aria-label="文章导航" data-astro-cid-ce2bgkb3> <section class="xb-article-panel" data-astro-cid-ce2bgkb3> <h2 class="xb-article-panel__title" data-astro-cid-ce2bgkb3>本文目录</h2> <nav class="xb-v21-toc" aria-label="本文目录" data-astro-cid-ce2bgkb3> <a href="#30-到-81同一个模型为什么会跑出三份不同成绩" data-astro-cid-ce2bgkb3>30% 到 81%：同一个模型为什么会跑出三份不同成绩</a><a href="#别只看一份厂商实验另一批研究给出了不同答案" data-astro-cid-ce2bgkb3>别只看一份厂商实验：另一批研究给出了不同答案</a><a href="#什么是-harness-失效什么才是模型能力不足" data-astro-cid-ce2bgkb3>什么是 Harness 失效，什么才是模型能力不足</a><a href="#xbstack-做了什么五项没有大模型参与的故障回放" data-astro-cid-ce2bgkb3>XBSTACK 做了什么：五项没有大模型参与的故障回放</a><a href="#真正比较换模型和改-harness要做一张-22-对照矩阵" data-astro-cid-ce2bgkb3>真正比较“换模型”和“改 Harness”，要做一张 2×2 对照矩阵</a><a href="#先做哪些-harness-改造才可能有真实回报" data-astro-cid-ce2bgkb3>先做哪些 Harness 改造，才可能有真实回报</a><a href="#五个典型场景什么时候应该立即换模型" data-astro-cid-ce2bgkb3>五个典型场景，什么时候应该立即换模型</a><a href="#新方向harness-可能自己改进但更要谨慎验收" data-astro-cid-ce2bgkb3>新方向：Harness 可能自己改进，但更要谨慎验收</a><a href="#结论不是先换模型或先改-harness而是先找出失败发生的层" data-astro-cid-ce2bgkb3>结论：不是先换模型或先改 Harness，而是先找出失败发生的层</a><a href="#参考资料" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>参考资料</a><a href="#继续阅读" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>继续阅读</a> </nav> </section> <section class="xb-article-panel" data-astro-cid-ce2bgkb3> <h2 class="xb-article-panel__title" data-astro-cid-ce2bgkb3>文章工具</h2> <div class="xb-v21-toc" data-astro-cid-ce2bgkb3> <button type="button" data-copy-article data-astro-cid-ce2bgkb3><span data-astro-cid-ce2bgkb3>复制链接</span><span aria-hidden="true" data-astro-cid-ce2bgkb3>↗</span></button> <a href="/ai/tools-lab/" data-astro-cid-ce2bgkb3>返回专题 →</a> </div> </section> </aside> </div>  <script>
+  const bindArticleTools=()=>{document.querySelectorAll('[data-copy-article]').forEach((button)=>{if(button.dataset.ready)return;button.dataset.ready='1';button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(window.location.href);const original=button.querySelector('span')?.textContent;if(button.querySelector('span'))button.querySelector('span').textContent='已复制';setTimeout(()=>{if(button.querySelector('span'))button.querySelector('span').textContent=original||'复制链接'},1200)}catch{}})})};
+  const trackRelatedContentView=(section)=>{if(!section||section.dataset.viewTracked||!window.__ga4_human_verified||typeof window.xbTrackEvent!=='function')return false;section.dataset.viewTracked='1';window.xbTrackEvent('related_content_view',{event_category:'engagement',link_area:'related_content',link_position:section.getAttribute('data-related-slot')||'unknown',source_page_path:window.location.pathname});return true};
+  const bindRelatedContentViews=()=>{document.querySelectorAll('[data-analytics-area="related_content"]').forEach((section)=>{if(section.dataset.viewObserverReady)return;section.dataset.viewObserverReady='1';const observer=new IntersectionObserver((entries)=>{entries.forEach((entry)=>{if(!entry.isIntersecting||entry.intersectionRatio<0.35||section.dataset.viewTracked)return;if(trackRelatedContentView(section))observer.disconnect()})},{threshold:[0.35]});observer.observe(section)})};
+  const retryVisibleRelatedContentViews=()=>{document.querySelectorAll('[data-analytics-area="related_content"]').forEach((section)=>{if(section.dataset.viewTracked)return;const rect=section.getBoundingClientRect();const viewportHeight=window.innerHeight||document.documentElement.clientHeight;if(rect.bottom<=0||rect.top>=viewportHeight)return;const visible=Math.min(rect.bottom,viewportHeight)-Math.max(rect.top,0);if(visible/Math.max(rect.height,1)>=0.35)trackRelatedContentView(section)})};
+  const bindArticlePageTools=()=>{bindArticleTools();bindRelatedContentViews();retryVisibleRelatedContentViews()};document.addEventListener('astro:page-load',bindArticlePageTools);window.addEventListener('xb:ga4-human-verified',retryVisibleRelatedContentViews);bindArticlePageTools();
+</script> </main> <script>
+    function initProgress() {
+      const progressBar = document.getElementById('reading-progress');
+      if (!progressBar) return;
+      window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = scrolled + "%";
+      });
+    }
+    document.addEventListener('astro:page-load', initProgress);
+    initProgress();
+  </script>  </main> <footer class="xb-v21-footer mt-12 border-t border-[var(--xb-line)] bg-[var(--xb-surface)]"> <div class="xb-shell py-10 md:py-12"> <div class="grid gap-10 lg:grid-cols-[minmax(260px,0.9fr)_minmax(0,1.6fr)] lg:gap-16"> <div class="max-w-[430px]"> <a href="/" class="inline-flex items-center gap-2.5 font-black tracking-[-0.035em] text-[var(--xb-ink)]"> <span class="xb-brand-logo" data-xbstack-logo-motion="view" aria-hidden="true"> <span class="xb-brand-logo__variant inline-flex dark:hidden"> <img src="/favicon/logo-light-nav.svg" alt="" width="32" height="32" loading="lazy" decoding="async"> <span class="xb-brand-logo__shine" style="--xb-logo-mask: url(&#34;/favicon/logo-light-nav.svg&#34;)"></span> </span> <span class="xb-brand-logo__variant hidden dark:inline-flex"> <img src="/favicon/logo-dark-nav.svg" alt="" width="32" height="32" loading="lazy" decoding="async"> <span class="xb-brand-logo__shine" style="--xb-logo-mask: url(&#34;/favicon/logo-dark-nav.svg&#34;)"></span> </span> </span> <span class="text-[17px]">XBSTACK</span> </a> <p class="mt-5 text-[18px] font-bold leading-7 tracking-[-0.02em] text-[var(--xb-ink)]"> 在高处看世界，在底层堆资产。 </p> <p class="mt-3 text-[12px] leading-6 text-[var(--xb-muted)]"> 工程实践、可用产品、投资与阅读记录，以及旅行和户外现场。 </p> </div> <nav class="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-4" aria-label="页脚导航"> <div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">主题</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/ai/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">AI</a><a href="/products/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Products</a><a href="/horizon/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Insights</a><a href="/life/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Lens</a><a href="/about/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">About</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">AI 工程</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/ai/agent/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Agents</a><a href="/ai/mcp/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">MCP</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">资源</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/search/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">搜索</a><a href="/archive/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">归档</a><a href="/newsletter/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Newsletter</a><a href="/rss.xml" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">RSS</a><a href="/friends/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">朋友与独立站</a><a href="https://github.com/xbstack" target="_blank" rel="noopener noreferrer" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">GitHub：@xbstack</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">联系</h2> <div class="flex flex-col items-start gap-2.5"> <a href="mailto:xbstack@163.com" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">邮箱：xbstack@163.com</a><a href="/wechat/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 wechat-trigger" data-wechat-qr="/assets/qrcode_guizhou_outdoor.png">微信公众号：贵州户外</a><a href="/contact/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">商务合作</a> </div> </div> </nav> </div> <div class="mt-9 flex flex-col gap-3 border-t border-[var(--xb-line)] pt-5 sm:flex-row sm:items-center sm:justify-between"> <div class="text-[10px] text-[var(--xb-faint)]">© 2026 XBSTACK. All rights reserved.</div> <div class="flex flex-wrap gap-x-4 gap-y-2"> <a href="/privacy/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">隐私政策</a><a href="/tos/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">服务条款</a><a href="/disclosure/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">免责声明</a><a href="/advertising/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">广告政策</a><a href="/cookies/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">Cookie 政策</a> </div> </div> <div class="mt-4 text-center text-[11px] leading-6 text-[var(--xb-faint)]"> <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--xb-ink)]">黔ICP备2026019006号-1</a> </div> </div> </footer> <!-- 桌面悬停卡：由全局脚本定位到当前公众号入口附近 --><div id="wechat-hover-card" class="fixed z-[9998] hidden w-[390px] pointer-events-none opacity-0 translate-y-2 transition-all duration-200" aria-hidden="true"> <div class="rounded-[30px] border border-white/15 bg-[#0d1728]/95 p-6 text-white shadow-[0_28px_80px_rgba(2,6,23,0.48)] backdrop-blur-2xl"> <div class="text-[10px] font-black uppercase tracking-[0.34em] text-orange-400">XBSTACK 微信公众号</div> <div class="mt-2 text-[24px] font-black tracking-tight">关注内容更新</div> <div class="mt-1 text-[12px] font-bold tracking-[0.12em] text-slate-400">AI 工程 · 产品构建 · 户外实践</div> <div class="mt-5 grid grid-cols-[148px_1fr] items-center gap-5"> <img id="wechat-hover-qr" data-src="/assets/qrcode_guizhou_outdoor.png" loading="lazy" decoding="async" width="360" height="360" alt="微信公众号贵州户外二维码" class="block aspect-square w-full object-contain"> <div class="space-y-3 text-[13px] font-bold leading-relaxed text-slate-300"> <p>贵州徒步与路线实测</p> <p>AI 工具与独立产品</p> <p>投资体系与长期复盘</p> </div> </div> <div class="mt-5 border-t border-white/10 pt-4 text-center text-[12px] font-black text-slate-300"> 点击查看完整名片 </div> </div> </div> <!-- 全局点击弹窗 --> <div id="wechat-modal" class="fixed inset-0 z-[10000] hidden items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="wechat-modal-title" aria-hidden="true"> <button id="wechat-modal-backdrop" type="button" aria-label="关闭微信公众号弹窗" class="absolute inset-0 cursor-default bg-slate-950/86 backdrop-blur-xl"></button> <div id="wechat-modal-content" class="relative max-h-[94vh] w-full max-w-[620px] scale-95 overflow-y-auto rounded-[38px] border border-slate-500/45 bg-[#0d1728] text-white opacity-0 shadow-[0_40px_140px_rgba(0,0,0,0.68)] transition-all duration-300 sm:rounded-[50px]"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"> <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px]"></div> <div class="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-orange-500/10 blur-[80px]"></div> </div> <button id="wechat-modal-close" type="button" aria-label="关闭微信公众号弹窗" class="absolute right-5 top-5 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 transition hover:bg-white/10 hover:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg> </button> <div class="relative z-10 px-6 pb-6 pt-10 sm:px-10 sm:pb-9 sm:pt-12"> <header class="text-center"> <div class="text-[10px] font-black uppercase tracking-[0.44em] text-orange-400 sm:text-xs">XBSTACK 微信公众号</div> <h2 id="wechat-modal-title" class="mt-4 text-3xl font-black tracking-tight text-white sm:text-[38px]" style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;">关注内容更新</h2> <p class="mt-3 text-sm font-bold tracking-[0.16em] text-slate-400 sm:text-base">AI 工程 · 产品构建 · 户外实践</p> </header> <div class="mt-8 grid items-center gap-7 sm:grid-cols-[210px_1fr] sm:gap-8"> <img id="wechat-modal-qr" data-src="/assets/qrcode_guizhou_outdoor.png" loading="lazy" decoding="async" width="360" height="360" alt="微信公众号贵州户外二维码" class="mx-auto block aspect-square w-full max-w-[210px] object-contain sm:max-w-none"> <div class="divide-y divide-white/10"> <div class="grid grid-cols-[38px_1fr] gap-3 py-3 first:pt-0"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M634.92 462.7l-288-448C341.03 5.54 330.89 0 320 0s-21.03 5.54-26.92 14.7l-288 448a32.001 32.001 0 0 0-1.17 32.64A32.004 32.004 0 0 0 32 512h576c11.71 0 22.48-6.39 28.09-16.67a31.983 31.983 0 0 0-1.17-32.63zM320 91.18L405.39 224H320l-64 64-38.06-38.06L320 91.18z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">户外徒步 · 贵州路线实探与分享</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">记录每一次出发，提供真实路况、补给、风险和下撤信息。</p> </div> </div> <div class="grid grid-cols-[38px_1fr] gap-3 py-3"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M278.9 511.5l-61-17.7c-6.4-1.8-10-8.5-8.2-14.9L346.2 8.7c1.8-6.4 8.5-10 14.9-8.2l61 17.7c6.4 1.8 10 8.5 8.2 14.9L293.8 503.3c-1.9 6.4-8.5 10.1-14.9 8.2zm-114-112.2l43.5-46.4c4.6-4.9 4.3-12.7-.8-17.2L117 256l90.6-79.7c5.1-4.5 5.5-12.3.8-17.2l-43.5-46.4c-4.5-4.8-12.1-5.1-17-.5L3.8 247.2c-5.1 4.7-5.1 12.8 0 17.5l144.1 135.1c4.9 4.6 12.5 4.4 17-.5zm327.2.6l144.1-135.1c5.1-4.7 5.1-12.8 0-17.5L492.1 112.1c-4.8-4.5-12.4-4.3-17 .5L431.6 159c-4.6 4.9-4.3 12.7.8 17.2L523 256l-90.6 79.7c-5.1 4.5-5.5 12.3-.8 17.2l43.5 46.4c4.5 4.9 12.1 5.1 17 .6z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">独立开发 · AI、工具与产品实战</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">从真实需求到上线复盘，持续构建可长期积累的数字产品。</p> </div> </div> <div class="grid grid-cols-[38px_1fr] gap-3 py-3 last:pb-0"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16zM464 96H345.94c-21.38 0-32.09 25.85-16.97 40.97l32.4 32.4L288 242.75l-73.37-73.37c-12.5-12.5-32.76-12.5-45.25 0l-68.69 68.69c-6.25 6.25-6.25 16.38 0 22.63l22.62 22.62c6.25 6.25 16.38 6.25 22.63 0L192 237.25l73.37 73.37c12.5 12.5 32.76 12.5 45.25 0l96-96 32.4 32.4c15.12 15.12 40.97 4.41 40.97-16.97V112c.01-8.84-7.15-16-15.99-16z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">投资思考 · 复利、风险与长期主义</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">分享投资体系、市场观察和个人决策复盘，不构成投资建议。</p> </div> </div> </div> </div> <div class="mt-6 text-center text-sm font-black leading-relaxed text-slate-300"> 扫码关注微信公众号 <span class="text-orange-400">“贵州户外”</span> <p class="mt-1 text-xs font-bold text-slate-500">获取户外路线、独立开发与投资复盘的最新内容</p> </div> <button id="wechat-modal-confirm" type="button" class="mt-7 w-full rounded-[24px] bg-white px-6 py-4 text-sm font-black tracking-[0.12em] text-slate-950 shadow-xl transition hover:-translate-y-0.5 hover:bg-slate-100 active:translate-y-0"> 知道了 / CLOSE </button> </div> </div> </div> <script type="module">const b="/assets/qrcode_guizhou_outdoor.png";function f(){const t=document.getElementById("wechat-modal"),y=document.getElementById("wechat-modal-backdrop"),d=document.getElementById("wechat-modal-content"),u=document.getElementById("wechat-modal-close"),E=document.getElementById("wechat-modal-confirm"),c=document.getElementById("wechat-modal-qr"),o=document.getElementById("wechat-hover-card"),i=document.getElementById("wechat-hover-qr");if(!t||!d||!o)return;let l=0;const p=window.matchMedia("(hover: hover) and (pointer: fine)"),w=e=>{const n=e.dataset.wechatQr||b;c&&c.src!==new URL(n,window.location.href).href&&(c.src=n),i&&i.src!==new URL(n,window.location.href).href&&(i.src=n)},s=()=>{window.clearTimeout(l),o.classList.add("opacity-0","translate-y-2"),l=window.setTimeout(()=>o.classList.add("hidden"),180)},v=e=>{if(!p.matches||!t.classList.contains("hidden"))return;window.clearTimeout(l),w(e),o.classList.remove("hidden");const n=e.getBoundingClientRect(),L=390,B=310,r=12;let m=n.left+n.width/2-L/2;m=Math.max(r,Math.min(m,window.innerWidth-L-r));let h=n.top-B-12;h<r&&(h=n.bottom+12),o.style.left=`${m}px`,o.style.top=`${h}px`,requestAnimationFrame(()=>o.classList.remove("opacity-0","translate-y-2"))},I=e=>{s(),w(e),t.classList.remove("hidden"),t.classList.add("flex"),t.setAttribute("aria-hidden","false"),document.body.style.overflow="hidden",requestAnimationFrame(()=>{d.classList.remove("scale-95","opacity-0"),d.classList.add("scale-100","opacity-100"),u?.focus()})},a=()=>{d.classList.remove("scale-100","opacity-100"),d.classList.add("scale-95","opacity-0"),window.setTimeout(()=>{t.classList.add("hidden"),t.classList.remove("flex"),t.setAttribute("aria-hidden","true"),document.body.style.overflow=""},260)};document.querySelectorAll(".wechat-trigger").forEach(e=>{e.dataset.wechatInitialized!=="true"&&(e.dataset.wechatInitialized="true",e.addEventListener("mouseenter",()=>v(e)),e.addEventListener("mouseleave",s),e.addEventListener("focus",()=>v(e)),e.addEventListener("blur",s),e.addEventListener("click",n=>{n.preventDefault(),I(e)}))}),t.dataset.wechatInitialized!=="true"&&(t.dataset.wechatInitialized="true",u?.addEventListener("click",a),E?.addEventListener("click",a),y?.addEventListener("click",a),document.addEventListener("keydown",e=>{e.key==="Escape"&&!t.classList.contains("hidden")&&a()}),window.addEventListener("scroll",s,{passive:!0}),window.addEventListener("resize",s))}f();document.addEventListener("astro:page-load",f);</script> <script>
+      const showLanguageSwitchNotice = () => {
+        let payload = null;
+        try {
+          const raw = sessionStorage.getItem('xbstack_language_notice');
+          if (!raw) return;
+          payload = JSON.parse(raw);
+          sessionStorage.removeItem('xbstack_language_notice');
+        } catch (error) {
+          return;
+        }
+
+        const notice = document.getElementById('language-switch-notice');
+        if (!notice) return;
+
+        const targetIsEnglish = String(payload?.language || '').toLowerCase().startsWith('en');
+        notice.textContent = targetIsEnglish
+          ? 'This page does not have an English version yet. You have been taken to the English home page.'
+          : '当前页面暂未提供中文版本，已为你打开中文首页。';
+        notice.classList.remove('hidden');
+        window.setTimeout(() => notice.classList.add('hidden'), 4800);
+      };
+
+      document.addEventListener('astro:page-load', showLanguageSwitchNotice);
+      showLanguageSwitchNotice();
+    </script> </body> </html>
