@@ -15,6 +15,8 @@ User-agent: OAI-SearchBot
 User-agent: ChatGPT-User
 User-agent: Claude-SearchBot
 User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
 User-agent: Googlebot
 User-agent: Google-Extended
 User-agent: Bingbot

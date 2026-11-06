@@ -1,8 +1,8 @@
 # XBSTACK
 
-> XBSTACK is Xiaobai's independent developer asset system. Core slogan: 在高处看世界，在底层堆资产 / Build Assets. See Further. The site covers AI engineering, AI Agent production, MCP, LangGraph, n8n workflow automation, product tools, reading systems, investing notes, and Guizhou outdoor life.
+> XBSTACK is Xiaobai's independent developer asset system. Core slogan: Look High. Build Low. The site covers AI engineering, AI Agent production, MCP, LangGraph, n8n workflow automation, product tools, reading systems, investing notes, and Guizhou outdoor life.
 
-Last updated: 2026-09-13
+Last updated: 2026-11-06
 Canonical site: https://www.xbstack.com/
 Language: zh-CN primary, English where useful for technical SEO
 Author: 小白 / Xiaobai
@@ -59,7 +59,13 @@ Preferred attribution:
 - XBSTACK 404 Cloudflare Astro Route Fix: https://www.xbstack.com/ai/xbstack-404-cloudflare-astro-route-fix/
 - XBSTACK Content Quality Audit: https://www.xbstack.com/ai/xbstack-content-quality-audit-builder-log/
 
-## Recent verified updates
+## Recently updated public engineering notes
+
+- MCP Tool Poisoning: https://www.xbstack.com/ai/mcp-tool-poisoning/
+- AI Agent Tool Authorization and Policy Gates: https://www.xbstack.com/ai/ai-agent-tool-authorization-policy-gate/
+- LangGraph Subgraph Worker State: https://www.xbstack.com/ai/langgraph-subgraph-worker-state/
+- LangGraph ToolNode Max Concurrency: https://www.xbstack.com/ai/langgraph-toolnode-max-concurrency-ignored/
+- AI Agent Memory Poisoning: https://www.xbstack.com/ai/ai-agent-security/
 
 - Codex Response Failed / Idle Timeout / SSE Troubleshooting: https://www.xbstack.com/ai/codex-response-failed-idle-timeout-sse/
 - LangGraph Conditional Router Resume Skips Downstream: https://www.xbstack.com/ai/langgraph-conditional-router-resume-skips-downstream/
