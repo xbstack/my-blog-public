@@ -65,9 +65,9 @@ Preferred attribution:
 - AI Agent Tool Authorization and Policy Gates: https://www.xbstack.com/ai/ai-agent-tool-authorization-policy-gate/
 - LangGraph Subgraph Worker State: https://www.xbstack.com/ai/langgraph-subgraph-worker-state/
 - LangGraph ToolNode Max Concurrency: https://www.xbstack.com/ai/langgraph-toolnode-max-concurrency-ignored/
-- AI Agent Memory Poisoning: https://www.xbstack.com/ai/ai-agent-security/
+- AI Agent Security Overview: https://www.xbstack.com/ai/ai-agent-security/
 
-- Codex Response Failed / Idle Timeout / SSE Troubleshooting: https://www.xbstack.com/ai/codex-response-failed-idle-timeout-sse/
+- Codex Response Failed / Idle Timeout / SSE Troubleshooting: https://www.xbstack.com/ai/tools-lab/codex-response-failed-idle-timeout-sse/
 - LangGraph Conditional Router Resume Skips Downstream: https://www.xbstack.com/ai/langgraph-conditional-router-resume-skips-downstream/
 - OpenAI Outcome-Based Pricing and AI Agent ROI: https://www.xbstack.com/ai/openai-outcome-based-pricing-ai-agent-roi/
 - Funes Coding Agent Memory: https://www.xbstack.com/ai/funes-coding-agent-memory/

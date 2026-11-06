@@ -96,7 +96,7 @@ Blocked surfaces:
 
 - MCP Protocol Guide: https://www.xbstack.com/ai/mcp-protocol-guide/
 - MCP Protocol Deep Dive: https://www.xbstack.com/ai/mcp-protocol-deep-dive/
-- MCP Tutorial: https://www.xbstack.com/ai/mcp-tutorial/
+- MCP Protocol Guide: https://www.xbstack.com/ai/mcp-protocol-guide/
 - MCP Server SQLite: https://www.xbstack.com/ai/mcp-server-sqlite/
 - MCP Filesystem Server: https://www.xbstack.com/ai/mcp-filesystem-server/
 - MCP Streamable HTTP Deployment: https://www.xbstack.com/ai/mcp-streamable-http-deployment/
@@ -105,7 +105,7 @@ Blocked surfaces:
 - MCP Server Production Governance: https://www.xbstack.com/ai/mcp-server-production-governance/
 - OpenClaw MCP Sandbox Architecture: https://www.xbstack.com/ai/openclaw-mcp-sandbox-architecture/
 - MCP JSON-RPC Parse Error: https://www.xbstack.com/ai/mcp-json-rpc-parse-error/
-- MCP Stdio Pollution Guide: https://www.xbstack.com/ai/mcp-stdio-pollution-guide/
+- MCP JSON-RPC Parse Error and stdio Troubleshooting: https://www.xbstack.com/ai/mcp-json-rpc-parse-error/
 - MCP Tool Call Truncated Fix: https://www.xbstack.com/ai/mcp-tool-call-truncated-fix/
 - MCP vs Function Calling: https://www.xbstack.com/ai/mcp-vs-function-calling/
 - MCP vs Semantic Kernel: https://www.xbstack.com/ai/mcp-vs-semantic-kernel/
@@ -135,7 +135,7 @@ Blocked surfaces:
 
 ## Recent verified updates
 
-- Codex Response Failed / Idle Timeout / SSE Troubleshooting: https://www.xbstack.com/ai/codex-response-failed-idle-timeout-sse/
+- Codex Response Failed / Idle Timeout / SSE Troubleshooting: https://www.xbstack.com/ai/tools-lab/codex-response-failed-idle-timeout-sse/
   Focus: Codex response failures, idle timeouts, SSE interruption boundaries and production troubleshooting.
 
 - LangGraph Conditional Router Resume Skips Downstream: https://www.xbstack.com/ai/langgraph-conditional-router-resume-skips-downstream/
