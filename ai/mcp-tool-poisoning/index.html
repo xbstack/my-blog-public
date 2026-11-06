@@ -1053,7 +1053,7 @@ const analyticsRequiresHumanInteraction = false;
 <h2 id="怀疑已经中招应该先做什么">怀疑已经中招，应该先做什么？</h2>
 <p><img src="/images/mcp-tool-poisoning/zh/04-incident-response.webp" alt="怀疑工具投毒时的调用核验、连接暂停与凭据轮换流程"></p>
 <p>先暂停可疑 MCP 连接并限制当前权限，保存必要的脱敏日志，核对最近工具调用和服务器版本变化。然后逐项判断：是否只是出现了异常文字、是否真的调用了未授权工具、是否存在异常外发或业务写入。确认凭据可能暴露时再按相应系统流程轮换 Token、核对访问记录；如果涉及发信、付款、发布或删除，优先核查远端真实状态，不要盲目重试造成二次副作用。修复后应把异常场景加入自动化回归，并检查执行层策略而不是只删除恶意提示词。</p>
-<p>若你正在搭建生产 Agent，可继续参考 XBSTACK 现有的 <a href="/ai/ai-agent-security/">AI Agent Security 总览</a> 和 <a href="/ai/mcp-config-secret-permission-security-audit/">MCP 配置权限审计</a>。这些页面讨论完整的身份、执行和权限边界；本文只聚焦<strong>MCP 工具投毒怎样识别、判断和降低影响</strong>，不复制整个 Agent 安全百科。</p>
+<p>若你正在搭建生产 Agent，可继续参考 XBSTACK 现有的 <a href="/ai/ai-agent-security/">AI Agent Security 总览</a>、<a href="/ai/mcp-security-best-practices/">MCP 安全最佳实践：Server 权限、结果脱敏与执行审计</a> 和 <a href="/ai/mcp-config-secret-permission-security-audit/">MCP 配置权限审计</a>。这些页面讨论完整的身份、执行和权限边界；本文只聚焦<strong>MCP 工具投毒怎样识别、判断和降低影响</strong>，不复制整个 Agent 安全百科。</p>
 <h2 id="常见问题">常见问题</h2>
 <p><strong>MCP 本身安全吗？</strong> MCP 规范工具连接与调用，但不为第三方 Server 的工具描述、返回内容和权限作担保；应核对来源、真实文件/网络权限和执行层审批。</p>
 <p><strong>安装 MCP 会自动泄露 API Key 吗？</strong> 不会因为安装就必然泄露；风险取决于进程是否能接触凭据、工具之间能否传递敏感数据，以及外部网络出口是否被限制。</p>
