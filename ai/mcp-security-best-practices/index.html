@@ -581,7 +581,7 @@ const analyticsRequiresHumanInteraction = false;
               window._hmt.push(['_trackPageview', pageKey]);
             });
           }
-        </script><link rel="stylesheet" href="/_astro/archive.VzG41Il1.css">
+        </script><link rel="stylesheet" href="/_astro/archive.CoBLOxwA.css">
 <style>.financial-disclaimer[data-astro-cid-qg2yevcq]{box-shadow:0 4px 20px -5px #f973161a}.xb-article-grid.xb-article-v21{width:min(calc(100% - 40px),1180px);grid-template-columns:minmax(0,760px) 228px;gap:54px;justify-content:center}.xb-article-v21 .xb-article-paper{padding:36px 40px 40px}.xb-article-v21 .xb-article-side{top:126px}.xb-article-v21 .xb-article-panel{padding:17px;border-radius:10px}.xb-article-v21 .xb-article-panel__title{font-size:12px;margin-bottom:10px;letter-spacing:0;font-weight:760}.xb-v21-toc{display:flex;flex-direction:column;gap:0}.xb-v21-toc a,.xb-v21-toc button{display:flex;justify-content:space-between;gap:10px;text-align:left;padding:9px 0;border-bottom:1px solid var(--xb-line);font-size:13px;line-height:1.5;color:var(--xb-text)}.xb-v21-toc a:hover,.xb-v21-toc button:hover{color:var(--xb-blue)}.xb-v21-toc .xb-v21-toc-nested{padding-left:12px;font-size:12px}.xb-v21-evidence[data-astro-cid-ce2bgkb3]{margin:0 0 24px;border-block:1px solid var(--xb-line);padding:12px 0}.xb-v21-evidence[data-astro-cid-ce2bgkb3] summary[data-astro-cid-ce2bgkb3]{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--xb-muted);cursor:pointer}.xb-v21-evidence[data-astro-cid-ce2bgkb3] strong[data-astro-cid-ce2bgkb3]{font-size:13px;color:var(--xb-ink)}.xb-v21-evidence[data-astro-cid-ce2bgkb3] summary[data-astro-cid-ce2bgkb3]>span[data-astro-cid-ce2bgkb3]:last-child{margin-left:auto;color:var(--xb-blue)}.xb-v21-evidence-links[data-astro-cid-ce2bgkb3]{display:flex;gap:10px 18px;flex-wrap:wrap;margin-top:13px;padding-top:12px;border-top:1px solid var(--xb-line)}.xb-v21-evidence-links[data-astro-cid-ce2bgkb3] a[data-astro-cid-ce2bgkb3]{font-size:12px;line-height:1.5;color:var(--xb-blue)}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3]{display:none;border:1px solid var(--xb-line);border-radius:10px;margin:0 0 24px;padding:13px 16px;font-size:14px}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3] summary[data-astro-cid-ce2bgkb3]{display:flex;justify-content:space-between;cursor:pointer;font-weight:700}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3] nav[data-astro-cid-ce2bgkb3]{display:grid;gap:12px;padding-top:18px;color:var(--xb-text)}@media(max-width:1060px){.xb-article-grid.xb-article-v21{width:min(calc(100% - 32px),820px);display:block}.xb-article-grid.xb-article-v21>.xb-article-side{display:none}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3]{display:block}}@media(max-width:640px){.xb-article-v21 .xb-article-paper{padding:24px 18px 30px}}
 </style>
 <link rel="stylesheet" href="/_astro/_slug_.CoqtapaZ.css">
@@ -1099,11 +1099,11 @@ app <span class="token operator">=</span> Server<span class="token punctuation">
 <p>先区分两个容易混淆的概念：<strong>MCP Roots</strong> 是 Client 告诉 Server“哪些目录与当前工作相关”的协议提示，本来就不是强制访问控制，而且在 2026-07-28 已被标记为 deprecated；本文的 <strong>allowedRoots</strong> 是 Server 自己实现并强制执行的文件系统 ACL。后者只要真正做 realpath、身份、操作类型和 symlink 边界检查，仍然是有效的安全机制。</p>
 <p>通过严格的绝对路径解析与符号链接验证，可以降低 AI 利用路径穿透（Path Traversal）读取宿主机敏感文件的风险；它不是绝对保证，还需要 OS 权限、只读账号和容器/沙箱边界共同约束。</p>
 <p>路径穿透是文件系统类 MCP 工具最容易被攻破的软肋。大模型在遇到恶意 Prompt 引导时，往往会被要求去读取一些敏感系统文件。例如，一个恶意提示词可能会让 AI 传入诸如 <code>../../../../etc/passwd</code> 或者 <code>~/.ssh/id_rsa</code> 这样的路径。如果你的 MCP Server 代码只是简单地做了一个 <code>root + path</code> 的拼接，那么你的物理宿主机已经沦陷了。</p>
-<p>为了建立安全的 <code>allowedRoots</code> 路径防护，我们需要实现以下三条防线：</p>
+<p>为降低 <code>allowedRoots</code> 越界风险，必须区分<strong>静态路径预检</strong>与<strong>文件真正打开时的强制安全边界</strong>：</p>
 <ol>
-<li>路径绝对化：使用 <code>os.path.abspath</code> 或 <code>os.path.realpath</code> 消除相对路径中的 <code>..</code> 和 <code>.</code>。</li>
-<li>物理边界校验：确保计算出的目标路径，其头部字符串必须与 <code>allowedRoots</code> 中的某一个根目录完全匹配。</li>
-<li>符号链接（Symlink）逃逸拦截：防止通过在允许的目录下建立指向系统根目录的软链接来绕过检查。必须使用 <code>os.path.realpath</code> 来解析真实的物理存储路径，而不是仅仅用 <code>os.path.abspath</code>。</li>
+<li><code>abspath</code> 只能按字符串语义归一化路径；<code>realpath</code> 可解析检查时可见的符号链接，但它不检查硬链接，也不能阻止链接在检查后被替换。</li>
+<li>把允许根目录和目标都解析后，用 <code>os.path.commonpath([real_root, real_target]) == real_root</code> 比较路径组成部分，避免前缀相似的兄弟目录被误判；这仍然只是检查时刻的边界。</li>
+<li>生产文件访问需结合实际用户身份、Tool 读写授权、OS 权限与沙箱，并尽量使用受信目录文件描述符下的打开语义。Linux 可评估 <code>openat2</code> 的 <code>RESOLVE_BENEATH</code> / <code>RESOLVE_IN_ROOT</code> / <code>RESOLVE_NO_MAGICLINKS</code> 或严谨的 <code>dir_fd</code> / <code>O_NOFOLLOW</code> 方案；这些不是跨平台 Python 通用 API。检查与 <code>open()</code> 之间的 TOCTOU（检查时与使用时状态不同）必须独立测试。</li>
 </ol>
 <h3 id="allowedroots-配置示例">allowedRoots 配置示例</h3>
 <p>下面是一个典型的 <code>allowed_roots_config.json</code> 配置文件，用于定义各个应用允许读写的绝对路径：</p>
@@ -1121,7 +1121,7 @@ app <span class="token operator">=</span> Server<span class="token punctuation">
   <span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<p>下面是我在本地开发中封装的 <code>PathProtector</code> 类，包含了最完整的防穿透与扩展名黑名单物理逻辑：</p>
+<p>下面的 <code>PathProtector</code> 是<strong>静态路径预检示例</strong>，用于说明解析、路径归属与敏感文件名策略；它不是能抵御并发符号链接替换的生产级文件访问沙箱。扩展名/文件名黑名单只作为辅助规则，不能取代 Tool 操作授权或 OS 权限。</p>
 <pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">import</span> os
 
 <span class="token keyword">class</span> <span class="token class-name">PathProtector</span><span class="token punctuation">:</span>
@@ -1136,14 +1136,12 @@ app <span class="token operator">=</span> Server<span class="token punctuation">
         <span class="token keyword">if</span> real_root <span class="token keyword">not</span> <span class="token keyword">in</span> self<span class="token punctuation">.</span>allowed_roots<span class="token punctuation">:</span>
             <span class="token keyword">raise</span> PermissionError<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"物理拦截：未授权的根目录访问: </span><span class="token interpolation"><span class="token punctuation">{</span>root_dir<span class="token punctuation">}</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
 
-        <span class="token comment"># 2. 拼接绝对路径并使用 realpath 消除 ../ 符号及硬链接转折</span>
+        <span class="token comment"># 2. 解析检查时可见的符号链接；realpath 不会识别硬链接，也不防 TOCTOU</span>
         full_path <span class="token operator">=</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>real_root<span class="token punctuation">,</span> target_relative_path<span class="token punctuation">)</span>
         real_target_path <span class="token operator">=</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>realpath<span class="token punctuation">(</span>full_path<span class="token punctuation">)</span>
 
-        <span class="token comment"># 3. 严格边界检查：目标物理路径的前缀必须是 real_root</span>
-        <span class="token comment"># 加上 os.path.sep 防止匹配到 /path/to/root_dir_fake 这样的相似命名漏洞</span>
-        prefix <span class="token operator">=</span> real_root <span class="token keyword">if</span> real_root<span class="token punctuation">.</span>endswith<span class="token punctuation">(</span>os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>sep<span class="token punctuation">)</span> <span class="token keyword">else</span> real_root <span class="token operator">+</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>sep
-        <span class="token keyword">if</span> <span class="token keyword">not</span> real_target_path<span class="token punctuation">.</span>startswith<span class="token punctuation">(</span>prefix<span class="token punctuation">)</span> <span class="token keyword">and</span> real_target_path <span class="token operator">!=</span> real_root<span class="token punctuation">:</span>
+        <span class="token comment"># 3. 用路径组成部分判断归属；仍不能取代文件描述符级打开限制</span>
+        <span class="token keyword">if</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>commonpath<span class="token punctuation">(</span><span class="token punctuation">[</span>real_root<span class="token punctuation">,</span> real_target_path<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">!=</span> real_root<span class="token punctuation">:</span>
             <span class="token keyword">raise</span> PermissionError<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"物理拦截：检测到路径越界尝试: </span><span class="token interpolation"><span class="token punctuation">{</span>real_target_path<span class="token punctuation">}</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
 
         <span class="token comment"># 4. 敏感文件扩展名物理过滤</span>
@@ -1153,7 +1151,7 @@ app <span class="token operator">=</span> Server<span class="token punctuation">
 
         <span class="token keyword">return</span> real_target_path
 </code></pre>
-<p>在你的 <code>read_file</code> 或是 <code>write_file</code> 的 Tool 实现中，第一行代码必须调用这个类的 <code>validate_safe_path</code> 方法。这就像是在物理文件系统前架设了一道安检闸机，任何越过白名单的相对路径、软链接均会在解析阶段被直接掐死。</p>
+<p>在 <code>read_file</code> / <code>write_file</code> 中，可以把 <code>validate_safe_path</code> 用于早期拒绝不合规路径，但<strong>不能用返回的字符串直接证明后续文件打开安全</strong>。生产环境要在实际打开/创建文件时维持同一目录权限边界，尤其要回归测试 <code>../</code>、<code>root</code> 与 <code>root-fake</code>、符号链接逃逸，以及校验与打开之间替换目录链接的竞争；<code>commonpath</code> 本身不防竞态。参考：<a href="https://docs.python.org/3/library/os.path.html" rel="nofollow noopener noreferrer" target="_blank">Python <code>os.path</code> 文档</a>与 <a href="https://man7.org/linux/man-pages/man2/openat2.2.html" rel="nofollow noopener noreferrer" target="_blank">Linux <code>openat2(2)</code></a>。</p>
 <h2 id="数据库安全只读账户与参数校验白名单">数据库安全：只读账户与参数校验白名单</h2>
 <p>对数据库类 MCP Server，实施只读连接策略并使用参数化预编译与强制类型匹配是阻断 SQL 注入的绝对防线。</p>
 <p>如果你的 MCP Server 提供数据库查询能力，你千万不要把数据库的超级管理员账号（如 <code>sa</code> 或者是 <code>postgres</code>）直接配置在连接字符串中交给 AI 客户端。因为只要大模型在分析过程中产生幻觉，或者被外部的不安全上下文注入了提示词，它就极有可能向你的 Server 提交包含 <code>DROP TABLE</code>、<code>TRUNCATE</code> 甚至 <code>UPDATE users SET role = 'admin'</code> 的指令。</p>
