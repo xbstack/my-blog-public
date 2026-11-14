@@ -959,7 +959,7 @@ const analyticsRequiresHumanInteraction = false;
 <p>继续查看 <a href="/ai/agent/">XBSTACK AI Agent 专题</a>，把 CRM 自动化放回权限、审批、状态和生产治理的完整 Agent 架构里评估。</p>
 <h2 id="2026-年-11-月平台接口核对不能照搬旧权限教程">2026 年 11 月平台接口核对：不能照搬旧权限教程</h2>
 <p>HubSpot 在 2026 年 10 月停止创建新的旧式 Private App（已有应用不因此立即失效），新建系统间集成应根据当前能力选择具备细粒度作用域与审计机制的 Service Key 或新版开发平台方式；不能照搬过时的“随便创建 Private App 并复制 Token”教程。<a href="https://developers.hubspot.com/changelog/legacy-private-app-creation-sunset" rel="nofollow noopener noreferrer" target="_blank">HubSpot 官方变更公告</a></p>
-<p>HubSpot 的 <strong>2026-09 CRM API 写入校验</strong>还会对已配置相关规则的账号执行条件必填项、创建记录要求和特定关联权限校验。若接收到 400，先检查业务字段和权限，不应让 Agent 盲目重试或绕过校验。<a href="https://developers.hubspot.com/changelog/crm-api-write-validation-enforcement" rel="nofollow noopener noreferrer" target="_blank">HubSpot CRM 写入校验公告</a></p>
+<p>HubSpot 的 <strong>2026-09 CRM API 写入校验</strong>会执行账号已配置的条件必填属性、创建记录的必填字段以及使用用户级 OAuth 时的关联编辑权限检查。<strong>注意官方在 2026-10-27 更正：创建记录时“必须关联其他记录”的规则目前只在应用 UI 强制，不在公开 API 写入路径强制；不能将这类 UI 要求误报为 API 必须校验。</strong> 遇到 HTTP 400 应读取具体字段或权限错误并修正请求，不能让 Agent 原样重试。<a href="https://developers.hubspot.com/changelog/crm-api-write-validation-enforcement" rel="nofollow noopener noreferrer" target="_blank">HubSpot CRM 写入校验公告</a></p>
 <p>Salesforce Agentforce 的自定义 Apex Action 则应遵循最小权限、共享访问与用户模式查询/写入，并通过单元测试与授权测试验证；仅在 Prompt 写“不要修改商机”不能代替实际 API 权限控制。<a href="https://developer.salesforce.com/blogs/2025/07/best-practices-for-building-agentforce-apex-actions" rel="nofollow noopener noreferrer" target="_blank">Salesforce Agentforce Apex 官方实践</a></p>
 <p><strong>以上是供应商公开接口和安全边界资料，不是本站对 HubSpot/Salesforce 产品转化率、部署性能的独立测评。</strong></p>
 <h2 id="crm-automation-ai-agent-怎么选先看这一张表">CRM Automation AI Agent 怎么选：先看这一张表</h2>
