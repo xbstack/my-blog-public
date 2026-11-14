@@ -1010,7 +1010,7 @@ utm_medium   Channel type: social / community / official_account / newsletter
 utm_campaign: site_ops / ai_agent / tools / reading
 utm_content  Specific placement: answer_card / footer_link / read_more / code_block
 </code></pre>
-<p>For a personal website, there is no need to design an enterprise-grade attribution system from the start. Stabilizing these four fields will already resolve 80% of the chaos.</p>
+<p>For a personal website, there is no need to design an enterprise-grade attribution system from the start. Stabilizing these four fields establishes a consistent baseline, but the amount of attribution ambiguity it removes has not been measured and depends on actual campaign-link coverage.</p>
 <p>When I publish content on external sites in the future, I won’t just ask, “Did you include the link?” Instead, I’ll ask: “Will this link be identifiable by me later?”</p>
 <h3 id="naked-link-distribution-vs-utm-parameter-tracking">Naked Link Distribution vs. UTM Parameter Tracking</h3>
 <p>To clearly illustrate the differences between these two approaches, I have compiled a comparison table:</p>
@@ -1044,7 +1044,7 @@ utm_content  Specific placement: answer_card / footer_link / read_more / code_bl
 
 
 
-<table><thead><tr><th align="left">Evaluation Dimension</th><th align="left">Naked Link Distribution</th><th align="left">UTM Parameter Tracking</th></tr></thead><tbody><tr><td align="left">Traffic Identification Precision</td><td align="left">Blurred and mixed within Direct/Referral traffic</td><td align="left">Precise down to specific channels, articles, and entry points</td></tr><tr><td align="left">Conversion Attribution Path</td><td align="left">Unable to track subsequent actions and conversion sources</td><td align="left">Reconstructs the complete path from external clicks to internal tool usage</td></tr><tr><td align="left">Basis for Decision-Making Data</td><td align="left">Relies on subjective feelings and read counts on external platforms</td><td align="left">Relies on actual internal Session and Conversion data</td></tr><tr><td align="left">Cache &#x26; SEO Noise</td><td align="left">Paths remain unique, with no parameter noise</td><td align="left">May generate duplicate URLs, requiring canonical normalization</td></tr></tbody></table>
+<table><thead><tr><th align="left">Evaluation Dimension</th><th align="left">Naked Link Distribution</th><th align="left">UTM Parameter Tracking</th></tr></thead><tbody><tr><td align="left">Traffic Identification Precision</td><td align="left">Blurred and mixed within Direct/Referral traffic</td><td align="left">Precise down to specific channels, articles, and entry points</td></tr><tr><td align="left">Conversion Attribution Path</td><td align="left">Referrer data may still identify some sources, but detailed campaigns are harder to compare</td><td align="left">Can connect campaign dimensions with downstream events when GA4 tagging and consent work correctly; does not guarantee a complete user journey</td></tr><tr><td align="left">Basis for Decision-Making Data</td><td align="left">Relies on subjective feelings and read counts on external platforms</td><td align="left">Relies on actual internal Session and Conversion data</td></tr><tr><td align="left">Cache &#x26; SEO Noise</td><td align="left">Paths remain unique, with no parameter noise</td><td align="left">May generate duplicate URLs, requiring canonical normalization</td></tr></tbody></table>
 <p>The key point: Although UTM parameters increase link length, they provide irreplaceable precision for external attribution, whereas naked links are only suitable for search engine crawling.</p>
 <h2 id="utms-should-not-pollute-internal-links">UTMs Should Not Pollute Internal Links</h2>
 <p>Internal links must maintain clean and consistent paths to avoid creating unnecessary noise for search engine crawlers and caching systems.</p>
@@ -1056,7 +1056,7 @@ utm_content  Specific placement: answer_card / footer_link / read_more / code_bl
 <p>External links handle attribution; internal links manage the reading path.</p>
 <p>Do not mix these two purposes.</p>
 <h2 id="common-utm-configuration-pitfalls-and-errors">Common UTM Configuration Pitfalls and Errors</h2>
-<p>When configuring and tracking UTMs in practice, you will frequently encounter formatting errors during URL concatenation and issues with source attribution loss. Below are real error logs and troubleshooting records:</p>
+<p>When configuring and tracking UTMs in practice, you will frequently encounter formatting errors during URL concatenation and issues with source attribution loss. The following are illustrative error-format examples, not XBSTACK-verified production request logs:</p>
 <h3 id="pitfall-1-double-question-marks-during-url-concatenation">Pitfall 1: Double Question Marks During URL Concatenation</h3>
 <p>This is the most common format concatenation error. If your slug path already contains parameters, or if you fail to check symbols during concatenation, parsing will fail:</p>
 <pre class="language-text" data-language="text"><code is:raw="" class="language-text">GET /ai/xbstack-utm-distribution-tracking/?page=2?utm_source=zhihu&#x26;utm_medium=social
@@ -1066,10 +1066,11 @@ utm_content  Specific placement: answer_card / footer_link / read_more / code_bl
 <code>/ai/xbstack-utm-distribution-tracking/?page=2&#x26;utm_source=zhihu&#x26;utm_medium=social</code>.</p>
 <h3 id="pitfall-2-referer-loss-caused-by-in-app-browsers">Pitfall 2: Referer Loss Caused by In-App Browsers</h3>
 <p>Mobile apps such as WeChat and Zhihu use their built-in WebViews to open external links. Due to Referrer Policy settings, the <code>Referer</code> header information may be truncated or rewritten:</p>
-<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Referrer Policy: origin-when-cross-origin
-Extracted Referer: android-app://com.zhihu.android/
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Example Referrer-Policy: origin-when-cross-origin
+Example Referer: android-app://com.zhihu.android/
 </code></pre>
-<p><strong>Solution</strong>: Do not rely on the Referer header for precise platform attribution of 100%. You must explicitly pass the <code>utm_source</code> parameter in the link so that GA4 can bypass Referer restrictions and correctly categorize the traffic.</p>
+<p><strong>Solution</strong>: Tag external campaign links consistently with <code>utm_source</code>, <code>utm_medium</code>, and <code>utm_campaign</code>, preserve them through redirects, and verify GA4 traffic-source reporting. UTMs reduce dependence on the Referer header but cannot guarantee complete attribution when redirects strip parameters, users block tracking, or browser privacy rules intervene.</p>
+<p><strong>Primary documentation and limits:</strong> <a href="https://support.google.com/analytics/answer/11242870?hl=en" rel="nofollow noopener noreferrer" target="_blank">Google Analytics manual campaign tagging</a> explains how source, medium and campaign parameters enter reporting. Google’s <a href="https://support.google.com/analytics/answer/15258820?hl=en" rel="nofollow noopener noreferrer" target="_blank">Direct traffic troubleshooting</a> documents redirects stripping UTMs, tracking blockers and unknown referrers. Verify landing-page parameters and downstream GA4 events instead of treating UTM tags as proof of complete person-level attribution.</p>
 <h2 id="i-monitor-both-ga4-and-cloudflare">I Monitor Both GA4 and Cloudflare</h2>
 <p>Combining GA4’s audit of user on-site behavior with Cloudflare’s monitoring of underlying request characteristics is essential for a complete review of traffic quality.</p>
 <p>GA4 is better suited for analyzing user behavior: sources, sessions, dwell time, page paths, events, and conversions. Cloudflare is better suited for examining request-level data: actual paths, Referer headers, User-Agent strings, status codes, geolocation, cache hits, and anomalous access patterns.</p>
