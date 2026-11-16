@@ -1149,7 +1149,7 @@ legacy     applied=True state={'resumed_key': 'resumed_value'}
 <p>This is separate from the earlier <code>state_delta</code> and relayed A2A HITL findings. Those are XBSTACK offline version experiments; <strong>the 2.9.0 failed-node rerun behavior here is an official release semantic, not a claim of a new local reproduction.</strong> Together they reinforce the same production rule: runtime recovery and business exactly-once execution need separate acceptance tests.</p>
 <h2 id="is-every-google-adk-version-affected">Is every Google ADK version affected?</h2>
 <p>This article does not claim that.</p>
-<p>The XBSTACK reproduction is scoped to <code>google-adk==2.6.2</code>. The upstream report also demonstrates the issue against 2.6.2-era code. A later release may change the behavior.</p>
+<p>The XBSTACK <code>state_delta</code> reproduction remains pinned to <code>google-adk==2.6.2</code>, while the A2A test compares 2.6.1 and 2.7.0. Both fixes are included in the v2.14.0 tag by commit ancestry. That verifies the code history, <strong>not</strong> XBSTACK’s actual runtime behavior on v2.14.0; verify the exact deployed SDK release before changing a production workaround.</p>
 <p>If you are reading this on a newer version, check two things before copying any workaround:</p>
 <ol>
 <li>Verify that your deployed tag includes both fix commits (6de43b0 for state_delta and caf2356 for A2A HITL); v2.14.0 includes both.</li>

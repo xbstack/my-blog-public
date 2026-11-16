@@ -969,7 +969,7 @@ const analyticsRequiresHumanInteraction = false;
 </ul>
 <h2 id="痛点分析与目标读者">痛点分析与目标读者</h2>
 <p>在 AI Agent 技术落地的过程中，开发团队常常会走入两个极端：要么轻信了简单的 LangChain 教程，将未经验证的 Demo 代码直接上线，导致生产环境中因为网络超时引发死循环爆掉 Token 额度；要么在项目冷启动阶段就盲目引入了复杂的群聊多智能体（GroupChat）和自动长期记忆，引入了巨大的工程复杂性，却因模型间语义噪音干扰导致任务成功率急剧下降。</p>
-<p>如何在架构初期做好框架选型？如何为工具调用设计严密的安全边界？如何在部署时确保状态不丢失、成本可计算？</p>
+<p>如何在架构初期做好框架选型？如何为工具调用设计严密的安全边界？如何界定 Checkpoint 的可恢复范围、外部副作用与成本预算，而不是承诺状态永不丢失？</p>
 <p>本文为在一线从事智能体系统开发、系统集成的研发工程师，以及需要评估 Agent 架构可行性与制定上线 Checklist 的技术负责人，提供一份详实、可执行的项目落地指南。</p>
 <h2 id="先定位这不是-ai-agent-概念大全而是开发落地手册">先定位：这不是 AI Agent 概念大全，而是开发落地手册</h2>
 <p>开发 Agent 项目时，最重要的不是先选框架，而是先判断任务类型、风险等级、工具边界、状态复杂度和上线要求。</p>
@@ -987,7 +987,7 @@ const analyticsRequiresHumanInteraction = false;
 </ul>
 <p>如果上述答案均为“否”，建议退回使用有状态工作流（Astro/Node.js Workflow）或者传统的确定性逻辑，不要为了技术时髦而平白引入大模型的随机性开销。</p>
 <h2 id="第二步协议与编排框架选型">第二步：协议与编排框架选型</h2>
-<p>在 2026 年，协议与框架的选型已经沉淀出清晰的场景界限。</p>
+<p>2026 年的协议选型仍需按目标版本、运行时与权限边界逐项核实，不能把某个框架能力当作协议保证。</p>
 <h3 id="1-工具调用协议选型">1. 工具调用协议选型</h3>
 <ul>
 <li>Function Calling：适合单体应用内部的工具调用。优点是直接通过大模型提供商的 SDK 传输 schema，开发极快；缺点是无法跨平台复用，且与客户端高度耦合。</li>
@@ -1007,7 +1007,7 @@ const analyticsRequiresHumanInteraction = false;
 <li>只允许一个核心 Coordinator Agent，避免多智能体间的通信开销。</li>
 <li>工具限制在 3 至 5 个，且全部为只读或低风险写入。</li>
 <li>引入最大规划步数限制（例如 <code>max_iterations = 5</code>），强行熔断可能发生的死循环。</li>
-<li>全量记录输入输出与模型调用时延。</li>
+<li>只记录排障必要的脱敏工具事件、状态变更和延迟，不默认记录完整用户输入、密钥与敏感文档。</li>
 </ul>
 <h2 id="第四步工具开发审计清单-tool-use-checklist">第四步：工具开发审计清单 (Tool Use Checklist)</h2>
 <p>每个向大模型注册的工具（Tool）在进入生产环境前，必须满足以下设计指标：</p>
@@ -1016,18 +1016,20 @@ const analyticsRequiresHumanInteraction = false;
 
 tool_registry_spec<span class="token punctuation">:</span> Dict<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> Any<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
     <span class="token string">"tool_name"</span><span class="token punctuation">:</span> <span class="token string">"query_cost_center_budget"</span><span class="token punctuation">,</span>
-    <span class="token string">"description"</span><span class="token punctuation">:</span> <span class="token string">"输入成本中心编码，查询其当前财务周期的可用预算额度。单价必须为 CNY。"</span><span class="token punctuation">,</span>
+    <span class="token string">"description"</span><span class="token punctuation">:</span> <span class="token string">"查询已获授权的成本中心预算；访问控制由服务端验证，模型不能指定租户身份。"</span><span class="token punctuation">,</span> 
     <span class="token string">"input_schema"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
         <span class="token string">"type"</span><span class="token punctuation">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
         <span class="token string">"properties"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
             <span class="token string">"cost_center"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token string">"type"</span><span class="token punctuation">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span> <span class="token string">"pattern"</span><span class="token punctuation">:</span> <span class="token string">"^CC-[A-Z]{3}-\\d{2}$"</span><span class="token punctuation">}</span>
         <span class="token punctuation">}</span><span class="token punctuation">,</span>
-        <span class="token string">"required"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"cost_center"</span><span class="token punctuation">]</span>
+        <span class="token string">"required"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"cost_center"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string">"additionalProperties"</span><span class="token punctuation">:</span> <span class="token boolean">False</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token string">"risk_level"</span><span class="token punctuation">:</span> <span class="token string">"low"</span><span class="token punctuation">,</span>
     <span class="token string">"timeout_ms"</span><span class="token punctuation">:</span> <span class="token number">3000</span><span class="token punctuation">,</span>
     <span class="token string">"retry_policy"</span><span class="token punctuation">:</span> <span class="token string">"exponential_backoff_3_times"</span><span class="token punctuation">,</span>
-    <span class="token string">"approval_required"</span><span class="token punctuation">:</span> <span class="token boolean">False</span>
+    <span class="token string">"approval_required"</span><span class="token punctuation">:</span> <span class="token boolean">False</span><span class="token punctuation">,</span>
+    <span class="token string">"authorization_required"</span><span class="token punctuation">:</span> <span class="token boolean">True</span>
 <span class="token punctuation">}</span>
 </code></pre>
 <h3 id="研发上线-checklist">研发上线 Checklist：</h3>
@@ -1042,22 +1044,22 @@ tool_registry_spec<span class="token punctuation">:</span> Dict<span class="toke
 <p>在开发记忆系统时，我们必须杜绝将会话历史（Chat History）当作全局状态直接读写的粗暴做法。</p>
 <h3 id="研发上线-checklist-1">研发上线 Checklist：</h3>
 <ul class="contains-task-list">
-<li class="task-list-item"><input type="checkbox" disabled> 长期记忆（Long-term Memory）在存入向量库时，Metadata 中是否强制包含 <code>tenant_id</code> 和 <code>user_id</code>，以实现物理隔离？</li>
-<li class="task-list-item"><input type="checkbox" disabled> 系统是否提供了“遗忘接口”，支持用户根据隐私协议一键擦除与其关联的所有历史记忆？</li>
-<li class="task-list-item"><input type="checkbox" disabled> 记忆提取阶段，是否通过相似度评分设置了较低的阈值（如 Score > 0.85），防止不相关的旧记忆干扰当前的推理 Context？</li>
+<li class="task-list-item"><input type="checkbox" disabled> 长期记忆是否由受信后端绑定 <code>tenant_id</code>、<code>user_id</code>、<code>agent_id</code> 和 Scope，并在检索/缓存/恢复路径实际验证授权？仅存 Metadata 不能证明物理隔离。</li>
+<li class="task-list-item"><input type="checkbox" disabled> 是否提供撤销/删除请求及逐层核验记录（主库、索引、缓存、派生摘要、备份保留期），只承诺实际可证实的删除范围？</li>
+<li class="task-list-item"><input type="checkbox" disabled> 是否先检查记忆授权、有效期、冲突和来源权威性，再通过标注样本校准相似度阈值？<code>0.85</code> 不是通用默认值。</li>
 <li class="task-list-item"><input type="checkbox" disabled> 状态持久化（Checkpointing）是否与 Chat History 分离，状态对象是否为 standard JSON 格式？</li>
 </ul>
 <h2 id="第六步知识检索审计清单-rag-checklist">第六步：知识检索审计清单 (RAG Checklist)</h2>
-<p>RAG 检索分值及 Memory 读写指纹的持续监控，能确保智能体不会因引用过期信息或越权检索导致回答质量劣化。</p>
+<p>RAG 质量监控可发现过期文档与召回偏差，但不能代替数据库侧的授权和有效期过滤，也不能保证所有回答正确。</p>
 <h3 id="研发上线-checklist-2">研发上线 Checklist：</h3>
 <ul class="contains-task-list">
-<li class="task-list-item"><input type="checkbox" disabled> 向量库的召回分片（Chunks）中，是否包含 <code>last_updated_at</code> 元数据，以判定知识是否过期？</li>
+<li class="task-list-item"><input type="checkbox" disabled> 召回分片是否具有可验证的来源版本、<code>valid_until</code>、撤销状态和更新日期？仅用 <code>last_updated_at</code> 不能断定内容失效。</li>
 <li class="task-list-item"><input type="checkbox" disabled> 检索出来的 Chunks 是否在前置层对当前用户的权限等级进行了碰撞，过滤掉越权文档？</li>
 <li class="task-list-item"><input type="checkbox" disabled> 智能体的最终输出中，是否强制包含引用来源指针（Citation List），且该指针可回溯到 PDF 原始页码？</li>
 <li class="task-list-item"><input type="checkbox" disabled> 当检索返回空结果时，Agent 是否有特定的 Fallback Prompt，引导其诚实回答“未找到相关知识”，而非自创答案？</li>
 </ul>
 <h2 id="第七步任务规划与状态持久化清单-planning--state-checklist">第七步：任务规划与状态持久化清单 (Planning &#x26; State Checklist)</h2>
-<p>在每个 Step 结束时持久化状态机快照，是实现断点续传、失败回溯和离线仿真调试的物理基础。</p>
+<p>在可恢复的执行边界保存状态快照有助于重新启动与审计；<strong>不表示能撤销已发生的支付、发信或其他外部副作用</strong>，需配合幂等、Outbox 与人工审批。</p>
 <p>我们必须为智能体的工作流设计结构化的状态字典（State Spec）：</p>
 <pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"state_spec"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
@@ -1076,7 +1078,7 @@ tool_registry_spec<span class="token punctuation">:</span> Dict<span class="toke
 </code></pre>
 <h3 id="研发上线-checklist-3">研发上线 Checklist：</h3>
 <ul class="contains-task-list">
-<li class="task-list-item"><input type="checkbox" disabled> 每次 Step 执行完毕后，是否自动向 Redis 或数据库写入一次 State Checkpoint，以保证 Worker 重启后能断点续传？</li>
+<li class="task-list-item"><input type="checkbox" disabled> 是否在经验证的持久化边界记录状态、任务 ID、租户和版本，并测试 Worker 故障后恢复、步骤重放及外部副作用幂等？</li>
 <li class="task-list-item"><input type="checkbox" disabled> 是否在 Planner 节点外围包裹了最大迭代保护阀，防止规划逻辑跑偏导致死循环？</li>
 <li class="task-list-item"><input type="checkbox" disabled> 状态中是否包含 <code>last_error</code> 字段，并在检测到多次相同错误后自动触发向 SRE 发送告警？</li>
 </ul>
@@ -1085,7 +1087,7 @@ tool_registry_spec<span class="token punctuation">:</span> Dict<span class="toke
 <h3 id="研发上线-checklist-4">研发上线 Checklist：</h3>
 <ul class="contains-task-list">
 <li class="task-list-item"><input type="checkbox" disabled> 各智能体的 System Message 中，其职责是否原子化且绝对互斥，没有语义模糊重叠区？</li>
-<li class="task-list-item"><input type="checkbox" disabled> 是否通过 Allowed Transitions 或 Supervisor 节点限定了发言人跳转路径，禁止自由群聊？</li>
+<li class="task-list-item"><input type="checkbox" disabled> 是否按任务风险限制交接和可调用工具，并在后端执行授权？Supervisor 或 Allowed Transitions 本身并非租户隔离边界。</li>
 <li class="task-list-item"><input type="checkbox" disabled> 两个智能体之间反复确认（CoT Loops）的轮次是否设置了硬性上限，超时是否自动切出？</li>
 <li class="task-list-item"><input type="checkbox" disabled> 是否评估过引入多智能体相比于单 Agent 架构，任务成功率是否真实提升，抑或只是平白增加了延迟？</li>
 </ul>
@@ -1095,13 +1097,13 @@ tool_registry_spec<span class="token punctuation">:</span> Dict<span class="toke
 <ul class="contains-task-list">
 <li class="task-list-item"><input type="checkbox" disabled> Trace ID 是否贯穿了网关请求、Agent 推理、Tool Call 响应以及 ERP 记账接口的完整拓扑？</li>
 <li class="task-list-item"><input type="checkbox" disabled> 监控图表中是否能按租户（Tenant）维度，实时统计 Token 消耗量并进行额度扣减？</li>
-<li class="task-list-item"><input type="checkbox" disabled> 当线上发生异常熔断或人工驳回时，该 Trace 的全套快照（Checkpoint + Inputs）是否能被自动归档并脱敏回流至离线评估集？</li>
+<li class="task-list-item"><input type="checkbox" disabled> 线上失败事件能否用最小必要的脱敏元数据或合成用例复现？不得把原始会话、敏感 Checkpoint 或工具参数自动同步到外部评测集。</li>
 </ul>
 <h2 id="第十步持续评估与回归测试清单-evaluation-checklist">第十步：持续评估与回归测试清单 (Evaluation Checklist)</h2>
 <p>非确定性的智能体系统需要确定性的离线评估基准。</p>
 <h3 id="研发上线-checklist-6">研发上线 Checklist：</h3>
 <ul class="contains-task-list">
-<li class="task-list-item"><input type="checkbox" disabled> 评估库中是否包含不少于 100 个覆盖 Happy Path、异常参数、外部依赖超时以及安全注入的 Golden Dataset 样本？</li>
+<li class="task-list-item"><input type="checkbox" disabled> 评测集是否按业务风险覆盖 Happy Path、越权、失败重试与外部副作用，并清楚记录来源、标签和版本？不存在通用“至少 100 个”安全门槛。</li>
 <li class="task-list-item"><input type="checkbox" disabled> 每次 Prompt 模板或模型更新前，是否在评估集上跑过全量自动化回归测试，对比准确率差异？</li>
 <li class="task-list-item"><input type="checkbox" disabled> 评估指标中是否包含对安全护栏（Guardrails）过滤率和模型幻觉率（Hallucination Rate）的量化打分？</li>
 </ul>
@@ -1110,30 +1112,30 @@ tool_registry_spec<span class="token punctuation">:</span> Dict<span class="toke
 <h3 id="研发上线-checklist-7">研发上线 Checklist：</h3>
 <ul class="contains-task-list">
 <li class="task-list-item"><input type="checkbox" disabled> 是否引入了异步任务队列（如 Redis Queue / Celery）接管 Agent 任务，Web 接口是否采用异步轮询或 SSE（Server-Sent Events）返回进度？</li>
-<li class="task-list-item"><input type="checkbox" disabled> 所有的 Prompt 模板、Tool Schema 以及大模型版本是否全部版本化（Versioned），并支持一键热回滚？</li>
+<li class="task-list-item"><input type="checkbox" disabled> Prompt、Tool Schema、模型和状态迁移是否有版本记录、回归结果及经过测试的回滚流程？不可逆副作用无法靠代码回滚撤销。</li>
 <li class="task-list-item"><input type="checkbox" disabled> 针对高并发请求，是否在 API 网关处配置了严格的限流防刷层，防止单个恶意租户把全局 Token 预算打爆？</li>
 </ul>
 <h2 id="开发者项目落地里程碑规划-roadmap">开发者项目落地里程碑规划 (Roadmap)</h2>
-<p>建议团队遵循以周为单位的渐进式交付路线，切忌一步到位：</p>
-<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Week 1: 物理场景梳理与只读 Demo 落地
-  - 锁定 2-3 个核心低风险只读工具（如 query_db）
-  - 编写单 Agent 逻辑，用最基础的同步 API 跑通 Happy Path
+<p>以下是按验收依赖排列的<strong>示意性阶段</strong>，不保证每阶段一周完成，也不强制购买特定服务：</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">S0: 风险与权限定义
+  - 界定业务场景、租户身份、数据来源和禁止的副作用
+  - 只读工具由受信服务端授权，不信任模型提供的 user_id
 
-Week 2: 状态机锁定与参数校验开发
-  - 引入 Pydantic 强类型 schema 校验 Tool 参数
-  - 引入有状态 Checkpointer 数据库，配置 max_iterations 保护
+S1: 受限 MVP 与异常测试
+  - 校验参数、超时、越权拒绝、步数及费用预算
+  - 使用合成数据建立可复现的成功/失败基线
 
-Week 3: 人工介入 (HITL) 与异步队列整合
-  - 将写操作工具进行风险评级，高风险动作挂接 Slack 审批卡片
-  - 将 Agent 执行逻辑移入 Celery 异步队列，改为 SSE 流式返回
+S2: 持久化与人工审批
+  - 增加版本化 Checkpoint、幂等/Outbox 和必要的人工授权
+  - 对重启、重复回调、取消竞态执行故障注入
 
-Week 4: 评估集搭建与 Observability 看板配置
-  - 整理 50 个真实工单样本作为离线回归评估集
-  - 配置 Grafana 看板，实现 Trace ID 全链路透传与租户成本统计
+S3: 可观测性与隐私
+  - 只保留脱敏事件、Trace ID、状态版本和费用指标
+  - 评测集依法授权、审核；优先合成复现真实故障
 
-Week 5+: 灰度发布与持续演进
-  - 在单渠道或对 10% 种子用户开启灰度
-  - 抓取线上失败 Trace，脱敏后自动喂回离线评估集进行 Regression Test
+S4: 风险受控发布
+  - 根据时延、容量和恢复要求决定是否引入队列/Worker
+  - 灰度比例、回滚阈值和上线资格以测量与审批为准
 </code></pre>
 <h2 id="常见开发设计错误">常见开发设计错误</h2>
 <p>在实际落地中，以下 10 个工程漏洞最为常见，请务必提前规避：</p>
@@ -1159,7 +1161,7 @@ Week 5+: 灰度发布与持续演进
 <h3 id="这篇会继续扩写新泛题吗">这篇会继续扩写新泛题吗？</h3>
 <p>不会。后续只根据真实项目问题和 Search Console 数据更新。LangGraph、MCP、n8n、AI 财报等细节会回到各自专题页，而不是继续堆泛 Agent 大词。</p>
 <h2 id="总结">总结</h2>
-<p>在 2026 年开发生产级的 AI Agent，技术成功的关键不在于你掌握了多么前沿的大模型，而在于你是否以严密的软件工程思维，将协议选型、工具审计、状态隔离、记忆管理、人工复核和异步部署等边界设计得清晰透彻。通过对照本开发手册的 Checklist 进行逐项排查，你的智能体系统将能彻底告别玩具 Demo 的脆弱性，成为高并发业务中稳定、安全、可控的技术资产。</p>
+<p>在 2026 年开发生产级的 AI Agent，技术成功的关键不在于你掌握了多么前沿的大模型，而在于你是否以严密的软件工程思维，将协议选型、工具审计、状态隔离、记忆管理、人工复核和异步部署等边界设计得清晰透彻。本清单可减少设计遗漏，但实际的安全性、可靠性与成本仍必须以故障注入、权限测试、业务验收和真实负载测量证明。</p>
 <h2 id="继续阅读">继续阅读</h2>
 <ul>
 <li>需要先看完整架构地图，可以从 <a href="/ai/ai-agent-complete-guide/">AI Agent 全栈指南 2026</a> 回到总路线图；文档、RAG 与知识库场景可继续看 <a href="/ai/ai-document-intelligence-agents/">AI 文档理解 Agents</a>。</li>

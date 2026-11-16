@@ -1303,7 +1303,7 @@ after output submission, before final model response
 <p><strong>Mistake: using <code>call_id</code> as the only exactly-once key.</strong> A regenerated turn can produce a new call ID for the same order or deployment.</p>
 <p><strong>Mistake: retrying the same output after every 400.</strong> If the call is absent, retries do not create it.</p>
 <p><strong>Mistake: assuming an empty Conversation means the tool did not execute.</strong> External systems and the application ledger are the source of truth for side effects.</p>
-<p><strong>Mistake: deleting safeguards because the current SDK is newer than the reported version.</strong> As of August 26, 2026, Issue #3561 and candidate PR #3621 are still open, and no released Python version is identified as the fix.</p>
+<p><strong>Mistake: deleting safeguards because the current SDK is newer than the reported version.</strong> As of November 16, 2026, Issue #3561 and candidate PR #3621 are still open, and no released Python version is identified as the fix.</p>
 <p>The decision is simple:</p>
 <blockquote>
 <p><strong>A streamed tool call is observable data, not an execution credential. Confirm the server committed it, reserve a stable business idempotency key, execute through a backend orchestrator, and reconcile every ambiguous disconnect. If the call ID is missing, discard it.</strong></p>

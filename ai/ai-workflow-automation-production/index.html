@@ -1032,22 +1032,22 @@ const analyticsRequiresHumanInteraction = false;
 <p>以上示例必须通过 <code>docker compose config</code> 校验，并在隔离环境验证数据库连接、凭据解密、Worker 执行、Webhook 响应及备份恢复。相关官方文档：<a href="https://docs.n8n.io/hosting/scaling/queue-mode/" rel="nofollow noopener noreferrer" target="_blank">Queue Mode</a>、<a href="https://docs.n8n.io/hosting/configuration/configuration-examples/encryption-key/" rel="nofollow noopener noreferrer" target="_blank">加密密钥配置</a>。实际密钥只应通过私有环境配置提供，不得写入公开仓库。</p>
 <h2 id="postgres不要长期依赖-sqlite">Postgres：不要长期依赖 SQLite</h2>
 <p>Queue Mode 通常应配合 PostgreSQL 等受支持的数据库；选择 PostgreSQL 并不能自动杜绝数据丢失，还需要正确备份、恢复演练、连接与并发配置。</p>
-<p>自托管默认配置下的 SQLite 仅包含单文件写锁。一旦你在工作流中启用了并发 Loop 节点，或者在短时间内打入数十个并发 Webhook，SQLite file 就会因为密集的写操作抛出 <code>SQLITE_BUSY: database is locked</code> 的报错。这会导致当前运行的工作流状态彻底丢失，且无法在 executions 历史日志中找到痕迹。PostgreSQL 提供了细粒度的行级锁与成熟的连接池控制，能轻松承载每秒数百次的读写吞吐。此外，Postgres 的表结构极易进行物理增量备份，即使宿主机硬盘损坏，我们也能通过 pg_dump 迅速恢复前一天的执行快照。</p>
+<p>自托管默认配置下的 SQLite 仅包含单文件写锁。一旦你在工作流中启用了并发 Loop 节点，或者在短时间内打入数十个并发 Webhook，SQLite file 就会因为密集的写操作抛出 <code>SQLITE_BUSY: database is locked</code> 的报错。<code>SQLITE_BUSY</code> 表示发生了写入竞争或锁等待，并不证明所有执行历史已被清空。PostgreSQL 更适合跨 Worker 并发，但吞吐量需按实际负载测试。<code>pg_dump</code> 是<strong>逻辑快照</strong>，不是物理增量备份或时间点恢复保证；需要按恢复目标配置 WAL/PITR、备份策略并定期演练。</p>
 <h2 id="凭证管理n8n_encryption_key-不能丢">凭证管理：N8N_ENCRYPTION_KEY 不能丢</h2>
 <p>在系统部署初期强制对 N8N_ENCRYPTION_KEY 环境变量进行异地多重归档，是防范凭证数据由于系统迁移而沦为不可读废铁的黄金规范。</p>
-<p>所有在工作流中配置的 Gmail OAuth Token、OpenAI Key 以及内部系统数据库账户，均是由环境变量中的 <code>N8N_ENCRYPTION_KEY</code> 字符作为密钥进行物理加密后存入数据库的。如果这个加密密钥丢失，即使你通过数据库备份成功还原了数据表，n8n 也会在启动时因为无法解密凭证而直接崩溃，或者强制清空所有密钥配置。我强烈建议：在第一次部署容器前，必须在本地离线生成一个长达 32 位的强随机字符串作为密钥，并将其记录在运维密码管理器中，绝对禁止使用自动生成的默认密钥，防范容器销毁后密钥凭空消失。</p>
+<p>所有在工作流中配置的 Gmail OAuth Token、OpenAI Key 以及内部系统数据库账户，均是由环境变量中的 <code>N8N_ENCRYPTION_KEY</code> 字符作为密钥进行物理加密后存入数据库的。如果原始密钥没有随数据库和 n8n 配置正确备份，恢复后加密凭据可能无法解密；不能断言 n8n 一定崩溃或自动清空配置。我强烈建议：在第一次部署容器前，应通过可信密钥管理器生成具有足够熵的随机密钥，例如 32 个加密学随机字节，而不是只有 32 bit 的低熵密钥，并将其记录在运维密码管理器中，绝对禁止使用自动生成的默认密钥，防范容器销毁后密钥凭空消失。</p>
 <h2 id="错误处理每个关键节点都要有失败路径">错误处理：每个关键节点都要有失败路径</h2>
 <p>配置显式的 Error Trigger 工作流与节点级 Fallback 重定向，是防范大模型逻辑错误或三方 API 超时导致业务流异常挂起的防御配置。</p>
-<p>在 AI 自动化的核心链路中，调用超时与接口限流是不可避免的物理事实。我们不能寄希望于工作流能一直绿灯通过。每一个涉及大模型推理（如 OpenAI node）或三方写入（如 Notion node）的节点，都必须在设置中启用“On Fail: Continue”或者指向一条专门的失败分支。对于敏感动作（如向客户发送分析邮件），一旦大模型节点失败，必须通过 Fallback 分支将当前上下文格式化为 JSON 字符串，发送至出纳或客服主管的 Slack 进行报警提示；对于非敏感的 API 节点，应配置最大 3 次指数退避重试（Exponential Backoff），而不是直接中断整个工作流。</p>
+<p>在 AI 自动化的核心链路中，调用超时与接口限流是不可避免的物理事实。我们不能寄希望于工作流能一直绿灯通过。敏感写入节点不能一律打开 <code>On Fail: Continue</code>，否则可能静默跳过失败的副作用并让下游误判成功。告警只发送<strong>脱敏的事件 ID、错误类别、执行关联信息</strong>，不得把完整客户/财务上下文直接发到 Slack。仅对经证实可重放的临时故障执行有界重试，遵循上游 <code>Retry-After</code>；3 次只是可调示例，非通用生产参数。</p>
 <h2 id="llm-成本监控workflow-越稳定越容易烧钱">LLM 成本监控：Workflow 越稳定，越容易烧钱</h2>
 <p>在工作流中嵌入全局 Token 计数器，并对每次执行成本分摊到项目与租户，能有效阻断 Planner 漂移导致的算力账单爆炸。</p>
-<p>工作流的自动化运行往往对用户是无感的。如果一个解析年报的工作流因为代码缺陷陷入了对同一个 PDF 页面的无限循环提取中，或者模型因为温度配置（Temperature）不当产生了逻辑死循环，它会不知疲倦地在后台疯狂向 API 发送请求。当第二天早上我们醒来时，可能已经收到了数千美元的账单超限警告。我们必须在工作流中建立防线：第一，使用 Code 节点读取大模型响应中的 <code>usage</code> 字段，并在内存中累加本次执行的 token 消耗；第二，一旦计算出本次 execution 成本超过 1 美元，或者交互轮次超过 10 轮，立刻物理熔断当前工作流，并将状态设为 Error_Cost_Limit_Exceeded。</p>
+<p>工作流的自动化运行往往对用户是无感的。如果一个解析年报的工作流因为代码缺陷陷入了对同一个 PDF 页面的无限循环提取中，或者模型因为温度配置（Temperature）不当产生了逻辑死循环，它会不知疲倦地在后台疯狂向 API 发送请求。当第二天早上我们醒来时，可能已经收到了数千美元的账单超限警告。我们必须在工作流中建立防线：第一，使用 Code 节点读取大模型响应中的 <code>usage</code> 字段，并在内存中累加本次执行的 token 消耗；第二，应结合租户预算、执行次数与 token 上限、服务商可用的消费控制和可审计取消策略设置多层限制。1 美元、10 轮与 <code>Error_Cost_Limit_Exceeded</code> 只是示例策略，单个 Code 节点中的内存计数不能保证全局并发情况下的严格成本封顶。</p>
 <h2 id="幂等和重复执行">幂等和重复执行</h2>
 <p>在工作流入口配置基于唯一 ID 的哈希去重过滤，是避免同一 Webhook 事件被外部系统多次重试导致数据重复写入的核心防御手段。</p>
-<p>因为网络延迟，外部 SaaS 系统（如 Stripe 或 Shopify Webhook）在下发事件后，如果 5 秒内未收到工作流的 200 OK 响应，会默认任务下发失败并自动在后台发起二次重试。如果工作流没有设计幂等机制，同一张退款发票就会被 Worker 执行两次。我们在工作流的第一步，必须加入“Idempotency Deduplicator”：使用一个唯一的事件指纹（如 <code>event_id</code> 或 <code>payment_hash</code>）作为 Redis 的 Key，在执行前使用 Redis 的 SETNX 命令设置过期时间为 24 小时的占位符。一旦检测到 Key 已存在，立即向外部返回 200，并中断后续执行节点，杜绝重复写入带来的账目混乱。</p>
+<p>因为网络延迟，外部 SaaS 系统（如 Stripe 或 Shopify Webhook）在下发事件后，如果 5 秒内未收到工作流的 200 OK 响应，会默认任务下发失败并自动在后台发起二次重试。Webhook 超时后可能重复投递，但不代表每次都会发生重复付款。先校验真实签名与事件 ID，再以<strong>数据库事务、唯一业务操作键和持久状态机</strong>记录 <code>received / processing / applied / failed</code> 并对账。仅使用 24 小时 Redis SETNX 占位无法证明支付级幂等：过期后会重放、执行失败也可能误认为已完成；向上游回 200 必须遵守服务商的交付与重试协议。</p>
 <h2 id="多环境部署开发测试生产必须分开">多环境部署：开发、测试、生产必须分开</h2>
 <p>在开发与生产中物理隔离 Webhook 回调域名与数据库账套，能从源头上阻断测试数据污染真实线上环境的安全风险。</p>
-<p>很多开发者直接在线上环境一边测试节点一边修改工作流，这会导致正在运行的线上任务读取到尚未调试完毕的草稿版本，产生严重的格式漂移。合规的流程必须在本地或 Staging 环境中进行 JSON 导出；在开发环境中，配置低权限的测试 Key 与模拟 Webhook 回调；测试通过后，将工作流的 JSON 文件上传到 Git 仓库做版本归档，再导入生产环境并激活（Active），替换为生产级别的高权限凭证。</p>
+<p>很多开发者直接在线上环境一边测试节点一边修改工作流，这会导致正在运行的线上任务读取到尚未调试完毕的草稿版本，产生严重的格式漂移。合规的流程必须在本地或 Staging 环境中进行 JSON 导出；在开发环境中，配置低权限的测试 Key 与模拟 Webhook 回调；测试通过后，将工作流的 JSON 文件上传到 Git 仓库做版本归档，再按批准流程导入并激活生产工作流，绑定<strong>最小权限</strong>的生产凭据；禁止因为是生产环境就分配高权限 Token。</p>
 <h2 id="传统单机自托管-vs-生产级-queue-mode-架构">传统单机自托管 vs 生产级 Queue Mode 架构</h2>
 <p>传统的单机部署无法承受大规模 AI 节点的并发计算与状态持久，必须向多 Worker 并发队列演进。</p>
 <p>以下是两种运行模式在面对高并发、高延迟 AI 工作流场景时的硬核代差对比：</p>
@@ -1086,9 +1086,9 @@ const analyticsRequiresHumanInteraction = false;
 
 
 
-<table><thead><tr><th align="left">架构评估维度</th><th align="left">传统单点 SQLite 部署</th><th align="left">生产级 Queue Mode 架构</th></tr></thead><tbody><tr><td align="left">高并发承载力</td><td align="left">Webhook 瞬时并发高时，SQLite 频繁锁表并丢失状态</td><td align="left">Bull Queue 基于 Redis 缓存，任务排队拉取，0 丢失</td></tr><tr><td align="left">AI 长任务阻塞</td><td align="left">主进程直接挂起等待大模型流式响应，极易触发 504</td><td align="left">Worker 进程在后台异步消费，主进程毫秒级应答释放连接</td></tr><tr><td align="left">故障恢复自愈</td><td align="left">容器意外重启，内存中的执行快照与历史数据全部灰飞</td><td align="left">外部 PG 持久化 State，新 Worker 启动后自动读取断点</td></tr><tr><td align="left">凭证加密安全</td><td align="left">使用默认自动生成的 Key，容器一旦销毁凭证无法还原</td><td align="left">强一致性 N8N_ENCRYPTION_KEY 备份，支持多节点横向扩容</td></tr><tr><td align="left">错误追溯对账</td><td align="left">日志混杂在标准输出中，无 task_id 与 trace 关联</td><td align="left">完整的 execution_id 及外部 Redis 状态持久监控</td></tr></tbody></table>
+<table><thead><tr><th align="left">架构评估维度</th><th align="left">传统单点 SQLite 部署</th><th align="left">生产级 Queue Mode 架构</th></tr></thead><tbody><tr><td align="left">高并发承载力</td><td align="left">SQLite 是否产生写锁冲突取决于实际负载和配置</td><td align="left">Redis + PostgreSQL 有助于分担执行任务，但需验证积压、持久性和恢复，不能保证零丢失</td></tr><tr><td align="left">AI 长任务与 Webhook</td><td align="left">同步回复可能受代理超时影响</td><td align="left">Worker 可以异步执行，但 HTTP 回复时机仍取决于工作流节点设置</td></tr><tr><td align="left">故障恢复</td><td align="left">取决于已落盘的执行记录、清理策略与数据库健康度</td><td align="left">共享 PG 保护已持久化数据，不代表每个执行中的步骤都自动续跑</td></tr><tr><td align="left">凭证加密安全</td><td align="left">自动生成的密钥若持久化保存并正确备份同样可用</td><td align="left">主实例、Worker 和 Webhook 进程须共享正确且受保护的密钥</td></tr><tr><td align="left">错误追溯对账</td><td align="left">日志与历史保存取决于配置</td><td align="left">需独立配置关联 ID、访问控制、监控以及恢复演练</td></tr></tbody></table>
 <h2 id="常见失败案例">常见失败案例</h2>
-<p>深入解析由域名配置失误、SQLite 数据库被锁、密钥丢失以及 AI 节点死循环导致的典型生产事故：</p>
+<p>以下为用于故障注入与 Runbook 设计的<strong>虚构演练情景</strong>，并非 XBSTACK 已确认发生的生产事故；其中耗时、业务影响和金额不代表实测结果：</p>
 <ol>
 <li>WEBHOOK_URL 配置失误导致外部回调全部 404：
 某团队在 NAS 上自托管了工作流，但在环境变量中将 <code>WEBHOOK_URL</code> 错配为了局域网内部 IP。当微信支付的回调打入时，因为外网域名无法解析该内网地址，所有的回调在网关层全部返回 404，导致订单支付状态在系统中连续多天未刷新。</li>
@@ -1102,7 +1102,7 @@ const analyticsRequiresHumanInteraction = false;
 工作流由于没有配置全局成本拦截，大模型在解析一个异常格式的 PDF 附注表格时陷入了重试死循环。Worker 持续在后台以最高频率调用 GPT-4 接口达 6 小时，消耗了上亿 Token，直至服务商以欠费为由封禁了 API 秘钥才被动终止。</li>
 </ol>
 <h2 id="常见坑--常见报错-error-logs">常见坑 / 常见报错 (Error Logs)</h2>
-<p>归纳自托管工作流在任务流转、凭证读取和数据库读写时的典型报错文本及排查方案。</p>
+<p>以下日志为<strong>模拟错误样本</strong>，旨在演示不同故障的排查边界，不能当作 XBSTACK 线上复现或真实 n8n 报错原文。</p>
 <ol>
 <li>报错文本：
 <code>ERROR: db error: SQLITE_BUSY: database is locked</code></li>
@@ -1117,7 +1117,7 @@ const analyticsRequiresHumanInteraction = false;
 </ol>
 <ul>
 <li>触发原因：容器迁移或环境变量加载失败，导致新容器读取的加密字符串与原数据库中 credentials_entity 表的加密盐值不一致。</li>
-<li>解决方案：在运行脚本前，强制在 <code>.env</code> 文件中配置 <code>N8N_ENCRYPTION_KEY=my_secure_key</code>，确保其值与老容器中定义的数据完全对齐。</li>
+<li>解决方案：恢复<strong>原环境真实的受保护密钥</strong>，并与数据库备份版本一致；<code>my_secure_key</code> 是无效安全示例，不能作为生产密钥，也不得提交或打印到日志。</li>
 </ul>
 <ol start="3">
 <li>报错文本：
@@ -1130,11 +1130,11 @@ const analyticsRequiresHumanInteraction = false;
 <h2 id="faq">FAQ</h2>
 <ul>
 <li>Q: 为什么我在本地电脑运行定时任务正常，上线自托管服务器后定时节点就不跑了？</li>
-<li>A: 这是由于服务器时区不匹配或容器未同步系统时钟导致的。自托管服务器必须在 Docker 环境变量中明确指定 <code>GENERIC_TIMEZONE=Asia/Shanghai</code>，否则定时任务节点（Cron Node）会默认按照 UTC 时间在半夜默默运行。</li>
+<li>A: 先检查 workflow 是否激活、Cron/Schedule Trigger 配置、服务器时钟、容器时区、执行历史、队列 Worker 健康和重启记录。<code>GENERIC_TIMEZONE=Asia/Shanghai</code> 仅在业务使用北京时间时适合，并非所有 n8n 安装的通用必填项；不要在未查明原因时把故障归咎于时区。</li>
 <li>Q: 我的 n8n 自托管在飞牛 NAS 上，如何防范黑客通过 Webhook 接口发送注入攻击载荷？</li>
-<li>A: 第一，必须在 Webhook 节点中启用 Basic Auth 或 Header Secret 验证，只有带正确 Token 的请求才被允许进入；第二，在反向代理 Nginx 层配置 IP 白名单，仅允许微信、Stripe 等特定 SaaS 厂商的物理 IP 地址调用你的 Webhook 端口。</li>
+<li>A: 按 Webhook 提供商要求验证<strong>原始请求体、签名、时间戳、重放窗口和业务归属</strong>，配置 TLS、限速及最小权限。Basic Auth、Header Secret 或 IP allowlist 只能是部分防线，不能代替 Stripe/微信支付等支付通知的官方验签；供应商 IP 可能调整，不应无依据固定白名单导致合法回调失败。</li>
 <li>Q: 当我使用 Queue Mode 时，如何监控 Redis 队列是否发生了任务积压？</li>
-<li>A: n8n 提供了 <code>/api/v1/healthz</code> 状态监测接口。此外，你可以使用第三方的 Redis 监控工具（如 Bull Board）挂载在 Bull 队列数据库上，可视化查看当前 Active、Waiting 和 Delayed 的工作流实例数量，当积压任务超过 100 时触发邮件告警。</li>
+<li>A: 以部署版本文档支持的健康/指标端点、Redis 连接、Worker 活跃数、排队时长和失败重试率监测。队列指标可借助 n8n 自身与受控监控系统观察，谨慎评估 Bull Board 与生产 Redis 的暴露风险；100 个待处理任务仅为示例告警阈值，应结合真实吞吐与 SLA 校准。</li>
 <li>Q: 升级自托管的 n8n 版本时，有什么防崩盘的最佳操作顺序？</li>
 <li>A: 升级前必须遵循三步走：第一，运行 <code>pg_dump</code> 物理导出当前 Postgres 数据库；第二，备份当前的 <code>docker-compose.yml</code> 配置文件和 <code>.env</code> 变量（含 N8N_ENCRYPTION_KEY）；第三，先在 Staging 开发机上拉取新版镜像跑通测试，没有报错后才在生产机执行 <code>docker compose pull &#x26;&#x26; docker compose up -d</code>。</li>
 </ul>

@@ -1012,7 +1012,7 @@ const analyticsRequiresHumanInteraction = false;
 <li>parse_intent_node: 提取用户原始 Query，生成当前会话的 <code>task_id</code> 和初始意图属性。失败风险在于模型可能误解口语化意图。</li>
 <li>validate_plan_node: 强校验规划器生成的步骤是否在合法范围内、是否包含不可行路径，必要时直接将状态判定为 <code>invalid_plan</code> 并打回重写。</li>
 <li>human_review_node: 借助中断机制（Interrupt），阻断程序向宿主机发出写操作指令，直到外部审批接口传入确认修改状态。</li>
-<li>execute_tool_node: 从状态中读取参数执行物理操作，将捕获的 stdout 或报错信息原样写回状态，自身不承担规划决策任务。</li>
+<li>execute_tool_node: 调用受信工具网关并仅保存必要的脱敏结果、错误类别与证据 ID；<strong>不能原样写回含密钥、PII 的 stdout 或完整异常栈</strong>。</li>
 </ul>
 <h2 id="三-状态设计messages-只能保存对话业务状态必须结构化">三、 状态设计：messages 只能保存对话，业务状态必须结构化</h2>
 <p>在 LangGraph 中设计强类型的全局 State 字典，是将业务数据、决策条件与会话历史进行物理解耦的前提。</p>
@@ -1056,27 +1056,29 @@ const analyticsRequiresHumanInteraction = false;
 <li>verify_result_node: 仅负责对执行结果进行审计打分，不重新生成答案。</li>
 </ul>
 <p>而在节点流转之间，我们必须使用显式的条件边（Conditional Edges）来判定流向。千万不要在提示词里告诉模型「如果发现不对，你就假装跳回第一步」，因为大模型对执行图拓扑并没有物理认知。</p>
-<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token comment"># 显式条件路由逻辑</span>
-<span class="token keyword">def</span> <span class="token function">check_execution_status</span><span class="token punctuation">(</span>state<span class="token punctuation">:</span> AgentWorkflowState<span class="token punctuation">)</span><span class="token punctuation">:</span>
-    <span class="token comment"># 1. 优先校验物理计数器限制</span>
-    <span class="token keyword">if</span> state<span class="token punctuation">[</span><span class="token string">"retry_count"</span><span class="token punctuation">]</span> <span class="token operator">>=</span> <span class="token number">3</span><span class="token punctuation">:</span>
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">def</span> <span class="token function">check_execution_status</span><span class="token punctuation">(</span>state<span class="token punctuation">:</span> <span class="token builtin">dict</span><span class="token punctuation">,</span> trusted_read_tools<span class="token punctuation">:</span> <span class="token builtin">set</span><span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">str</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""Conservative router; backend tool gateway must independently authorize."""</span>
+    <span class="token keyword">if</span> state<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"retry_count"</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">>=</span> <span class="token number">3</span><span class="token punctuation">:</span>
         <span class="token keyword">return</span> <span class="token string">"error_handler_node"</span>
-        
-    <span class="token comment"># 2. 检查结果验证状态</span>
-    <span class="token keyword">if</span> state<span class="token punctuation">[</span><span class="token string">"approval_status"</span><span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token string">"rejected"</span><span class="token punctuation">:</span>
-        <span class="token keyword">return</span> <span class="token string">"replanner_node"</span>
-        
-    <span class="token comment"># 3. 检查是否还有剩余未执行步骤</span>
-    <span class="token keyword">if</span> state<span class="token punctuation">[</span><span class="token string">"current_step"</span><span class="token punctuation">]</span> <span class="token operator">&#x3C;</span> <span class="token builtin">len</span><span class="token punctuation">(</span>state<span class="token punctuation">[</span><span class="token string">"plan"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-        <span class="token comment"># 判定是否属于高危写操作</span>
-        next_task <span class="token operator">=</span> state<span class="token punctuation">[</span><span class="token string">"plan"</span><span class="token punctuation">]</span><span class="token punctuation">[</span>state<span class="token punctuation">[</span><span class="token string">"current_step"</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
-        <span class="token keyword">if</span> next_task<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"is_unsafe"</span><span class="token punctuation">,</span> <span class="token boolean">False</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-            <span class="token keyword">return</span> <span class="token string">"human_approval_checkpoint"</span>
-        <span class="token keyword">return</span> <span class="token string">"execute_tool_node"</span>
-        
-    <span class="token keyword">return</span> <span class="token string">"generate_response_node"</span>
+    <span class="token keyword">if</span> state<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"approval_status"</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token string">"rejected"</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string">"error_handler_node"</span>  <span class="token comment"># Do not silently replan denied actions.</span>
+    plan <span class="token operator">=</span> state<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"plan"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    current <span class="token operator">=</span> state<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"current_step"</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token keyword">not</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>plan<span class="token punctuation">,</span> <span class="token builtin">list</span><span class="token punctuation">)</span> <span class="token keyword">or</span> <span class="token builtin">type</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span> <span class="token keyword">is</span> <span class="token keyword">not</span> <span class="token builtin">int</span> <span class="token keyword">or</span> current <span class="token operator">&#x3C;</span> <span class="token number">0</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string">"error_handler_node"</span>
+    <span class="token keyword">if</span> current <span class="token operator">>=</span> <span class="token builtin">len</span><span class="token punctuation">(</span>plan<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string">"generate_response_node"</span>
+    task <span class="token operator">=</span> plan<span class="token punctuation">[</span>current<span class="token punctuation">]</span>
+    <span class="token keyword">if</span> <span class="token keyword">not</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>task<span class="token punctuation">,</span> <span class="token builtin">dict</span><span class="token punctuation">)</span> <span class="token keyword">or</span> <span class="token keyword">not</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>task<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"tool"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string">"error_handler_node"</span>
+    <span class="token comment"># Never trust a model-controlled 'is_unsafe': tools must be server allowlisted.</span>
+    <span class="token keyword">if</span> task<span class="token punctuation">[</span><span class="token string">"tool"</span><span class="token punctuation">]</span> <span class="token keyword">not</span> <span class="token keyword">in</span> trusted_read_tools<span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string">"human_approval_checkpoint"</span>
+    <span class="token keyword">if</span> state<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"approval_status"</span><span class="token punctuation">)</span> <span class="token keyword">not</span> <span class="token keyword">in</span> <span class="token punctuation">(</span><span class="token boolean">None</span><span class="token punctuation">,</span> <span class="token string">"not_required"</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string">"human_approval_checkpoint"</span>
+    <span class="token keyword">return</span> <span class="token string">"execute_tool_node"</span>
 </code></pre>
-<p>这种将跳转决策逻辑移至 Python 规则层的方式，能够保证智能体绝对不会偏离设计的业务边界。</p>
+<p>显式条件路由更易测试，但<strong>不能保证模型绝不会越权或脱离业务边界</strong>；每次真正的 Tool 执行仍必须经过受信身份、工具与资源权限检查。</p>
 <h2 id="五-checkpoint-与断点自愈告别失败后重新跑的尴尬">五、 Checkpoint 与断点自愈：告别失败后重新跑的尴尬</h2>
 <p>Checkpoint 机制能对图的每一次状态变化进行增量快照存档，为长任务提供了真实的容错和断点续传能力。</p>
 <p>在工业生产中，网络波动或者大模型 API 超时是不可避免的常态。如果你的 Agent 执行一个包含 10 个步骤的长流程，在第 9 步调用外部工具时因为网络超时报错，如果没有 Checkpoint 机制，系统只能从第 1 步从头来过。</p>
@@ -1089,7 +1091,7 @@ const analyticsRequiresHumanInteraction = false;
 <p>LangGraph 提供 Checkpointer 机制，例如内存型 Saver、本地 SQLite Saver，以及适合生产持久化的 Postgres Saver。它们负责保存图状态和恢复所需的 checkpoint，但存储后端、durability 配置和节点边界都会影响“哪一步已经真正持久化”。</p>
 <p>一旦任务中断，使用相同 <code>thread_id</code> 恢复时，运行时会从可用 checkpoint 重建图状态；<strong>但这不等于“从报错那一行精确继续”</strong>。尚未形成持久化边界的节点可能重新执行，节点内部已经发生的外部副作用也不会因为 checkpoint 自动回滚。因此生产环境必须把“状态恢复”和“副作用 exactly-once”分开设计。</p>
 <h2 id="六-interrupt-与人在回路让-agent-学会在危险前停下">六、 Interrupt 与人在回路：让 Agent 学会「在危险前停下」</h2>
-<p>对于涉及财务交易、邮件外发或敏感写操作等不可逆高风险动作，系统必须通过 Interrupt 强制熔断线程并路由至人在回路审核队列。</p>
+<p>对于财务交易、邮件外发或敏感写操作，可在执行前设置动态 <code>interrupt()</code> 与受信审批；中断仅暂停图执行，真正的权限和幂等控制仍属于工具网关。</p>
 <p>我们在做系统自动化时，经常面临一个难题：有些操作一旦做错，后果极其严重（比如自动把删除用户数据的 API 调用发送给数据库，或者直接把包含了伪造报价的草稿邮件发送给核心大客户）。</p>
 <p>为了在执行不可逆操作前获得授权，可通过人在回路（Human-in-the-loop）机制暂停<strong>图执行</strong>并等待人工输入；它不是操作系统层面的进程冻结，也不能替代工具端鉴权。</p>
 <p>在 LangGraph 中，<code>interrupt_before</code> 是静态断点，更适合调试；正式的人工审批通常应在审批节点内部调用 <code>interrupt()</code>，使用可持久化 Checkpointer 和服务端验证的 <code>thread_id</code> 来恢复：</p>
@@ -1097,11 +1099,13 @@ const analyticsRequiresHumanInteraction = false;
 
 <span class="token comment"># 示例：图中需配置 approval_node，并在 State Schema 声明 approval_status。</span>
 <span class="token keyword">def</span> <span class="token function">approval_node</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">:</span>
-    result <span class="token operator">=</span> interrupt<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"task_id"</span><span class="token punctuation">:</span> state<span class="token punctuation">[</span><span class="token string">"task_id"</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">"plan"</span><span class="token punctuation">:</span> state<span class="token punctuation">[</span><span class="token string">"plan"</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token keyword">return</span> <span class="token punctuation">{</span><span class="token string">"approval_status"</span><span class="token punctuation">:</span> <span class="token string">"approved"</span> <span class="token keyword">if</span> result<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"approved"</span><span class="token punctuation">)</span> <span class="token keyword">is</span> <span class="token boolean">True</span> <span class="token keyword">else</span> <span class="token string">"rejected"</span><span class="token punctuation">}</span>
+    result <span class="token operator">=</span> interrupt<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"task_id"</span><span class="token punctuation">:</span> state<span class="token punctuation">[</span><span class="token string">"task_id"</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">"pending_action"</span><span class="token punctuation">:</span> state<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"pending_action"</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token comment"># 仅保存提议的审核状态。可信服务端必须单独校验审批者身份、</span>
+    <span class="token comment"># 当前权限、动作参数与到期时间，不能仅信任恢复输入。</span>
+    approved <span class="token operator">=</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>result<span class="token punctuation">,</span> <span class="token builtin">dict</span><span class="token punctuation">)</span> <span class="token keyword">and</span> result<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"approved"</span><span class="token punctuation">)</span> <span class="token keyword">is</span> <span class="token boolean">True</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span><span class="token string">"approval_status"</span><span class="token punctuation">:</span> <span class="token string">"reviewed_approval_proposal"</span> <span class="token keyword">if</span> approved <span class="token keyword">else</span> <span class="token string">"rejected"</span><span class="token punctuation">}</span>
 
-<span class="token comment"># 生产使用持久化 checkpointer；审批恢复时使用相同且已授权的 thread_id。</span>
-app <span class="token operator">=</span> workflow<span class="token punctuation">.</span><span class="token builtin">compile</span><span class="token punctuation">(</span>checkpointer<span class="token operator">=</span>durable_checkpointer<span class="token punctuation">)</span>
+<span class="token comment"># 在完整图中另行配置 durable checkpointer、受信 thread_id 和审批认证。</span>
 </code></pre>
 <p>当执行到 <code>approval_node</code> 中的 <code>interrupt()</code> 时，图执行会挂起、记录可恢复状态并向调用方返回审批信息。调用方必须核验审批者身份，再通过带有相同 <code>thread_id</code> 的 <code>Command(resume=...)</code> 恢复。恢复动态中断时节点会从头重新执行，因而中断前的副作用必须避免或设计成幂等；审批通过与否需通过显式分支决定是否允许真正的写操作。</p>
 <p>我们为人工审批界面（Approval Portal）设计了清晰的要素：</p>
@@ -1141,8 +1145,8 @@ app <span class="token operator">=</span> workflow<span class="token punctuation
 <h3 id="失败自愈与错误节点设计-error-handler">失败自愈与错误节点设计 (Error Handler)</h3>
 <p>在状态图中，必须显式定义一个 <code>error_handler_node</code> 节点，将其作为全局异常的汇聚点。所有工具调用在发生超时或权限报错时，错误信息都不应直接抛给用户，而应该写入 State 的 <code>error_type</code> 中，由条件路由判定：</p>
 <ul>
-<li>若错误原因为 <code>RateLimit</code>（限流），自动进入退避等待，并在 3 秒后尝试 <code>retry current node</code>。</li>
-<li>若错误原因为 <code>PermissionDenied</code>（越权），自动降级执行 <code>fallback tool</code>，或者将其作为 <code>security_alert</code> 转人工队列。</li>
+<li>对 <code>RateLimit</code> 按服务商 <code>Retry-After</code>、配额和幂等性做有界退避，不能默认固定等待 3 秒后重新执行有副作用的节点。</li>
+<li>若错误为 <code>PermissionDenied</code>，必须<strong>停止当前受限操作</strong>并记录权限拒绝；未经独立批准不能换工具重试或提升权限，应由具备权限的人审核。</li>
 <li>若错误原因为 <code>Hallucination</code>（参数虚构），回退至上一步骤执行 <code>rollback to checkpoint</code>，重新生成规划。</li>
 </ul>
 <h2 id="八-常见坑与工程失败案例-error-logs">八、 常见坑与工程失败案例 (Error Logs)</h2>
@@ -1162,7 +1166,7 @@ app <span class="token operator">=</span> workflow<span class="token punctuation
 </code></pre>
 </li>
 <li>原因分析：在编写节点逻辑时，为了方便，将数据库连接实例、向量库 Retriever 对象或者模型 Client 实例直接赋给了 State 字典。当 LangGraph 尝试对其执行快照序列化时发生崩溃。</li>
-<li>解决方案：State 中严禁存放任何非标准的 class 实例。状态只保存纯文本、整型、布尔值和符合 JSON 规范的字典/列表。连接实例和客户端初始化应当完全封装在节点函数内部。</li>
+<li>解决方案：按所选 Checkpointer 的序列化协议保存稳定可序列化的业务数据，不把数据库连接、客户端实例或带密钥的对象塞进 State。LangGraph 不局限于 JSON 基本类型，但自定义对象的跨版本兼容、隐私与安全性必须专门验证。</li>
 </ul>
 <h3 id="3-payload-context-spilling-上下文溢出">3. Payload Context Spilling (上下文溢出)</h3>
 <ul>

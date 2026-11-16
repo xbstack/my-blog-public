@@ -1131,16 +1131,17 @@ partial_commit_reproduced True
 <p>XBSTACK 已把这次复现固化到公开仓库 <a href="https://github.com/xbstack/langgraph-sqlite-partial-commit-repro" rel="nofollow noopener noreferrer" target="_blank">xbstack/langgraph-sqlite-partial-commit-repro</a>，仓库包含固定版本、最小脚本、实际日志、版本矩阵和后续 fixed-version 验证门槛；站点源码中也保留同一份 <code>experiments/langgraph-sqlite-partial-commit-repro/</code> 记录。等官方 PR 或新版本出现后，应该用同一脚本重新跑一次，再决定能否把“已复现风险”改成“已验证修复”。</p>
 <hr>
 <h2 id="五redis-checkpointer高并发与低延迟状态的利器">五、Redis Checkpointer：高并发与低延迟状态的利器</h2>
-<p>Redis Checkpointer 是多实例水平扩展和低延迟高并发 Agent 的首选，但因其基于内存，用作长期审计和合规追溯时需要额外挂载关系型数据库。</p>
+<p>Redis Checkpointer 是分布式场景的候选方案之一，但是否适用取决于持久化配置、检索索引、实际并发、故障恢复与成本；审计记录是否需要独立存储应由监管与数据保留需求确定，不能一概选 Redis。</p>
 <p>如果你的 Agent 服务拥有较大的日活用户，且采用多实例分布式部署在 Kubernetes 等容器集群中，用户对响应延迟（Latency）有着严苛的要求，那么基于 Redis 的持久化方案是最佳匹配。</p>
-<p>Redis 运行在内存中，具备亚毫秒级的读写响应速度，极大地降低了状态机在每个节点转换时保存 snapshot 的开销。LangGraph 官方集成包中提供了 <code>langgraph-checkpoint-redis</code>，包含了 <code>RedisSaver</code> 和用于内存优化的 <code>ShallowRedisSaver</code>。</p>
+<p>Redis 采用内存访问并可获得较低延迟，但端到端的 Checkpoint 读写仍受负载、索引、网络、持久化刷盘和并发影响；不能在没有基准测试时承诺亚毫秒级响应。LangGraph 官方集成包中提供了 <code>langgraph-checkpoint-redis</code>，包含了 <code>RedisSaver</code> 和用于内存优化的 <code>ShallowRedisSaver</code>。</p>
 <p>使用 Redis Saver 时存在一个强制的物理前置条件：你连接的 Redis 实例必须支持「RedisJSON」和「RediSearch」这两个官方模块。因为 LangGraph 在检索状态和回溯特定 thread 的历史快照时，需要利用 JSON 格式解析与二级索引搜索。如果你使用的是老版本的 Redis，或者没有安装这两个模块的默认 Redis 容器镜像，调用 setup 方法时会直接报错崩溃。</p>
 <p>我们来看一下完整的 Redis Saver 实战代码：</p>
 <pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">from</span> langgraph<span class="token punctuation">.</span>checkpoint<span class="token punctuation">.</span>redis <span class="token keyword">import</span> RedisSaver
 <span class="token keyword">from</span> langgraph<span class="token punctuation">.</span>graph <span class="token keyword">import</span> StateGraph
 
 <span class="token comment"># Redis 连接字符串，注意在生产环境一定要开启认证和 SSL</span>
-REDIS_URI <span class="token operator">=</span> <span class="token string">"redis://:complex_password@192.168.1.100:6379/0"</span>
+<span class="token keyword">import</span> os
+REDIS_URI <span class="token operator">=</span> os<span class="token punctuation">.</span>environ<span class="token punctuation">[</span><span class="token string">"REDIS_URI"</span><span class="token punctuation">]</span>  <span class="token comment"># Use a protected secret source; TLS when remote.</span>
 
 <span class="token comment"># 初始化 RedisSaver</span>
 redis_checkpointer <span class="token operator">=</span> RedisSaver<span class="token punctuation">.</span>from_conn_string<span class="token punctuation">(</span>REDIS_URI<span class="token punctuation">)</span>
@@ -1158,7 +1159,7 @@ graph<span class="token punctuation">.</span>invoke<span class="token punctuatio
 <p>在 Redis 架构选型中，我们要面临以下几个不可忽视的设计考量：</p>
 <ul>
 <li>内存容量保护（ShallowRedisSaver）：默认的 <code>RedisSaver</code> 会完整保存整个 thread 的所有 checkpoint 历史。如果一个 Agent 和用户聊了几百轮，每次状态都会被原封不动保存。这会导致 Redis 内存迅速被吃满。为此，可以使用 <code>ShallowRedisSaver</code>，它采用覆盖机制，每个 thread_id 在 Redis 中只保留最新的那一个 checkpoint 节点。这样虽然无法进行“时间旅行（time travel）”去加载历史版本，但内存占用是恒定的。</li>
-<li>内存淘汰与持久化策略：生产环境的 Redis 实例一定要关闭 <code>allkeys-lru</code> 或 <code>volatile-lru</code> 内存淘汰机制。如果因为内存不足，Redis 自动把某些活跃 thread 的最新 checkpoint 物理剔除了，那么用户的 Agent 流程会直接在下一轮对话中崩溃报错。此外，必须开启 AOF（Append Only File）持久化，并设置每秒同步（everysec），以防 Redis 服务进程崩溃导致物理断电时丢失未落盘的状态。</li>
+<li>内存淘汰与持久化策略：选择能保护仍需恢复的 Checkpoint 的淘汰策略，监测内存和 OOM，按恢复目标配置 AOF、复制、备份并验证断电恢复。<code>appendfsync everysec</code> 仍可能丢失最近尚未刷盘的数据，<strong>不是零丢失保证</strong>。</li>
 </ul>
 <hr>
 <h2 id="六postgres多进程生产环境的常见选择">六、Postgres：多进程生产环境的常见选择</h2>
@@ -1175,7 +1176,8 @@ graph<span class="token punctuation">.</span>invoke<span class="token punctuatio
 <span class="token keyword">from</span> psycopg<span class="token punctuation">.</span>rows <span class="token keyword">import</span> dict_row
 <span class="token keyword">from</span> langgraph<span class="token punctuation">.</span>checkpoint<span class="token punctuation">.</span>postgres <span class="token keyword">import</span> PostgresSaver
 
-DB_URI <span class="token operator">=</span> <span class="token string">"postgresql://agent_admin:secure_db_pass@192.168.1.150:5432/agent_store"</span>
+<span class="token keyword">import</span> os
+DB_URI <span class="token operator">=</span> os<span class="token punctuation">.</span>environ<span class="token punctuation">[</span><span class="token string">"LANGGRAPH_POSTGRES_DSN"</span><span class="token punctuation">]</span>  <span class="token comment"># Never embed DB passwords in published source.</span>
 
 <span class="token comment"># 建立数据库连接，必须配置 autocommit 和 dict_row</span>
 conn <span class="token operator">=</span> psycopg<span class="token punctuation">.</span>connect<span class="token punctuation">(</span>DB_URI<span class="token punctuation">,</span> autocommit<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> row_factory<span class="token operator">=</span>dict_row<span class="token punctuation">)</span>
@@ -1193,7 +1195,7 @@ graph <span class="token operator">=</span> builder<span class="token punctuatio
 config <span class="token operator">=</span> <span class="token punctuation">{</span>
     <span class="token string">"configurable"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
         <span class="token string">"thread_id"</span><span class="token punctuation">:</span> <span class="token string">"org_100:user_200:task_abc"</span><span class="token punctuation">,</span>
-        <span class="token string">"strict_msgpack"</span><span class="token punctuation">:</span> <span class="token boolean">True</span> <span class="token comment"># 开启此选项，可物理限制反序列化安全类型</span>
+        <span class="token comment"># 反序列化严格模式由 LANGGRAPH_STRICT_MSGPACK=true 或 Serializer 的 allowlist 实施</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
@@ -1256,7 +1258,7 @@ config <span class="token operator">=</span> <span class="token punctuation">{</
 
 
 
-<table><thead><tr><th align="left">物理维度</th><th align="left">MemorySaver</th><th align="left">SQLite</th><th align="left">Redis</th><th align="left">Postgres</th></tr></thead><tbody><tr><td align="left">适合场景</td><td align="left">教程 Demo、本地单元测试</td><td align="left">个人工具站、单机部署、轻量后台</td><td align="left">高并发短会话、低延迟分布式服务</td><td align="left">分布式多用户、企业级长任务审计</td></tr><tr><td align="left">运维成本</td><td align="left">零成本，无外部依赖</td><td align="left">极低，单文件管理</td><td align="left">中等，需额外配置内存模块</td><td align="left">高，需要高可用关系型数据库</td></tr><tr><td align="left">并发能力</td><td align="left">仅限单进程内并发</td><td align="left">较弱，多线程写入易锁库</td><td align="left">极强，高并发吞吐</td><td align="left">强，支持连接池与高并发事务</td></tr><tr><td align="left">容灾持久化</td><td align="left">重启即物理蒸发</td><td align="left">磁盘级持久化，需做好备份</td><td align="left">内存为主，依赖 AOF 磁盘同步</td><td align="left">物理落盘，成熟的备份与恢复机制</td></tr><tr><td align="left">时间旅行支持</td><td align="left">支持完整历史回溯</td><td align="left">支持完整历史回溯</td><td align="left">可配置完整或 Shallow 覆盖模式</td><td align="left">支持完整历史，便于 JSONB 查询分析</td></tr><tr><td align="left">物理限制</td><td align="left">受限于进程分配的 RAM 大小</td><td align="left">写入锁限制，不适合高并发</td><td align="left">必须是 Redis Stack 8.0 以上</td><td align="left">必须配置 autocommit 与 dict_row</td></tr></tbody></table>
+<table><thead><tr><th align="left">物理维度</th><th align="left">MemorySaver</th><th align="left">SQLite</th><th align="left">Redis</th><th align="left">Postgres</th></tr></thead><tbody><tr><td align="left">适合场景</td><td align="left">教程 Demo、本地单元测试</td><td align="left">个人工具站、单机部署、轻量后台</td><td align="left">高并发短会话、低延迟分布式服务</td><td align="left">分布式多用户、企业级长任务审计</td></tr><tr><td align="left">运维成本</td><td align="left">零成本，无外部依赖</td><td align="left">极低，单文件管理</td><td align="left">中等，需额外配置内存模块</td><td align="left">高，需要高可用关系型数据库</td></tr><tr><td align="left">并发能力</td><td align="left">仅限单进程内并发</td><td align="left">较弱，多线程写入易锁库</td><td align="left">极强，高并发吞吐</td><td align="left">强，支持连接池与高并发事务</td></tr><tr><td align="left">容灾持久化</td><td align="left">重启即物理蒸发</td><td align="left">磁盘级持久化，需做好备份</td><td align="left">内存为主，依赖 AOF 磁盘同步</td><td align="left">物理落盘，成熟的备份与恢复机制</td></tr><tr><td align="left">时间旅行支持</td><td align="left">支持完整历史回溯</td><td align="left">支持完整历史回溯</td><td align="left">可配置完整或 Shallow 覆盖模式</td><td align="left">支持完整历史，便于 JSONB 查询分析</td></tr><tr><td align="left">环境要求</td><td align="left">受限于进程内存和生命周期</td><td align="left">并发写入需谨慎设计</td><td align="left">需要 RedisJSON/RediSearch；Redis 8+ 内置，旧版可用 Redis Stack</td><td align="left">手工建表连接应按官方示例配置 autocommit 和 dict_row</td></tr></tbody></table>
 <hr>
 <h2 id="八thread_id-与状态隔离的防串线设计">八、thread_id 与状态隔离的防串线设计</h2>
 <p>thread_id 是 Checkpointer 读取状态的物理主键，如果不做严格的租户隔离和属主强校验，系统将不可避免地面临越权访问与上下文串线灾难。</p>

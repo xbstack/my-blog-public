@@ -1145,7 +1145,7 @@ Agent Memory = what should continue to affect this agent/user/task over time
 <li>account and tenant scope.</li>
 </ul>
 <p>These have stable keys such as:</p>
-<pre class="language-text" data-language="text"><code is:raw="" class="language-text">tenant_id + user_id + project_id + key
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">tenant_id + user_id + agent_id + project_id + key
 </code></pre>
 <p>A relational, document, or key-value store is often a better fit.</p>
 <h3 id="semantic-or-hybrid-retrieval">Semantic or hybrid retrieval</h3>
@@ -1320,9 +1320,9 @@ authorization scope
 <p>Recent research is increasingly framing long-term memory as an evolving state-management problem, not merely a storage or embedding problem. That is why increasing embedding dimensions or <code>top_k</code> rarely solves the hardest reliability issues.</p>
 <h2 id="first-party-recalai-architecture-why-knowledge-memory-and-current-state-stay-separate">First-party RecalAI architecture: why knowledge, memory, and current state stay separate</h2>
 <p>The same boundary appears in my RecalAI local personal knowledge-base work. A strong retrieval pipeline does not mean the knowledge base should become the user’s long-term memory system.</p>
-<p>RecalAI’s ingestion path preserves the source, runs OCR/parsing and normalization, chunks the text, makes it immediately searchable through FTS, then adds embeddings, summaries, tags, and image understanding in the background. Querying combines FTS and query embeddings, performs chunk-level hybrid retrieval, RRF/deduplication, reranking and evidence selection before local or cloud generation. That is a Knowledge Base + RAG data surface: it answers what material has been saved and which evidence is relevant now.</p>
+<p>RecalAI’s local-first architecture and development roadmap preserve the source, run OCR/parsing and normalization, chunk the text and make it searchable via FTS, with asynchronous embeddings, summaries, tags and image understanding. Its query design combines FTS, query embeddings, chunk retrieval, RRF/deduplication, reranking and evidence selection before local generation or user-configured third-party model calls. <strong>This describes the implementation plan, not a claim that every feature has passed cross-platform or device acceptance tests.</strong> That is a Knowledge Base + RAG data surface: it answers what material has been saved and which evidence is relevant now.</p>
 <p>If RecalAI adds full personal memory, user preferences, durable project constraints, current task state, and PDF chunks should not become one undifferentiated index. Documents and chunks remain knowledge assets; explicit user preferences and durable project constraints enter a separately governed Memory Store; current progress belongs to Session / Task State; authentication, subscription, and device status come from operational sources of truth; and context assembly decides per task whether Memory, RAG, or both are needed.</p>
-<p>That implementation experience makes the distinction concrete: Memory vs RAG is a lifecycle, authority, and access-control boundary, not a naming debate. Sharing SQLite, FTS, embeddings, or even a vector index does not imply shared write policy, deletion semantics, or authority.</p>
+<p>The ongoing engineering design illustrates that Memory vs RAG is a lifecycle, authority, and access-control boundary, not a naming debate. Sharing SQLite, FTS, embeddings, or even a vector index does not imply shared write policy, deletion semantics, or authority.</p>
 <h2 id="decision-table-where-should-this-data-go">Decision table: where should this data go?</h2>
 
 

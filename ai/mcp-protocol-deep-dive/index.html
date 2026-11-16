@@ -970,24 +970,22 @@ const analyticsRequiresHumanInteraction = false;
 <p>这也是本文最重要的结论：<strong>Roots 是边界声明，不是已经完成的安全沙箱。</strong></p>
 <h2 id="先给结论安全边界必须落到每一次文件操作">先给结论：安全边界必须落到每一次文件操作</h2>
 <p>一个可上线的 MCP 文件网关，至少要让每个请求依次经过下面这条链路：</p>
-<pre class="language-text" data-language="text"><code is:raw="" class="language-text">用户选择可访问目录
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">服务端验证身份与租户
         ↓
-Client 通过 Roots 声明候选边界
+服务端自身的可访问目录白名单（非客户端 Roots）
         ↓
-拒绝绝对路径
+拒绝绝对路径和无效路径
         ↓
-resolve / realpath 解析 .. 与符号链接
+resolve / realpath 检查 .. 与符号链接
         ↓
-校验真实路径仍属于授权 Root
+验证服务端授权目录、工具及读写策略
         ↓
-检查敏感目录、文件类型、大小和读写策略
+使用文件描述符相对打开等方式防止检查后被替换（TOCTOU）
         ↓
-Resource / Tool 权限控制
-        ↓
-低权限用户或容器形成最后物理边界
+低权限用户、系统权限与审计提供额外约束
 </code></pre>
 <p>其中最容易犯的错误，是把 <code>Roots</code>、环境变量里的 <code>ALLOWED_ROOT</code> 或客户端工作区选择，当成最终执行边界。真正阻止目录穿越、绝对路径、符号链接逃逸和越权写入的，是 Server 在每一次操作中执行的路径解析和访问控制。</p>
-<p>MCP 当前使用 JSON-RPC 2.0，连接建立时会完成协议版本与能力协商。Server 可以暴露 Resources、Prompts 和 Tools；Client 则可以提供 Roots、Sampling、Elicitation 等能力。文件网关只实现自己真正需要的能力即可，不应为了“功能完整”一次性开放全部读写权限。</p>
+<p>MCP 继续使用 JSON-RPC 2.0，但 <strong>2026-07-28 核心已转为无会话的请求/响应模型</strong>，客户端随请求提交协议版本与能力元数据，不能再要求旧版 <code>initialize</code> 握手。Roots 在该版本已弃用，仅属于旧客户端的兼容背景，绝非文件授权策略。Server 可以提供 Resources、Prompts、Tools；涉及 Sampling/Elicitation 时按新版本 MRTR 边界实现。</p>
 <h2 id="resourcestoolspromptsroots-到底有什么区别">Resources、Tools、Prompts、Roots 到底有什么区别</h2>
 
 
@@ -1024,7 +1022,7 @@ Resource / Tool 权限控制
 
 
 
-<table><thead><tr><th>能力</th><th>谁主要控制</th><th>适合解决什么问题</th><th>文件网关中的典型用法</th></tr></thead><tbody><tr><td>Resources</td><td>应用驱动</td><td>提供可标识、可读取的上下文</td><td>项目 README、配置快照、日志片段、数据库 Schema</td></tr><tr><td>Tools</td><td>模型可发现和调用，应用应保留人工控制</td><td>查询、计算或产生副作用的动作</td><td>搜索文件、生成摘要、写入草稿、移动文件</td></tr><tr><td>Prompts</td><td>用户主动选择</td><td>提供可复用的任务模板</td><td>“审查当前配置”“总结指定日志”</td></tr><tr><td>Roots</td><td>Client 提供给 Server</td><td>声明文件系统操作边界</td><td>当前工作区、用户选择的仓库目录</td></tr></tbody></table>
+<table><thead><tr><th>能力</th><th>谁主要控制</th><th>适合解决什么问题</th><th>文件网关中的典型用法</th></tr></thead><tbody><tr><td>Resources</td><td>应用驱动</td><td>提供可标识、可读取的上下文</td><td>项目 README、配置快照、日志片段、数据库 Schema</td></tr><tr><td>Tools</td><td>模型可发现和调用，应用应保留人工控制</td><td>查询、计算或产生副作用的动作</td><td>搜索文件、生成摘要、写入草稿、移动文件</td></tr><tr><td>Prompts</td><td>用户主动选择</td><td>提供可复用的任务模板</td><td>“审查当前配置”“总结指定日志”</td></tr><tr><td>Roots（旧版兼容，2026-07-28 已弃用）</td><td>旧 Client 提供的目录提示</td><td>仅用于说明相关上下文，<strong>不提供文件访问授权</strong></td><td>旧版客户端所选工作区；新版服务端必须自行执行目录白名单</td></tr></tbody></table>
 <h3 id="resources应用决定怎样把上下文交给模型">Resources：应用决定怎样把上下文交给模型</h3>
 <p>Resources 通过 URI 唯一标识，客户端可以使用 <code>resources/list</code> 发现资源，再用 <code>resources/read</code> 获取内容。它适合“这是一个可被读取的对象”，而不是“执行一个动作”。</p>
 <pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span>
@@ -1100,13 +1098,13 @@ write_any_file(path: string, content: string)
 <h3 id="prompts是任务入口不是隐藏的系统后门">Prompts：是任务入口，不是隐藏的系统后门</h3>
 <p>Prompts 是 Server 暴露给 Client 的结构化消息模板，通常由用户在界面中主动选择，例如斜杠命令。它适合把“如何使用 Resources 和 Tools”组织成稳定工作流，但 Prompt 本身不能绕过 Tool 权限，也不应偷偷注入用户不可见的高风险操作。</p>
 <h3 id="roots边界声明必须与-server-校验同时存在">Roots：边界声明必须与 Server 校验同时存在</h3>
-<p>支持 Roots 的 Client 可以通过 <code>roots/list</code> 告知 Server 当前允许操作的目录。规范同时要求 Client 验证 Root URI、实施访问控制，也要求 Server 尊重 Root 边界并对路径再次验证。</p>
+<p>仅在使用较旧协议的客户端时，<code>roots/list</code> 才可能提供用户选定目录的上下文提示。<strong>2026-07-28 已弃用 Roots</strong>；服务端必须独立使用已认证身份、组织政策和文件权限决定可读写目录。旧协议提示即便存在，也不能扩大服务端授权范围。</p>
 <p>因此正确关系是：</p>
-<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Roots = 用户和客户端认可的候选边界
-Server path validation = 每次操作的强制执行边界
-OS/container permissions = 最后的物理权限边界
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">旧 Roots = 可选上下文提示，不是授权
+服务端身份/租户/路径策略 = 每次请求的可信授权
+文件操作与 OS 权限 = 防 TOCTOU 的实际执行边界
 </code></pre>
-<p>只有三层同时成立，才能降低误读用户主目录、<code>.ssh</code>、浏览器配置和生产凭据的风险。</p>
+<p>将身份授权、文件打开时的路径约束和最小系统权限结合，可降低误读主目录、<code>.ssh</code> 与生产密钥的风险。单次 <code>resolve()</code> 后再普通 <code>open()</code> 仍可能遭遇检查与使用之间的符号链接竞态，不能宣称无竞态沙箱。</p>
 <h2 id="安全文件网关的-10-项检查">安全文件网关的 10 项检查</h2>
 <ol>
 <li>只接受相对路径，直接拒绝 <code>/etc/passwd</code>、<code>C:\Users\...</code> 等绝对路径。</li>
@@ -1121,7 +1119,7 @@ OS/container permissions = 最后的物理权限边界
 <li>使用低权限系统用户或容器运行 Server，不依赖应用代码单层防护。</li>
 </ol>
 <h2 id="python-实战实现可复用的路径沙箱">Python 实战：实现可复用的路径沙箱</h2>
-<p>下面的示例只演示安全边界，不假设客户端一定支持某个特定 UI。它使用 <code>FastMCP</code> 注册两个收窄后的 Tool：只读文本和写入草稿。</p>
+<p>下面的示例是<strong>单用户、可信本机目录的教学演示</strong>，不是可供不可信多用户部署的安全沙箱。它使用 <code>FastMCP</code> 注册只读文本和写入草稿；在真正的并发生产系统中，还需要按身份授权并采用文件描述符相对路径等防 TOCTOU 技术。</p>
 <pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">from</span> __future__ <span class="token keyword">import</span> annotations
 
 <span class="token keyword">import</span> logging

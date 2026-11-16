@@ -1054,7 +1054,12 @@ const analyticsRequiresHumanInteraction = false;
     <span class="token keyword">if</span> <span class="token punctuation">(</span>lead<span class="token punctuation">.</span>intentType <span class="token operator">!==</span> <span class="token string">"purchase"</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token keyword">return</span> <span class="token string">"human_review_queue"</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
-    <span class="token comment">// 80 和 100 只是演示值，生产阈值须用真实 CRM 结果验证</span>
+    <span class="token comment">// 评分与公司规模必须经可信 CRM/接口核验，非法输入先转人工。</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>lead<span class="token punctuation">.</span>leadId <span class="token operator">||</span> <span class="token operator">!</span>Number<span class="token punctuation">.</span><span class="token function">isFinite</span><span class="token punctuation">(</span>lead<span class="token punctuation">.</span>score<span class="token punctuation">)</span> <span class="token operator">||</span> lead<span class="token punctuation">.</span>score <span class="token operator">&#x3C;</span> <span class="token number">0</span> <span class="token operator">||</span> lead<span class="token punctuation">.</span>score <span class="token operator">></span> <span class="token number">100</span> <span class="token operator">||</span>
+        <span class="token operator">!</span>Number<span class="token punctuation">.</span><span class="token function">isSafeInteger</span><span class="token punctuation">(</span>lead<span class="token punctuation">.</span>companySize<span class="token punctuation">)</span> <span class="token operator">||</span> lead<span class="token punctuation">.</span>companySize <span class="token operator">&#x3C;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token string">"human_review_queue"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// 80 和 100 只是演示阈值，不应直接用于生产。</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span>lead<span class="token punctuation">.</span>score <span class="token operator">>=</span> <span class="token number">80</span> <span class="token operator">&#x26;&#x26;</span> lead<span class="token punctuation">.</span>companySize <span class="token operator">></span> <span class="token number">100</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token keyword">return</span> <span class="token string">"enterprise_sales_review_queue"</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
@@ -1070,7 +1075,7 @@ const analyticsRequiresHumanInteraction = false;
 <p>它通过调取该客户在 CRM 系统中的历史互动日志、上一次会议纪要的 Action Items 以及该行业的目标痛点，自动为销售代表生成一封结构完整、针对性强的跟进邮件草案或 LinkedIn 沟通提纲。智能体可以识别出客户对价格敏感或对特定功能有疑问，并自动推荐最佳的跟进时间窗口。但是，任何自动生成的草稿在未经过销售代表人工确认、润色和点击发送前，绝对不能通过 API 自动发信，以守住商务合规底线。</p>
 <h2 id="email-routing-agent把入站邮件分给正确团队">Email Routing Agent：把入站邮件分给正确团队</h2>
 <p>邮件路由智能体是整个入站沟通流量的分流阀，旨在将冗余的信息垃圾过滤在日常工作区之外。</p>
-<p>在企业公用邮箱收到新邮件时，该 Agent 会自动解析其语义，判定是 Sales Inquiries（销售咨询）、Technical Support（技术支持）、Compliance / Billing（合规与账单问题）还是单纯的垃圾推广。根据判定的类别和发件人在 CRM 中对应的客户资产等级（ARR），自动将邮件分发给对应的销售代表、客服或财务人员，并在 CRM 中自动创建一个跟踪 ticket，将分发时延缩短至秒级。</p>
+<p>在企业公用邮箱收到新邮件时，该 Agent 会自动解析其语义，判定是 Sales Inquiries（销售咨询）、Technical Support（技术支持）、Compliance / Billing（合规与账单问题）还是单纯的垃圾推广。根据判定的类别和发件人在 CRM 中对应的客户资产等级（ARR），自动将邮件分发给对应的销售代表、客服或财务人员，并在 CRM 中自动创建一个跟踪 ticket，实际分发时延取决于 CRM、队列与授权流程，必须实测，不能预设达到秒级。</p>
 <p>对于这套邮件分拣路由逻辑，我曾在实战中做了详细的解析，可以参考：<a href="/ai/ai-email-routing-agent/">AI 邮件路由智能体生产化实战：意图识别、优先级判断与工单分发闭环</a>。</p>
 <h2 id="meeting-summary-agent把销售会议变成-crm-行动项">Meeting Summary Agent：把销售会议变成 CRM 行动项</h2>
 <p>将销售会议的原始音频转化为结构化的 CRM 备忘录和可执行的下一步待办，是沉淀客户商业需求的关键。</p>
@@ -1084,7 +1089,7 @@ const analyticsRequiresHumanInteraction = false;
 <p>如果你的 CRM 库中充斥着大量的重复联系人、同名但税号不同的公司、无效的临时邮箱以及长达一年没有任何活动的僵尸账号，那么 AI 给出的线索评分和路由建议将会彻底失效。数据治理智能体会在后台定期扫描整个数据库，通过计算相似度向管理员给出合并建议，自动解析邮箱后缀的域名并补全公司简称，标记失效的联系方式，确保整个数据底盘的健康整洁。</p>
 <h2 id="forecasting-agent销售预测必须有证据">Forecasting Agent：销售预测必须有证据</h2>
 <p>销售预测智能体的价值是用量化数据和销售漏斗推进事实代替人为的盲目乐观。</p>
-<p>模型预测不能依靠销售代表在 CRM 里填写的“80% 把握”，因为销售往往存在主观偏差。智能体通过抓取这一单交易在当前阶段的停留时长、过去 3 个月内与客户往来邮件的频次、会议纪要的行动项完成情况以及竞争对手提及情况，在本地运行逻辑树算法，客观计算出成交概率并指出潜在的合同死锁风险，为销售总监的季度 Forecasting 提供基于真实活动的量化证据支持。</p>
+<p>模型预测不能依靠销售代表在 CRM 里填写的“80% 把握”，因为销售往往存在主观偏差。智能体可在获得授权后，使用阶段停留时间、已验证的往来记录、行动项和业务历史训练与校准预测模型；这些特征并不能自动给出客观准确的成交概率，必须测量漂移、偏差和历史回测效果并指出潜在的合同死锁风险，为销售总监的季度 Forecasting 提供基于真实活动的量化证据支持。</p>
 <h2 id="saas-平台-vs-自建-agent-怎么选">SaaS 平台 vs 自建 Agent 怎么选？</h2>
 <p>在选型时，企业必须权衡开发维护成本、数据主权合规性以及与现有产品生态的融合深度。</p>
 <p>以下是主流 SaaS 原生智能体与本地自建 LangGraph + MCP 方案的对比决策框架：</p>
@@ -1123,7 +1128,7 @@ const analyticsRequiresHumanInteraction = false;
 
 
 
-<table><thead><tr><th align="left">选型考量维度</th><th align="left">SaaS 原生智能体 (如 HubSpot Breeze)</th><th align="left">本地自建多 Agent 方案 (LangGraph)</th></tr></thead><tbody><tr><td align="left">上线与部署时效</td><td align="left">极快 (开箱即用，免配置)</td><td align="left">较慢 (需要编写核心代码与接口集成)</td></tr><tr><td align="left">数据隐私合规性</td><td align="left">较低 (源码与客商数据必须发送至云端)</td><td align="left">极佳 (100% 数据本地物理隔离，内网存储)</td></tr><tr><td align="left">定制化自由度</td><td align="left">较低 (受限于平台预设的工作流框架)</td><td align="left">极高 (支持任意复杂的非线性路由与本地数据库)</td></tr><tr><td align="left">计费与成本结构</td><td align="left">昂贵 (按坐席月租或使用 Token 阶梯收费)</td><td align="left">低廉 (仅需付本地硬件折旧与开源模型 API 成本)</td></tr><tr><td align="left">三方系统对接</td><td align="left">仅限平台生态市场已有的插件</td><td align="left">支持基于 MCP 协议接入企业内部任何私有数据库</td></tr></tbody></table>
+<table><thead><tr><th align="left">选型考量维度</th><th align="left">SaaS 原生智能体 (如 HubSpot Breeze)</th><th align="left">本地自建多 Agent 方案 (LangGraph)</th></tr></thead><tbody><tr><td align="left">上线与部署时效</td><td align="left">已有标准模块可减少开发工作，但仍需配置权限、数据同步和工作流</td><td align="left">需自行实现授权、测试、部署与运维，周期取决于能力范围</td></tr><tr><td align="left">数据隐私合规性</td><td align="left">需核验厂商数据处理条款、地域、保留期和连接器传输</td><td align="left">可自行约束数据边界，但模型 API、日志、备份、管理员与第三方接口仍可能出域；不自动保证 100% 本地</td></tr><tr><td align="left">定制化自由度</td><td align="left">受平台 API、审批和扩展机制约束，部分场景支持深度自定义</td><td align="left">可定制工作流与数据库，仍受技术、合规和接口限制</td></tr><tr><td align="left">计费与成本结构</td><td align="left">依套餐、用量和集成配置核算</td><td align="left">包括人力开发、模型推理、基础设施、安全审计和维护，不保证更便宜</td></tr><tr><td align="left">三方系统对接</td><td align="left">可调用平台支持的 API、Webhook 和合作连接器</td><td align="left">需逐项验证权限和接口契约；MCP 本身不授予数据库访问权</td></tr></tbody></table>
 <h2 id="hubspotsalesforceintercomzendesk-各适合什么">HubSpot、Salesforce、Intercom、Zendesk 各适合什么？</h2>
 <p>在工具选型时，每个平台都有其最擅长的物理边界，不要指望一个工具能搞定全部场景。</p>
 <p>HubSpot AI (Breeze)：
@@ -1141,7 +1146,7 @@ const analyticsRequiresHumanInteraction = false;
 <p>在设计系统时，我们必须在 API 批注层（Middleware）对 Agent 拥有的 Token 进行权限物理降维：</p>
 <ul>
 <li>低风险只读权限（Read-only）：查询联系人元数据、检索历史活动 Timeline、读取会议纪要和查阅工单记录。此类权限全天候对 Agent 开放。</li>
-<li>中风险受控写权限（Controlled Write）：在联系人下添加备注 notes、创建内部待办任务 tasks、更新非核心分类标签。此类操作允许 Agent 自主执行并记入审计日志。</li>
+<li>中风险受控写权限（Controlled Write）：备注、内部待办和分类标签也是持久业务写入；应由可信服务验证租户、记录归属、字段白名单、幂等键及相应审批政策，不能仅凭模型决策和日志就自主执行。</li>
 <li>高危写入权限（Restricted Write）：修改商机金额和销售阶段（deal stage）、创建对外商业报价、代表公司发送跟进邮件、修改客户合同及银行账户。此类权限 Agent 绝对不允许自主调用，必须生成草稿，在人类 Supervisor 审批通过后，由 Supervisor 的身份凭证物理调用 API 执行。</li>
 </ul>
 <h2 id="评估指标">评估指标</h2>

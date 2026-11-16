@@ -1145,7 +1145,7 @@ Agent Memory = what should continue to affect this agent/user/task over time
 <li>账号或租户作用域。</li>
 </ul>
 <p>这类数据有稳定键，应该优先：</p>
-<pre class="language-text" data-language="text"><code is:raw="" class="language-text">tenant_id + user_id + project_id + key
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">tenant_id + user_id + agent_id + project_id + key
 </code></pre>
 <p>用关系库、KV Store 或文档库做确定性查询。</p>
 <h3 id="适合语义检索">适合语义检索</h3>
@@ -1323,9 +1323,9 @@ authorization scope
 <p>2026 年的 Memory 研究越来越把问题从“存在哪”转向“如何管理持续演化的状态”。这也是为什么单纯提高 embedding 维度或 top_k，通常解决不了长期记忆真正的可靠性问题。</p>
 <h2 id="recalai-的第一方实现资料库memory-和当前状态为什么分开">RecalAI 的第一方实现：资料库、Memory 和当前状态为什么分开</h2>
 <p>我自己在做 RecalAI 本地个人知识库时，实际遇到的也是同一个边界问题：资料库检索能力很强，不代表它就应该承担长期用户 Memory。</p>
-<p>RecalAI 的资料链路是“保存原件 → OCR/解析 → 规范化 → Chunk → FTS 立即可搜 → 后台 Embedding/摘要/标签/图片理解”；查询再走“FTS + Query Embedding → Chunk 混合召回 → RRF/去重 → Rerank → Evidence → 本地或云端生成”。这本质上是一套 Knowledge Base + RAG 数据面，解决的是“我保存过哪些资料、当前问题需要哪些证据”。</p>
+<p>RecalAI 当前的端侧架构与开发路线是“保存原件 → OCR/解析 → 规范化 → Chunk → FTS 即时可搜 → 后台 Embedding/摘要/标签/图片理解”；查询设计为“FTS + Query Embedding → Chunk 混合召回 → RRF/去重 → Rerank → Evidence → 本地或经用户配置的第三方云模型生成”。**这是开发架构和目标流程，不代表全部功能已完成跨端或真机验收。**这本质上是一套 Knowledge Base + RAG 数据面，解决的是“我保存过哪些资料、当前问题需要哪些证据”。</p>
 <p>如果继续加入真正的 Personal Memory，更稳妥的做法不是把用户偏好、长期项目约束、当前任务状态和 PDF Chunk 全塞进一个索引，而是把它们拆开：原始资料和 Chunk 属于知识库；用户明确偏好和长期项目约束进入独立 Memory Store；当前任务进度进入 Session / Task State；登录状态、订阅等级、设备信息等实时业务事实仍从业务 source of truth 获取；最终 Context Assembly 再按任务决定是否同时读取 Memory 和 RAG。</p>
-<p>这个实现经验说明，Memory vs RAG 不是术语争论，而是数据生命周期、权威性和权限边界问题。即使两个数据面共用了 SQLite、FTS、Embedding 或向量索引，也不代表它们应该共享写入策略、删除策略和权威级别。</p>
+<p>这种开发设计中的边界说明，Memory vs RAG 不是术语争论，而是数据生命周期、权威性和权限问题。即使两个数据面共用了 SQLite、FTS、Embedding 或向量索引，也不代表它们应该共享写入策略、删除策略和权威级别。</p>
 <h2 id="选型决策表这条数据到底放哪里">选型决策表：这条数据到底放哪里</h2>
 
 

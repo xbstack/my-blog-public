@@ -1055,7 +1055,7 @@ const analyticsRequiresHumanInteraction = false;
 <li>第三步：Checker 提取出草稿中对应句子的断言（Claim）以及 Chunk 的证据内容（Evidence），将两段文字丢给一个高精度小模型（如 Claude 3.5 Sonnet 或专用对齐模型），只问它一个客观问题：Evidence 是否逻辑上支持 Claim？</li>
 <li>第四步：如果支持，标记为合格；如果不支持，或者引用了不存在的标号，将该 Claim 判定为 <code>unsupported_claims</code>。</li>
 </ul>
-<pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token comment">// Citation Checker 审计失败的输出日志</span>
+<pre class="language-json" data-language="json"><code is:raw="" class="language-json"> Citation Checker 审计失败的输出日志
 <span class="token punctuation">{</span>
   <span class="token property">"claim"</span><span class="token operator">:</span> <span class="token string">"系统支持 ERROR_302 的自动修复功能"</span><span class="token punctuation">,</span>
   <span class="token property">"citation_id"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
@@ -1068,7 +1068,7 @@ const analyticsRequiresHumanInteraction = false;
 <p>一旦发现存在 <code>unsupported_claims</code> 且其属于核心结论，系统必须拦截输出，强制扣起答案，并触发状态回滚，重新进入生成或检索流程。</p>
 <h2 id="六-事实验证-verifier构建多维度的幻觉审计屏障">六、 事实验证 (Verifier)：构建多维度的幻觉审计屏障</h2>
 <p>事实验证器不仅要评估最终文本的可读性，还要调取全量检索日志和引用映射，综合评估答案是否真正解决了原始 Query。</p>
-<p>经过了前面的检索验证和引用审计，我们能保证答案的每一句话都有出处。但此时还面临最后一个关卡：答案是否答非所问？是否遗漏了核心反例？</p>
+<p>检索验证、引用格式校验和模型评审都<strong>不能保证</strong>每句话被证据完整支持；需使用标注集与来源原文验证主张—引文对应关系，特别关注版本冲突和过期材料。但此时还面临最后一个关卡：答案是否答非所问？是否遗漏了核心反例？</p>
 <p>这就需要终极的 Answer Verifier。Verifier 不是简单地把最终答案发给模型让它看一遍，而是要提供全量上下文来执行多维矩阵式校验：</p>
 <ul>
 <li>问题解决度：比对原始问题与生成答案，看核心诉求（如「如何修改配置」）是否在答案中得到了具体响应。</li>
@@ -1077,7 +1077,7 @@ const analyticsRequiresHumanInteraction = false;
 </ul>
 <p>如果 Verifier 的最终评估不通过，系统将触发重试或回滚。而为了防止智能体在重试过程中陷入死循环，必须在全局状态中记录重试次数 <code>retry_count</code>，并在次数超限时进行熔断，优雅地转入人工复核队列。</p>
 <h2 id="七-langgraph-状态回滚实现纠错重试的控制中枢">七、 LangGraph 状态回滚：实现纠错重试的控制中枢</h2>
-<p>LangGraph 的核心价值在于提供带 Checkpoint 的有状态状态机，允许 RAG 系统在特定节点校验失败时，实现局部状态回滚与自适应重试。</p>
+<p>LangGraph 可以通过条件分支和 Checkpoint 支持任务状态的显式恢复与重放，但<strong>不能自动撤销外部 API、数据库写入或发出的通知</strong>。纠错重试必须明确状态更新与副作用幂等规则。</p>
 <p>如果用传统的直线代码来写纠错重试，你会看到层层嵌套的 while 循环和 try-except 代码块，逻辑会变得极其混乱。</p>
 <p>LangGraph 的优势在于它能通过条件边（Conditional Edges）让回滚和重试的逻辑完全可视化、白盒化。</p>
 <p>以下是实现纠错重试的状态图路由核心逻辑：</p>
@@ -1102,7 +1102,7 @@ const analyticsRequiresHumanInteraction = false;
         
     <span class="token keyword">return</span> <span class="token string">"human_review_queue"</span>
 </code></pre>
-<p>在 LangGraph 中，当节点流转回到 <code>query_rewriter</code> 时，由于我们使用了 <code>MemorySaver</code> 作为 Checkpointer，整个执行链路的状态会被原生记录下来。我们在调试或者复盘时，可以通过 trace 工具清晰地看到：为什么它在第 2 步回滚了？它是如何修改了查询词并重新得到高相关 Chunk 的？</p>
+<p>在 LangGraph 中，当节点流转回到 <code>query_rewriter</code> 时，<code>MemorySaver</code> 只能在当前进程生命周期内保存已完成的图步骤状态；跨进程/重启恢复需要部署合适的持久化后端，且仍不能保证每个工具调用恰好执行一次。我们在调试或者复盘时，可以通过 trace 工具清晰地看到：为什么它在第 2 步回滚了？它是如何修改了查询词并重新得到高相关 Chunk 的？</p>
 <p>这种可回滚的状态管理，是让 RAG 系统具备工业级稳定性的控制中枢。</p>
 <h2 id="八-评估指标与最小可上线版本建议">八、 评估指标与最小可上线版本建议</h2>
 <p>可度量是可持续的前提，RAG 系统的上线必须建立在检索精度、引文准确率以及幻觉率等关键指标的细粒度监控之上。</p>

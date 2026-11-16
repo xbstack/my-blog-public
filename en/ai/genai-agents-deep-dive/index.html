@@ -1057,8 +1057,7 @@ Output Final Answer &#x26; write Audit Log
 <li>Step 3: The Checker extracts the claim from the corresponding sentence in the draft and the evidence from the Chunk. It feeds both texts into a high-accuracy smaller model (e.g., Claude 3.5 Sonnet or a specialized alignment model) with a single objective question: Does the Evidence logically support the Claim?</li>
 <li>Step 4: If supported, the Claim is marked valid. If it is unsupported, or if the citation refers to a nonexistent marker, the Claim is added to <code>unsupported_claims</code>.</li>
 </ul>
-<pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token comment">// Output log for a failed Citation Checker audit</span>
-<span class="token punctuation">{</span>
+<pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"claim"</span><span class="token operator">:</span> <span class="token string">"The system supports automatic repair for ERROR_302"</span><span class="token punctuation">,</span>
   <span class="token property">"citation_id"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
   <span class="token property">"support_status"</span><span class="token operator">:</span> <span class="token string">"unsupported"</span><span class="token punctuation">,</span>
@@ -1070,7 +1069,7 @@ Output Final Answer &#x26; write Audit Log
 <p>When <code>unsupported_claims</code> affect core conclusions, the system must intercept the output, suppress the answer, roll back state, and re-enter the generation or retrieval workflow.</p>
 <h2 id="6-fact-verification-verifier-building-a-multi-dimensional-hallucination-audit-barrier">6. Fact Verification (Verifier): Building a Multi-Dimensional Hallucination Audit Barrier</h2>
 <p>The fact Verifier must assess more than the final text’s readability. It must also inspect the complete retrieval logs and citation mappings to determine whether the answer actually resolves the original Query.</p>
-<p>After passing through the preceding retrieval validation and citation audit, we can guarantee that every sentence in the answer has a source. However, it still faces one final hurdle: Is the answer off-topic? Does it omit core counterexamples?</p>
+<p>Passing a citation parser or model-based support judge does <strong>not guarantee</strong> that every sentence is correct or entailed by its source. Verify claim-to-span support with labeled adversarial cases, especially conflicting and outdated evidence. However, it still faces one final hurdle: Is the answer off-topic? Does it omit core counterexamples?</p>
 <p>This requires a final Answer Verifier. Instead of merely sending the final answer to a model for a quick review, the Verifier supplies the complete context and performs a multidimensional validation:</p>
 <ul>
 <li>Problem Resolution: Compare the original question with the generated answer to determine whether the answer responds specifically to the core request, such as “how to modify the configuration.”</li>
@@ -1079,7 +1078,7 @@ Output Final Answer &#x26; write Audit Log
 </ul>
 <p>If the Verifier’s final evaluation fails, the system will trigger a retry or rollback. To prevent the agent from falling into an infinite loop during retries, the retry count <code>retry_count</code> must be recorded in the global state, and a circuit breaker must be activated when the limit is exceeded, gracefully routing the case to a manual review queue.</p>
 <h2 id="7-langgraph-state-rollback-implementing-the-control-hub-for-error-correction-and-retries">7. LangGraph State Rollback: Implementing the Control Hub for Error Correction and Retries</h2>
-<p>LangGraph’s core value is its checkpointed state machine, which allows the RAG system to perform local state rollbacks and adaptive retries when validation fails at a particular node.</p>
+<p>LangGraph enables explicit conditional routing and checkpoint-based <strong>replay/time travel</strong> of completed steps; it does not automatically undo external actions, database writes or network calls. Correction loops should mutate validated state deliberately and keep side effects idempotent.</p>
 <p>If you were to write error correction and retries using traditional linear code, you would end up with deeply nested <code>while</code> loops and <code>try-except</code> blocks, making the logic extremely convoluted.</p>
 <p>LangGraph’s advantage is that it makes rollback and retry logic fully transparent through Conditional Edges.</p>
 <p>Below is the core state-graph routing logic for error correction and retries:</p>
@@ -1104,7 +1103,7 @@ Output Final Answer &#x26; write Audit Log
         
     <span class="token keyword">return</span> <span class="token string">"human_review_queue"</span>
 </code></pre>
-<p>In LangGraph, when the node flow returns to <code>query_rewriter</code>, because we use <code>MemorySaver</code> as the Checkpointer, the state of the entire execution chain is natively recorded. During debugging or post-mortems, we can clearly see through trace tools: why did it roll back at step 2? How did it modify the query and retrieve highly relevant chunks again?</p>
+<p>In LangGraph, when the node flow returns to <code>query_rewriter</code>, an in-memory checkpointer can record graph-step state within the lifetime of that process, <strong>not</strong> durably across restarts; persistent recovery requires an appropriate durable backend. During debugging or post-mortems, we can clearly see through trace tools: why did it roll back at step 2? How did it modify the query and retrieve highly relevant chunks again?</p>
 <p>This rollback-capable state management serves as the control hub that gives RAG systems industrial-grade stability.</p>
 <h2 id="8-evaluation-metrics-and-minimum-viable-launch-recommendations">8. Evaluation Metrics and Minimum Viable Launch Recommendations</h2>
 <p>Measurability is a prerequisite for sustainability. A RAG system should launch only with fine-grained monitoring of key metrics such as retrieval accuracy, citation accuracy, and hallucination rate.</p>
@@ -1163,7 +1162,7 @@ Output Final Answer &#x26; write Audit Log
 <ul>
 <li>Error Symptom: Following a user query, the system experiences extreme latency, ultimately returning either a blank response or an error.</li>
 <li>Root Cause Analysis: The knowledge base contains two chunks with entirely contradictory content. During answer generation, the model selects option A in the first round, but the Verifier flags it as conflicting and rejects it. In the second round, it selects option B, which is similarly rejected for conflicting with A. The agent oscillates between these two contradictory sources until its token budget is exhausted.</li>
-<li>Solution: During the Context Builder phase, enforce timestamp-based reordering for chunks containing version or date metadata, retaining only the most recently published valid content. Alternatively, at the Verifier level, detect this type of “hard conflict”; once triggered, disable retries, immediately raise a conflict alert, and escalate it for manual review.</li>
+<li>Solution: During Context Building, retain provenance, version, source authority and effective-date metadata; never discard contradictory evidence solely because a snippet has a newer timestamp. Escalate unresolved contradictions for human review. Alternatively, at the Verifier level, detect this type of “hard conflict”; once triggered, disable retries, immediately raise a conflict alert, and escalate it for manual review.</li>
 </ul>
 <h2 id="10-summary">10. Summary</h2>
 <p>The key to productionizing RAG Agents isn’t simply making the model better at answering; it’s building a system capable of detecting, pinpointing, correcting, and logging errors. A robust RAG error-correction closed loop must encompass at least retrieval verification, context construction, answer citation, fact auditing, failure retry, state rollback, and manual review. The true value of LangGraph lies in structuring these steps into a traceable state machine, rather than merely wrapping a basic RAG invocation into a more complex demo.</p>

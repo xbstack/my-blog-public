@@ -1022,29 +1022,39 @@ segments<span class="token punctuation">,</span> info <span class="token operato
 <p>任务归属需要把**说话人分离（speaker diarization）<strong>和</strong>真实身份映射（speaker identification）**拆开。前者解决“这一段由哪个匿名 Speaker 说”，后者才解决 <code>SPEAKER_00</code> 对应团队里的谁；把两者混成“声纹识别”会让架构和评估口径都失真。</p>
 <p>“这件事我下周发版”。如果系统只拿到这句话，负责人字段仍然只是“我”。可以用 <a href="https://github.com/pyannote/pyannote-audio" rel="nofollow noopener noreferrer" target="_blank">pyannote.audio</a> 的 <code>speaker-diarization-community-1</code> 等管线先生成带时间区间的匿名 Speaker label，再与带 word timestamps 的转写结果对齐。当前 community-1 使用 VBx clustering，并不要求你在每场会议前预录一套 10 秒声纹库。</p>
 <p>真实姓名映射应该作为独立步骤：优先结合会议参会人列表、账号/麦克风通道、明确的身份匹配能力，必要时再使用 voiceprint 产品能力或人工确认。不能仅凭 diarization 输出和大模型上下文就把匿名 Speaker 自动认定为某个真实员工。随后再把 diarization 时间区间与转写时间戳进行合并：</p>
-<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">def</span> <span class="token function">merge_diarization_and_transcript</span><span class="token punctuation">(</span>diarization_segments<span class="token punctuation">,</span> whisper_words<span class="token punctuation">)</span><span class="token punctuation">:</span>
-    merged_payload <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-    <span class="token comment"># 遍历 Pyannote 输出的说话人段落</span>
-    <span class="token keyword">for</span> speaker_seg <span class="token keyword">in</span> diarization_segments<span class="token punctuation">:</span>
-        speaker_id <span class="token operator">=</span> speaker_seg<span class="token punctuation">.</span>speaker_id <span class="token comment"># 例如 "SPEAKER_01"</span>
-        start_time <span class="token operator">=</span> speaker_seg<span class="token punctuation">.</span>start
-        end_time <span class="token operator">=</span> speaker_seg<span class="token punctuation">.</span>end
-        
-        <span class="token comment"># 筛选在这个时间段内 Whisper 输出的所有单词</span>
-        segment_words <span class="token operator">=</span> <span class="token punctuation">[</span>
-            word<span class="token punctuation">.</span>text <span class="token keyword">for</span> word <span class="token keyword">in</span> whisper_words
-            <span class="token keyword">if</span> word<span class="token punctuation">.</span>start <span class="token operator">>=</span> start_time <span class="token keyword">and</span> word<span class="token punctuation">.</span>end <span class="token operator">&#x3C;=</span> end_time
-        <span class="token punctuation">]</span>
-        
-        text <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span>segment_words<span class="token punctuation">)</span>
-        <span class="token keyword">if</span> text<span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-            merged_payload<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">{</span>
-                <span class="token string">"speaker"</span><span class="token punctuation">:</span> speaker_id<span class="token punctuation">,</span>
-                <span class="token string">"text"</span><span class="token punctuation">:</span> text<span class="token punctuation">,</span>
-                <span class="token string">"timestamp"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>start_time<span class="token punctuation">,</span> end_time<span class="token punctuation">]</span>
-            <span class="token punctuation">}</span><span class="token punctuation">)</span>
-            
-    <span class="token keyword">return</span> merged_payload
+<pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">from</span> math <span class="token keyword">import</span> isfinite
+
+<span class="token keyword">def</span> <span class="token function">merge_diarization_and_transcript</span><span class="token punctuation">(</span>diarization_segments<span class="token punctuation">,</span> whisper_words<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""Assign each timestamped word at most once; unknown stays unknown."""</span>
+    segments <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span>diarization_segments<span class="token punctuation">)</span>
+    result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> word <span class="token keyword">in</span> whisper_words<span class="token punctuation">:</span>
+        start<span class="token punctuation">,</span> end <span class="token operator">=</span> <span class="token builtin">float</span><span class="token punctuation">(</span>word<span class="token punctuation">.</span>start<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token builtin">float</span><span class="token punctuation">(</span>word<span class="token punctuation">.</span>end<span class="token punctuation">)</span>
+        <span class="token keyword">if</span> <span class="token keyword">not</span> <span class="token builtin">all</span><span class="token punctuation">(</span>isfinite<span class="token punctuation">(</span>v<span class="token punctuation">)</span> <span class="token keyword">for</span> v <span class="token keyword">in</span> <span class="token punctuation">(</span>start<span class="token punctuation">,</span> end<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">or</span> end <span class="token operator">&#x3C;=</span> start<span class="token punctuation">:</span>
+            <span class="token keyword">continue</span>  <span class="token comment"># Invalid word timing requires upstream correction.</span>
+        candidates <span class="token operator">=</span> <span class="token builtin">sorted</span><span class="token punctuation">(</span>
+            <span class="token punctuation">(</span>
+                <span class="token punctuation">(</span><span class="token builtin">max</span><span class="token punctuation">(</span><span class="token number">0.0</span><span class="token punctuation">,</span> <span class="token builtin">min</span><span class="token punctuation">(</span>end<span class="token punctuation">,</span> <span class="token builtin">float</span><span class="token punctuation">(</span>seg<span class="token punctuation">.</span>end<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">-</span>
+                           <span class="token builtin">max</span><span class="token punctuation">(</span>start<span class="token punctuation">,</span> <span class="token builtin">float</span><span class="token punctuation">(</span>seg<span class="token punctuation">.</span>start<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">(</span>seg<span class="token punctuation">.</span>speaker_id<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token keyword">for</span> seg <span class="token keyword">in</span> segments
+                <span class="token keyword">if</span> <span class="token builtin">all</span><span class="token punctuation">(</span>isfinite<span class="token punctuation">(</span><span class="token builtin">float</span><span class="token punctuation">(</span>t<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">for</span> t <span class="token keyword">in</span> <span class="token punctuation">(</span>seg<span class="token punctuation">.</span>start<span class="token punctuation">,</span> seg<span class="token punctuation">.</span>end<span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">)</span><span class="token punctuation">,</span>
+            reverse<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span>
+        <span class="token punctuation">)</span>
+        best <span class="token operator">=</span> candidates<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token keyword">if</span> candidates <span class="token keyword">else</span> <span class="token number">0.0</span>
+        runner_up <span class="token operator">=</span> candidates<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token keyword">if</span> <span class="token builtin">len</span><span class="token punctuation">(</span>candidates<span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">1</span> <span class="token keyword">else</span> <span class="token number">0.0</span>
+        <span class="token comment"># Overlapping voices / ties are ambiguous, not a named speaker.</span>
+        label <span class="token operator">=</span> candidates<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token keyword">if</span> best <span class="token operator">></span> <span class="token number">0</span> <span class="token keyword">and</span> best <span class="token operator">></span> runner_up <span class="token keyword">else</span> <span class="token boolean">None</span>
+        result<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">{</span>
+            <span class="token string">"speaker"</span><span class="token punctuation">:</span> label<span class="token punctuation">,</span>
+            <span class="token string">"text"</span><span class="token punctuation">:</span> word<span class="token punctuation">.</span>text<span class="token punctuation">,</span>
+            <span class="token string">"timestamp"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>start<span class="token punctuation">,</span> end<span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token string">"needs_review"</span><span class="token punctuation">:</span> label <span class="token keyword">is</span> <span class="token boolean">None</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> result
+
+<span class="token comment"># This creates anonymous word assignments only, never employee identity.</span>
+<span class="token comment"># Human confirmation is required for ambiguous diarization and owners.</span>
 </code></pre>
 <p>合并后的 payload 仍然只有匿名 Speaker ID。系统只有在存在可靠身份依据时，才应把 <code>SPEAKER_01</code> 映射到具体员工：例如独立声道、登录账号、已验证的身份匹配结果，或人工确认。日历参会人列表可以缩小候选范围，但不应单独作为自动认人的证据；如果身份无法可靠确定，就保留匿名 Speaker 并把 owner 字段送入人工复核。</p>
 <h2 id="决策提取与行动项过滤严格区分发散讨论与最终结论">决策提取与行动项过滤：严格区分发散讨论与最终结论</h2>
@@ -1052,7 +1062,7 @@ segments<span class="token punctuation">,</span> info <span class="token operato
 <p>在会议文本中，发言往往是极其混乱和发散的。一个人提出“我们是否可以换成 Milvus 向量库？”，另一个人说“那这样要改很多代码吧”，这属于讨论，而不是决策。</p>
 <p>我们在设计 Agent Task Extractor 时，在 Prompt 和解析层应施加硬性的状态机断言：</p>
 <ol>
-<li>决策（Decisions）：必须同时包含“提议”、“论据”以及参会多方“明确表达同意/确认的词汇”（如“好、就这么定、行、同意”）。发散讨论、疑问句或带有“可以考虑、建议”等弱断言的段落，一律过滤，禁止写入决策字典。</li>
+<li>决策（Decisions）：应能从有权限的会议纪要、明确主持人裁决或参会人确认中定位原话；并非所有会议都需要多人投票，也不能仅凭“好”等语气词就当作正式决策。发散讨论、疑问句或带有“可以考虑、建议”等弱断言的段落，一律过滤，禁止写入决策字典。</li>
 <li>行动项（Action Items）：行动项必须具备 4 维强校验：核心动作（Action）、负责人（Owner）、明确截止日期（Due Date，如果是“下周”则根据会议当天日期自动计算出具体时间戳）、以及对应的出处原句引用（Source Quote）。</li>
 </ol>
 <p>如果提取出的行动项缺失了负责人或由于口头表达不清导致 Due Date 无法推算，系统禁止自动生成任务卡片，必须将其标记为 Pending 挂起状态。</p>
@@ -1072,7 +1082,7 @@ segments<span class="token punctuation">,</span> info <span class="token operato
 <p>在任务确认通过后，智能体将发起工具调用，向 Notion 数据库或 Jira 系统同步创建卡片。此时最容易遇到网络波动、Notion API Rate Limit（请求限流）或 502 服务不可用。</p>
 <p>我们必须采取严格的失败自愈与幂等设计：</p>
 <ul>
-<li>全局唯一 ID 绑定（Idempotency Key）：在草稿生成时，系统为每个待办任务计算一个唯一的 <code>task_uuid</code>（基于会议 ID + 音频时间戳哈希）。在向 Notion 发起 POST 创建页面时，将此 UUID 作为自定义属性（Property）写入。</li>
+<li>业务幂等键：在可信数据库中为 <code>(tenant_id, meeting_id, approved_action_id)</code> 建立唯一约束与持久写入状态；音频时间戳可能变化或碰撞，不能单独保证稳定任务身份。Notion 自定义 <code>task_uuid</code> 字段可以用于结果对账，但不等同于 Notion 自动支持原子去重。</li>
 <li>限流重试：Notion 返回 <code>429 rate_limited</code> 时，优先读取并等待 <code>Retry-After</code> 指定的秒数，再把后续请求放入有上限的队列；对 502/503/504 或没有明确服务端等待时间的临时失败，再采用带抖动的指数退避。不要把固定 <code>2s / 4s / 8s</code> 写成 Notion 的通用协议。</li>
 <li>状态网关监控：重试次数和总等待时间必须有上限。超过阈值后将任务标记为 <code>sync_failed</code> 并支持人工 <code>resync</code>。<code>task_uuid</code>/业务唯一键用于查重和恢复，但仍要在重试前查询或核验已有写入结果；幂等设计的目标是降低重复创建风险，而不是承诺“绝不会重复”。</li>
 </ul>
@@ -1094,7 +1104,7 @@ segments<span class="token punctuation">,</span> info <span class="token operato
 <ul>
 <li>现象：在同步任务阶段，由于 Notion 接口偶发性的网络超时，Agent 不断触发自愈重试逻辑，在后台疯狂刷新接口，导致在 Notion 看板里瞬间创建了十几条一模一样的冗余任务卡片。</li>
 <li>归因：调用 Notion API 的工具本身没有实现幂等性校验。当第一次调用已经写入成功但返回超时报错（Timeout）时，Agent 误以为写入失败，带着相同的参数再次发起 POST，造成写操作膨胀。</li>
-<li>解决方案：向 Notion 同步前，先使用过滤条件 <code>UUID == task_uuid</code> 调用查询接口进行防重校验。如果 Notion 数据库中已经存在该 UUID，则说明之前虽发生超时但已写入成功，同步器应静默返回 <code>Success</code> 并终止重试。</li>
+<li>解决方案：写入前在本地可信数据库以唯一业务键获取执行权，并记录 <code>pending/unknown/committed</code> 和外部页面 ID。超时后在具有访问权限的 Notion 数据源中查询匹配的已确认记录并核实内容；匹配记录也可能重复或延迟可见，不能仅凭一次空查询重试 POST。无法确认时挂起人工对账，避免重复建卡。</li>
 </ul>
 <h2 id="常见问题解答">常见问题解答</h2>
 <h3 id="q-是否可以将长达数小时的整场会议录音直接喂给-claude-或-gpt-4o-生成纪要">Q: 是否可以将长达数小时的整场会议录音直接喂给 Claude 或 GPT-4o 生成纪要？</h3>

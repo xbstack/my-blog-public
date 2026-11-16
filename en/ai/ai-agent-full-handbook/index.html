@@ -971,7 +971,7 @@ const analyticsRequiresHumanInteraction = false;
 </ul>
 <h2 id="pain-points--target-audience">Pain Points &#x26; Target Audience</h2>
 <p>During the implementation of AI Agent technologies, development teams often fall into two extremes: either blindly trusting simplistic LangChain tutorials and deploying unverified demo code directly to production, which leads to infinite loops triggered by network timeouts that rapidly burn through token quotas; or prematurely introducing complex GroupChat multi-agent systems and automated long-term memory during the project’s cold start phase. This adds massive engineering complexity while causing task success rates to plummet due to semantic noise interference between models.</p>
-<p>How do you make sound framework choices during the initial architecture phase? How do you design strict security boundaries for tool calls? And how do you ensure zero state loss and calculable costs during deployment?</p>
+<p>How do you make sound framework choices during the initial architecture phase? How do you design strict security boundaries for tool calls? How do you define recoverable checkpoints, external side-effect limits, and measurable cost budgets instead of promising zero state loss?</p>
 <p>This article provides a detailed, actionable implementation guide for frontline R&#x26;D engineers working on agent system development and integration, as well as technical leads responsible for evaluating agent architecture feasibility and drafting deployment checklists.</p>
 <h2 id="positioning-first-not-an-ai-agent-concept-encyclopedia-but-a-hands-on-implementation-guide">Positioning First: Not an AI Agent Concept Encyclopedia, But a Hands-On Implementation Guide</h2>
 <p>When developing an Agent project, the most critical step isn’t picking a framework first—it’s assessing the task type, risk level, tool boundaries, state complexity, and deployment requirements.</p>
@@ -989,7 +989,7 @@ const analyticsRequiresHumanInteraction = false;
 </ul>
 <p>If all answers above are “No,” it’s recommended to revert to stateful workflows (Astro/Node.js Workflow) or traditional deterministic logic. Don’t introduce the inherent stochastic overhead of LLMs just for the sake of technological novelty.</p>
 <h2 id="step-2-protocol--orchestration-framework-selection">Step 2: Protocol &#x26; Orchestration Framework Selection</h2>
-<p>By 2026, protocol and framework selection has matured into clearly defined scenario boundaries.</p>
+<p>In 2026, protocol and framework boundaries still depend on negotiated versions, deployed runtimes, permissions and actual workload requirements.</p>
 <h3 id="1-tool-call-protocol-selection">1. Tool Call Protocol Selection</h3>
 <ul>
 <li>Function Calling: Best suited for tool calls within a monolithic application. Pros: Schema transmission via the LLM provider’s SDK is extremely fast to develop. Cons: Lacks cross-platform reusability and is tightly coupled with the client.</li>
@@ -1009,7 +1009,7 @@ const analyticsRequiresHumanInteraction = false;
 <li>Allow only one core Coordinator Agent to avoid inter-agent communication overhead.</li>
 <li>Limit tools to 3–5, all restricted to read-only or low-risk write operations.</li>
 <li>Implement a maximum planning step limit (e.g., <code>max_iterations = 5</code>) to forcibly break potential infinite loops.</li>
-<li>Log all inputs, outputs, and model invocation latencies comprehensively.</li>
+<li>Log redacted tool events, state transitions and call latencies; never collect complete sensitive inputs, outputs or secrets by default.</li>
 </ul>
 <h2 id="step-4-tool-development-audit-checklist-tool-use-checklist">Step 4: Tool Development Audit Checklist (Tool Use Checklist)</h2>
 <p>Every Tool registered with the LLM must meet the following design criteria before entering production:</p>
@@ -1017,18 +1017,20 @@ const analyticsRequiresHumanInteraction = false;
 
 tool_registry_spec<span class="token punctuation">:</span> Dict<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> Any<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
     <span class="token string">"tool_name"</span><span class="token punctuation">:</span> <span class="token string">"query_cost_center_budget"</span><span class="token punctuation">,</span>
-    <span class="token string">"description"</span><span class="token punctuation">:</span> <span class="token string">"inputcost center, querycurrent. CNY"</span><span class="token punctuation">,</span>
+    <span class="token string">"description"</span><span class="token punctuation">:</span> <span class="token string">"Read an authorized cost-center budget. Backend verifies identity and access."</span><span class="token punctuation">,</span>
     <span class="token string">"input_schema"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
         <span class="token string">"type"</span><span class="token punctuation">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
         <span class="token string">"properties"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
             <span class="token string">"cost_center"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token string">"type"</span><span class="token punctuation">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span> <span class="token string">"pattern"</span><span class="token punctuation">:</span> <span class="token string">"^CC-[A-Z]{3}-\\d{2}$"</span><span class="token punctuation">}</span>
         <span class="token punctuation">}</span><span class="token punctuation">,</span>
-        <span class="token string">"required"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"cost_center"</span><span class="token punctuation">]</span>
+        <span class="token string">"required"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"cost_center"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string">"additionalProperties"</span><span class="token punctuation">:</span> <span class="token boolean">False</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token string">"risk_level"</span><span class="token punctuation">:</span> <span class="token string">"low"</span><span class="token punctuation">,</span>
     <span class="token string">"timeout_ms"</span><span class="token punctuation">:</span> <span class="token number">3000</span><span class="token punctuation">,</span>
     <span class="token string">"retry_policy"</span><span class="token punctuation">:</span> <span class="token string">"exponential_backoff_3_times"</span><span class="token punctuation">,</span>
-    <span class="token string">"approval_required"</span><span class="token punctuation">:</span> <span class="token boolean">False</span>
+    <span class="token string">"approval_required"</span><span class="token punctuation">:</span> <span class="token boolean">False</span><span class="token punctuation">,</span>
+    <span class="token string">"authorization_required"</span><span class="token punctuation">:</span> <span class="token boolean">True</span>
 <span class="token punctuation">}</span>
 </code></pre>
 <h3 id="rd-launch-checklist">R&#x26;D Launch Checklist:</h3>
@@ -1043,22 +1045,22 @@ tool_registry_spec<span class="token punctuation">:</span> Dict<span class="toke
 <p>When developing the memory system, we must avoid the crude practice of directly reading and writing session history (Chat History) as global state.</p>
 <h3 id="rd-launch-checklist-1">R&#x26;D Launch Checklist:</h3>
 <ul class="contains-task-list">
-<li class="task-list-item"><input type="checkbox" disabled> Does Long-term Memory enforce the inclusion of <code>tenant_id</code> and <code>user_id</code> in its Metadata when stored in the vector database, ensuring physical isolation?</li>
-<li class="task-list-item"><input type="checkbox" disabled> Does the system provide a “forgetting interface” that supports users in one-click erasing of all associated historical memories according to privacy agreements?</li>
-<li class="task-list-item"><input type="checkbox" disabled> During the memory extraction phase, is a threshold set for similarity scores (e.g., Score > 0.85) to prevent irrelevant old memories from interfering with the current reasoning Context?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Does a trusted backend bind <code>tenant_id</code>, <code>user_id</code>, <code>agent_id</code> and scope on memory writes and reads, and verify authorization across query, cache and resume paths? Metadata fields alone do not ensure physical isolation.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Is memory revocation/deletion scoped and verified across primary records, indexes, caches, summaries and backup retention, without promising unverified one-click erasure?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Are memory scope, authority, validity and conflicts checked before recall, with relevance thresholds calibrated on labeled queries rather than an arbitrary 0.85?</li>
 <li class="task-list-item"><input type="checkbox" disabled> Is State Persistence (Checkpointing) decoupled from Chat History, and is the state object in a standard JSON format?</li>
 </ul>
 <h2 id="step-6-knowledge-retrieval-audit-checklist-rag">Step 6: Knowledge Retrieval Audit Checklist (RAG)</h2>
-<p>Continuous monitoring of RAG retrieval scores and Memory read/write fingerprints ensures the agent will not suffer degraded response quality due to citing outdated information or unauthorized retrievals.</p>
+<p>Monitoring retrieval quality can detect some stale or irrelevant results, but it cannot substitute for backend authorization and document validity checks or guarantee correct answers.</p>
 <h3 id="rd-launch-checklist-2">R&#x26;D Launch Checklist:</h3>
 <ul class="contains-task-list">
-<li class="task-list-item"><input type="checkbox" disabled> Do the retrieved Chunks in the vector database contain <code>last_updated_at</code> metadata to determine if the knowledge is outdated?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Are source version, validity, revocation and update dates tracked separately? <code>last_updated_at</code> alone cannot prove a document is stale.</li>
 <li class="task-list-item"><input type="checkbox" disabled> Are the retrieved Chunks cross-checked against the current user’s permission level at the pre-processing layer to filter out unauthorized documents?</li>
 <li class="task-list-item"><input type="checkbox" disabled> Does the agent’s final output mandate a Citation List of reference sources, with pointers traceable back to the original PDF page numbers?</li>
 <li class="task-list-item"><input type="checkbox" disabled> When retrieval returns empty results, does the Agent have a specific Fallback Prompt to guide it to honestly respond “No relevant knowledge found,” rather than fabricating answers?</li>
 </ul>
 <h2 id="step-7-task-planning--state-persistence-checklist">Step 7: Task Planning &#x26; State Persistence Checklist</h2>
-<p>Persisting a state machine snapshot at the end of each Step is the fundamental basis for checkpoint resumption, failure rollback, and offline simulation debugging.</p>
+<p>Persisting checkpoints at defined execution boundaries supports recovery and replay inspection, but <strong>cannot roll back committed emails, payments or external writes</strong>; add idempotency, outbox/transactions and approval controls.</p>
 <p>We must design a structured state dictionary, or State Spec, for the agent’s workflow:</p>
 <pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"state_spec"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
@@ -1077,7 +1079,7 @@ tool_registry_spec<span class="token punctuation">:</span> Dict<span class="toke
 </code></pre>
 <h3 id="rd-deployment-checklist">R&#x26;D Deployment Checklist:</h3>
 <ul class="contains-task-list">
-<li class="task-list-item"><input type="checkbox" disabled> After each Step completes, is a State Checkpoint automatically written to Redis or the database to ensure workers can resume execution from the last checkpoint after a restart?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Do durable checkpoints preserve scoped task identity, state version and recovery boundary, with restart/replay and side-effect idempotency tests rather than assumed seamless resume?</li>
 <li class="task-list-item"><input type="checkbox" disabled> Is there a maximum iteration guard wrapped around the Planner node to prevent the planning logic from diverging and causing an infinite loop?</li>
 <li class="task-list-item"><input type="checkbox" disabled> Does the state include a <code>last_error</code> field, and does it automatically trigger an alert to SRE after detecting multiple occurrences of the same error?</li>
 </ul>
@@ -1086,7 +1088,7 @@ tool_registry_spec<span class="token punctuation">:</span> Dict<span class="toke
 <h3 id="rd-deployment-checklist-1">R&#x26;D Deployment Checklist:</h3>
 <ul class="contains-task-list">
 <li class="task-list-item"><input type="checkbox" disabled> In each agent’s System Message, are their responsibilities atomic and strictly mutually exclusive, with no semantically ambiguous overlaps?</li>
-<li class="task-list-item"><input type="checkbox" disabled> Are speaker transition paths restricted via Allowed Transitions or a Supervisor node, prohibiting free-form group chat?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Are handoffs, tool scopes and permissions restricted at the backend, rather than assuming Supervisor/Allowed Transitions provide authorization?</li>
 <li class="task-list-item"><input type="checkbox" disabled> Is there a hard cap on the number of rounds for repeated confirmation (CoT Loops) between two agents, with automatic timeout and exit?</li>
 <li class="task-list-item"><input type="checkbox" disabled> Has it been evaluated whether introducing multi-agents actually improves task success rates compared to a single-agent architecture, or if it merely adds unnecessary latency?</li>
 </ul>
@@ -1096,13 +1098,13 @@ tool_registry_spec<span class="token punctuation">:</span> Dict<span class="toke
 <ul class="contains-task-list">
 <li class="task-list-item"><input type="checkbox" disabled> Does the Trace ID span the complete topology across gateway requests, Agent inference, Tool Call responses, and the ERP accounting interface?</li>
 <li class="task-list-item"><input type="checkbox" disabled> Can monitoring dashboards track Token consumption in real-time by tenant dimension and deduct quotas accordingly?</li>
-<li class="task-list-item"><input type="checkbox" disabled> When an online circuit breaker triggers or a request is manually rejected, can the full snapshot of that Trace (Checkpoint + Inputs) be automatically archived, desensitized, and fed back into the offline evaluation set?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Can failure cases be reproduced from minimized/redacted metadata or synthetic fixtures? Do not automatically copy raw sessions, checkpoint secrets or tool arguments into external evaluations.</li>
 </ul>
 <h2 id="step-10-continuous-evaluation--regression-testing-checklist-evaluation-checklist">Step 10: Continuous Evaluation &#x26; Regression Testing Checklist (Evaluation Checklist)</h2>
 <p>Non-deterministic agent systems require deterministic offline evaluation benchmarks.</p>
 <h3 id="rd-deployment-checklist-3">R&#x26;D Deployment Checklist:</h3>
 <ul class="contains-task-list">
-<li class="task-list-item"><input type="checkbox" disabled> Does the evaluation library contain no fewer than 100 Golden Dataset samples covering happy paths, edge cases, external dependency timeouts, and security injection attacks?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Does the versioned, labeled evaluation set cover required tasks, denied access, timeouts, retries and dangerous side effects? There is no universal minimum of 100 samples.</li>
 <li class="task-list-item"><input type="checkbox" disabled> Before each Prompt template or model update, has a full automated regression test been run on the evaluation set to compare accuracy differences?</li>
 <li class="task-list-item"><input type="checkbox" disabled> Do the evaluation metrics include quantitative scoring for the safety Guardrails filter rate and the model Hallucination Rate?</li>
 </ul>
@@ -1111,30 +1113,30 @@ tool_registry_spec<span class="token punctuation">:</span> Dict<span class="toke
 <h3 id="rd-deployment-checklist-4">R&#x26;D Deployment Checklist:</h3>
 <ul class="contains-task-list">
 <li class="task-list-item"><input type="checkbox" disabled> Has an asynchronous task queue (e.g., Redis Queue / Celery) been introduced to handle Agent tasks, and does the Web API use async polling or SSE (Server-Sent Events) to return progress?</li>
-<li class="task-list-item"><input type="checkbox" disabled> Are all Prompt templates, Tool Schemas, and large language model versions fully versioned, supporting one-click hot rollback?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Are prompt/model/tool/state versions auditable with tested rollback and migration? External side effects cannot be undone through a one-click code rollback.</li>
 <li class="task-list-item"><input type="checkbox" disabled> For high-concurrency requests, has a strict rate-limiting and anti-abuse layer been configured at the API gateway to prevent a single malicious tenant from exhausting the global Token budget?</li>
 </ul>
 <h2 id="developer-project-implementation-milestone-planning-roadmap">Developer Project Implementation Milestone Planning (Roadmap)</h2>
-<p>The team should follow a progressive, week-by-week delivery plan instead of attempting a big-bang rollout:</p>
-<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Week 1: read-only Demo
- - 2-3 low-riskread-onlytool( query_db)
- - Agent, API Happy Path
+<p>The following stages are <strong>dependency-based illustrations</strong>, not one-week delivery commitments or a mandate to use particular cloud infrastructure:</p>
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">S0: Define scope and authority
+  - Identify tenant/user permissions, data classification and forbidden side effects
+  - Server-authorize read-only tools; never trust model-supplied user identity
 
-Week 2: statevalidate
- - Pydantic schema validate Tool
- - state Checkpointer database, configuration max_iterations
+S1: Restrict the MVP and test failures
+  - Exercise schema validation, missing arguments, timeouts, denied calls and step budgets
+  - Use synthetic records and record reproducible success/failure baselines
 
-Week 3: Human intervention (HITL)
- - toolrisk, risk Slack approval
- - Agent Execute Celery, SSE return
+S2: Persistence and human review
+  - Add versioned checkpoints, idempotency/outbox and required human approval
+  - Inject restart, duplicate-callback and cancellation-race failures
 
-Week 4: Observability configuration
- - 50
- - configuration Grafana, Trace ID
+S3: Observability and privacy
+  - Collect redacted tool events, trace IDs, state versions and task costs
+  - Use authorized reviewed test data; prefer synthetic reproduction of failures
 
-Week 5+: publish
- - 10% user
- - failed Trace, Regression Test
+S4: Controlled release
+  - Decide queue/worker requirements from workload and recovery constraints
+  - Set canary size and rollback gates by risk, measurements and sign-off
 </code></pre>
 <h2 id="common-development--design-pitfalls">Common Development &#x26; Design Pitfalls</h2>
 <p>In real-world implementation, the following 10 engineering pitfalls are the most common. Be sure to avoid them in advance:</p>
@@ -1160,7 +1162,7 @@ Week 5+: publish
 <h3 id="will-this-document-continue-to-expand-on-new-generic-topics">Will this document continue to expand on new generic topics?</h3>
 <p>No. Future updates will only address real project issues and Search Console data. Details on LangGraph, MCP, n8n, AI financial reports, etc., will be directed to their respective dedicated pages instead of continuing to pile up generic Agent buzzwords.</p>
 <h2 id="summary">Summary</h2>
-<p>Developing production-grade AI Agents in 2026 hinges not on mastering the most cutting-edge large models, but on applying rigorous software engineering thinking to clearly define boundaries around protocol selection, tool auditing, state isolation, memory management, human review, and asynchronous deployment. By systematically checking off items against this development handbook’s checklist, your agent system can completely shed the fragility of toy demos and become a stable, secure, and controllable technical asset for high-concurrency business operations.</p>
+<p>Developing production-grade AI Agents in 2026 hinges not on mastering the most cutting-edge large models, but on applying rigorous software engineering thinking to clearly define boundaries around protocol selection, tool auditing, state isolation, memory management, human review, and asynchronous deployment. This checklist reduces design omissions but cannot replace security testing, failure injection, business acceptance and measured costs or latency under target load.</p>
 <h2 id="continue-reading">Continue Reading</h2>
 <ul>
 <li>To view the complete architectural map first, return to the main roadmap via <a href="/en/ai/ai-agent-complete-guide/">Complete AI Agent Engineering Guide</a>; for documentation, RAG, and knowledge base scenarios, continue reading <a href="/en/ai/ai-document-intelligence-agents/">AI Document Understanding Agents</a>.</li>

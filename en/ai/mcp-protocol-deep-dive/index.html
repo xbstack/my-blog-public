@@ -970,24 +970,22 @@ const analyticsRequiresHumanInteraction = false;
 <p>This is the most critical conclusion of this article: <strong>Roots are boundary declarations, not pre-configured security sandboxes.</strong></p>
 <h2 id="the-key-point-security-boundaries-must-be-enforced-on-every-file-operation">The Key Point: Security Boundaries Must Be Enforced on Every File Operation</h2>
 <p>A production-ready MCP file gateway must ensure that every request passes through the following execution path in sequence:</p>
-<pre class="language-text" data-language="text"><code is:raw="" class="language-text">user
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Authenticated tenant and user on the trusted server
         ↓
-Client approved Roots
+Server-owned filesystem allowlist (NOT client Roots)
         ↓
-rejected
+Reject absolute paths and invalid components
         ↓
-resolve / realpath..
+Resolve candidate path and symbolic links
         ↓
-validate Root
+Validate tool scope, size and server allowlist
         ↓
-check, file,
+Use race-resistant descriptor-relative opening where required
         ↓
-Resource / Tool permission
-        ↓
-permissionuser
+OS permission boundary and redacted audit
 </code></pre>
 <p>The most common mistake is treating the <code>Roots</code> token, the <code>ALLOWED_ROOT</code> environment variable, or the client workspace selection as the final execution boundary. What actually prevents directory traversal, absolute path access, symbolic link escapes, and unauthorized writes is the Server’s path resolution and access control executed during every operation.</p>
-<p>MCP currently uses JSON-RPC <code>2.0</code>. Protocol version and capability negotiation are completed when the connection is established. The Server can expose Resources, Prompts, and Tools; the Client can provide Roots, Sampling, and Elicitation capabilities. A file gateway should only implement the capabilities it truly needs rather than exposing all read/write permissions at once in the name of “feature completeness.”</p>
+<p>MCP uses JSON-RPC <code>2.0</code>, but the <strong>2026-07-28 core is stateless request/response</strong>, with protocol and client capability metadata on individual requests—not the old session initialize handshake. Roots are deprecated in that revision and must never serve as an ACL. Servers may expose Resources, Prompts and Tools; sampling and elicitation follow the version-specific MRTR flow.</p>
 <h2 id="whats-the-difference-between-resources-tools-prompts-and-roots">What’s the Difference Between Resources, Tools, Prompts, and Roots?</h2>
 
 
@@ -1024,7 +1022,7 @@ permissionuser
 
 
 
-<table><thead><tr><th>Capability</th><th>Primary Controller</th><th>Use Case</th><th>Typical Usage in a File Gateway</th></tr></thead><tbody><tr><td>Resources</td><td>Application-driven</td><td>Provide identifiable, readable context</td><td>Project READMEs, configuration snapshots, log snippets, database schemas</td></tr><tr><td>Tools</td><td>Discoverable and callable by the model; applications should retain manual oversight</td><td>Actions for querying, computing, or producing side effects</td><td>Searching files, generating summaries, writing drafts, moving files</td></tr><tr><td>Prompts</td><td>User-initiated selection</td><td>Reusable task templates</td><td>”Review current configuration”, “Summarize specified logs”</td></tr><tr><td>Roots</td><td>Provided by the Client to the Server</td><td>Declare boundaries for file system operations</td><td>Current workspace, user-selected repository directories</td></tr></tbody></table>
+<table><thead><tr><th>Capability</th><th>Primary Controller</th><th>Use Case</th><th>Typical Usage in a File Gateway</th></tr></thead><tbody><tr><td>Resources</td><td>Application-driven</td><td>Provide identifiable, readable context</td><td>Project READMEs, configuration snapshots, log snippets, database schemas</td></tr><tr><td>Tools</td><td>Discoverable and callable by the model; applications should retain manual oversight</td><td>Actions for querying, computing, or producing side effects</td><td>Searching files, generating summaries, writing drafts, moving files</td></tr><tr><td>Prompts</td><td>User-initiated selection</td><td>Reusable task templates</td><td>”Review current configuration”, “Summarize specified logs”</td></tr><tr><td>Roots (legacy; deprecated in 2026-07-28)</td><td>Older Client-provided hints</td><td>Context hints, <strong>not authorization or sandbox</strong></td><td>Legacy selected workspace; current server policy owns the allowlist</td></tr></tbody></table>
 <h3 id="resources-how-the-application-delivers-context-to-the-model">Resources: How the Application Delivers Context to the Model</h3>
 <p>Resources are uniquely identified by URIs. Clients use <code>resources/list</code> to discover resources and <code>resources/read</code> to retrieve their content. They are suited for representing “an object that can be read,” not “an action to be executed.”</p>
 <pre class="language-json" data-language="json"><code is:raw="" class="language-json"><span class="token punctuation">{</span>
@@ -1100,13 +1098,13 @@ write_any_file(path: string, content: string)
 <h3 id="prompts-task-entry-points-not-hidden-system-backdoors">Prompts: Task entry points, not hidden system backdoors</h3>
 <p>Prompts are structured message templates exposed by the Server to the Client, typically selected by users via interface elements such as slash commands. They are well-suited for organizing “how to use Resources and Tools” into stable workflows. However, prompts cannot bypass Tool permissions and should never secretly inject high-risk operations invisible to the user.</p>
 <h3 id="roots-boundary-declarations-must-coexist-with-server-side-validation">Roots: Boundary declarations must coexist with Server-side validation</h3>
-<p>Clients supporting Roots can inform the Server of currently permitted directories via <code>roots/list</code>. The specification requires both the Client to validate Root URIs and implement access control, and the Server to respect Root boundaries and re-validate paths.</p>
+<p>Legacy clients may expose <code>roots/list</code> hints, but <strong>Roots are deprecated in MCP 2026-07-28</strong>. Neither older Roots nor a workspace selector authorizes filesystem access. The server must derive its own allowlist from authenticated identity and organization policy, then enforce it at file-open time.</p>
 <p>Therefore, the correct relationship is:</p>
-<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Roots = user
-Server path validation = Execute
-OS/container permissions = permission
+<pre class="language-text" data-language="text"><code is:raw="" class="language-text">Legacy Roots = optional context hints, not authorization
+Server tenant/path policy = trusted per-request authorization
+Race-resistant file access + OS permissions = enforcement boundary
 </code></pre>
-<p>Only when all three layers are in place can the risk of misreading a user’s home directory, <code>.ssh</code>, browser configurations, and production credentials be mitigated.</p>
+<p>Combine trusted identity policy, file-open-time constraints and least-privilege OS access to reduce sensitive-file exposure. A one-time <code>resolve()</code> followed by a normal <code>open()</code> is vulnerable to check/use races; this illustrative code is not a race-free sandbox.</p>
 <h2 id="security-file-gateway-10-item-checks">Security File Gateway 10 Item Checks</h2>
 <ol>
 <li>Accept only relative paths; explicitly reject absolute paths such as <code>/etc/passwd</code> and <code>C:\Users\...</code>.</li>
@@ -1121,7 +1119,7 @@ OS/container permissions = permission
 <li>Run the Server under a low-privilege system user or container, avoiding reliance on single-layer application code protection.</li>
 </ol>
 <h2 id="python-implementation-building-a-reusable-path-sandbox">Python Implementation: Building a Reusable Path Sandbox</h2>
-<p>The following example demonstrates security boundaries only and does not assume the client supports any specific UI. It uses <code>FastMCP</code> to register two narrowed-down Tools: one for read-only text access and another for writing drafts.</p>
+<p>The following FastMCP read/draft example is <strong>educational for a trusted single-user local directory</strong>. It is not a race-free multi-tenant sandbox: production file access also needs authenticated policy and descriptor-relative path operations to prevent TOCTOU symlink swaps.</p>
 <pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">from</span> __future__ <span class="token keyword">import</span> annotations
 
 <span class="token keyword">import</span> logging

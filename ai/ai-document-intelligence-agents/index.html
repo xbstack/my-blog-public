@@ -973,37 +973,36 @@ const analyticsRequiresHumanInteraction = false;
 [多源非结构化文档] -> [高精度 OCR 与 Layout 识别] -> [表格与图表结构化还原] -> [多层级元数据元字段注入] -> [基于角色的检索权限过滤] -> [多阶段反思检索与 Reranker] -> [引用映射与 BBox 坐标对齐] -> [人类人工复核工作台] -> [本地只读 RAG 知识索引] -> [失败样本质量回流审计]。</p>
 <p>扫描件是否需要去倾斜应由实际 OCR 置信度、角度检测结果和回归样本决定；<strong>3 度不是通用标准阈值</strong>。无论使用哪种版面解析器，表格金额、跨页行列与低置信度字段都要进入人工复核或二次验证。</p>
 <h2 id="推荐段落准备代码实现">推荐段落准备代码实现</h2>
-<p>下面是我为文档 RAG 切片处理设计的一个 Python 函数，用于将提取的段落元素打包为带有物理页码与安全级别标签的结构化有效载荷，；这里的代码只负责整理字段，不承担 OCR、授权校验或引用正确性证明：</p>
+<p>以下是文档 RAG 切片<strong>字段准备示例</strong>，不是 OCR、授权校验或引用精度的证明。它拒绝缺少身份/权限元数据的记录，缺少页面坐标时保留空值，等待独立的原文对齐校验：</p>
 <pre class="language-python" data-language="python"><code is:raw="" class="language-python"><span class="token keyword">def</span> <span class="token function">prepare_rag_chunk</span><span class="token punctuation">(</span>layout_element<span class="token punctuation">,</span> document_metadata<span class="token punctuation">)</span><span class="token punctuation">:</span>
-    <span class="token comment"># 将高精度的版面识别元素整理为带原文引用与权限标记的 RAG Chunk</span>
-    element_type <span class="token operator">=</span> layout_element<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"type"</span><span class="token punctuation">,</span> <span class="token string">"text"</span><span class="token punctuation">)</span>
-    content <span class="token operator">=</span> layout_element<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"content"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span>
-    page_num <span class="token operator">=</span> layout_element<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"page_number"</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
-    bbox <span class="token operator">=</span> layout_element<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"bbox"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-    
-    doc_id <span class="token operator">=</span> document_metadata<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"doc_id"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span>
-    doc_version <span class="token operator">=</span> document_metadata<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"version"</span><span class="token punctuation">,</span> <span class="token string">"1.0"</span><span class="token punctuation">)</span>
-    required_role <span class="token operator">=</span> document_metadata<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"security_role"</span><span class="token punctuation">,</span> <span class="token string">"standard"</span><span class="token punctuation">)</span>
-    
-    <span class="token comment"># 构造标准的引用证据信息</span>
-    source_citation <span class="token operator">=</span> <span class="token punctuation">{</span>
-        <span class="token string">"doc_id"</span><span class="token punctuation">:</span> doc_id<span class="token punctuation">,</span>
-        <span class="token string">"page_number"</span><span class="token punctuation">:</span> page_num<span class="token punctuation">,</span>
-        <span class="token string">"bbox_coordinates"</span><span class="token punctuation">:</span> bbox<span class="token punctuation">,</span>
-        <span class="token string">"document_version"</span><span class="token punctuation">:</span> doc_version
-    <span class="token punctuation">}</span>
-    
-    rag_payload <span class="token operator">=</span> <span class="token punctuation">{</span>
-        <span class="token string">"text_content"</span><span class="token punctuation">:</span> content<span class="token punctuation">,</span>
-        <span class="token string">"element_type"</span><span class="token punctuation">:</span> element_type<span class="token punctuation">,</span>
-        <span class="token string">"security_policy"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
-            <span class="token string">"required_role"</span><span class="token punctuation">:</span> required_role
+    <span class="token comment"># 上游必须提供后端可信的文档 ID、版本和权限；缺少时拒绝入库</span>
+    doc_id <span class="token operator">=</span> document_metadata<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"doc_id"</span><span class="token punctuation">)</span>
+    doc_version <span class="token operator">=</span> document_metadata<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"version"</span><span class="token punctuation">)</span>
+    role <span class="token operator">=</span> document_metadata<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"security_role"</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token keyword">not</span> <span class="token builtin">all</span><span class="token punctuation">(</span><span class="token builtin">isinstance</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">)</span> <span class="token keyword">and</span> x<span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">for</span> x <span class="token keyword">in</span> <span class="token punctuation">(</span>doc_id<span class="token punctuation">,</span> doc_version<span class="token punctuation">,</span> role<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">raise</span> ValueError<span class="token punctuation">(</span><span class="token string">"Missing trusted document identity, version or security policy"</span><span class="token punctuation">)</span>
+
+    <span class="token comment"># 缺失页码/坐标保持 None，不伪造第 1 页或 [0, 0, 0, 0]</span>
+    page <span class="token operator">=</span> layout_element<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"page_number"</span><span class="token punctuation">)</span>
+    bbox <span class="token operator">=</span> layout_element<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"bbox"</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token keyword">not</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>page<span class="token punctuation">,</span> <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token keyword">or</span> page <span class="token operator">&#x3C;=</span> <span class="token number">0</span><span class="token punctuation">:</span>
+        page <span class="token operator">=</span> <span class="token boolean">None</span>
+    <span class="token keyword">if</span> <span class="token keyword">not</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>bbox<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token builtin">tuple</span><span class="token punctuation">,</span> <span class="token builtin">list</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">or</span> <span class="token builtin">len</span><span class="token punctuation">(</span>bbox<span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">4</span><span class="token punctuation">:</span>
+        bbox <span class="token operator">=</span> <span class="token boolean">None</span>
+
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+        <span class="token string">"text_content"</span><span class="token punctuation">:</span> layout_element<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"content"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token string">"element_type"</span><span class="token punctuation">:</span> layout_element<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"type"</span><span class="token punctuation">,</span> <span class="token string">"text"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token string">"security_policy"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token string">"required_role"</span><span class="token punctuation">:</span> role<span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token string">"citation"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token string">"doc_id"</span><span class="token punctuation">:</span> doc_id<span class="token punctuation">,</span>
+            <span class="token string">"page_number"</span><span class="token punctuation">:</span> page<span class="token punctuation">,</span>
+            <span class="token string">"bbox_coordinates"</span><span class="token punctuation">:</span> bbox<span class="token punctuation">,</span>
+            <span class="token string">"document_version"</span><span class="token punctuation">:</span> doc_version<span class="token punctuation">,</span>
+            <span class="token string">"alignment_verified"</span><span class="token punctuation">:</span> <span class="token boolean">False</span><span class="token punctuation">,</span>  <span class="token comment"># 必须另用原文校验，不由元数据推断</span>
         <span class="token punctuation">}</span><span class="token punctuation">,</span>
-        <span class="token string">"citation"</span><span class="token punctuation">:</span> source_citation<span class="token punctuation">,</span>
-        <span class="token string">"index_status"</span><span class="token punctuation">:</span> <span class="token string">"draft_pending_index"</span>
+        <span class="token string">"index_status"</span><span class="token punctuation">:</span> <span class="token string">"draft_pending_index"</span><span class="token punctuation">,</span>
     <span class="token punctuation">}</span>
-    
-    <span class="token keyword">return</span> rag_payload
 </code></pre>
 <p>这段示例仅把<strong>上游确实提供的</strong>页码、坐标和版本号传递给下游。默认值 `page_number=1` 或空 `bbox` <strong>不是有效证据</strong>；生产系统必须校验源文件 ID、页码范围、坐标系、原文偏移及解析置信度，缺失时标记为不可精确定位，不得假装已核验。</p>
 <h2 id="文档分析-agent负责解析-pdf-和复杂版面">文档分析 Agent：负责解析 PDF 和复杂版面</h2>
@@ -1036,11 +1035,11 @@ const analyticsRequiresHumanInteraction = false;
 <p>内链参考：<a href="/ai/how-to-build-ai-meeting-summarization-agent/">AI 会议纪要智能体生产化实战：语音转写、决策提取、任务分配与 Notion 闭环</a></p>
 <h2 id="简历筛选-agent文档分析必须有公平性和复核机制">简历筛选 Agent：文档分析必须有公平性和复核机制</h2>
 <p>简历筛选智能体必须提供透明的评分 Rubric 因子及证据片段展示，将人类 HR 作为最终录取考核的门禁。</p>
-<p>简历筛选智能体（Resume Screening Agent）在人才评估中需要兼顾效率与公平性。智能体严禁直接给出一分决定淘汰与否。它必须从简历 PDF 中抽取候选人的核心工作时间段、技能指标与项目经验，并对照岗位描述生成详细的匹配因子得分卡（Scorecard）。卡片中的每一项评分都必须附带简历中的原文引用证据片段（如“评分依据：简历第2页表明其拥有 3 年 Kubernetes 生产部署经验”），让 HR 可以快速双击校对，避免由于模型偏见或筛选幻觉而错失优秀人才。</p>
+<p>简历筛选智能体（Resume Screening Agent）在人才评估中需要兼顾效率与公平性。智能体不能仅凭分数作出淘汰决定。它必须从简历 PDF 中抽取候选人的核心工作时间段、技能指标与项目经验，并对照岗位描述生成详细的匹配因子得分卡（Scorecard）。卡片中的每一项评分都必须附带简历中的原文引用证据片段（如“评分依据：简历第2页表明其拥有 3 年 Kubernetes 生产部署经验”），让 HR 可以快速双击校对，避免由于模型偏见或筛选幻觉而错失优秀人才。</p>
 <p>内链参考：<a href="/ai/ai-resume-screening-agent-tutorial/">AI 简历筛选智能体生产化实战：语义评估、评分解释与人工复核流程</a></p>
 <h2 id="文档理解-agents-的共同底层能力">文档理解 Agents 的共同底层能力</h2>
 <p>多智能体生态的稳定运转依赖于统一的数据脱敏、权限配置与调用行为可观测性 trace 审计底盘。</p>
-<p>上述垂直 Agent 是生产设计模式，不代表 XBSTACK 已部署全部法务、财务、人事和科研系统。高精度的 PDF 版面几何分析器保证了所有多栏文本的结构正确性；RAG 的自反思重规划引擎在后台进行检索向量重写以提升召回率；底层 Tool Use Gateway 规范了读写权限边界；可观测性 Trace 审计系统记录了每一次工具调用与数据变化日志，为高并发部署及自动化测评提供了坚实的数据底座。</p>
+<p>上述垂直 Agent 是候选生产设计模式，不代表 XBSTACK 已部署全部法务、财务、人事和科研系统。布局解析器的文字顺序与单元格准确度需要以标注样本验收，不能保证完美还原；RAG 重排和 Tool Gateway 只能在可信身份、源授权与失败关闭策略下运行；Trace 建议保留脱敏的工具事件和变更证据，而非默认记录完整敏感原文。</p>
 <p>底层能力参考：</p>
 <ul>
 <li>🔌 工具安全网关：<a href="/ai/ai-agent-tool-use/">AI Agent Tool Use 实战：工具注册、权限控制、参数校验与调用审计</a></li>
@@ -1049,7 +1048,7 @@ const analyticsRequiresHumanInteraction = false;
 <li>📦 高并发云部署：<a href="/ai/ai-agent-deployment/">AI Agent Deployment 实战：任务队列、状态持久化、模型路由与高并发部署</a></li>
 </ul>
 <h2 id="文档智能最容易失败的-10-个地方">文档智能最容易失败的 10 个地方</h2>
-<p>深入分析在文档顺序错乱、跨页表格断档、语义切片破坏以及权限漏洞等多维实战中的高频失败案例。</p>
+<p>以下十个场景是为阅读顺序、跨页表格、切片、权限、OCR、引用和文档版本设计的<strong>构造性回归测试样例</strong>，并非 XBSTACK 经历过的真实企业泄密、错账或仲裁案件。页数、金额和业务影响均为示意，部署前应使用脱敏测试集及可审计日志验证。</p>
 <ol>
 <li>跨栏 PDF 读错阅读顺序导致语义混淆：
 某说明书采用双栏设计，普通的 OCR 解析器未进行版面分析，直接按横向跨页阅读顺序提取，把左栏第一行与右栏第一行拼在一起，导致大模型读取了完全逻辑错乱的段落。</li>
@@ -1077,11 +1076,11 @@ RAG 系统使用固定的 500 字符大小切片（Chunking）。刚好有一条
 <p>建议至少用原生 PDF、扫描件、双栏论文、跨页表格、旋转页和故意包含错误信息的样本建立有人工标注的验收集。每条 Claim 都记录 `document_id`、版本、页码、原文偏移、引用内容和可选的 BBox。无法定位时降级为片段级引用并提示限制；OCR 置信度低、权限缺失或合同数值冲突时停止自动写入。本文没有对上述商业解析服务进行同数据集性能对比。</p>
 <h2 id="评估指标">评估指标</h2>
 <p>建立覆盖解析精度、RAG 忠实度及业务采纳率的多维考核指标看板，为文档系统的性能调优提供数据支撑。</p>
-<p>我们主要通过以下三维核心指标评估文档智能系统的健康度：
+<p>建议对候选系统按以下三个维度进行验收；本文没有发布可复算的真实生产基准数据：
 技术解析指标：</p>
 <ul>
 <li>页面版面识别精度（Layout IoU）：段落、表格、图表物理边界的包围盒检测吻合度。</li>
-<li>表格数据还原准确率（Table Extraction Accuracy）：跨页表格行列名及单元格数据 100% 正确抽取的比例。</li>
+<li>表格数据还原准确率（Table Extraction Accuracy）：在人工标注的跨页表格样本中，行列名、合并单元格、数据单位与数值抽取正确的比例；应同时报告错误样本和未解析页数，不能假设达到 100%。</li>
 <li>坐标定位偏离度（Citation Shift）：AI 高亮边界与 PDF 原文真实区域之间的偏离量；指标应统一 PDF 坐标系和渲染 DPI，再根据业务场景设容差，而不是引用未经测量的统一 3 像素阈值。
 RAG 与检索指标：</li>
 <li>检索召回率（Retrieval Recall）：包含正确答案的文档片段在 Top-K 被成功检索出来的比例。</li>
