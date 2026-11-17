@@ -1,0 +1,1254 @@
+<!DOCTYPE html><html lang="zh-CN" class="dark" data-analytics="ga4-baidu"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="google-adsense-account" content="ca-pub-2557606254410371"><script>
+      const applyTheme = () => {
+        const theme = localStorage.getItem("theme");
+        const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      };
+      applyTheme();
+      document.addEventListener("astro:page-load", applyTheme);
+    </script><title>Gemini 4 三模型怎么选？Hydrogen/Argon/Carbon 路由成本 | AI - XBSTACK</title><meta name="description" content="Gemini 4 Hydrogen、Argon、Carbon 有什么区别、哪个适合编程 Agent？比较模型任务分工、限额免费层、API 计价、Thinking Token、失败重试和成功任务成本。"><meta http-equiv="content-language" content="zh-CN"><meta name="keywords" content="Gemini 4 Hydrogen, Gemini 4 Carbon, Gemini 4 Argon, Gemini 4 模型对比, Gemini 4 Hydrogen vs Carbon, Gemini 4 Argon vs Hydrogen, Gemini API价格, Gemini 4 Hydrogen API价格, gemini-4-hydrogen, gemini-4-argon, gemini-4-carbon, AI Agent 模型路由, 多模型 Agent, Agent 成本优化, Coding Agent 模型选择, LLM routing, 任务成功成本, thinking tokens, Google Antigravity Orchestrator, Agent 任务分配, Agent 失败恢复, AI 工程代码审查, RecalAI 精确引用, RecalAI BYOK, Lunest 音频恢复, 本地 AI 隐私, 长期 Agent, 工具调用权限, 幂等执行, 固定任务评估, 模型回退策略, Gemini 4 三个模型怎么选, Gemini 4 模型区别, Gemini 4 哪个适合编程, Gemini 4 价格对比, AI Agent 如何选模型, Agent 任务成本怎么算, Coding Agent 使用成本, Gemini 4 Hydrogen 和 Carbon 怎么选, Gemini 4 Argon Carbon 区别, Gemini 4 Hydrogen 免费额度, Gemini 4 标准 API 费用, Gemini 4 输入 Token 价格, Gemini 4 输出 Thinking 计费, Gemini 4 2026年12月价格, AI Agent 模型自动切换, 多模型工作流怎么设计, 编程 Agent 任务分类, LLM 路由器策略, 模型调用失败成本, Agent 成功任务单价, Token 缓存与重试成本, 模型工具调用审计, Agent 重复副作用, 工具幂等键 idempotency_key, 跨模型上下文检查点, 人工审核 Agent 结果, Agent 任务 A/B 评测"><meta name="theme-color" content="#050608"><meta name="robots" content="index,follow,max-image-preview:large"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://www.xbstack.com/ai/gemini-4-multimodel-routing-recalai-lunest/"><meta property="og:title" content="Gemini 4 三模型怎么选？Hydrogen/Argon/Carbon 路由成本 | AI - XBSTACK"><meta property="og:description" content="Gemini 4 Hydrogen、Argon、Carbon 有什么区别、哪个适合编程 Agent？比较模型任务分工、限额免费层、API 计价、Thinking Token、失败重试和成功任务成本。"><meta property="og:image" content="https://www.xbstack.com/_astro/01-cover.CEpvIhOm.webp"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:url" content="https://www.xbstack.com/ai/gemini-4-multimodel-routing-recalai-lunest/"><meta name="twitter:title" content="Gemini 4 三模型怎么选？Hydrogen/Argon/Carbon 路由成本 | AI - XBSTACK"><meta name="twitter:description" content="Gemini 4 Hydrogen、Argon、Carbon 有什么区别、哪个适合编程 Agent？比较模型任务分工、限额免费层、API 计价、Thinking Token、失败重试和成功任务成本。"><meta name="twitter:image" content="https://www.xbstack.com/_astro/01-cover.CEpvIhOm.webp"><link rel="canonical" href="https://www.xbstack.com/ai/gemini-4-multimodel-routing-recalai-lunest/"><link rel="describedby" href="/llms.txt" type="text/plain"><link rel="alternate" hreflang="zh-CN" href="https://www.xbstack.com/ai/gemini-4-multimodel-routing-recalai-lunest/"><link rel="alternate" hreflang="en" href="https://www.xbstack.com/en/ai/gemini-4-multimodel-routing-recalai-lunest/"><link rel="alternate" hreflang="x-default" href="https://www.xbstack.com/ai/gemini-4-multimodel-routing-recalai-lunest/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI engineering organized around Agents, MCP, security, local AI and verified model/tool evaluations. LangGraph, workflows and model updates remain discoverable within their parent topics.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Products","alternateName":"Products and Tools","description":"Apps, AI products, developer tools and practical utilities built and maintained by XBSTACK.","url":"https://www.xbstack.com/products/"},{"@type":"SiteNavigationElement","position":3,"name":"Insights","alternateName":"Insights, Investing, Reading and Long-term Thinking","description":"Investment research, reading notes, decision reviews and long-term thinking with evidence and outcomes.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Travel, Photography and Gear","description":"Field notes from real hiking, travel, photography and gear use, with Guizhou as a core but not exclusive focus.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"Xiaobai's profile, current products, long-term research themes, working principles and the XBSTACK public asset system.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","additionalType":"https://schema.org/TechArticle","headline":"Gemini 4 Hydrogen、Argon、Carbon 如何分工？从 RecalAI 与 Lunest 的工程决策看 Agent 成本","description":"Gemini 4 Hydrogen、Argon、Carbon 有什么区别、哪个适合编程 Agent？比较模型任务分工、限额免费层、API 计价、Thinking Token、失败重试和成功任务成本。","inLanguage":"zh-CN","image":"https://www.xbstack.com/_astro/01-cover.CEpvIhOm.webp","datePublished":"2026-11-17T00:00:00.000Z","author":{"@id":"https://www.xbstack.com/about/#person"},"publisher":{"@type":"Organization","name":"XBSTACK","logo":{"@type":"ImageObject","url":"https://www.xbstack.com/favicon/logo-light.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.xbstack.com/ai/gemini-4-multimodel-routing-recalai-lunest/"},"articleSection":"ai","keywords":["Gemini 4 Hydrogen","Gemini 4 Carbon","Gemini 4 Argon","Gemini 4 模型对比","Gemini 4 Hydrogen vs Carbon","Gemini 4 Argon vs Hydrogen","Gemini API价格","Gemini 4 Hydrogen API价格","gemini-4-hydrogen","gemini-4-argon","gemini-4-carbon","AI Agent 模型路由","多模型 Agent","Agent 成本优化","Coding Agent 模型选择","LLM routing","任务成功成本","thinking tokens","Google Antigravity Orchestrator","Agent 任务分配","Agent 失败恢复","AI 工程代码审查","RecalAI 精确引用","RecalAI BYOK","Lunest 音频恢复","本地 AI 隐私","长期 Agent","工具调用权限","幂等执行","固定任务评估","模型回退策略","Gemini 4 三个模型怎么选","Gemini 4 模型区别","Gemini 4 哪个适合编程","Gemini 4 价格对比","AI Agent 如何选模型","Agent 任务成本怎么算","Coding Agent 使用成本","Gemini 4 Hydrogen 和 Carbon 怎么选","Gemini 4 Argon Carbon 区别","Gemini 4 Hydrogen 免费额度","Gemini 4 标准 API 费用","Gemini 4 输入 Token 价格","Gemini 4 输出 Thinking 计费","Gemini 4 2026年12月价格","AI Agent 模型自动切换","多模型工作流怎么设计","编程 Agent 任务分类","LLM 路由器策略","模型调用失败成本","Agent 成功任务单价","Token 缓存与重试成本","模型工具调用审计","Agent 重复副作用","工具幂等键 idempotency_key","跨模型上下文检查点","人工审核 Agent 结果","Agent 任务 A/B 评测"],"abstract":"本篇比较 Gemini 4 Hydrogen、Argon 和 Carbon 的任务路由与 Agent 成功任务成本，不是单模型参数迁移教程。Google 在 2026 年 11 月将 Hydrogen 定位于快速编码和常见 Agent 工作，Argon 面向广泛工程任务，Carbon 可用于更复杂长时推理；具体性能须在同一任务、工具权限与验收条件下独立验证。截至 2026 年 11 月 17 日，Hydrogen 标准付费 API 每百万输入/输出 Token 为 1.50/7.50 美元并有受限制的免费层；Argon、Carbon 当时均为 2/10 美元，Google 价格页公布 2026 年 12 月 1 日起均调整为 4/20 美元，思考 Token 属于输出计费范围。单次 Token 价格不能等同于被验收任务的成本，应合并输入、思考、输出、缓存、工具、失败重试和人工审查的真实消耗。RecalAI 的 BYOK、资料引用与受控 Agent、Lunest 的音频中断恢复和 XBSTACK 的双语发布流程提供不同的确定性验收场景，但项目尚无 Gemini 4 三模型的实测路由或收费 API A/B。任何私有证据上云都要求明确用户授权；跨模型恢复应保存执行检查点、幂等键与外部回执。","about":[{"@type":"Thing","name":"Gemini 4"},{"@type":"Thing","name":"Agent Routing"},{"@type":"Thing","name":"Coding Agent"},{"@type":"Thing","name":"RecalAI"},{"@type":"Thing","name":"Lunest"},{"@type":"Thing","name":"Task Cost"},{"@type":"Thing","name":"Gemini 4 Hydrogen"},{"@type":"Thing","name":"Gemini 4 Argon"},{"@type":"Thing","name":"Gemini 4 Carbon"},{"@type":"Thing","name":"Gemini API"},{"@type":"Thing","name":"Google Antigravity"},{"@type":"Thing","name":"Agent Orchestrator"},{"@type":"Thing","name":"Multi-model Routing"},{"@type":"Thing","name":"Cost per Successful Task"},{"@type":"Thing","name":"Thinking Tokens"},{"@type":"Thing","name":"Cost per Accepted Task"},{"@type":"Thing","name":"BYOK"},{"@type":"Thing","name":"Idempotency Key"},{"@type":"Thing","name":"Checkpoint Recovery"}],"citation":["https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/","https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-carbon-now-available/","https://blog.google/innovation-and-ai/technology/developers-tools/build-with-gemini-4-hydrogen/","https://ai.google.dev/gemini-api/docs/pricing","https://ai.google.dev/gemini-api/docs/models/gemini-4-hydrogen","https://ai.google.dev/gemini-api/docs/models/gemini-4-argon","https://ai.google.dev/gemini-api/docs/models/gemini-4-carbon"]},{"@type":"Person","@id":"https://www.xbstack.com/about/#person","name":"小白","alternateName":["Xiaobai"],"url":"https://www.xbstack.com/about/","image":"https://www.xbstack.com/_astro/avatar.BzDyfp9G.webp","jobTitle":"Full-Stack AI Engineer","worksFor":{"@type":"Organization","name":"XBSTACK","url":"https://www.xbstack.com"},"sameAs":["https://github.com/xbstack"],"knowsAbout":["AI Agents","LangGraph","Model Context Protocol","AI Workflows","Product Engineering"]}]}</script><meta property="article:published_time" content="Tue Nov 17 2026 08:00:00 GMT+0800 (China Standard Time)"><meta name="abstract" content="Gemini 4 Hydrogen、Argon、Carbon 有什么区别、哪个适合编程 Agent？比较模型任务分工、限额免费层、API 计价、Thinking Token、失败重试和成功任务成本。"><meta name="speakable-selector" content=".markdown-content h2, .markdown-content p"><meta name="ai-content-access" content="allowed"><meta name="geo-optimized" content="true"><link id="xbstack-favicon" rel="icon" type="image/svg+xml" href="/favicon/logo-dark-nav.svg"><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
+const analyticsRequiresHumanInteraction = false;
+
+          const productionAnalyticsHosts = new Set(['www.xbstack.com', 'xbstack.com']);
+          const automationUserAgent = /HeadlessChrome|PhantomJS|Playwright|Puppeteer|Selenium|Lighthouse|PageSpeed|bot\b|crawler|spider|slurp|curl|wget|python-requests|axios|node-fetch|facebookexternalhit|Twitterbot|LinkedInBot|Bytespider|GPTBot|ClaudeBot|PerplexityBot/i;
+          const analyticsUrl = new URL(window.location.href);
+          const analyticsSource = String(analyticsUrl.searchParams.get('utm_source') || '').toLowerCase();
+          const analyticsCampaign = String(analyticsUrl.searchParams.get('utm_campaign') || '').toLowerCase();
+          const internalAnalyticsAudit =
+            analyticsUrl.searchParams.has('ga4_audit') ||
+            analyticsUrl.searchParams.has('analytics_test') ||
+            ['internal', 'internal_test', 'qa', 'test'].includes(analyticsSource) ||
+            analyticsCampaign.includes('ga4_audit') ||
+            analyticsCampaign.includes('internal_test');
+          const shouldTrackAnalytics =
+            Boolean(googleAnalyticsId) &&
+            productionAnalyticsHosts.has(window.location.hostname.toLowerCase()) &&
+            navigator.webdriver !== true &&
+            !automationUserAgent.test(navigator.userAgent || '') &&
+            !internalAnalyticsAudit;
+
+          if (!shouldTrackAnalytics) {
+            window.__analytics_suppressed = true;
+            window.__analytics_suppression_reason = internalAnalyticsAudit ? 'internal_test' : 'environment_or_automation';
+          } else if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_id', 'utm_term', 'utm_content'];
+            const UTM_ALIASES = {
+              utmsource: 'utm_source',
+              utmmedium: 'utm_medium',
+              utmcampaign: 'utm_campaign',
+              utmcontent: 'utm_content',
+              utmterm: 'utm_term',
+              utmid: 'utm_id',
+            };
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.normalizeUtmAliases = () => {
+              try {
+                const url = new URL(window.location.href);
+                let changed = false;
+                Object.entries(UTM_ALIASES).forEach(([alias, canonical]) => {
+                  const aliasValue = url.searchParams.get(alias);
+                  if (aliasValue && !url.searchParams.get(canonical)) {
+                    url.searchParams.set(canonical, aliasValue);
+                    changed = true;
+                  }
+                  if (url.searchParams.has(alias)) {
+                    url.searchParams.delete(alias);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.normalizeUtmAliases();
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
+            window.__ga4_initialized = true;
+            window.__ga4_client_loaded = false;
+            window.__ga4_tracking_started = false;
+            window.__ga4_human_verified = false;
+            window.__ga4_session_class = '';
+            window.__ga4_requires_human_interaction = Boolean(analyticsRequiresHumanInteraction);
+            window.__lastGA4PageKey = "";
+            window.__lastGA4PageLocation = document.referrer || "";
+            window.__ga4_tracking_start_reason = '';
+            window.__scroll50Reported = false;
+            window.__scroll90Reported = false;
+
+            const getReferrerHost = () => {
+              try {
+                return document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+              } catch (err) {
+                return '';
+              }
+            };
+
+            const inferSourceHint = () => {
+              const refHost = getReferrerHost();
+              if (!refHost) return '';
+              if (refHost.includes('zhihu')) return 'zhihu_referrer';
+              if (refHost.includes('juejin')) return 'juejin_referrer';
+              if (refHost.includes('csdn')) return 'csdn_referrer';
+              if (refHost.includes('weixin') || refHost.includes('wechat')) return 'wechat_referrer';
+              if (refHost.includes('google')) return 'google_referrer';
+              if (refHost.includes('baidu')) return 'baidu_referrer';
+              return refHost;
+            };
+
+            const getAttributionPayload = () => {
+              const params = new URLSearchParams(window.location.search);
+              const current = {};
+              UTM_KEYS.forEach((key) => {
+                const value = params.get(key);
+                if (value) current[key] = value;
+              });
+
+              const referrerHost = getReferrerHost();
+              const currentHost = window.location.hostname.replace(/^www\./, '');
+              const sourceHint = inferSourceHint();
+              const hasExternalReferrer = Boolean(referrerHost && referrerHost !== currentHost);
+
+              let stored = {};
+              try {
+                stored = JSON.parse(sessionStorage.getItem('xbstack_attribution') || '{}');
+              } catch (err) {
+                stored = {};
+              }
+
+              if (Object.keys(current).length) {
+                stored = {
+                  ...stored,
+                  ...current,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: current.utm_source ? `utm:${current.utm_source}` : sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              } else if (hasExternalReferrer && !stored.captured_at) {
+                // Preserve first-touch referral attribution even when the platform strips UTM parameters.
+                stored = {
+                  ...stored,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              }
+
+              if (stored.captured_at) {
+                try {
+                  sessionStorage.setItem('xbstack_attribution', JSON.stringify(stored));
+                } catch (err) {}
+              }
+
+              return {
+                utm_source: stored.utm_source || '',
+                utm_medium: stored.utm_medium || '',
+                utm_campaign: stored.utm_campaign || '',
+                utm_id: stored.utm_id || '',
+                utm_term: stored.utm_term || '',
+                utm_content: stored.utm_content || '',
+                attribution_landing_page: stored.landing_page || '',
+                referrer_host: stored.referrer_host || referrerHost,
+                source_hint: stored.source_hint || (stored.utm_source ? `utm:${stored.utm_source}` : sourceHint),
+              };
+            };
+
+            const getAnalyticsPageContext = () => {
+              const url = new URL(window.location.href);
+              const isCompoundCalculator = [
+                '/tools/compound-calculator/',
+                '/en/tools/compound-calculator/',
+              ].includes(url.pathname);
+
+              if (isCompoundCalculator) {
+                ['scenario', 'principal', 'monthly', 'rate', 'years', 'volatility', 'inflation', 'm2_drag', 'target', 'compare_rate'].forEach((key) => {
+                  url.searchParams.delete(key);
+                });
+              }
+
+              return {
+                pagePath: url.pathname,
+                pageLocation: url.href,
+                pageSearch: url.search,
+              };
+            };
+
+            window.xbTrackEvent = (eventName, payload = {}) => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !eventName ||
+                !window.__ga4_tracking_started ||
+                !window.__ga4_human_verified
+              ) return;
+              const analyticsPage = getAnalyticsPageContext();
+              window.gtag('event', eventName, {
+                transport_type: 'beacon',
+                page_path: analyticsPage.pagePath,
+                page_title: document.title || '',
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+                ...payload,
+              });
+            };
+
+            window.sendGA4PageView = () => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !window.__ga4_tracking_started
+              ) return;
+
+              const analyticsPage = getAnalyticsPageContext();
+              const pageLocation = analyticsPage.pageLocation;
+              const pageTitle = document.title || '';
+              const pageKey = `${pageLocation}|${pageTitle}`;
+
+              if (pageKey === window.__lastGA4PageKey) return;
+              const pageReferrer = window.__lastGA4PageLocation;
+              window.__lastGA4PageKey = pageKey;
+              window.__lastGA4PageLocation = pageLocation;
+              window.__scroll50Reported = false;
+              window.__scroll90Reported = false;
+
+              window.gtag('event', 'page_view', {
+                page_title: pageTitle,
+                page_location: pageLocation,
+                page_path: analyticsPage.pagePath,
+                page_search: analyticsPage.pageSearch,
+                page_referrer: pageReferrer,
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+              });
+            };
+
+            window.initGA4Tracking = () => {
+              if (typeof window.gtag !== 'function') return;
+              if (window.__ga4_events_bound) return;
+              window.__ga4_events_bound = true;
+
+              // 1. 页面滚动深度上报
+              const handleScroll = (event) => {
+                if (!event?.isTrusted || !window.__ga4_human_verified) return;
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const progress = (scrollTop / scrollHeight) * 100;
+
+                if (progress >= 50 && !window.__scroll50Reported) {
+                  window.xbTrackEvent('scroll_50', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll50Reported = true;
+                }
+                if (progress >= 90 && !window.__scroll90Reported) {
+                  window.xbTrackEvent('scroll_90', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll90Reported = true;
+                }
+              };
+
+              window.addEventListener('scroll', handleScroll, { passive: true });
+
+              // 2. 完整链接与按钮点击上报。link_click 是统一事实表，旧事件继续保留用于历史对比。
+              const inferLinkArea = (target) => {
+                const explicitArea = target.closest('[data-analytics-area]')?.getAttribute('data-analytics-area');
+                if (explicitArea) return explicitArea.slice(0, 60);
+                if (target.closest('header, nav, [role="navigation"]')) return 'navigation';
+                if (target.closest('footer')) return 'footer';
+                if (target.closest('[data-related-link], [data-related-reading], [data-analytics-area="related_content"]')) return 'related_content';
+                if (target.closest('[class*="related"], [class*="recommend"], [class*="next-reading"]')) return 'related_content';
+                if (target.closest('[class*="sidebar"], aside')) return 'sidebar';
+                if (target.closest('.markdown-content, article')) return 'article_body';
+                if (target.closest('[class*="card"], [class*="grid"]')) return 'content_card';
+                return 'page_other';
+              };
+
+              const classifyLink = (target, url, linkArea) => {
+                const rawHref = String(target.getAttribute('href') || '');
+                const protocol = String(url.protocol || '').toLowerCase();
+                const path = String(url.pathname || '/');
+                const host = String(url.hostname || '').replace(/^www\./, '').toLowerCase();
+                const isHttp = protocol === 'http:' || protocol === 'https:';
+                const isExternal = isHttp && url.origin !== window.location.origin;
+                const isDownload =
+                  target.hasAttribute('download') ||
+                  /\.(pdf|zip|gz|tar|csv|xlsx?|docx?|pptx?|json|ya?ml|mp3|mp4|mov|webm)(?:$|[?#])/i.test(rawHref);
+
+                if (protocol === 'mailto:' || protocol === 'tel:') return 'contact';
+                if (isDownload) return 'download';
+                if (isExternal && host === 'github.com') return 'github';
+                if (isExternal) return 'external';
+                if (path.startsWith('/go/')) return 'affiliate';
+                if (path.startsWith('/tools/') || path.startsWith('/compound-interest/')) return 'tool';
+                if (path.startsWith('/newsletter/')) return 'newsletter';
+                if (url.origin === window.location.origin && path === window.location.pathname && url.hash) return 'anchor';
+                if (linkArea === 'related_content') return 'related_article';
+                if (linkArea === 'article_body') return 'internal_article';
+                return 'internal';
+              };
+
+              const handleClick = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const target = e.target.closest('a,button');
+                if (!target) return;
+
+                const label = (target.getAttribute('aria-label') || target.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 100);
+                if (target.tagName === 'BUTTON') {
+                  window.xbTrackEvent('click_button', {
+                    event_category: 'engagement',
+                    event_label: label,
+                    link_area: inferLinkArea(target),
+                    link_position: inferLinkArea(target),
+                    source_page_path: window.location.pathname,
+                  });
+                  return;
+                }
+
+                const rawHref = String(target.getAttribute('href') || '').trim();
+                if (!rawHref || rawHref.toLowerCase().startsWith('javascript:')) return;
+
+                try {
+                  const url = new URL(rawHref, window.location.href);
+                  const linkArea = inferLinkArea(target);
+                  const linkType = classifyLink(target, url, linkArea);
+                  const isExternalHttp =
+                    (url.protocol === 'http:' || url.protocol === 'https:') &&
+                    url.origin !== window.location.origin;
+                  const payload = {
+                    event_category:
+                      ['affiliate', 'tool', 'newsletter'].includes(linkType)
+                        ? 'conversion'
+                        : isExternalHttp
+                          ? 'outbound'
+                          : 'navigation',
+                    event_label: url.href,
+                    link_text: label,
+                    link_url: url.href,
+                    link_domain: url.hostname.replace(/^www\./, ''),
+                    link_id: target.id || '',
+                    link_classes: String(target.className || '').slice(0, 120),
+                    outbound: isExternalHttp,
+                    link_type: linkType,
+                    link_area: linkArea,
+                    link_position: String(target.closest('[data-related-slot]')?.getAttribute('data-related-slot') || linkArea).slice(0, 60),
+                    link_context: String(target.getAttribute('data-related-reason') || target.closest('[data-related-reason]')?.getAttribute('data-related-reason') || '').slice(0, 100),
+                    source_page_path: window.location.pathname,
+                    target_page_path: url.pathname || '',
+                  };
+
+                  // 所有真实链接统一进入 link_click，运营报表以该事件为准。
+                  window.xbTrackEvent('link_click', payload);
+
+                  if (linkType === 'external' || linkType === 'github') {
+                    window.xbTrackEvent('click_external', payload);
+                  }
+                  if (linkType === 'github') {
+                    window.xbTrackEvent('github_click', payload);
+                  }
+                  if (linkType === 'download') {
+                    window.xbTrackEvent('download_click', payload);
+                  }
+                  if (linkType === 'affiliate') {
+                    window.xbTrackEvent('affiliate_click', {
+                      ...payload,
+                      affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                    });
+                  }
+                  if (linkType === 'tool') {
+                    window.xbTrackEvent('click_tool', payload);
+                  }
+                  if (linkType === 'newsletter') {
+                    window.xbTrackEvent('newsletter_click', payload);
+                  }
+                  if (linkType === 'related_article') {
+                    window.xbTrackEvent('related_article_click', payload);
+                  }
+                  if (['internal', 'internal_article', 'related_article', 'anchor'].includes(linkType)) {
+                    window.xbTrackEvent('internal_link_click', payload);
+                  }
+                  if (
+                    !isExternalHttp &&
+                    ['/ai/', '/newsletter/', '/search/', '/life/', '/investing/'].some((prefix) => url.pathname.startsWith(prefix))
+                  ) {
+                    window.xbTrackEvent('click_internal_entry', payload);
+                  }
+                } catch (err) {}
+              };
+
+              const handleSubmit = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const form = e.target;
+                if (!form || form.tagName !== 'FORM') return;
+                const action = form.getAttribute('action') || '';
+                const formType = form.getAttribute('data-analytics-form') || '';
+                const formData = new FormData(form);
+                const searchTerm = String(formData.get('q') || '').trim();
+
+                if (action.includes('/search') || formType === 'site-search') {
+                  window.xbTrackEvent('view_search_results', {
+                    event_category: 'site_search',
+                    search_term: searchTerm,
+                  });
+                }
+
+                if (action.includes('buttondown.email') || formType === 'newsletter') {
+                  const provider = action.includes('buttondown.email') ? 'buttondown' : 'xbstack_api';
+                  window.xbTrackEvent('newsletter_subscribe_attempt', {
+                    event_category: 'conversion',
+                    event_label: window.location.pathname,
+                    newsletter_provider: provider,
+                  });
+                  window.xbTrackEvent('newsletter_subscribe', {
+                    event_category: 'conversion',
+                    event_label: 'submitted',
+                    newsletter_provider: provider,
+                    confirmation_status: 'submitted',
+                  });
+                }
+              };
+
+              document.addEventListener('click', handleClick);
+              document.addEventListener('submit', handleSubmit, true);
+            };
+
+            // 原始访问先进入 GA4，再通过 traffic_verification 区分未验证访问与真人互动。
+            // 这样既保留完整 page_view / session_start 基线，也能在报表层排除低质量流量。
+            window.loadGA4Client = () => {
+              if (window.__ga4_client_loaded) return;
+              window.__ga4_client_loaded = true;
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = function() {
+                window.dataLayer.push(arguments);
+              };
+
+              const ga4Script = document.createElement('script');
+              ga4Script.async = true;
+              ga4Script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(googleAnalyticsId)}`;
+              document.head.appendChild(ga4Script);
+
+              window.gtag('js', new Date());
+              window.gtag('config', googleAnalyticsId, {
+                send_page_view: false,
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+              });
+            };
+
+            window.startGA4Tracking = (
+              reason = 'page_load',
+              sessionClass = 'unverified_session',
+              humanVerified = false,
+            ) => {
+              if (window.__ga4_tracking_started) {
+                if (humanVerified && !window.__ga4_human_verified) {
+                  window.verifyGA4Human(reason, sessionClass);
+                }
+                return;
+              }
+              window.__ga4_tracking_start_reason = String(reason || 'page_load').slice(0, 60);
+              window.__ga4_session_class = String(sessionClass || 'unverified_session').slice(0, 40);
+              window.__ga4_human_verified = Boolean(humanVerified);
+              window.__ga4_tracking_started = true;
+              window.loadGA4Client();
+              window.sendGA4PageView();
+              window.initGA4Tracking();
+            };
+
+            window.verifyGA4Human = (reason = 'interaction', sessionClass = 'human_interaction') => {
+              if (!window.__ga4_tracking_started) {
+                window.startGA4Tracking(reason, sessionClass, true);
+                return;
+              }
+              if (window.__ga4_human_verified) return;
+
+              const previousClass = window.__ga4_session_class || 'unverified_session';
+              window.__ga4_human_verified = true;
+              window.__ga4_session_class = String(sessionClass || 'human_interaction').slice(0, 40);
+              window.__ga4_tracking_start_reason = String(reason || 'interaction').slice(0, 60);
+              window.gtag('event', 'traffic_verified', {
+                transport_type: 'beacon',
+                traffic_verification: window.__ga4_session_class,
+                previous_traffic_verification: previousClass,
+                verification_reason: window.__ga4_tracking_start_reason,
+                page_path: window.location.pathname,
+                page_title: document.title || '',
+              });
+              // Components that defer engagement events until a real interaction can retry now.
+              window.dispatchEvent(new CustomEvent('xb:ga4-human-verified'));
+            };
+
+            ['pointerdown', 'keydown', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(
+                eventName,
+                (event) => {
+                  if (!event?.isTrusted) return;
+                  window.verifyGA4Human(`interaction:${eventName}`, 'human_interaction');
+                },
+                { once: true, passive: true },
+              );
+            });
+
+            let pointerMoveCount = 0;
+            let pointerMoveDistance = 0;
+            let lastPointerX = null;
+            let lastPointerY = null;
+            const handleHumanPointerMove = (event) => {
+              if (
+                window.__ga4_human_verified ||
+                !event?.isTrusted ||
+                event.pointerType === 'touch'
+              ) return;
+              if (lastPointerX !== null && lastPointerY !== null) {
+                pointerMoveDistance += Math.hypot(event.clientX - lastPointerX, event.clientY - lastPointerY);
+              }
+              lastPointerX = event.clientX;
+              lastPointerY = event.clientY;
+              pointerMoveCount += 1;
+              if (pointerMoveCount >= 3 && pointerMoveDistance >= 120) {
+                window.removeEventListener('pointermove', handleHumanPointerMove);
+                window.verifyGA4Human('interaction:pointermove', 'human_interaction');
+              }
+            };
+            window.addEventListener('pointermove', handleHumanPointerMove, { passive: true });
+
+            // 放宽采集：所有可见前台页面都记录原始访问；真人互动后再升级质量标签。
+            window.setTimeout(() => {
+              if (
+                window.__ga4_tracking_started ||
+                window.__ga4_requires_human_interaction ||
+                document.visibilityState !== 'visible'
+              ) return;
+              window.startGA4Tracking('page_load:visible_800ms', 'unverified_session', false);
+            }, 800);
+
+            document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+              if (window.__ga4_tracking_started) {
+                window.sendGA4PageView();
+                window.initGA4Tracking();
+              }
+            });
+          } else {
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+            if (window.__ga4_tracking_started && typeof window.sendGA4PageView === 'function') {
+              window.sendGA4PageView();
+            }
+          }
+        })();</script><script data-baidu-id="c7bfaf645bfc8974405a85c2a55573a0">
+          const baiduId = document.currentScript?.dataset.baiduId || '';
+          if (!window.__baidu_analytics_initialized) {
+            window._hmt = window._hmt || [];
+            window.__baidu_analytics_initialized = true;
+            window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+
+            const loadBaiduAnalytics = () => {
+              if (window.__baidu_script_loaded || !baiduId) return;
+              window.__baidu_script_loaded = true;
+              const hm = document.createElement('script');
+              hm.async = true;
+              hm.src = "https://hm.baidu.com/hm.js?" + baiduId;
+              document.head.appendChild(hm);
+              window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+            };
+
+            // 百度统计不是首屏渲染依赖：首次交互时加载，若用户未交互则 12 秒后加载。
+            ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(eventName, loadBaiduAnalytics, { once: true, passive: true });
+            });
+            window.setTimeout(loadBaiduAnalytics, 12000);
+
+            document.addEventListener('astro:page-load', () => {
+              const pageKey = window.location.pathname + window.location.search;
+              if (!window.__baidu_script_loaded || pageKey === window.__lastBaiduPageKey) return;
+              window.__lastBaiduPageKey = pageKey;
+              window._hmt.push(['_trackPageview', pageKey]);
+            });
+          }
+        </script><link rel="stylesheet" href="/_astro/archive.CoBLOxwA.css">
+<style>.financial-disclaimer[data-astro-cid-qg2yevcq]{box-shadow:0 4px 20px -5px #f973161a}.xb-article-grid.xb-article-v21{width:min(calc(100% - 40px),1180px);grid-template-columns:minmax(0,760px) 228px;gap:54px;justify-content:center}.xb-article-v21 .xb-article-paper{padding:36px 40px 40px}.xb-article-v21 .xb-article-side{top:126px}.xb-article-v21 .xb-article-panel{padding:17px;border-radius:10px}.xb-article-v21 .xb-article-panel__title{font-size:12px;margin-bottom:10px;letter-spacing:0;font-weight:760}.xb-v21-toc{display:flex;flex-direction:column;gap:0}.xb-v21-toc a,.xb-v21-toc button{display:flex;justify-content:space-between;gap:10px;text-align:left;padding:9px 0;border-bottom:1px solid var(--xb-line);font-size:13px;line-height:1.5;color:var(--xb-text)}.xb-v21-toc a:hover,.xb-v21-toc button:hover{color:var(--xb-blue)}.xb-v21-toc .xb-v21-toc-nested{padding-left:12px;font-size:12px}.xb-v21-evidence[data-astro-cid-ce2bgkb3]{margin:0 0 24px;border-block:1px solid var(--xb-line);padding:12px 0}.xb-v21-evidence[data-astro-cid-ce2bgkb3] summary[data-astro-cid-ce2bgkb3]{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--xb-muted);cursor:pointer}.xb-v21-evidence[data-astro-cid-ce2bgkb3] strong[data-astro-cid-ce2bgkb3]{font-size:13px;color:var(--xb-ink)}.xb-v21-evidence[data-astro-cid-ce2bgkb3] summary[data-astro-cid-ce2bgkb3]>span[data-astro-cid-ce2bgkb3]:last-child{margin-left:auto;color:var(--xb-blue)}.xb-v21-evidence-links[data-astro-cid-ce2bgkb3]{display:flex;gap:10px 18px;flex-wrap:wrap;margin-top:13px;padding-top:12px;border-top:1px solid var(--xb-line)}.xb-v21-evidence-links[data-astro-cid-ce2bgkb3] a[data-astro-cid-ce2bgkb3]{font-size:12px;line-height:1.5;color:var(--xb-blue)}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3]{display:none;border:1px solid var(--xb-line);border-radius:10px;margin:0 0 24px;padding:13px 16px;font-size:14px}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3] summary[data-astro-cid-ce2bgkb3]{display:flex;justify-content:space-between;cursor:pointer;font-weight:700}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3] nav[data-astro-cid-ce2bgkb3]{display:grid;gap:12px;padding-top:18px;color:var(--xb-text)}@media(max-width:1060px){.xb-article-grid.xb-article-v21{width:min(calc(100% - 32px),820px);display:block}.xb-article-grid.xb-article-v21>.xb-article-side{display:none}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3]{display:block}}@media(max-width:640px){.xb-article-v21 .xb-article-paper{padding:24px 18px 30px}}
+</style>
+<link rel="stylesheet" href="/_astro/_slug_.CoqtapaZ.css">
+<link rel="stylesheet" href="/_astro/_slug_.QFd94UQU.css">
+<link rel="stylesheet" href="/_astro/vendor-media.DSulWsr7.css"></head> <body class="bg-[var(--xb-bg)] text-[var(--xb-ink)] selection:bg-orange-500/20 selection:text-orange-500 overflow-x-hidden"> <style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value=="object"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};"requestIdleCallback"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event("astro:idle"));})();</script><script>(()=>{var A=Object.defineProperty;var g=(i,o,a)=>o in i?A(i,o,{enumerable:!0,configurable:!0,writable:!0,value:a}):i[o]=a;var d=(i,o,a)=>g(i,typeof o!="symbol"?o+"":o,a);{let i={0:t=>m(t),1:t=>a(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(a(t)),5:t=>new Set(a(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t),11:t=>1/0*t},o=t=>{let[l,e]=t;return l in i?i[l](e):void 0},a=t=>t.map(o),m=t=>typeof t!="object"||t===null?t:Object.fromEntries(Object.entries(t).map(([l,e])=>[l,o(e)]));class y extends HTMLElement{constructor(){super(...arguments);d(this,"Component");d(this,"hydrator");d(this,"hydrate",async()=>{var b;if(!this.hydrator||!this.isConnected)return;let e=(b=this.parentElement)==null?void 0:b.closest("astro-island[ssr]");if(e){e.addEventListener("astro:hydrate",this.hydrate,{once:!0});return}let c=this.querySelectorAll("astro-slot"),n={},h=this.querySelectorAll("template[data-astro-template]");for(let r of h){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("data-astro-template")||"default"]=r.innerHTML,r.remove())}for(let r of c){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("name")||"default"]=r.innerHTML)}let p;try{p=this.hasAttribute("props")?m(JSON.parse(this.getAttribute("props"))):{}}catch(r){let s=this.getAttribute("component-url")||"<unknown>",v=this.getAttribute("component-export");throw v&&(s+=` (export ${v})`),console.error(`[hydrate] Error parsing props for component ${s}`,this.getAttribute("props"),r),r}let u;await this.hydrator(this)(this.Component,p,n,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),this.dispatchEvent(new CustomEvent("astro:hydrate"))});d(this,"unmount",()=>{this.isConnected||this.dispatchEvent(new CustomEvent("astro:unmount"))})}disconnectedCallback(){document.removeEventListener("astro:after-swap",this.unmount),document.addEventListener("astro:after-swap",this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute("await-children")||document.readyState==="interactive"||document.readyState==="complete")this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener("DOMContentLoaded",e),c.disconnect(),this.childrenConnectedCallback()},c=new MutationObserver(()=>{var n;((n=this.lastChild)==null?void 0:n.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue==="astro:end"&&(this.lastChild.remove(),e())});c.observe(this,{childList:!0}),document.addEventListener("DOMContentLoaded",e)}}async childrenConnectedCallback(){let e=this.getAttribute("before-hydration-url");e&&await import(e),this.start()}async start(){let e=JSON.parse(this.getAttribute("opts")),c=this.getAttribute("client");if(Astro[c]===void 0){window.addEventListener(`astro:${c}`,()=>this.start(),{once:!0});return}try{await Astro[c](async()=>{let n=this.getAttribute("renderer-url"),[h,{default:p}]=await Promise.all([import(this.getAttribute("component-url")),n?import(n):()=>()=>{}]),u=this.getAttribute("component-export")||"default";if(!u.includes("."))this.Component=h[u];else{this.Component=h;for(let f of u.split("."))this.Component=this.Component[f]}return this.hydrator=p,this.hydrate},e,this)}catch(n){console.error(`[astro-island] Error hydrating ${this.getAttribute("component-url")}`,n)}}attributeChangedCallback(){this.hydrate()}}d(y,"observedAttributes",["props"]),customElements.get("astro-island")||customElements.define("astro-island",y)}})();</script><astro-island uid="ZWjsVO" prefix="r17" component-url="/_astro/GlobalLightbox.CqZePd56.js" component-export="default" renderer-url="/_astro/client.CJCcxmqC.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;GlobalLightbox&quot;,&quot;value&quot;:true}"></astro-island> <div id="app-background" class="fixed inset-0 z-[-1] h-full w-full pointer-events-none bg-slate-50 dark:bg-slate-950 transition-colors duration-500"> <div id="app-background-image" class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-500" data-day="/_astro/macos2.hYF-Pyun.webp" data-night="/_astro/macos2-night.DwJ7amhx.webp" aria-hidden="true"></div> <div class="absolute inset-0 bg-[#DFE1E6]/90 dark:bg-transparent backdrop-blur-[6px] pointer-events-none"></div> <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b82f611,transparent_50%)] dark:hidden pointer-events-none"></div> <div class="absolute inset-0 opacity-[0.08] dark:opacity-[0.03] pointer-events-none mix-blend-multiply" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+');"></div> </div> <script>
+  (() => {
+    const bindBackground = () => {
+      const root = document.documentElement;
+      const background = document.getElementById('app-background-image');
+      if (!background || background.dataset.themeObserverBound === 'true') return;
+
+      const applyBackground = () => {
+        const source = root.classList.contains('dark') ? background.dataset.night : background.dataset.day;
+        if (!source) return;
+        const nextValue = `url("${source}")`;
+        if (background.style.backgroundImage !== nextValue) {
+          background.style.backgroundImage = nextValue;
+        }
+      };
+
+      applyBackground();
+      const observer = new MutationObserver(applyBackground);
+      observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+      background.dataset.themeObserverBound = 'true';
+    };
+
+    bindBackground();
+    document.addEventListener('astro:page-load', bindBackground);
+  })();
+</script> <header id="site-header" class="sticky top-0 z-[500] border-b border-[var(--xb-line)] bg-[color:var(--xb-bg)]/95 backdrop-blur-xl"> <div class="xb-shell flex min-h-[66px] items-center gap-7"> <a href="/" class="flex shrink-0 items-center gap-2.5 font-black tracking-[-0.035em] text-[var(--xb-ink)]" aria-label="XBSTACK Home"> <span class="xb-brand-logo" data-xbstack-logo-motion="load" aria-hidden="true"> <span class="xb-brand-logo__variant inline-flex dark:hidden"> <img src="/favicon/logo-light-nav.svg" alt="" width="32" height="32" decoding="async"> <span class="xb-brand-logo__shine" style="--xb-logo-mask: url(&#34;/favicon/logo-light-nav.svg&#34;)"></span> </span> <span class="xb-brand-logo__variant hidden dark:inline-flex"> <img src="/favicon/logo-dark-nav.svg" alt="" width="32" height="32" decoding="async"> <span class="xb-brand-logo__shine" style="--xb-logo-mask: url(&#34;/favicon/logo-dark-nav.svg&#34;)"></span> </span> </span> <span class="text-[17px]">XBSTACK</span> </a> <nav id="primary-navigation" class="hidden items-center gap-1 lg:flex" aria-label="主导航" data-active-menu-index="0"> <a href="/ai/" data-primary-nav-index="0" data-has-secondary="true" aria-current="page" aria-controls="secondary-preview-menu-0" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors bg-blue-500/[0.06] text-blue-600 dark:text-blue-400"> AI <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[9px] opacity-45" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a><a href="/products/" data-primary-nav-index="1" data-has-secondary="true" aria-controls="secondary-preview-menu-1" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Products <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[9px] opacity-45" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a><a href="/horizon/" data-primary-nav-index="2" data-has-secondary="true" aria-controls="secondary-preview-menu-2" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Insights <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[9px] opacity-45" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a><a href="/life/" data-primary-nav-index="3" data-has-secondary="true" aria-controls="secondary-preview-menu-3" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Lens <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[9px] opacity-45" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a><a href="/about/" data-primary-nav-index="4" data-has-secondary="false" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> About  </a> </nav> <div class="ml-auto flex items-center gap-2"> <a id="global-search-trigger" data-xbstack-search-trigger href="/search/" aria-label="打开站内搜索" class="hidden h-9 min-w-[190px] items-center gap-2 rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)] px-3 text-left text-[11px] text-[var(--xb-muted)] transition-colors hover:border-blue-400 md:flex"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="shrink-0" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.81 173.81 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.81 173.81 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3zM97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8z"></path></svg> <span class="truncate">搜索文章、工具、主题…</span> <kbd class="ml-auto rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[9px] text-[var(--xb-faint)]">⌘K</kbd> </a> <div class="hidden sm:block"> <nav data-visible-language-alternate aria-label="选择语言" data-astro-cid-iemtoba4> <details class="language-switcher-details relative" data-language-switcher-details data-astro-cid-iemtoba4> <summary class="language-switcher-summary flex h-10 min-w-[88px] cursor-pointer list-none items-center justify-center gap-2 rounded-full border border-slate-200/60 bg-white/50 px-3 text-[12px] font-bold text-slate-600 shadow-sm backdrop-blur-md transition-all hover:border-blue-300 hover:bg-blue-50/80 hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-blue-400/50 dark:hover:bg-blue-500/10 dark:hover:text-blue-400 dark:focus-visible:ring-offset-slate-950" aria-label="选择语言" title="选择语言" data-astro-cid-iemtoba4> <svg aria-hidden="true" viewBox="0 0 24 24" class="h-3.5 w-3.5 flex-none" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4> <circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle> <path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path> </svg> <span class="whitespace-nowrap" data-astro-cid-iemtoba4>中文</span> <svg aria-hidden="true" viewBox="0 0 20 20" class="language-chevron h-3 w-3 flex-none text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-iemtoba4> <path d="m5 7.5 5 5 5-5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path> </svg> </summary> <div class="language-switcher-menu absolute right-0 top-[calc(100%+0.65rem)] z-[520] w-44 overflow-hidden rounded-2xl border border-slate-200/80 bg-white/95 p-2 shadow-[0_18px_50px_-18px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0B1020]/95" role="menu" aria-label="选择语言" data-astro-cid-iemtoba4> <div class="px-3 pb-1.5 pt-1 text-[9px] font-black uppercase tracking-[0.22em] text-slate-400 dark:text-slate-500" data-astro-cid-iemtoba4> 语言 </div> <a href="/ai/gemini-4-multimodel-routing-recalai-lunest/" data-language-choice="zh-CN" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" role="menuitemradio" aria-checked="true" title="当前语言：中文" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors cursor-default bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" data-astro-cid-iemtoba4> <span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4> <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" data-astro-cid-iemtoba4> <path d="m4.5 10 3.2 3.2 7.8-7.8" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path> </svg> </span> <span class="flex-1" data-astro-cid-iemtoba4>中文</span> <span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>ZH</span> </a><a href="/en/ai/gemini-4-multimodel-routing-recalai-lunest/" data-language-choice="en" data-language-current="false" data-language-available="true" role="menuitemradio" aria-checked="false" title="Switch to the English version" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors text-slate-600 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-blue-400" data-astro-cid-iemtoba4> <span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4> <span class="h-1.5 w-1.5 rounded-full bg-slate-300 dark:bg-slate-700" data-astro-cid-iemtoba4></span> </span> <span class="flex-1" data-astro-cid-iemtoba4>English</span> <span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>EN</span> </a> </div> </details> </nav>  <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> <div class="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)]"> <div class="relative flex items-center justify-center w-full h-full"> <input class="sr-only" id="theme-switcher" data-theme-switcher type="checkbox"> <label class="flex items-center justify-center cursor-pointer w-full h-full group/theme" for="theme-switcher" aria-label="切换主题">  <svg class="w-5 h-5 transition-all duration-500 scale-100 dark:scale-0 opacity-100 dark:opacity-0 absolute text-orange-500 group-hover/theme:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg>  <svg class="w-5 h-5 transition-all duration-500 scale-0 dark:scale-100 opacity-0 dark:opacity-100 absolute text-sky-400 group-hover/theme:-rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </label> </div> <script>
+  // 立即执行以防止闪烁
+  (function() {
+    const theme = localStorage.getItem("theme");
+    const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  })();
+
+  // 页面加载和切换后的初始化逻辑
+  function initTheme() {
+    const themeSwitchers = document.querySelectorAll("[data-theme-switcher]");
+    const isDark = document.documentElement.classList.contains("dark");
+
+    const favicon = document.getElementById("xbstack-favicon");
+    if (favicon) {
+      favicon.setAttribute(
+        "href",
+        isDark
+          ? "/favicon/logo-dark.svg"
+          : "/favicon/logo-light.svg",
+      );
+    }
+
+    // 同步所有切换按钮的状态
+    themeSwitchers.forEach((el) => {
+      el.checked = isDark;
+      
+      // 移除旧的监听器（如果存在），防止重复绑定
+      // 由于是匿名函数难以移除，我们采用 cloneNode 或者简单的标志位
+      // Astro 的 View Transitions 会重新运行脚本，所以只需确保不累积
+      // 最简单的方式是直接覆盖 onclick 或 onchange，但这里用 addEventListener
+      // 我们可以给元素加个标记
+      if (el.dataset.initialized) return;
+      
+      el.addEventListener("change", (e) => {
+        const checked = e.target.checked;
+        if (checked) {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        }
+
+        const favicon = document.getElementById("xbstack-favicon");
+        if (favicon) {
+          favicon.setAttribute(
+            "href",
+            checked
+              ? "/favicon/logo-dark.svg"
+              : "/favicon/logo-light.svg",
+          );
+        }
+        
+        // 同步其他可能存在的切换按钮（例如移动端和桌面端各有一个）
+        document.querySelectorAll("[data-theme-switcher]").forEach(other => {
+            if (other !== el) other.checked = checked;
+        });
+      });
+      
+      el.dataset.initialized = "true";
+    });
+  }
+
+  // 绑定事件
+  document.addEventListener("DOMContentLoaded", initTheme);
+  document.addEventListener("astro:page-load", initTheme);
+  document.addEventListener("astro:after-swap", initTheme);
+</script> </div> <button id="mobile-menu-trigger" type="button" aria-label="打开导航菜单" aria-controls="mobile-menu" aria-expanded="false" class="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)] text-[var(--xb-text)] lg:hidden"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path></svg></button> </div> </div> <div id="desktop-secondary-navigation"> <div class="xb-shell min-h-[45px] overflow-x-auto"> <nav class="flex min-w-max items-center gap-1 py-2" aria-label="AI 二级导航"> <a href="/ai/agent/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> Agents </a><a href="/ai/mcp/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> MCP </a><a href="/ai/security/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> Security </a><a href="/ai/local-ai/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> Local AI </a><a href="/ai/tools-lab/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> Tools Lab </a> </nav> </div> </div> <div id="desktop-secondary-preview" data-visible="false" aria-hidden="true" class="pointer-events-none absolute left-0 right-0 top-[66px] z-30 hidden bg-[color:var(--xb-bg)] shadow-lg lg:block"> <div class="xb-shell min-h-[45px] overflow-x-auto pointer-events-none"> <nav id="secondary-preview-menu-0" data-secondary-preview-index="0" class="pointer-events-auto hidden min-w-max items-center gap-1 py-2" aria-label="AI 二级导航预览"> <a href="/ai/agent/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Agents </a><a href="/ai/mcp/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> MCP </a><a href="/ai/security/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Security </a><a href="/ai/local-ai/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Local AI </a><a href="/ai/tools-lab/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Tools Lab </a> </nav><nav id="secondary-preview-menu-1" data-secondary-preview-index="1" class="pointer-events-auto hidden min-w-max items-center gap-1 py-2" aria-label="Products 二级导航预览"> <a href="/products/lunest/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Lunest </a><a href="/products/recalia/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Recalia </a><a href="/tools/ai-finance/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> AI Finance </a><a href="/tools/mcp-inspector/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> MCP Inspector </a><a href="/tools/agent-readiness-auditor/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Agent Readiness </a><a href="/tools/agent-security-auditor/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Agent Security </a><a href="/tools/compound-calculator/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Compound Calculator </a><a href="/tools/utm-builder/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> UTM Builder </a> </nav><nav id="secondary-preview-menu-2" data-secondary-preview-index="2" class="pointer-events-auto hidden min-w-max items-center gap-1 py-2" aria-label="Insights 二级导航预览"> <a href="/investing/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Investing </a><a href="/horizon/reading/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Reading </a><a href="/investing/thoughts/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Thinking </a> </nav><nav id="secondary-preview-menu-3" data-secondary-preview-index="3" class="pointer-events-auto hidden min-w-max items-center gap-1 py-2" aria-label="Lens 二级导航预览"> <a href="/life/hiking/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Outdoor </a><a href="/life/road-trip/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Travel </a><a href="/life/photo/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Photography </a><a href="/life/gear/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Gear </a> </nav> </div> </div> <div id="mobile-menu" class="invisible fixed inset-0 z-[600] pointer-events-none"> <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/50 opacity-0 backdrop-blur-sm transition-opacity"></div> <aside id="mobile-menu-panel" class="absolute right-0 top-0 flex h-full w-[300px] translate-x-full flex-col border-l border-[var(--xb-line)] bg-[var(--xb-surface)] transition-transform"> <div class="flex h-16 items-center justify-between border-b border-[var(--xb-line)] px-5"> <strong class="text-sm tracking-tight text-[var(--xb-ink)]">XBSTACK</strong> <button id="mobile-menu-close" type="button" aria-label="关闭导航菜单" class="text-[var(--xb-muted)]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg></button> </div> <div class="border-b border-[var(--xb-line)] p-4"> <a id="mobile-search-trigger" data-xbstack-search-trigger href="/search/" class="flex h-10 w-full items-center gap-2 rounded-lg border border-[var(--xb-line)] px-3 text-[12px] text-[var(--xb-muted)]"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.81 173.81 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.81 173.81 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3zM97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8z"></path></svg> 搜索 XBSTACK </a> </div> <nav class="flex flex-1 flex-col gap-2 overflow-y-auto p-4"> <details class="group/mobile" open> <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-4 py-3 text-[15px] font-semibold [&#38;::-webkit-details-marker]:hidden bg-blue-500/[0.07] text-blue-600 dark:text-blue-400"> <span>AI</span> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[10px] opacity-50 transition-transform group-open/mobile:rotate-180" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </summary> <div class="ml-4 mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3"> <a href="/ai/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">AI Overview</a> <a href="/ai/agent/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Agents</a><a href="/ai/mcp/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">MCP</a><a href="/ai/security/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Security</a><a href="/ai/local-ai/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Local AI</a><a href="/ai/tools-lab/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Tools Lab</a> </div> </details><details class="group/mobile"> <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-4 py-3 text-[15px] font-semibold [&#38;::-webkit-details-marker]:hidden text-[var(--xb-text)]"> <span>Products</span> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[10px] opacity-50 transition-transform group-open/mobile:rotate-180" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </summary> <div class="ml-4 mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3"> <a href="/products/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Products Overview</a> <a href="/products/lunest/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Lunest</a><a href="/products/recalia/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Recalia</a><a href="/tools/ai-finance/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">AI Finance</a><a href="/tools/mcp-inspector/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">MCP Inspector</a><a href="/tools/agent-readiness-auditor/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Agent Readiness</a><a href="/tools/agent-security-auditor/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Agent Security</a><a href="/tools/compound-calculator/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Compound Calculator</a><a href="/tools/utm-builder/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">UTM Builder</a> </div> </details><details class="group/mobile"> <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-4 py-3 text-[15px] font-semibold [&#38;::-webkit-details-marker]:hidden text-[var(--xb-text)]"> <span>Insights</span> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[10px] opacity-50 transition-transform group-open/mobile:rotate-180" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </summary> <div class="ml-4 mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3"> <a href="/horizon/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Insights Overview</a> <a href="/investing/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Investing</a><a href="/horizon/reading/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Reading</a><a href="/investing/thoughts/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Thinking</a> </div> </details><details class="group/mobile"> <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-4 py-3 text-[15px] font-semibold [&#38;::-webkit-details-marker]:hidden text-[var(--xb-text)]"> <span>Lens</span> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[10px] opacity-50 transition-transform group-open/mobile:rotate-180" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </summary> <div class="ml-4 mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3"> <a href="/life/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Lens Overview</a> <a href="/life/hiking/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Outdoor</a><a href="/life/road-trip/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Travel</a><a href="/life/photo/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Photography</a><a href="/life/gear/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Gear</a> </div> </details><a href="/about/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">About</a> </nav> <div class="border-t border-[var(--xb-line)] p-4 sm:hidden"> <nav data-visible-language-alternate aria-label="选择语言" data-astro-cid-iemtoba4> <div class="flex w-full items-center justify-between gap-4" aria-label="选择语言" data-astro-cid-iemtoba4> <div class="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300" data-astro-cid-iemtoba4> <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4> <circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle> <path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path> </svg> <span data-astro-cid-iemtoba4>语言</span> </div> <div class="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 p-1 dark:border-white/10 dark:bg-white/5" data-astro-cid-iemtoba4> <a href="/ai/gemini-4-multimodel-routing-recalai-lunest/" data-language-choice="zh-CN" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="当前语言：中文" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all cursor-default bg-white text-blue-600 shadow-sm dark:bg-blue-500/15 dark:text-blue-400" data-astro-cid-iemtoba4> 中文 </a><a href="/en/ai/gemini-4-multimodel-routing-recalai-lunest/" data-language-choice="en" data-language-current="false" data-language-available="true" title="Switch to the English version" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400" data-astro-cid-iemtoba4> English </a> </div> </div> </nav>  <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> </aside> </div> <script>
+    if (!window.__xbstackSearchShortcutReady) {
+      window.__xbstackSearchShortcutReady = true;
+      window.addEventListener('keydown', (event) => {
+        const target = event.target;
+        const isTyping = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target?.isContentEditable;
+        const isCommandK = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
+        const isSlash = event.key === '/' && !isTyping;
+        if (!isCommandK && !isSlash) return;
+        event.preventDefault();
+        window.location.href = window.location.pathname.startsWith('/en/') ? '/en/search/' : '/search/';
+      });
+    }
+
+    const bindHeader = () => {
+      const header = document.getElementById('site-header');
+      const trigger = document.getElementById('mobile-menu-trigger');
+      const close = document.getElementById('mobile-menu-close');
+      const menu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const panel = document.getElementById('mobile-menu-panel');
+      const primaryNavigation = document.getElementById('primary-navigation');
+      const persistentSecondaryNavigation = document.getElementById('desktop-secondary-navigation');
+      const secondaryPreview = document.getElementById('desktop-secondary-preview');
+      const primaryLinks = Array.from(primaryNavigation?.querySelectorAll('[data-primary-nav-index]') || []);
+      const previewMenus = Array.from(secondaryPreview?.querySelectorAll('[data-secondary-preview-index]') || []);
+      const activeMenuIndex = Number(primaryNavigation?.dataset.activeMenuIndex ?? '-1');
+
+      const hideSecondaryPreview = () => {
+        if (!secondaryPreview) return;
+        previewMenus.forEach((item) => {
+          item.classList.add('hidden');
+          item.classList.remove('flex');
+        });
+        secondaryPreview.dataset.visible = 'false';
+        secondaryPreview.setAttribute('aria-hidden', 'true');
+        if (persistentSecondaryNavigation) {
+          persistentSecondaryNavigation.classList.remove('invisible', 'pointer-events-none');
+          persistentSecondaryNavigation.setAttribute('aria-hidden', 'false');
+        }
+      };
+
+      const showSecondaryPreview = (index) => {
+        if (!secondaryPreview || index === activeMenuIndex) {
+          hideSecondaryPreview();
+          return;
+        }
+        const target = previewMenus.find((item) => Number(item.dataset.secondaryPreviewIndex) === index);
+        previewMenus.forEach((item) => {
+          const visible = item === target;
+          item.classList.toggle('hidden', !visible);
+          item.classList.toggle('flex', visible);
+        });
+        secondaryPreview.dataset.visible = target ? 'true' : 'false';
+        secondaryPreview.setAttribute('aria-hidden', target ? 'false' : 'true');
+        if (persistentSecondaryNavigation) {
+          persistentSecondaryNavigation.classList.toggle('invisible', Boolean(target));
+          persistentSecondaryNavigation.classList.toggle('pointer-events-none', Boolean(target));
+          persistentSecondaryNavigation.setAttribute('aria-hidden', target ? 'true' : 'false');
+        }
+      };
+
+      primaryLinks.forEach((link) => {
+        if (link.dataset.secondaryPreviewBound === '1') return;
+        link.dataset.secondaryPreviewBound = '1';
+        const index = Number(link.dataset.primaryNavIndex);
+        const preview = () => {
+          if (link.dataset.hasSecondary === 'true') showSecondaryPreview(index);
+          else hideSecondaryPreview();
+        };
+        link.addEventListener('mouseenter', preview);
+        link.addEventListener('focus', preview);
+      });
+
+      if (header && header.dataset.secondaryRestoreBound !== '1') {
+        header.dataset.secondaryRestoreBound = '1';
+        header.addEventListener('mouseleave', hideSecondaryPreview);
+        header.addEventListener('focusout', () => {
+          requestAnimationFrame(() => {
+            if (!header.contains(document.activeElement)) hideSecondaryPreview();
+          });
+        });
+        header.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') hideSecondaryPreview();
+        });
+      }
+
+      hideSecondaryPreview();
+
+      const setOpen = (open) => {
+        if (!menu || !overlay || !panel) return;
+        trigger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) {
+          menu.classList.remove('invisible', 'pointer-events-none');
+          overlay.classList.add('opacity-100');
+          panel.classList.remove('translate-x-full');
+          document.body.style.overflow = 'hidden';
+        } else {
+          overlay.classList.remove('opacity-100');
+          panel.classList.add('translate-x-full');
+          document.body.style.overflow = '';
+          setTimeout(() => menu.classList.add('invisible', 'pointer-events-none'), 220);
+        }
+      };
+      if (trigger && trigger.dataset.mobileMenuBound !== '1') {
+        trigger.dataset.mobileMenuBound = '1';
+        trigger.addEventListener('click', () => setOpen(true));
+      }
+      if (close && close.dataset.mobileMenuBound !== '1') {
+        close.dataset.mobileMenuBound = '1';
+        close.addEventListener('click', () => setOpen(false));
+      }
+      if (overlay && overlay.dataset.mobileMenuBound !== '1') {
+        overlay.dataset.mobileMenuBound = '1';
+        overlay.addEventListener('click', () => setOpen(false));
+      }
+    };
+    const bindBrandLogoMotion = () => {
+      const logos = document.querySelectorAll('[data-xbstack-logo-motion]');
+      logos.forEach((logo) => {
+        if (logo.dataset.logoMotionBound === '1') return;
+        logo.dataset.logoMotionBound = '1';
+
+        const play = () => {
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+          requestAnimationFrame(() => logo.classList.add('is-animating'));
+        };
+
+        if (logo.dataset.xbstackLogoMotion === 'view' && 'IntersectionObserver' in window) {
+          const observer = new IntersectionObserver((entries) => {
+            if (!entries.some((entry) => entry.isIntersecting)) return;
+            observer.disconnect();
+            play();
+          }, { threshold: 0.35 });
+          observer.observe(logo);
+        } else {
+          play();
+        }
+      });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindBrandLogoMotion, { once: true });
+    } else {
+      bindBrandLogoMotion();
+    }
+    document.addEventListener('astro:page-load', bindHeader);
+    document.addEventListener('astro:page-load', bindBrandLogoMotion);
+    bindHeader();
+  </script>  </header> <div id="language-switch-notice" class="pointer-events-none fixed left-1/2 top-24 z-[700] hidden max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/95 px-5 py-3 text-center text-sm font-bold text-slate-700 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 dark:text-slate-200" role="status" aria-live="polite"></div> <main id="main-content" class="flex-1">  <div id="reading-progress" class="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 z-[110] transition-all duration-300 w-0 shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div> <main class="pt-24 md:pt-32 pb-20"> <script type="module" src="/_astro/Comment.astro_astro_type_script_index_0_lang.C65OC043.js"></script><div class="xb-article-grid xb-article-v21 py-8 md:py-10" data-astro-cid-ce2bgkb3> <main class="min-w-0" data-astro-cid-ce2bgkb3> <article class="xb-article-paper" data-astro-cid-ce2bgkb3> <header class="mb-10 border-b border-[var(--xb-line)] pb-8"><div class="mb-4 flex flex-wrap items-center gap-2"><a href="/ai/agent/" class="rounded-md border border-blue-500/15 bg-blue-500/[0.05] px-2.5 py-1 text-[10px] font-bold text-blue-600 dark:text-blue-400">ai</a></div><h1 class="m-0 text-[clamp(2rem,4vw,3.6rem)] font-black leading-[1.12] tracking-[-.045em] text-[var(--xb-ink)]">Gemini 4 Hydrogen、Argon、Carbon 如何分工？从 RecalAI 与 Lunest 的工程决策看 Agent 成本</h1><p class="mt-5 max-w-[760px] text-[15px] leading-7 text-[var(--xb-text)]">以 RecalAI 已有 BYOK、受控 Agent、本地证据引用，Lunest 音频中断恢复及 XBSTACK 双语发布验收为依据，讨论 Gemini 4 Hydrogen、Argon、Carbon 的分层路由、工具权限、任务成本、2026 年 API 价格变动和幂等恢复；未进行三模型真实 A/B。</p><div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] text-[var(--xb-faint)]"><span>发布 · 2026-11-17</span><span>20 分钟阅读</span><span>XBSTACK 原创</span></div></header> <details class="xb-v21-evidence" data-astro-cid-ce2bgkb3> <summary data-astro-cid-ce2bgkb3> <strong data-astro-cid-ce2bgkb3>Evidence</strong> <span data-astro-cid-ce2bgkb3>7 条资料来源</span>  <span aria-hidden="true" data-astro-cid-ce2bgkb3>⌄</span> </summary> <div class="xb-v21-evidence-links" data-astro-cid-ce2bgkb3>  <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>blog.google ↗</a><a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-carbon-now-available/" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>blog.google ↗</a><a href="https://blog.google/innovation-and-ai/technology/developers-tools/build-with-gemini-4-hydrogen/" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>blog.google ↗</a><a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>ai.google.dev ↗</a><a href="https://ai.google.dev/gemini-api/docs/models/gemini-4-hydrogen" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>ai.google.dev ↗</a><a href="https://ai.google.dev/gemini-api/docs/models/gemini-4-argon" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>ai.google.dev ↗</a><a href="https://ai.google.dev/gemini-api/docs/models/gemini-4-carbon" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>ai.google.dev ↗</a> </div> </details> <nav data-cluster-hub-link class="mb-6 text-[13px] font-semibold text-[var(--xb-blue)]" aria-label="工程专题" data-astro-cid-ce2bgkb3><a href="/ai/" data-astro-cid-ce2bgkb3>返回工程专题 →</a></nav> <details class="xb-v21-mobile-toc" data-astro-cid-ce2bgkb3> <summary data-astro-cid-ce2bgkb3>本文目录 <span aria-hidden="true" data-astro-cid-ce2bgkb3>⌄</span></summary> <nav aria-label="本文目录" data-astro-cid-ce2bgkb3><a href="#先区分两笔账gemini-推理与云语音不是同一项服务" data-astro-cid-ce2bgkb3>先区分两笔账：Gemini 推理与云语音不是同一项服务</a><a href="#我们已有多模型接入与-agent-工具但还没有-gemini-4-三模型自动路由实测" data-astro-cid-ce2bgkb3>我们已有多模型接入与 Agent 工具，但还没有 Gemini 4 三模型自动路由实测</a><a href="#iphone-13-的慢不是付费模型路由的依据" data-astro-cid-ce2bgkb3>iPhone 13 的慢，不是付费模型路由的依据</a><a href="#先纠正三种常见的选型误区" data-astro-cid-ce2bgkb3>先纠正三种常见的选型误区</a><a href="#把模型放回任务里三类工作用三种不同的分配策略" data-astro-cid-ce2bgkb3>把模型放回任务里：三类工作用三种不同的分配策略</a><a href="#场景一recalai-的引用回跳首先是确定性正确性问题" data-astro-cid-ce2bgkb3>场景一：RecalAI 的引用回跳，首先是确定性正确性问题</a><a href="#场景二lunest-的整夜播放恢复大模型不是第一道处理器" data-astro-cid-ce2bgkb3>场景二：Lunest 的整夜播放恢复，大模型不是第一道处理器</a><a href="#场景三xbstack-双语网站更新模型会写不等于可以发布" data-astro-cid-ce2bgkb3>场景三：XBSTACK 双语网站更新，模型会写不等于可以发布</a><a href="#模型路由要受五个约束而不是只看难度" data-astro-cid-ce2bgkb3>模型路由要受五个约束，而不是只看“难度”</a><a href="#每百万-token-更便宜为什么不代表每个成功任务更便宜" data-astro-cid-ce2bgkb3>“每百万 Token 更便宜”为什么不代表“每个成功任务更便宜”</a><a href="#跨模型接力真正危险的地方状态权限和重复副作用" data-astro-cid-ce2bgkb3>跨模型接力真正危险的地方：状态、权限和重复副作用</a><a href="#哪些证据才能支持hydrogen--carbon-路由更划算" data-astro-cid-ce2bgkb3>哪些证据才能支持“Hydrogen + Carbon 路由更划算”</a><a href="#结论路由优化的第一步可能是减少模型调用" data-astro-cid-ce2bgkb3>结论：路由优化的第一步可能是减少模型调用</a><a href="#这些工程案例对应哪两款产品" data-astro-cid-ce2bgkb3>这些工程案例对应哪两款产品</a><a href="#资料与证据边界" data-astro-cid-ce2bgkb3>资料与证据边界</a><a href="#如果不想付-api-费用还有怎样的工程路线" data-astro-cid-ce2bgkb3>如果不想付 API 费用，还有怎样的工程路线？</a></nav> </details> <nav class="mb-7 flex items-center justify-between gap-4 border-y border-[var(--xb-line)] py-3 text-[12px] text-[var(--xb-muted)]" aria-label="文章语言版本" data-astro-cid-ce2bgkb3> <span data-astro-cid-ce2bgkb3>当前 URL 为中文版本。</span> <a href="/en/ai/gemini-4-multimodel-routing-recalai-lunest/" hreflang="en" class="font-bold text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>Read this article in English →</a> </nav>  <div class="prose prose-tech markdown-content max-w-none" data-astro-cid-ce2bgkb3>  <p>Gemini 4 三模型怎么选？三个型号放在模型选择下拉框里，看起来只是“快、均衡、深度思考”的取舍；放到一个需要改源码、执行工具、恢复中断任务并承担实际隐私责任的 Agent 工作流里，问题就变成了：<strong>哪些操作值得多付费推理，哪些操作不应该交给模型，切换模型时怎样不丢状态，以及失败的调用由谁买单？</strong></p>
+<p>2026 年 11 月 12 日，Google 发布 Gemini 4 Hydrogen，定位更快的日常编码和 Agent 执行。Google 将 Argon 视为广泛软件工程与知识工作中的主要选择，将 Carbon 放在更复杂的多阶段和长时任务上。Google Antigravity 的 Orchestrator 还展示了在一次开发会话中动态分配 Hydrogen 和 Carbon 的路线。这是厂商公开的定位与产品结果，不是 XBSTACK 项目的任务成绩。<a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/" rel="nofollow noopener noreferrer" target="_blank">Google Hydrogen 官方公告</a> · <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-carbon-now-available/" rel="nofollow noopener noreferrer" target="_blank">Carbon 公告</a></p>
+<p>本文不讲如何填写 API Key 或调用 <code>generateContent</code>。我们以三个具有实际工程验收边界的场景分析模型路由：<strong>RecalAI 的精确引用与本地资料处理、Lunest 的整夜音频异常恢复、XBSTACK 中英文文章与网站部署质检</strong>。这些是可设计、可复核的真实项目任务，不意味着三个 Gemini 模型已经被接入应用或完成收费 API A/B 测试。</p>
+<h2 id="先区分两笔账gemini-推理与云语音不是同一项服务">先区分两笔账：Gemini 推理与云语音不是同一项服务</h2>
+<p>本篇比较的是<strong>收费或限额免费云端大模型在 Agent 工程里的任务分工</strong>。这不是“Google AI Edge 的付费语音版”。如果 RecalAI 需要将用户说话转成文字，优先判断设备本地 ASR 是否可用；只有用户明确选择云识别，才另外评估 <a href="https://cloud.google.com/speech-to-text/pricing" rel="nofollow noopener noreferrer" target="_blank">Google Cloud Speech-to-Text</a> 等按音频处理量计费的服务。需要合成语音时另行评估 <a href="https://cloud.google.com/text-to-speech/pricing" rel="nofollow noopener noreferrer" target="_blank">Google Cloud Text-to-Speech</a> 等按声音 SKU、字符或生成式 Token 计费的产品；Hydrogen、Argon、Carbon 的文本推理 Token 价格不能当作上述语音费用。</p>
+<p><strong>同一条 RecalAI 任务可以“本地 ASR → 本地检索 → 用户授权的 Gemini 推理 → 本地 TTS”</strong>，也可以全程本地。每个箭头都涉及独立的离线资格、数据出站选择和回退规则。Lunest 则更偏向端侧确定性控制，付费 Gemini 更适合辅助<em>开发阶段</em>的复杂调试，不是夜间整夜音频的默认推理器。关于两款 App 不花云 API 费的实现边界见<a href="/ai/free-local-ai-voice-agent-recalai-lunest/">免费离线语音与本地 Agent 的完整方案</a>；具体 SDK 机型与语言资格见<a href="/ai/offline-speech-recalai-lunest-engineering-decisions/">Google AI Edge 离线语音研究</a>。</p>
+<h2 id="我们已有多模型接入与-agent-工具但还没有-gemini-4-三模型自动路由实测">我们已有多模型接入与 Agent 工具，但还没有 Gemini 4 三模型自动路由实测</h2>
+<p>这里有一个很重要的“已实现”和“待升级”分界。RecalAI 并非缺少云模型接入：当前 Android 的 <code>CloudProviders</code> 实际支持 OpenAI、Anthropic、Gemini、Qwen、DeepSeek、Kimi、GLM、混元、Grok 和 OpenAI-compatible 接口；每个 Provider 保存独立的地址、模型 ID 和授权状态，发送私有问题与证据前需要明确的用户同意与 API Key。<strong>但仓库里的 Gemini 预设仍是 <code>gemini-2.5-flash</code>，不能把“已经支持 Gemini 供应商”写成“已经跑过 Hydrogen / Argon / Carbon 三模型”。</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>工程环节</th><th>现有项目代码中的能力</th><th>对 Gemini 4 的实际要求</th></tr></thead><tbody><tr><td>供应商选择</td><td>RecalAI 已有端侧 BYOK/多服务商配置，Android 云请求检查用户同意与凭证，iOS/macOS 有云模型选择与授权入口</td><td>需要核对三款 Gemini 4 的真实 API ID、资格、工具调用和错误码，不能仅更换显示名称</td></tr><tr><td>本地检索</td><td>iOS/macOS/Android 已有私有资料检索与引用链路；Android 的 <code>HybridSearchEngine</code> 和 MediaPipe/LiteRT Embedding 代码用于本地召回</td><td>Gemini 只接触经用户许可的最小证据集合，不接管本地资料库索引</td></tr><tr><td>Agent 可审计操作</td><td>iOS <code>PMAgentKnowledgeOperations</code> 定义权限、证据 ID、预览与审计；Android 已有元数据修改计划、人工确认、撤销；macOS 的整库总结有基于文档/问题指纹的持久检查点</td><td>评估路由时，应让模型提出计划，仍由当前应用的权限和确定性执行逻辑核准</td></tr><tr><td>Lunest 夜间音频</td><td>已有 AVAudioSession / AudioFocus 中断恢复、端侧声学事件、健康来源融合；服务端隐私契约不接收原始睡眠音频和私人报告</td><td>这不是把睡眠监测交给云端 Gemini 的理由；付费模型更适合授权的开发/排障任务</td></tr><tr><td>XBSTACK 站点运营</td><td>双语内容、构建质量门禁、引用、发布回执属于独立于模型的确定性工作</td><td>模型可建议内容修订，不能自行证明 URL 已部署或抓取成功</td></tr></tbody></table>
+<p>因此，“<strong>本地/现有 Provider 作为基本路线 → 遇到经授权且确实复杂的推理任务才评估 Gemini 4 升级</strong>”更贴近现在的产品事实。文章后面讨论的 Hydrogen/Argon/Carbon 分工是升级评估，不是已经上线的模型路由运行日志。若只需要不产生付费云 API 账单的具体做法，可转至<a href="/ai/free-local-ai-voice-agent-recalai-lunest/">免费方案中的实际端侧实现与本地 Agent 约束</a>；需要了解语音链路和设备差异，则看<a href="/ai/offline-speech-recalai-lunest-engineering-decisions/">Google AI Edge 与现有 Apple/Android 语音方案的区别</a>。</p>
+<h2 id="iphone-13-的慢不是付费模型路由的依据">iPhone 13 的慢，不是付费模型路由的依据</h2>
+<p>RecalAI 开发者反馈端侧语音识别基本准确、搜索可用，但 iPhone 13 响应偏慢；没有分段延迟日志能证实瓶颈属于 ASR、检索还是本地模型。<strong>模型路由只有在明确的复杂推理任务和用户授权下才值得评估</strong>，不能把“换用收费 Gemini”包装成已验证的性能修复。端侧性能定位详见<a href="/ai/free-local-ai-voice-agent-recalai-lunest/">免费本地 AI 方案与 iPhone 13 实际体验</a>。</p>
+<h2 id="先纠正三种常见的选型误区">先纠正三种常见的选型误区</h2>
+<p><img alt="Gemini 4 Hydrogen、Argon、Carbon 三款模型的候选用途与任务定位对照，不构成独立实测排名" loading="lazy" decoding="async" fetchpriority="auto" width="1600" height="900" src="/_astro/02-figure.4UOs-kTm_1a6hn8.webp" ></p>
+<p><em>图示：选择应取决于具体任务、权限和验收条件，不应只按模型大小排序。</em></p>
+<p><strong>第一，Hydrogen 不等于“只适合简单任务”。</strong> Google 的公告显示 Hydrogen 支持可配置的 Thinking Level，并报告某些综合基准上高努力配置具有很强的成绩。不同模型在不同任务分布上可能反超，不能把一个品牌里的命名顺序当成通用能力排名。对持续重复、可以自动验收的工作，快速模型的价值可能不仅是便宜，更是缩短“提出改动—运行验证—修复回归”的反馈周期。</p>
+<p><strong>第二，Carbon 与 Argon 的标准单价目前并不不同。</strong> Google Gemini API 官方价格表（核对日期：2026-11-17）如下：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>模型</th><th>Google 的任务定位</th><th align="right">标准输入价 / 百万 Token</th><th align="right">标准输出价 / 百万 Token</th></tr></thead><tbody><tr><td>Gemini 4 Hydrogen</td><td>高频编码、交互和 Agent 执行</td><td align="right">$1.50</td><td align="right">$7.50</td></tr><tr><td>Gemini 4 Argon</td><td>通用复杂工程与知识任务</td><td align="right"><strong>11 月 30 日前 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mtext>，</mtext><mn>12</mn><mtext>月</mtext><mn>1</mn><mtext>日起</mtext></mrow><annotation encoding="application/x-tex">2，12 月 1 日起 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">2</span><span class="mord cjk_fallback">，</span><span class="mord">12</span><span class="mord cjk_fallback">月</span><span class="mord">1</span><span class="mord cjk_fallback">日起</span></span></span></span>4</strong></td><td align="right"><strong>11 月 30 日前 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mtext>，</mtext><mn>12</mn><mtext>月</mtext><mn>1</mn><mtext>日起</mtext></mrow><annotation encoding="application/x-tex">10，12 月 1 日起 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">10</span><span class="mord cjk_fallback">，</span><span class="mord">12</span><span class="mord cjk_fallback">月</span><span class="mord">1</span><span class="mord cjk_fallback">日起</span></span></span></span>20</strong></td></tr><tr><td>Gemini 4 Carbon</td><td>复杂多步推理、长时 Agent、困难调试</td><td align="right"><strong>11 月 30 日前 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mtext>，</mtext><mn>12</mn><mtext>月</mtext><mn>1</mn><mtext>日起</mtext></mrow><annotation encoding="application/x-tex">2，12 月 1 日起 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">2</span><span class="mord cjk_fallback">，</span><span class="mord">12</span><span class="mord cjk_fallback">月</span><span class="mord">1</span><span class="mord cjk_fallback">日起</span></span></span></span>4</strong></td><td align="right"><strong>11 月 30 日前 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mtext>，</mtext><mn>12</mn><mtext>月</mtext><mn>1</mn><mtext>日起</mtext></mrow><annotation encoding="application/x-tex">10，12 月 1 日起 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">10</span><span class="mord cjk_fallback">，</span><span class="mord">12</span><span class="mord cjk_fallback">月</span><span class="mord">1</span><span class="mord cjk_fallback">日起</span></span></span></span>20</strong></td></tr></tbody></table>
+<p>以上均为标准 API 公告价，不等于 IDE 订阅额度；输出价格<strong>包含 thinking tokens</strong>，实际还可能涉及缓存、工具调用、额外检索、服务层级和汇率/税费。Carbon 的一次任务如果消耗了更多思考与重试 Token，即使与 Argon 每个 Token 标价相同，总成本依然可能更高。<a href="https://ai.google.dev/gemini-api/docs/pricing" rel="nofollow noopener noreferrer" target="_blank">Google 官方定价</a></p>
+<p><strong>关于免费层的补充：Hydrogen 与 Argon/Carbon 不同，Google 为 Hydrogen 提供有配额限制的免费 API 层。</strong> 正式生产的付费 Standard 价格如上表；Google 提示免费层内容可能用于改进其产品，因此不能用这项免费额度默认处理 RecalAI 的私人文档、Lunest 的睡眠录音等敏感数据。Argon 与 Carbon 的普通 API 目前没有免费层。免费试用适合公开或合成的工程 Fixture，但不等同于合规的长期生产免费服务。<a href="https://ai.google.dev/gemini-api/docs/pricing" rel="nofollow noopener noreferrer" target="_blank">Gemini API 官方价格与免费层条款</a></p>
+<p><strong>第三，模型路由不等于把一个聊天记录原样转交另一个模型。</strong> 工程上应迁移经过验证的任务目标、已授权工具、当前检查点、可重放的观察结果、已提交副作用与尚待确认动作，而不是假设新模型能直接理解前一模型的内部推理轨迹或隐藏状态。对会发邮件、修改文件、操作账号或写入数据的 Agent，这种差异可能直接造成重复执行。</p>
+<p>因此，真正的设计对象不是一张“模型跑分表”，而是带有<strong>权限、任务状态、费用和独立验收</strong>的执行系统。</p>
+<h2 id="把模型放回任务里三类工作用三种不同的分配策略">把模型放回任务里：三类工作用三种不同的分配策略</h2>
+<h3 id="场景一recalai-的引用回跳首先是确定性正确性问题">场景一：RecalAI 的引用回跳，首先是确定性正确性问题</h3>
+<p>在 RecalAI 的个人知识库中，用户可能问“把所有提到某项数据保留规定的文件总结一下，并逐条注明出处”。任务的关键不在于回答写得多流畅，而是能否完整找到相关材料、正确区别同名文件、把每条结论锚定到真实片段，以及在文件被修改后保持引用回跳一致。</p>
+<p>对这类工作，“Hydrogen 先读文档，Carbon 最后总结”并不天然更正确。更合理的是按照<strong>权限边界和可验证步骤</strong>拆分：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>阶段</th><th>哪些工作交给确定性程序</th><th>候选模型职责</th><th>验收依据</th></tr></thead><tbody><tr><td>本地导入与解析</td><td>文件类型、OCR、段落、时间戳、哈希和 FTS 索引</td><td>不调用云模型</td><td>原文件与 Chunk 可回溯</td></tr><tr><td>召回与候选排序</td><td>FTS/向量检索、RRF、来源过滤、去重</td><td>仅在明确需要时评估可选模型辅助</td><td>Recall、引用可用性与权限边界</td></tr><tr><td>证据选择与总结</td><td>白名单来源、证据 ID 校验、结构化输出验证</td><td>本地模型为默认；用户明确授权时才可选云模型</td><td>每条结论都有合法引用</td></tr><tr><td>失败复核</td><td>断言引用 ID、文件存在、引用偏移正确</td><td>对困难但获授权的推理可试 Argon/Carbon</td><td>错误引用率与人工验收</td></tr></tbody></table>
+<p><strong>本地私有数据不能成为“更强云模型”的默认输入。</strong> RecalAI 的长期产品约束是资料默认本地，用户可自行选择第三方云端模型并在设备端配置 API Key。即使选用 Gemini，路由器也必须先检查用户对该次任务的提供商、数据范围与外传选择；拒绝的情况下仅使用本地模型或明确失败提示，不能以“提高准确率”为由上传文档。这里是产品约束及建议的决策策略，<strong>不是已经运行的 Gemini API 路由功能</strong>。</p>
+<p>真实工程中，错误引用和隐私泄露不允许用较低平均 API 费用抵消。因此，模型判断最好发生在证据边界之后，而不是之前。</p>
+<h3 id="场景二lunest-的整夜播放恢复大模型不是第一道处理器">场景二：Lunest 的整夜播放恢复，大模型不是第一道处理器</h3>
+<p>Lunest 需要保证长时间音景播放、后台监测、来电中断与恢复。设想音频在第六小时被系统打断：播放器是否仍有可用缓冲、音频焦点是否已恢复、播放位置是否一致、会话是否已终止，都是应由客户端生命周期状态机和日志来回答的问题，<strong>不是应该把用户整夜声音发给 Carbon 让它猜的问题</strong>。</p>
+<p>模型路由在这里更适合<strong>开发与测试工作流</strong>，而非睡眠监测现场推理：先用固定的非敏感故障序列描述来复现问题；对普通编译失败与局部状态修复，使用 Hydrogen 等快速执行候选；当修复涉及跨端共享会话、重复播放、音频焦点竞争和安全回滚时，才考虑使用 Argon/Carbon 对设计作第二意见，再由独立测试确认。无论谁提出补丁，最终都由 iOS/Android 的真实播放器、系统中断模拟和连续真机测试验收。</p>
+<p>建议把修复任务定义为“完整复原一次中断且没有新增回归”，而不是“生成的代码看上去合理”。如果 Hydrogen 生成了补丁但恢复后播放进度丢失，它就是失败；如果 Carbon 给出一篇详细解释但不能通过同一组集成测试，也同样失败。<strong>模型越大不免除回归责任。</strong></p>
+<h3 id="场景三xbstack-双语网站更新模型会写不等于可以发布">场景三：XBSTACK 双语网站更新，模型会写不等于可以发布</h3>
+<p>XBSTACK 的文章和前端改动有一套明确边界：既有 URL 不轻易迁移、中文英文不能交叉引用图片、AEO/GEO 不能变成面对用户的伪装隐藏文字、Canonical 与 hreflang 要一致，发布必须先通过构建门禁，再核验公网版本和真实搜索提交回执。</p>
+<p>这类工作特别适合检验<strong>模型负责候选修改、工具负责独立证据</strong>的分工。一个合理的任务切分是：Hydrogen 等较快模型执行有限范围的正文检查、元数据建议或局部代码改动；Argon 复核关联影响、复杂兼容性或跨语言语义；仅在跨层设计互相冲突且证据不足时升级 Carbon；而 Astro check、双语审计、预发布门禁、构建后的 canonical/JSON-LD 检查、Git 差异与公网 HTTP 真实性，必须由确定性工具独立验证。</p>
+<p>如果一个较快模型两次修改都通过全部门禁，未必需要昂贵模型重做；如果三次重试仍不能解释 Schema 与正文的矛盾，应停止试错、归档失败差异并升级调查，而不是无上限烧 Token。这里描述的是<strong>建议的评估策略</strong>，并非已在 XBSTACK 上完成 Gemini 4 三模型对照。</p>
+<p><img alt="RecalAI 精确引用、Lunest 音频恢复及 XBSTACK 双语发布的三种工程职责对照" loading="lazy" decoding="async" fetchpriority="auto" width="1600" height="900" src="/_astro/04-figure.DW-9j9kS_ZDxPaa.webp" ></p>
+<p><em>图示：本地确定性校验优先，三个案例均未完成 Gemini 4 三模型自动路由实测。</em></p>
+<h2 id="模型路由要受五个约束而不是只看难度">模型路由要受五个约束，而不是只看“难度”</h2>
+<p><img alt="Agent 多模型路由的五项约束：数据授权、任务分类、工具权限、验收标准、预算和重试" loading="lazy" decoding="async" fetchpriority="auto" width="1600" height="900" src="/_astro/03-figure._bR4KNvG_Ti7PE.webp" ></p>
+<p><em>图示：涉及外部副作用的动作不应仅凭模型判断自动执行。</em></p>
+<p>一个用于真实项目的路由决策至少包含以下五维：</p>
+<ol>
+<li><strong>数据边界</strong>：资料是否含私人录音、用户文件、密钥或尚未公开的代码；是否存在用户对云服务的明确授权。未通过时直接选择本地路径或拒绝云调用。</li>
+<li><strong>任务可验证性</strong>：能否用固定 Fixture、单元测试、引用规则或系统日志确定成功。高可验证任务不一定需要更大的推理模型。</li>
+<li><strong>副作用等级</strong>：是否只是阅读/草拟，还是可能修改数据库、支付、删除文件、发布文章。副作用高时即便使用更强模型也必须预检权限、人工确认和幂等保护。</li>
+<li><strong>时间与资源预算</strong>：本次任务是 UI 交互秒级响应，还是允许较长时间的架构审查；是否设定 Token、重试和总费用上限。</li>
+<li><strong>升级触发器</strong>：只在诊断出证据不足、跨域歧义或多次可复现失败时升级到更重推理，而不是默认“所有失败先换 Carbon”。</li>
+</ol>
+<p>更具体地说，合理的候选顺序是 <strong>deterministic/local → Hydrogen → Argon → Carbon → human review</strong>；这是一条<strong>待验证的政策假设</strong>，不是固定的最佳组合。某些安全敏感、高复杂度任务可以从人工/规则审查开始，某些短任务也可能直接选 Argon。应用应该记录决策理由，允许对同一固定任务集回放和比较。</p>
+<h2 id="每百万-token-更便宜为什么不代表每个成功任务更便宜">“每百万 Token 更便宜”为什么不代表“每个成功任务更便宜”</h2>
+<p><img alt="AI Agent 成功任务成本的构成：输入、Thinking、输出、工具、重试、失败和人工复核" loading="lazy" decoding="async" fetchpriority="auto" width="1600" height="900" src="/_astro/05-figure._SbJYYO0_Z10bjUA.webp" ></p>
+<p><em>图示：单次 Token 单价低，并不保证通过验收的任务总费用更低。</em></p>
+<p>假设一个单轮候选调用确实消耗 <strong>100,000 输入 Token、20,000 输出 Token</strong>，只按官方标准单价、不考虑缓存和额外工具，2026 年 11 月 17 日的<strong>演算例子</strong>如下：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>模型</th><th align="right">输入费用</th><th align="right">输出费用</th><th align="right">合计</th></tr></thead><tbody><tr><td>Hydrogen</td><td align="right">0.10 × <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.50</mn><mo>=</mo></mrow><annotation encoding="application/x-tex">1.50 = </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.50</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span></span></span></span>0.15</td><td align="right">0.02 × <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>7.50</mn><mo>=</mo></mrow><annotation encoding="application/x-tex">7.50 = </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">7.50</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span></span></span></span>0.15</td><td align="right"><strong>$0.30</strong></td></tr><tr><td>Argon</td><td align="right">0.10 × <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2.00</mn><mo>=</mo></mrow><annotation encoding="application/x-tex">2.00 = </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2.00</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span></span></span></span>0.20</td><td align="right">0.02 × <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10.00</mn><mo>=</mo></mrow><annotation encoding="application/x-tex">10.00 = </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">10.00</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span></span></span></span>0.20</td><td align="right"><strong>$0.40</strong></td></tr><tr><td>Carbon</td><td align="right">0.10 × <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2.00</mn><mo>=</mo></mrow><annotation encoding="application/x-tex">2.00 = </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2.00</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span></span></span></span>0.20</td><td align="right">0.02 × <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10.00</mn><mo>=</mo></mrow><annotation encoding="application/x-tex">10.00 = </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">10.00</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span></span></span></span>0.20</td><td align="right"><strong>$0.40</strong></td></tr></tbody></table>
+<p>这只是<strong>相同 Token 假设下的价格算术，不是三款模型实际生成了相同输出长度、相同正确率或得到上述账单的证据</strong>。Carbon 与 Argon 的真正费用差异可能出现在任务使用的 thinking 和工具迭代数量。Google 还将 Carbon/Argon 标准价格在 2026 年 12 月 1 日从 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi mathvariant="normal">/</mi></mrow><annotation encoding="application/x-tex">2/</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">2/</span></span></span></span>10 调整为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mi mathvariant="normal">/</mi></mrow><annotation encoding="application/x-tex">4/</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">4/</span></span></span></span>20，不能把 11 月促销价当成永久定价。<a href="https://ai.google.dev/gemini-api/docs/pricing" rel="nofollow noopener noreferrer" target="_blank">官方价格表</a></p>
+<p>更适用于生产的指标是：</p>
+<p><strong>每个被验收的成功任务成本 = 所有执行、失败、重试、升级、验证与工具费用 ÷ 最终通过独立验收的任务数。</strong></p>
+<p>这一分母不能偷换成 API 返回 200 的次数。成功必须符合事先固定的验收标准。例如 30 个给定的文件引用任务，如果 25 个回答写得通顺，却只有 18 个引用正确，则合格的成功数应按照引用门禁计量，而不是把 25 当成功。数字 30/25/18 在这里仅为<strong>定义指标的假设示例</strong>，不是 XBSTACK 测试结果。</p>
+<p>进一步需要比较 <strong>单模型 Hydrogen、单模型 Argon、单模型 Carbon、按风险升级的路由政策</strong> 四组，并让它们使用相同任务、相同输入、相同工具权限、相同超时和相同人工审核标准。按模型名比较一次最好结果，不能支持路由策略优于单模型的判断。</p>
+<h2 id="跨模型接力真正危险的地方状态权限和重复副作用">跨模型接力真正危险的地方：状态、权限和重复副作用</h2>
+<p><img alt="跨模型工作流的检查点、幂等键、执行回执、用户确认与人工恢复规则" loading="lazy" decoding="async" fetchpriority="auto" width="1600" height="900" src="/_astro/06-figure.DtF1sKMa_Z1Ypypj.webp" ></p>
+<p><em>图示：无法确认外部工具是否执行成功时，应停止自动重试，避免重复副作用。</em></p>
+<p>最需要防范的不是“回退模型变笨”，而是<strong>回退前一个工具动作已经真实发生，后一个模型却再次执行它</strong>。例如 Agent 已创建草稿、写入文件或发送邮件，但原模型的响应在网络超时后丢失；如果系统只把“调用失败”交给另一模型，可能在没有确认提交状态前重复产生副作用。</p>
+<p>模型接力记录不应只是一段对话摘要，至少要有：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>检查点字段</th><th>目的</th></tr></thead><tbody><tr><td><code>task_id / input_digest</code></td><td>标识同一用户任务，避免重复接收</td></tr><tr><td><code>policy_version / consent_scope</code></td><td>固定当时的数据权限和工具白名单</td></tr><tr><td><code>provider / model / thinking_level</code></td><td>证明使用了哪个模型与推理等级</td></tr><tr><td><code>step_id / state / tool_result</code></td><td>区分未执行、执行中、已提交、待人工确认</td></tr><tr><td><code>idempotency_key / external_effect_receipt</code></td><td>在重试之前核验外部副作用是否已经生效</td></tr><tr><td><code>usage_tokens / tool_cost / retry_budget</code></td><td>支持真实成本与熔断</td></tr><tr><td><code>acceptance_evidence / human_override</code></td><td>区分模型自评和测试真实结果</td></tr></tbody></table>
+<p>跨模型交接时，只传递已经校验的可重放资料和必要任务状态；不依赖隐藏思考文本可在不同模型间互通。高风险工具操作必须确认提交结果，无法确认时<strong>停止并进入人工核查</strong>，不得把“请求超时”等价为“操作一定没发生”。</p>
+<p>RecalAI 的本地用户数据尤其需要严格隔离：即使用户开启 BYOK，也不代表每次后续调用都可以无限制把整库资料传给云模型。Lunest 的睡眠原始音频与私有报告也不该仅因为开发者正在评测云端模型就成为训练/测试材料。建议使用合成、公开或经过授权脱敏的 Fixture；不要在计费实验里上传真实个人资料。</p>
+<h2 id="哪些证据才能支持hydrogen--carbon-路由更划算">哪些证据才能支持“Hydrogen + Carbon 路由更划算”</h2>
+<p><img alt="Gemini 4 多模型路由固定任务 A/B 测试设计，包括引用校验、音频恢复、发布质量与成本" loading="lazy" decoding="async" fetchpriority="auto" width="1600" height="900" src="/_astro/07-figure.CxJclLzw_Z1G8Ux7.webp" ></p>
+<p><em>图示：图示为可复核的实验设计，不提供尚不存在的完成率或成本结果。</em></p>
+<p>Google 官方称其 Orchestrator 在某些软件工程基准中相较 Carbon 单独运行具有更低配额消耗和更快任务完成速度，这<strong>可以形成测试假设</strong>，但不能直接当成 Lunest、RecalAI 或 XBSTACK 的本地收益。Antigravity 产品内的 Orchestrator 也不能自动等同于开发者在 Gemini API 上已经拥有可直接复制的路由服务。<a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/" rel="nofollow noopener noreferrer" target="_blank">Google 模型公告</a></p>
+<p>对本站，建议使用不泄露私有数据的三类固定任务作为评估基准：</p>
+<ul>
+<li><strong>RecalAI 引用校验</strong>：合成文件集合含同名文件、版本冲突、否定词和精确锚点；比较正确引用、漏召回、越权引用和人工复核成本，而不只比较回答流畅度。</li>
+<li><strong>Lunest 中断恢复</strong>：脱敏状态序列涵盖来电、蓝牙切换、后台播放、重复开始、缓存损坏；以集成回归和真实设备播放是否稳定为依据。</li>
+<li><strong>XBSTACK 双语发布质量</strong>：固定一组含 Canonical/Hreflang、GEO/Schema 与旧 URL 保护的仓库变更；以测试、双语门禁和公网核对为验收，不拿模型说“成功”当证明。</li>
+</ul>
+<p>每组记录平均与尾部延迟、失败/重试、外部副作用、人工介入、输入/思考/输出 Token、实际 API 账单和成功任务成本。项目未执行这套 Gemini 三模型 A/B 前，<strong>不提供虚构的成功率、延迟、折省比例或“实测推荐排名”</strong>。</p>
+<h2 id="结论路由优化的第一步可能是减少模型调用">结论：路由优化的第一步可能是减少模型调用</h2>
+<p>在可信的 Agent 工作流中，最值得投资的不是“让所有步骤都由三种模型接力”，而是让确定性程序处理确定性问题、让本地数据始终拥有明确的隐私边界、让有风险的工具动作可核实且可停止。Hydrogen 可成为可验证高频任务的候选；Argon 可以承担较多通用审查；Carbon 可以留给长时复杂冲突。但<strong>这只是待固定任务数据验证的工程假设，不是厂家型号越大越安全的承诺</strong>。</p>
+<p>从 RecalAI 到 Lunest，再到网站发布：能够<strong>证明完成、知道失败、保留来源、控制费用且尊重用户数据</strong>，比一个漂亮的模型排行榜更接近值得上线的系统。</p>
+<h3 id="这些工程案例对应哪两款产品">这些工程案例对应哪两款产品</h3>
+<p>RecalAI 与 Lunest 均处于开发阶段，当前尚未在 App Store / Google Play 正式开放公开下载。你可以查看 RecalAI 的<a href="/products/recalia/">站内产品页（目前以 Recalia 命名）</a>及 <a href="/products/lunest/">Lunest 产品说明</a>了解定位和开发状态。本文的云模型路由是研究方案，<strong>并非两个 App 已部署 Gemini 4 三模型自动路由的产品公告</strong>。</p>
+<h3 id="资料与证据边界">资料与证据边界</h3>
+<ul>
+<li>Google，2026-11-12：<a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/" rel="nofollow noopener noreferrer" target="_blank">Introducing Gemini 4 Hydrogen</a>。</li>
+<li>Google，2026-11-10：<a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-carbon-now-available/" rel="nofollow noopener noreferrer" target="_blank">Gemini 4 Carbon is now available</a>。</li>
+<li>Google Developers：<a href="https://blog.google/innovation-and-ai/technology/developers-tools/build-with-gemini-4-hydrogen/" rel="nofollow noopener noreferrer" target="_blank">Gemini 4 Hydrogen for developers</a>。</li>
+<li>Google Gemini API：<a href="https://ai.google.dev/gemini-api/docs/pricing" rel="nofollow noopener noreferrer" target="_blank">官方定价</a>与各模型 API 规格。上述测试任务、价格算术与架构建议<strong>均未被冒充为实际 Gemini API 实测</strong>。</li>
+<li>XBSTACK 已有 <a href="/ai/gemini-4-argon-api-pricing-evaluation-plan/">Gemini 4 Argon API 定价与评估方案</a> 解决单模型能力和迁移问题；本篇解决“多模型如何在真实工程任务间分工、控制隐私和完成成本”的独立问题。</li>
+</ul>
+<h3 id="如果不想付-api-费用还有怎样的工程路线">如果不想付 API 费用，还有怎样的工程路线？</h3>
+<p>收费模型路由并非任何 App 的必经路线。对于需要默认本地运行的 RecalAI、Lunest，<a href="/ai/free-local-ai-voice-agent-recalai-lunest/">免费离线语音与本地 AI Agent 的独立研究</a>比较了 Apple Speech、Android ML Kit、MediaPipe/LiteRT、llama.cpp 与有限免费云 API：它解决的是“哪些工作能不产生云 API 账单，并且仍然守住设备内存和隐私”，不是重新比较三款 Gemini 的跑分。有关语音专门的 SDK/机型资格和失败回退，再看<a href="/ai/offline-speech-recalai-lunest-engineering-decisions/">Google AI Edge 离线语音与 TTS 的工程边界</a>。</p>  <aside class="mt-12 rounded-2xl border border-slate-200 bg-slate-50/70 px-5 py-4 not-prose dark:border-white/10 dark:bg-white/[0.025]"> <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"> <div><p class="text-sm font-black text-slate-900 dark:text-white">讨论这个问题</p><p class="mt-1 text-xs leading-6 text-slate-500 dark:text-slate-400">有不同的复现结果、版本变化或补充证据？欢迎继续讨论。</p></div> <a href="#discussion" class="shrink-0 text-xs font-black text-blue-600 dark:text-blue-400">发表观点或复现 →</a> </div> </aside> </div> <section class="mt-14 border-t border-[var(--xb-line)] pt-7" data-related-reading data-analytics-area="related_content" data-related-slot="article_end" data-astro-cid-ce2bgkb3> <div class="mb-2 flex items-center justify-between gap-4" data-astro-cid-ce2bgkb3><h2 class="m-0 text-[17px] font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3>下一步：继续搭建 Agent 系统</h2><a href="/ai/" class="text-[12px] font-bold text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>完整专题路径 →</a></div> <p class="mb-4 max-w-3xl text-[12px] leading-5 text-[var(--xb-muted)]" data-astro-cid-ce2bgkb3>沿着架构、工具、Memory、评测、安全或生产治理继续推进，不必重新从头找资料。</p> <div class="xb-article-related" data-astro-cid-ce2bgkb3><a href="/ai/chatgpt-account-suspended-appeal-data-export/" data-related-link data-related-reason="补齐权限与安全边界" data-astro-cid-ce2bgkb3><span class="mb-1 block text-[12px] font-extrabold uppercase tracking-[0.08em] text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>补齐权限与安全边界</span><span class="font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3>ChatGPT 账号被停用怎么办？24 小时暂停、申诉与数据导出</span><span class="mt-1 block line-clamp-2 text-[12px] text-[var(--xb-faint)]" data-astro-cid-ce2bgkb3>ChatGPT 无法登录不一定是永久封号。本文区分普通登录异常、可疑登录限制、24 小时安全暂停和永久停用，并说明官方申诉、数据导出及订阅核对方法。</span></a><a href="/ai/ai-industry-trends-2027-2028/" data-related-link data-related-reason="补齐权限与安全边界" data-astro-cid-ce2bgkb3><span class="mb-1 block text-[12px] font-extrabold uppercase tracking-[0.08em] text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>补齐权限与安全边界</span><span class="font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3>2027—2028 AI 产业趋势：云端 Agent、端侧 AI、小模型与隐私安全</span><span class="mt-1 block line-clamp-2 text-[12px] text-[var(--xb-faint)]" data-astro-cid-ce2bgkb3>面向 2027—2028 年的 AI 产业研究：分析云端 Agent 持续执行、端侧 AI 与小模型协同、多模态检索、隐私和数据主权、可信工具调用、算力供给、推理经济学及商业化前景，给出依据、选型建议与可验证的未来情景。</span></a><a href="/ai/recalai-hybrid-retrieval/" data-related-link data-related-reason="继续处理状态与记忆" data-astro-cid-ce2bgkb3><span class="mb-1 block text-[12px] font-extrabold uppercase tracking-[0.08em] text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>继续处理状态与记忆</span><span class="font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3>为什么只靠向量搜索，做不好个人 AI 知识库？——RecalAI 混合检索工程实践</span><span class="mt-1 block line-clamp-2 text-[12px] text-[var(--xb-faint)]" data-astro-cid-ce2bgkb3>从 RecalAI iOS 真实源码拆解本地 RAG：精确与语义召回、加权 RRF、轻量规则重排、证据预算和引用校验，解释导入后仍找不到答案的原因。</span></a></div> </section> </article> <section id="discussion" class="xb-article-comments scroll-mt-28" data-astro-cid-ce2bgkb3> <div class="mb-5 flex items-center gap-3 text-[11px] font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3><span data-astro-cid-ce2bgkb3>评论与补充证据</span><span class="h-px flex-1 bg-[var(--xb-line)]" data-astro-cid-ce2bgkb3></span></div> <section class="xbstack-comments" data-xbstack-waline data-server-url="https://comments.xbstack.com" data-comment-path="/ai/gemini-4-multimodel-routing-recalai-lunest/" data-comment-lang="zh-CN" data-comment-mode="evidence" aria-labelledby="xbstack-comments-title"> <div class="xbstack-comments__header"> <div> <p class="xbstack-comments__eyebrow">参与讨论</p> <h2 id="xbstack-comments-title"> 问题、验证与勘误 </h2> <p class="xbstack-comments__description"> 登录后可发表评论。所有新评论先进入审核；审核期间仅评论者本人和管理员可见，通过后才公开。 </p> </div> <div class="xbstack-comments__policy" aria-label="评论规则"> <span>登录评论</span> <span>审核后公开</span> </div> </div> <div class="xbstack-comments__status" data-waline-status role="status" aria-live="polite"> <span class="xbstack-comments__spinner" aria-hidden="true"></span> <span>正在加载评论区…</span> </div> <div id="waline" class="xbstack-comments__mount" data-waline-mount></div> <noscript> <p class="xbstack-comments__noscript"> 评论区需要启用 JavaScript 才能查看和发布评论。 </p> </noscript> </section>  </section> </main> <aside class="xb-article-side xb-article-v21-side" aria-label="文章导航" data-astro-cid-ce2bgkb3> <section class="xb-article-panel" data-astro-cid-ce2bgkb3> <h2 class="xb-article-panel__title" data-astro-cid-ce2bgkb3>本文目录</h2> <nav class="xb-v21-toc" aria-label="本文目录" data-astro-cid-ce2bgkb3> <a href="#先区分两笔账gemini-推理与云语音不是同一项服务" data-astro-cid-ce2bgkb3>先区分两笔账：Gemini 推理与云语音不是同一项服务</a><a href="#我们已有多模型接入与-agent-工具但还没有-gemini-4-三模型自动路由实测" data-astro-cid-ce2bgkb3>我们已有多模型接入与 Agent 工具，但还没有 Gemini 4 三模型自动路由实测</a><a href="#iphone-13-的慢不是付费模型路由的依据" data-astro-cid-ce2bgkb3>iPhone 13 的慢，不是付费模型路由的依据</a><a href="#先纠正三种常见的选型误区" data-astro-cid-ce2bgkb3>先纠正三种常见的选型误区</a><a href="#把模型放回任务里三类工作用三种不同的分配策略" data-astro-cid-ce2bgkb3>把模型放回任务里：三类工作用三种不同的分配策略</a><a href="#场景一recalai-的引用回跳首先是确定性正确性问题" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>场景一：RecalAI 的引用回跳，首先是确定性正确性问题</a><a href="#场景二lunest-的整夜播放恢复大模型不是第一道处理器" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>场景二：Lunest 的整夜播放恢复，大模型不是第一道处理器</a><a href="#场景三xbstack-双语网站更新模型会写不等于可以发布" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>场景三：XBSTACK 双语网站更新，模型会写不等于可以发布</a><a href="#模型路由要受五个约束而不是只看难度" data-astro-cid-ce2bgkb3>模型路由要受五个约束，而不是只看“难度”</a><a href="#每百万-token-更便宜为什么不代表每个成功任务更便宜" data-astro-cid-ce2bgkb3>“每百万 Token 更便宜”为什么不代表“每个成功任务更便宜”</a><a href="#跨模型接力真正危险的地方状态权限和重复副作用" data-astro-cid-ce2bgkb3>跨模型接力真正危险的地方：状态、权限和重复副作用</a><a href="#哪些证据才能支持hydrogen--carbon-路由更划算" data-astro-cid-ce2bgkb3>哪些证据才能支持“Hydrogen + Carbon 路由更划算”</a><a href="#结论路由优化的第一步可能是减少模型调用" data-astro-cid-ce2bgkb3>结论：路由优化的第一步可能是减少模型调用</a><a href="#这些工程案例对应哪两款产品" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>这些工程案例对应哪两款产品</a><a href="#资料与证据边界" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>资料与证据边界</a><a href="#如果不想付-api-费用还有怎样的工程路线" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>如果不想付 API 费用，还有怎样的工程路线？</a> </nav> </section> <section class="xb-article-panel" data-astro-cid-ce2bgkb3> <h2 class="xb-article-panel__title" data-astro-cid-ce2bgkb3>文章工具</h2> <div class="xb-v21-toc" data-astro-cid-ce2bgkb3> <button type="button" data-copy-article data-astro-cid-ce2bgkb3><span data-astro-cid-ce2bgkb3>复制链接</span><span aria-hidden="true" data-astro-cid-ce2bgkb3>↗</span></button> <a href="/ai/" data-astro-cid-ce2bgkb3>返回专题 →</a> </div> </section> </aside> </div>  <script>
+  const bindArticleTools=()=>{document.querySelectorAll('[data-copy-article]').forEach((button)=>{if(button.dataset.ready)return;button.dataset.ready='1';button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(window.location.href);const original=button.querySelector('span')?.textContent;if(button.querySelector('span'))button.querySelector('span').textContent='已复制';setTimeout(()=>{if(button.querySelector('span'))button.querySelector('span').textContent=original||'复制链接'},1200)}catch{}})})};
+  const trackRelatedContentView=(section)=>{if(!section||section.dataset.viewTracked||!window.__ga4_human_verified||typeof window.xbTrackEvent!=='function')return false;section.dataset.viewTracked='1';window.xbTrackEvent('related_content_view',{event_category:'engagement',link_area:'related_content',link_position:section.getAttribute('data-related-slot')||'unknown',source_page_path:window.location.pathname});return true};
+  const bindRelatedContentViews=()=>{document.querySelectorAll('[data-analytics-area="related_content"]').forEach((section)=>{if(section.dataset.viewObserverReady)return;section.dataset.viewObserverReady='1';const observer=new IntersectionObserver((entries)=>{entries.forEach((entry)=>{if(!entry.isIntersecting||entry.intersectionRatio<0.35||section.dataset.viewTracked)return;if(trackRelatedContentView(section))observer.disconnect()})},{threshold:[0.35]});observer.observe(section)})};
+  const retryVisibleRelatedContentViews=()=>{document.querySelectorAll('[data-analytics-area="related_content"]').forEach((section)=>{if(section.dataset.viewTracked)return;const rect=section.getBoundingClientRect();const viewportHeight=window.innerHeight||document.documentElement.clientHeight;if(rect.bottom<=0||rect.top>=viewportHeight)return;const visible=Math.min(rect.bottom,viewportHeight)-Math.max(rect.top,0);if(visible/Math.max(rect.height,1)>=0.35)trackRelatedContentView(section)})};
+  const bindArticlePageTools=()=>{bindArticleTools();bindRelatedContentViews();retryVisibleRelatedContentViews()};document.addEventListener('astro:page-load',bindArticlePageTools);window.addEventListener('xb:ga4-human-verified',retryVisibleRelatedContentViews);bindArticlePageTools();
+</script> </main> <script>
+    function initProgress() {
+      const progressBar = document.getElementById('reading-progress');
+      if (!progressBar) return;
+      window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = scrolled + "%";
+      });
+    }
+    document.addEventListener('astro:page-load', initProgress);
+    initProgress();
+  </script>  </main> <footer class="xb-v21-footer mt-12 border-t border-[var(--xb-line)] bg-[var(--xb-surface)]"> <div class="xb-shell py-10 md:py-12"> <div class="grid gap-10 lg:grid-cols-[minmax(260px,0.9fr)_minmax(0,1.6fr)] lg:gap-16"> <div class="max-w-[430px]"> <a href="/" class="inline-flex items-center gap-2.5 font-black tracking-[-0.035em] text-[var(--xb-ink)]"> <span class="xb-brand-logo" data-xbstack-logo-motion="view" aria-hidden="true"> <span class="xb-brand-logo__variant inline-flex dark:hidden"> <img src="/favicon/logo-light-nav.svg" alt="" width="32" height="32" loading="lazy" decoding="async"> <span class="xb-brand-logo__shine" style="--xb-logo-mask: url(&#34;/favicon/logo-light-nav.svg&#34;)"></span> </span> <span class="xb-brand-logo__variant hidden dark:inline-flex"> <img src="/favicon/logo-dark-nav.svg" alt="" width="32" height="32" loading="lazy" decoding="async"> <span class="xb-brand-logo__shine" style="--xb-logo-mask: url(&#34;/favicon/logo-dark-nav.svg&#34;)"></span> </span> </span> <span class="text-[17px]">XBSTACK</span> </a> <p class="mt-5 text-[18px] font-bold leading-7 tracking-[-0.02em] text-[var(--xb-ink)]"> 在高处看世界，在底层堆资产。 </p> <p class="mt-3 text-[12px] leading-6 text-[var(--xb-muted)]"> 工程实践、可用产品、投资与阅读记录，以及旅行和户外现场。 </p> </div> <nav class="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-4" aria-label="页脚导航"> <div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">主题</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/ai/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">AI</a><a href="/products/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Products</a><a href="/horizon/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Insights</a><a href="/life/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Lens</a><a href="/about/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">About</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">AI 工程</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/ai/agent/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Agents</a><a href="/ai/mcp/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">MCP</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">资源</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/search/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">搜索</a><a href="/archive/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">归档</a><a href="/newsletter/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Newsletter</a><a href="/rss.xml" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">RSS</a><a href="/friends/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">朋友与独立站</a><a href="https://github.com/xbstack" target="_blank" rel="noopener noreferrer" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">GitHub：@xbstack</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">联系</h2> <div class="flex flex-col items-start gap-2.5"> <a href="mailto:xbstack@163.com" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">邮箱：xbstack@163.com</a><a href="/wechat/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 wechat-trigger" data-wechat-qr="/assets/qrcode_guizhou_outdoor.png">微信公众号：贵州户外</a><a href="/contact/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">商务合作</a> </div> </div> </nav> </div> <div class="mt-9 flex flex-col gap-3 border-t border-[var(--xb-line)] pt-5 sm:flex-row sm:items-center sm:justify-between"> <div class="text-[10px] text-[var(--xb-faint)]">© 2026 XBSTACK. All rights reserved.</div> <div class="flex flex-wrap gap-x-4 gap-y-2"> <a href="/privacy/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">隐私政策</a><a href="/tos/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">服务条款</a><a href="/disclosure/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">免责声明</a><a href="/advertising/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">广告政策</a><a href="/cookies/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">Cookie 政策</a> </div> </div> <div class="mt-4 text-center text-[11px] leading-6 text-[var(--xb-faint)]"> <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--xb-ink)]">黔ICP备2026019006号-1</a> </div> </div> </footer> <!-- 桌面悬停卡：由全局脚本定位到当前公众号入口附近 --><div id="wechat-hover-card" class="fixed z-[9998] hidden w-[390px] pointer-events-none opacity-0 translate-y-2 transition-all duration-200" aria-hidden="true"> <div class="rounded-[30px] border border-white/15 bg-[#0d1728]/95 p-6 text-white shadow-[0_28px_80px_rgba(2,6,23,0.48)] backdrop-blur-2xl"> <div class="text-[10px] font-black uppercase tracking-[0.34em] text-orange-400">XBSTACK 微信公众号</div> <div class="mt-2 text-[24px] font-black tracking-tight">关注内容更新</div> <div class="mt-1 text-[12px] font-bold tracking-[0.12em] text-slate-400">AI 工程 · 产品构建 · 户外实践</div> <div class="mt-5 grid grid-cols-[148px_1fr] items-center gap-5"> <img id="wechat-hover-qr" data-src="/assets/qrcode_guizhou_outdoor.png" loading="lazy" decoding="async" width="360" height="360" alt="微信公众号贵州户外二维码" class="block aspect-square w-full object-contain"> <div class="space-y-3 text-[13px] font-bold leading-relaxed text-slate-300"> <p>贵州徒步与路线实测</p> <p>AI 工具与独立产品</p> <p>投资体系与长期复盘</p> </div> </div> <div class="mt-5 border-t border-white/10 pt-4 text-center text-[12px] font-black text-slate-300"> 点击查看完整名片 </div> </div> </div> <!-- 全局点击弹窗 --> <div id="wechat-modal" class="fixed inset-0 z-[10000] hidden items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="wechat-modal-title" aria-hidden="true"> <button id="wechat-modal-backdrop" type="button" aria-label="关闭微信公众号弹窗" class="absolute inset-0 cursor-default bg-slate-950/86 backdrop-blur-xl"></button> <div id="wechat-modal-content" class="relative max-h-[94vh] w-full max-w-[620px] scale-95 overflow-y-auto rounded-[38px] border border-slate-500/45 bg-[#0d1728] text-white opacity-0 shadow-[0_40px_140px_rgba(0,0,0,0.68)] transition-all duration-300 sm:rounded-[50px]"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"> <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px]"></div> <div class="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-orange-500/10 blur-[80px]"></div> </div> <button id="wechat-modal-close" type="button" aria-label="关闭微信公众号弹窗" class="absolute right-5 top-5 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 transition hover:bg-white/10 hover:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg> </button> <div class="relative z-10 px-6 pb-6 pt-10 sm:px-10 sm:pb-9 sm:pt-12"> <header class="text-center"> <div class="text-[10px] font-black uppercase tracking-[0.44em] text-orange-400 sm:text-xs">XBSTACK 微信公众号</div> <h2 id="wechat-modal-title" class="mt-4 text-3xl font-black tracking-tight text-white sm:text-[38px]" style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;">关注内容更新</h2> <p class="mt-3 text-sm font-bold tracking-[0.16em] text-slate-400 sm:text-base">AI 工程 · 产品构建 · 户外实践</p> </header> <div class="mt-8 grid items-center gap-7 sm:grid-cols-[210px_1fr] sm:gap-8"> <img id="wechat-modal-qr" data-src="/assets/qrcode_guizhou_outdoor.png" loading="lazy" decoding="async" width="360" height="360" alt="微信公众号贵州户外二维码" class="mx-auto block aspect-square w-full max-w-[210px] object-contain sm:max-w-none"> <div class="divide-y divide-white/10"> <div class="grid grid-cols-[38px_1fr] gap-3 py-3 first:pt-0"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M634.92 462.7l-288-448C341.03 5.54 330.89 0 320 0s-21.03 5.54-26.92 14.7l-288 448a32.001 32.001 0 0 0-1.17 32.64A32.004 32.004 0 0 0 32 512h576c11.71 0 22.48-6.39 28.09-16.67a31.983 31.983 0 0 0-1.17-32.63zM320 91.18L405.39 224H320l-64 64-38.06-38.06L320 91.18z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">户外徒步 · 贵州路线实探与分享</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">记录每一次出发，提供真实路况、补给、风险和下撤信息。</p> </div> </div> <div class="grid grid-cols-[38px_1fr] gap-3 py-3"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M278.9 511.5l-61-17.7c-6.4-1.8-10-8.5-8.2-14.9L346.2 8.7c1.8-6.4 8.5-10 14.9-8.2l61 17.7c6.4 1.8 10 8.5 8.2 14.9L293.8 503.3c-1.9 6.4-8.5 10.1-14.9 8.2zm-114-112.2l43.5-46.4c4.6-4.9 4.3-12.7-.8-17.2L117 256l90.6-79.7c5.1-4.5 5.5-12.3.8-17.2l-43.5-46.4c-4.5-4.8-12.1-5.1-17-.5L3.8 247.2c-5.1 4.7-5.1 12.8 0 17.5l144.1 135.1c4.9 4.6 12.5 4.4 17-.5zm327.2.6l144.1-135.1c5.1-4.7 5.1-12.8 0-17.5L492.1 112.1c-4.8-4.5-12.4-4.3-17 .5L431.6 159c-4.6 4.9-4.3 12.7.8 17.2L523 256l-90.6 79.7c-5.1 4.5-5.5 12.3-.8 17.2l43.5 46.4c4.5 4.9 12.1 5.1 17 .6z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">独立开发 · AI、工具与产品实战</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">从真实需求到上线复盘，持续构建可长期积累的数字产品。</p> </div> </div> <div class="grid grid-cols-[38px_1fr] gap-3 py-3 last:pb-0"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16zM464 96H345.94c-21.38 0-32.09 25.85-16.97 40.97l32.4 32.4L288 242.75l-73.37-73.37c-12.5-12.5-32.76-12.5-45.25 0l-68.69 68.69c-6.25 6.25-6.25 16.38 0 22.63l22.62 22.62c6.25 6.25 16.38 6.25 22.63 0L192 237.25l73.37 73.37c12.5 12.5 32.76 12.5 45.25 0l96-96 32.4 32.4c15.12 15.12 40.97 4.41 40.97-16.97V112c.01-8.84-7.15-16-15.99-16z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">投资思考 · 复利、风险与长期主义</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">分享投资体系、市场观察和个人决策复盘，不构成投资建议。</p> </div> </div> </div> </div> <div class="mt-6 text-center text-sm font-black leading-relaxed text-slate-300"> 扫码关注微信公众号 <span class="text-orange-400">“贵州户外”</span> <p class="mt-1 text-xs font-bold text-slate-500">获取户外路线、独立开发与投资复盘的最新内容</p> </div> <button id="wechat-modal-confirm" type="button" class="mt-7 w-full rounded-[24px] bg-white px-6 py-4 text-sm font-black tracking-[0.12em] text-slate-950 shadow-xl transition hover:-translate-y-0.5 hover:bg-slate-100 active:translate-y-0"> 知道了 / CLOSE </button> </div> </div> </div> <script type="module">const b="/assets/qrcode_guizhou_outdoor.png";function f(){const t=document.getElementById("wechat-modal"),y=document.getElementById("wechat-modal-backdrop"),d=document.getElementById("wechat-modal-content"),u=document.getElementById("wechat-modal-close"),E=document.getElementById("wechat-modal-confirm"),c=document.getElementById("wechat-modal-qr"),o=document.getElementById("wechat-hover-card"),i=document.getElementById("wechat-hover-qr");if(!t||!d||!o)return;let l=0;const p=window.matchMedia("(hover: hover) and (pointer: fine)"),w=e=>{const n=e.dataset.wechatQr||b;c&&c.src!==new URL(n,window.location.href).href&&(c.src=n),i&&i.src!==new URL(n,window.location.href).href&&(i.src=n)},s=()=>{window.clearTimeout(l),o.classList.add("opacity-0","translate-y-2"),l=window.setTimeout(()=>o.classList.add("hidden"),180)},v=e=>{if(!p.matches||!t.classList.contains("hidden"))return;window.clearTimeout(l),w(e),o.classList.remove("hidden");const n=e.getBoundingClientRect(),L=390,B=310,r=12;let m=n.left+n.width/2-L/2;m=Math.max(r,Math.min(m,window.innerWidth-L-r));let h=n.top-B-12;h<r&&(h=n.bottom+12),o.style.left=`${m}px`,o.style.top=`${h}px`,requestAnimationFrame(()=>o.classList.remove("opacity-0","translate-y-2"))},I=e=>{s(),w(e),t.classList.remove("hidden"),t.classList.add("flex"),t.setAttribute("aria-hidden","false"),document.body.style.overflow="hidden",requestAnimationFrame(()=>{d.classList.remove("scale-95","opacity-0"),d.classList.add("scale-100","opacity-100"),u?.focus()})},a=()=>{d.classList.remove("scale-100","opacity-100"),d.classList.add("scale-95","opacity-0"),window.setTimeout(()=>{t.classList.add("hidden"),t.classList.remove("flex"),t.setAttribute("aria-hidden","true"),document.body.style.overflow=""},260)};document.querySelectorAll(".wechat-trigger").forEach(e=>{e.dataset.wechatInitialized!=="true"&&(e.dataset.wechatInitialized="true",e.addEventListener("mouseenter",()=>v(e)),e.addEventListener("mouseleave",s),e.addEventListener("focus",()=>v(e)),e.addEventListener("blur",s),e.addEventListener("click",n=>{n.preventDefault(),I(e)}))}),t.dataset.wechatInitialized!=="true"&&(t.dataset.wechatInitialized="true",u?.addEventListener("click",a),E?.addEventListener("click",a),y?.addEventListener("click",a),document.addEventListener("keydown",e=>{e.key==="Escape"&&!t.classList.contains("hidden")&&a()}),window.addEventListener("scroll",s,{passive:!0}),window.addEventListener("resize",s))}f();document.addEventListener("astro:page-load",f);</script> <script>
+      const showLanguageSwitchNotice = () => {
+        let payload = null;
+        try {
+          const raw = sessionStorage.getItem('xbstack_language_notice');
+          if (!raw) return;
+          payload = JSON.parse(raw);
+          sessionStorage.removeItem('xbstack_language_notice');
+        } catch (error) {
+          return;
+        }
+
+        const notice = document.getElementById('language-switch-notice');
+        if (!notice) return;
+
+        const targetIsEnglish = String(payload?.language || '').toLowerCase().startsWith('en');
+        notice.textContent = targetIsEnglish
+          ? 'This page does not have an English version yet. You have been taken to the English home page.'
+          : '当前页面暂未提供中文版本，已为你打开中文首页。';
+        notice.classList.remove('hidden');
+        window.setTimeout(() => notice.classList.add('hidden'), 4800);
+      };
+
+      document.addEventListener('astro:page-load', showLanguageSwitchNotice);
+      showLanguageSwitchNotice();
+    </script> </body> </html>

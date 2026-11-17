@@ -1018,6 +1018,7 @@ const analyticsRequiresHumanInteraction = false;
 <p>建议按以下约束选择证据：优先当前知识范围中可访问、解析成功的片段；保留 <code>source_id</code>、<code>chunk_id</code>、页码或定位信息；控制重复与单文档过度占比；必要时包含相互矛盾的片段，而非只选“最像答案”的一个；按模型上下文和设备内存设置 Token Budget。</p>
 <p>引用校验也不能只看模型有没有输出“[1]”。每个引用至少应对应当前检索结果中真实存在的源片段，并且指向用户仍有权限访问的文件。引用的存在只证明<strong>来源可追踪</strong>，不自动证明模型对该来源的推理正确。涉及事实一致性时还需独立核对答案与片段是否相符。</p>
 <p>以现有 <a href="/products/recalia/">RecalAI 产品页</a> 为下一步，读者可以看到本地优先、来源引用以及当前尚未开放商店下载的真实状态；这里不应放“立即下载”的虚假 CTA。</p>
+<p>对于正在探索语音输入的读者，另见<a href="/ai/offline-speech-recalai-lunest-engineering-decisions/">Google AI Edge 离线语音与现有 RecalAI 系统 ASR 的差异</a>；如果更关心 iPhone 13 上不增加付费 API 的检索与生成性能，见<a href="/ai/free-local-ai-voice-agent-recalai-lunest/">免费端侧语音与本地 Agent 方案</a>。这两篇讨论的语音、成本和设备问题不同于本文的 RRF/证据召回主题。</p>
 <h2 id="第五关iphone-13-与高内存设备为什么不应强制跑同一个配置">第五关：iPhone 13 与高内存设备，为什么不应强制跑同一个配置</h2>
 <p>端侧检索和生成的瓶颈不只是模型文件体积。导入任务、SQLite/FTS 查询、Embedding、Rerank、推理上下文、图片预览与界面渲染，会竞争有限的内存、CPU/GPU 时间和电量。较低内存设备更需要限制并发、检索候选数与上下文预算；较高配置设备可以评估更大的模型或更多候选，但不代表任何时候都更准确。</p>
 <p>更稳妥的设计是把<strong>候选召回、证据筛选、生成预算和模型选择</strong>分离，以设备能力和当前负载动态调整。设备内存告警时，优先保障资料原件、索引一致性与用户可见进度，而不是为了继续后台增强牺牲前台稳定性。</p>
