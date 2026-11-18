@@ -415,12 +415,10 @@ const analyticsRequiresHumanInteraction = true;
                     event_label: window.location.pathname,
                     newsletter_provider: provider,
                   });
-                  window.xbTrackEvent('newsletter_subscribe', {
-                    event_category: 'conversion',
-                    event_label: 'submitted',
-                    newsletter_provider: provider,
-                    confirmation_status: 'submitted',
-                  });
+                  // The form posts to an external provider. A submit event does not
+                  // establish provider acceptance or email double opt-in.
+                  // Keep conversion success unreported until a verifiable
+                  // provider callback/webhook confirms it.
                 }
               };
 
