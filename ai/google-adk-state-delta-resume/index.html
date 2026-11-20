@@ -1170,6 +1170,10 @@ legacy     applied=True state={'resumed_key': 'resumed_value'}
 <p>不是。本文只验证它在本地 2.6.2、InMemorySessionService、Node/legacy 两条实验路径中有效。它更适合作为理解底层状态机制和临时绕过的参考。</p>
 <h3 id="这个-bug-与模型有关吗">这个 Bug 与模型有关吗？</h3>
 <p>我的复现不使用外部模型 API，Node 路径使用离线 Echo stub，legacy 路径甚至不依赖 LLM，因此这次失败边界不需要通过 Gemini、OpenAI 或 LiteLLM 才能触发。</p>
+<h2 id="2026-11-20adk-并行-grounding-元数据与-live-1008-恢复">2026-11-20：ADK 并行 Grounding 元数据与 Live 1008 恢复</h2>
+<p><a href="https://github.com/google/adk-python/issues/8205" rel="nofollow noopener noreferrer" target="_blank">Google ADK #8205</a> 报告：grounding 工具与其他工具并行执行时，GroundingMetadata 可能在 model_dump(by_alias=True) 合并 state_delta 后变成带 camelCase 键的普通 dict；访问 search_entry_point 时触发 AttributeError。单工具调用可能正常。排查时要确认事件最终类型、并行合并链和 JSON 序列化告警，再决定如何在类型验证后转换，不能假装 grounding 没有执行或无条件丢掉出处。</p>
+<p><a href="https://github.com/google/adk-python/issues/8258" rel="nofollow noopener noreferrer" target="_blank">Google ADK #8258</a> 报告：Vertex AI Live 会话携带恢复 handle 迅速重连时，旧连接尚未释放，可能收到 WebSocket 1008 和 session is already connected to an existing client。应只对精确匹配的临时连接冲突考虑有限重试和退避；<strong>不是所有 1008 都能重试</strong>，尤其不能绕过真正鉴权、策略拒绝。</p>
+<p>这两项是上游观察，本站没有 Vertex Live 凭据环境下的独立复现。它们与本文 2.6.2 state_delta 历史故障不同，现有 v2.14.0 修复结论保持不变。</p>
 <h2 id="最后">最后</h2>
 <p>Google ADK 这类可恢复执行框架里，最值得测试的往往不是“Agent 能不能回答”，而是暂停、恢复、状态更新、幂等这些没有漂亮 Demo 的路径。</p>
 <p>这次问题就是一个典型例子：调用不报错、invocation 能继续，但决定后续业务行为的 state 没有真正写进去。</p>

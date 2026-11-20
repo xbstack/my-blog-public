@@ -1150,6 +1150,9 @@ const analyticsRequiresHumanInteraction = false;
 <p>答：在 Queue Mode 架构中，应部署专门的 Webhook 容器实例。主节点（Main Node）负责图形化编辑和调度管理，工作节点（Worker Node）负责处理实际任务，而 Webhook 节点（Webhook Node）则专门用于高性能接收外部回调并将任务推送到 Redis 队列，实现接收端与消费端的彻底解耦。</p>
 <h3 id="问为什么我勾选了-raw-body-选项但是在-code-节点读取-jsonrawbody-依然是空对象">问：为什么我勾选了 Raw Body 选项，但是在 Code 节点读取 $json.rawBody 依然是空对象？</h3>
 <p>答：这通常由于两点引起。第一，请求发送端没有在 Header 中正确指明 Content-Type: application/json 或其他有效文本类型，导致解析器处理失败；第二，您所使用的 Docker 容器权限受限，或者 n8n 的版本没有开启对应的配置特性。建议检查 Docker 容器挂载目录的用户权限，并保证 n8n 使用的是官方最新镜像。</p>
+<h2 id="2026-11-20生产-webhook-内-nodefirst-返回-null">2026-11-20：生产 Webhook 内 <code>$("Node").first()</code> 返回 null</h2>
+<p><a href="https://github.com/n8n-io/n8n/issues/44333" rel="nofollow noopener noreferrer" target="_blank">n8n #44333</a> 报告：Production Webhook 使用默认 VM 表达式引擎，某节点配置 Continue (using error output) 后，下游跨节点读取 <code>$("Thrower").first().json.error</code> 在 2.46.0、2.47.5 和 2.48.4 中可能为 null，而 <code>$json.error</code> 仍有效；报告者 2.45.0 控制组正常。它<strong>不是 Webhook URL 配置错误</strong>，也不等于 AI Agent 没发 Tool Call。</p>
+<p>检查时要发布工作流并调用 Production Webhook，对比错误支路上的 <code>$json</code>、跨节点 <code>.first()</code>、错误输出所经的下一节点，以及当前 VM/legacy 引擎；可以在紧邻错误节点的位置显式映射错误字段。Issue 11 月 19 日已关闭、有修复进展，但<strong>关闭不代表你的固定 Docker 镜像已包含修复</strong>。上游提到 legacy 引擎可暂时绕过，采用前必须核查目标版本支持和弃用进程。本页不声称已在真实 n8n 容器独立复现。</p>
 <h2 id="官方部署参考">官方部署参考</h2>
 <p>n8n 当前托管文档专门给出了反向代理后的 Webhook URL 配置示例。生产部署时应以官方配置为基线，再叠加本文讨论的鉴权、验签、幂等和超时控制。</p>
 <ul>

@@ -2183,6 +2183,10 @@ Timeout 能真正取消
 <p>两个仍开放的上游报告提示：迁移后的流式任务不能仅凭 HTTP 200 或 finish 就判断成功。<a href="https://github.com/vercel/ai/issues/24318" rel="nofollow noopener noreferrer" target="_blank">@ai-sdk/google Issue #24318</a> 报告，4.0.75 与 4.0.109 的 Google Provider 在收到包含 error.code=503、status=UNAVAILABLE 的 SSE 事件时，宽松的 Chunk Schema 可能将错误解析为空数据，结果以成功结束或只返回截断文本，普通应用 Retry 因而没有错误可捕获。<strong>这是作者的上游报告，不是本站新实测。</strong></p>
 <p>另见 <a href="https://github.com/vercel/ai/issues/24317" rel="nofollow noopener noreferrer" target="_blank">Vercel AI Issue #24317</a>：报告者在 ai@7.0.159 的 streamText + Output.array + elementStream 中观察到每个文本块重复解析已累计 JSON、验证旧元素并比较整数组，长数组的 CPU 与事件循环负荷明显增长。该 Issue 的数字来自作者 Mock 测量，<strong>不是 XBSTACK Benchmark</strong>，不能推导为所有服务器的固定耗时。</p>
 <p>建议增加两个独立回归 Fixture：第一，向 Google SSE 注入 UNAVAILABLE 事件并断言业务 Run 不得标记成功，同时保留部分文本和错误证据；第二，分别流式输出 50、100、200 个等大小元素，比较不同 Chunk 大小下的校验次数、事件循环延迟和结果一致性。在官方修复并验证之前，对大数组设元素数/体积上限；如有需要，评估“纯文本流＋增量 JSON 解析＋逐元素校验”作为应用侧替代，但它并非供应商修复。Tool 幂等与审批恢复仍是不同的控制面。</p>
+<h2 id="2026-11-20自动续发死循环与-mcp-sse-请求-pending">2026-11-20：自动续发死循环与 MCP SSE 请求 Pending</h2>
+<p><a href="https://github.com/vercel/ai/issues/25183" rel="nofollow noopener noreferrer" target="_blank">Vercel AI SDK #25183</a> 报告：sendAutomaticallyWhen 在自动续发获得 HTTP 200，但响应只包含 start / finish 或空体、最后一条消息没有进展时，仍可能持续满足续发条件，重复 POST，严重时卡住页面。排查要同时记录每次请求前后的消息状态、finishReason、请求次数和流事件；保护措施包括无进展中止、有限重试、Abort、服务端 Tool 幂等。<strong>HTTP 200 不等于已产生有效的 Tool Result。</strong></p>
+<p><a href="https://github.com/vercel/ai/issues/25148" rel="nofollow noopener noreferrer" target="_blank">Vercel AI SDK #25148</a> 是另一类问题：@ai-sdk/mcp 的 Streamable HTTP SSE 若在对应 JSON-RPC Response 之前结束或断线，callTool 可能长时间 Pending。Issue 已关闭且修复合并主分支，<strong>不能据此直接推断正在安装的 npm 版本已经修复</strong>。应固定依赖版本，对正常应答、干净 EOF、网络异常、用户 Abort 分别测试，要求每个 request ID 最终成功或失败，而非无限等待。</p>
+<p>本节是 11 月 20 日上游状态复查，不是新一轮 XBSTACK SDK 本地对照实验，也不影响既有版本矩阵。</p>
 <h2 id="实验仓库与后续更新">实验仓库与后续更新</h2>
 <p>完整 Fixture、Migration Diff、原始 JSON 结果和架构文档：</p>
 <ul>

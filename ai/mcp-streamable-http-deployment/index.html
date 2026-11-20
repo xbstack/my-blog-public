@@ -1158,6 +1158,10 @@ expires_at = ...
 <li><strong>Gateway 分流</strong>：大型平台可按协议版本路由到不同兼容层。</li>
 </ul>
 <p>不要让旧客户端的 Session 约束反向决定整个新架构。最关键的回归测试是：同一 Tool 在 modern path 和 legacy path 都能得到正确授权、参数校验和业务结果。</p>
+<h2 id="2026-11-20-上游回归hono-空请求体-400-与-get-sse-通知丢失">2026-11-20 上游回归：Hono 空请求体 400 与 GET SSE 通知丢失</h2>
+<p><strong>Hono 返回 400 Invalid JSON，不一定是 JSON-RPC 参数写错。</strong> <a href="https://github.com/modelcontextprotocol/typescript-sdk/issues/3201" rel="nofollow noopener noreferrer" target="_blank">TypeScript SDK #3201</a> 报告：createMcpHonoApp 在请求带 Content-Type: application/json、请求体却为空时，可能对空字符串执行 JSON.parse，从而在路由前返回纯文本 400。GET、HEAD、DELETE 以及空体 POST 都要分别核对。建议对照：不带 JSON Content-Type 的 GET、带 JSON 头但空体的 GET/DELETE、正常 JSON POST 和空体 POST；记录精确包版本、实际响应类型及中间件顺序。不要把 TypeScript v2 的 Hono 观察直接套到本文 Python SDK 的旧实验上。</p>
+<p><strong>GET SSE 重连成功不代表通知没有丢失。</strong> <a href="https://github.com/modelcontextprotocol/typescript-sdk/issues/3211" rel="nofollow noopener noreferrer" target="_blank">TypeScript SDK #3211</a> 报告 standalone GET 流若尚未写出首个可恢复事件 ID 就被关闭，后续重连缺少 Last-Event-ID，断线窗口的事件可能无法回放。定位时应同时查看首次 SSE priming、断线前事件 ID、重连请求头、EventStore 和实际收到的通知序列。这和 #3201 的空体解析、以及另文 <a href="/ai/mcp-streamable-http-sse-pending-timeout/">SSE 请求一直 Pending</a> 均是不同故障。</p>
+<p><strong>证据边界：</strong> 两项是截至 2026-11-20 的上游 Issue 观察，未作为 XBSTACK 的新版本独立实测。是否已修复必须按具体已安装版本、发行说明和回归结果核实。</p>
 <h2 id="上线前验证清单">上线前验证清单</h2>
 <p>远程部署完成后至少验证：</p>
 <ol>
