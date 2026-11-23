@@ -7,9 +7,10 @@
 #
 # IMPORTANT: If Cloudflare Managed robots.txt / AI crawler blocking is enabled,
 # Cloudflare may prepend Disallow rules for AI crawlers before this file.
-# Disable or relax Cloudflare's AI crawler blocking if the online robots.txt still
-# blocks GPTBot, ClaudeBot, Google-Extended, Applebot-Extended, CCBot, Amazonbot,
-# Bytespider, or meta-externalagent.
+# Search access and model-training access are different policies. For AI search,
+# confirm Googlebot/Bingbot/OAI-SearchBot/Claude-SearchBot/PerplexityBot against
+# the live edge and WAF logs. Training-oriented crawlers (such as GPTBot) need
+# separate publisher consent; enabling them is NOT required for AI search.
 
 User-agent: OAI-SearchBot
 User-agent: ChatGPT-User
