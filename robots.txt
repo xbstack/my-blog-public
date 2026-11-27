@@ -51,3 +51,4 @@ Disallow: /go/
 Sitemap: https://www.xbstack.com/sitemap-index.xml
 # LLM index: https://www.xbstack.com/llms.txt
 # LLM full index: https://www.xbstack.com/llms-full.txt
+Sitemap: https://www.xbstack.com/news-sitemap.xml

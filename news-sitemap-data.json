@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "route": "/ai/tools-lab/pydantic-pax-coding-agent-harness/",
+      "language": "zh",
+      "title": "Pydantic Pax 是什么？与 Codex、Claude Code 的区别及 Agent Harness 的未来",
+      "publishedAt": "2026-11-27T06:07:24Z"
+    },
+    {
+      "route": "/en/ai/tools-lab/pydantic-pax-coding-agent-harness/",
+      "language": "en",
+      "title": "What Is Pydantic Pax? Comparing Codex, Claude Code and the Future of Agent Harnesses",
+      "publishedAt": "2026-11-27T06:07:24Z"
+    }
+  ]
+}

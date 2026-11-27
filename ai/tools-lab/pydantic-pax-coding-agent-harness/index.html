@@ -1,0 +1,1969 @@
+<!DOCTYPE html><html lang="zh-CN" class="dark" data-analytics="ga4-baidu"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="google-adsense-account" content="ca-pub-2557606254410371"><script>
+      const applyTheme = () => {
+        const theme = localStorage.getItem("theme");
+        const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      };
+      applyTheme();
+      document.addEventListener("astro:page-load", applyTheme);
+    </script><title>Pydantic Pax 是什么？与 Codex、Claude Code 对比 | AI - XBSTACK</title><meta name="description" content="Pydantic 11 月 25 日发布 Pax。对比 Codex、Claude Code 等七款工具，解读 SWE81 跑分、成本、M1 Pro 离线实测及权限。"><meta http-equiv="content-language" content="zh-CN"><meta name="keywords" content="Pydantic Pax 是什么, Pydantic Pax, Pax AI 编程工具, AI 编程助手怎么选, Pax vs Codex, Pax vs Claude Code, Codex 替代工具, Claude Code 替代工具, 多模型 AI 编程工具, 终端 AI 编程助手, Coding Agent, Agent Harness, Pydantic AI Harness SDK, Pydantic AI Coder, Pax 插件, Pax 会话迁移, Pax 安装, Pax 开源, Harness-Bench SWE81, GPT-6.2 Sol, Claude Opus 5.5, AI 编程成本, Code Mode, Monty, MCP, Agent 沙箱, Agent 权限控制, Agent 持久执行, 模型供应商锁定, 每个验收任务成本, Pax 源码架构, Pax SWE81 完整跑分, Pax 与 OpenCode 和 pi 对比, Agent 上下文压缩, AI Agent 权限隔离, AI 编程工具验收成本, Pax Harness SDK 版本兼容, Code Mode 本地性能测试, Pydantic Pax 安装教程, pydantic-ai-pax, Pax 免费吗, Pax 默认沙箱, Pax 导入 Codex 会话, Pax 导入 Claude Code 会话, Code Mode vs 普通工具调用, FunctionModel 离线测试, GPT-6.2 Sol Pax Codex 成本对比, Claude Opus 5.5 Pax Claude Code 跑分, Pydantic Pax 发布, Pydantic AI Harness beta, MiniMax M3.1 Flash Harness 对比, Kimi K3.1 Pro Harness 对比"><meta name="theme-color" content="#050608"><meta name="robots" content="index,follow,max-image-preview:large"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://www.xbstack.com/ai/tools-lab/pydantic-pax-coding-agent-harness/"><meta property="og:title" content="Pydantic Pax 是什么？与 Codex、Claude Code 对比 | AI - XBSTACK"><meta property="og:description" content="Pydantic 11 月 25 日发布 Pax。对比 Codex、Claude Code 等七款工具，解读 SWE81 跑分、成本、M1 Pro 离线实测及权限。"><meta property="og:image" content="https://www.xbstack.com/_astro/cover.d84gELp_.webp"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:url" content="https://www.xbstack.com/ai/tools-lab/pydantic-pax-coding-agent-harness/"><meta name="twitter:title" content="Pydantic Pax 是什么？与 Codex、Claude Code 对比 | AI - XBSTACK"><meta name="twitter:description" content="Pydantic 11 月 25 日发布 Pax。对比 Codex、Claude Code 等七款工具，解读 SWE81 跑分、成本、M1 Pro 离线实测及权限。"><meta name="twitter:image" content="https://www.xbstack.com/_astro/cover.d84gELp_.webp"><link rel="canonical" href="https://www.xbstack.com/ai/tools-lab/pydantic-pax-coding-agent-harness/"><link rel="describedby" href="/llms.txt" type="text/plain"><link rel="alternate" hreflang="zh-CN" href="https://www.xbstack.com/ai/tools-lab/pydantic-pax-coding-agent-harness/"><link rel="alternate" hreflang="en" href="https://www.xbstack.com/en/ai/tools-lab/pydantic-pax-coding-agent-harness/"><link rel="alternate" hreflang="x-default" href="https://www.xbstack.com/ai/tools-lab/pydantic-pax-coding-agent-harness/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"XBSTACK Main Navigation","itemListElement":[{"@type":"SiteNavigationElement","position":1,"name":"AI","alternateName":"AI Engineering","description":"AI engineering organized around Agents, MCP, security, local AI and verified model/tool evaluations. LangGraph, workflows and model updates remain discoverable within their parent topics.","url":"https://www.xbstack.com/ai/"},{"@type":"SiteNavigationElement","position":2,"name":"Products","alternateName":"Products and Tools","description":"Apps, AI products, developer tools and practical utilities built and maintained by XBSTACK.","url":"https://www.xbstack.com/products/"},{"@type":"SiteNavigationElement","position":3,"name":"Insights","alternateName":"Insights, Investing, Reading and Long-term Thinking","description":"Investment research, reading notes, decision reviews and long-term thinking with evidence and outcomes.","url":"https://www.xbstack.com/horizon/"},{"@type":"SiteNavigationElement","position":4,"name":"Lens","alternateName":"Outdoor, Travel, Photography and Gear","description":"Field notes from real hiking, travel, photography and gear use, with Guizhou as a core but not exclusive focus.","url":"https://www.xbstack.com/life/"},{"@type":"SiteNavigationElement","position":5,"name":"About","alternateName":"About Xiaobai and XBSTACK","description":"Xiaobai's profile, current products, long-term research themes, working principles and the XBSTACK public asset system.","url":"https://www.xbstack.com/about/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.xbstack.com/#organization","name":"XBSTACK","alternateName":["XBSTACK 向上生长"],"url":"https://www.xbstack.com/","description":"XBSTACK 是独立开发者小白长期维护的个人网站，记录 AI 工程、智能体开发、独立产品、投资研究、阅读和生活实践，重视真实证据与独立判断。","slogan":"在高处看世界，在底层堆资产","knowsAbout":["独立产品与软件工程","人工智能与智能体","技术与安全实践","投资与公司研究","阅读与学习","观点与生活","运动、徒步与旅行"],"logo":{"@type":"ImageObject","url":"https://www.xbstack.com/favicon/logo-light.svg"},"sameAs":["https://github.com/xbstack"]},{"@type":"WebSite","@id":"https://www.xbstack.com/#website","name":"XBSTACK","alternateName":"XBSTACK 向上生长","url":"https://www.xbstack.com/","description":"XBSTACK 是独立开发者小白长期维护的个人网站，记录 AI 工程、智能体开发、独立产品、投资研究、阅读和生活实践，重视真实证据与独立判断。","publisher":{"@id":"https://www.xbstack.com/#organization"},"about":[{"@type":"Thing","name":"独立产品与软件工程"},{"@type":"Thing","name":"人工智能与智能体"},{"@type":"Thing","name":"技术与安全实践"},{"@type":"Thing","name":"投资与公司研究"},{"@type":"Thing","name":"阅读与学习"},{"@type":"Thing","name":"观点与生活"},{"@type":"Thing","name":"运动、徒步与旅行"}],"inLanguage":["zh-CN","en"],"potentialAction":{"@type":"SearchAction","target":"https://www.xbstack.com/search/?q={search_term_string}","query-input":"required name=search_term_string"}}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","@id":"https://www.xbstack.com/ai/tools-lab/pydantic-pax-coding-agent-harness/","url":"https://www.xbstack.com/ai/tools-lab/pydantic-pax-coding-agent-harness/","name":"Pydantic Pax 是什么？与 Codex、Claude Code 对比 | AI - XBSTACK","description":"Pydantic 11 月 25 日发布 Pax。对比 Codex、Claude Code 等七款工具，解读 SWE81 跑分、成本、M1 Pro 离线实测及权限。","inLanguage":"zh-CN","isPartOf":{"@id":"https://www.xbstack.com/#website"},"publisher":{"@id":"https://www.xbstack.com/#organization"}}</script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"NewsArticle","headline":"Pydantic Pax 是什么？与 Codex、Claude Code 的区别及 Agent Harness 的未来","description":"Pydantic 11 月 25 日发布 Pax。对比 Codex、Claude Code 等七款工具，解读 SWE81 跑分、成本、M1 Pro 离线实测及权限。","inLanguage":"zh-CN","image":"https://www.xbstack.com/_astro/cover.d84gELp_.webp","datePublished":"2026-11-27T06:07:24Z","author":{"@id":"https://www.xbstack.com/about/#person"},"publisher":{"@type":"Organization","@id":"https://www.xbstack.com/#organization","name":"XBSTACK","url":"https://www.xbstack.com/","logo":{"@type":"ImageObject","url":"https://www.xbstack.com/favicon/logo-light.svg"}},"isPartOf":{"@id":"https://www.xbstack.com/#website"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.xbstack.com/ai/tools-lab/pydantic-pax-coding-agent-harness/"},"articleSection":"ai","keywords":["Pydantic Pax 是什么","Pydantic Pax","Pax AI 编程工具","AI 编程助手怎么选","Pax vs Codex","Pax vs Claude Code","Codex 替代工具","Claude Code 替代工具","多模型 AI 编程工具","终端 AI 编程助手","Coding Agent","Agent Harness","Pydantic AI Harness SDK","Pydantic AI Coder","Pax 插件","Pax 会话迁移","Pax 安装","Pax 开源","Harness-Bench SWE81","GPT-6.2 Sol","Claude Opus 5.5","AI 编程成本","Code Mode","Monty","MCP","Agent 沙箱","Agent 权限控制","Agent 持久执行","模型供应商锁定","每个验收任务成本","Pax 源码架构","Pax SWE81 完整跑分","Pax 与 OpenCode 和 pi 对比","Agent 上下文压缩","AI Agent 权限隔离","AI 编程工具验收成本","Pax Harness SDK 版本兼容","Code Mode 本地性能测试","Pydantic Pax 安装教程","pydantic-ai-pax","Pax 免费吗","Pax 默认沙箱","Pax 导入 Codex 会话","Pax 导入 Claude Code 会话","Code Mode vs 普通工具调用","FunctionModel 离线测试","GPT-6.2 Sol Pax Codex 成本对比","Claude Opus 5.5 Pax Claude Code 跑分","Pydantic Pax 发布","Pydantic AI Harness beta","MiniMax M3.1 Flash Harness 对比","Kimi K3.1 Pro Harness 对比"],"abstract":"Pydantic 11 月 25 日发布 Pax。对比 Codex、Claude Code 等七款工具，解读 SWE81 跑分、成本、M1 Pro 离线实测及权限。","about":[{"@type":"Thing","name":"Pydantic Pax"},{"@type":"Thing","name":"AI Coding Agent"},{"@type":"Thing","name":"Agent Harness"},{"@type":"Thing","name":"Codex"},{"@type":"Thing","name":"Claude Code"},{"@type":"Thing","name":"Pydantic"},{"@type":"Thing","name":"Pax"},{"@type":"Thing","name":"Pydantic AI"},{"@type":"Thing","name":"Pydantic AI Harness"},{"@type":"Thing","name":"Coder"},{"@type":"Thing","name":"OpenCode"},{"@type":"Thing","name":"pi"},{"@type":"Thing","name":"deepagents-code"},{"@type":"Thing","name":"DeepSeek Harness"},{"@type":"Thing","name":"Harness-Bench SWE81"},{"@type":"Thing","name":"GPT-6.2 Sol"},{"@type":"Thing","name":"Claude Opus 5.5"},{"@type":"Thing","name":"Monty"},{"@type":"Thing","name":"MCP"},{"@type":"Thing","name":"Logfire"},{"@type":"Thing","name":"AI Gateway"},{"@type":"Thing","name":"ModelFallback"},{"@type":"Thing","name":"Pareto frontier"}],"citation":["https://pydantic.dev/articles/why-code-mode-is-the-future","https://pydantic.dev/docs/ai/guides/testing/","https://pydantic.dev/articles/pax-harness-beta","https://pypi.org/project/pydantic-ai-pax/0.75.0/","https://pydantic.dev/docs/ai/harness/","https://pydantic.dev/docs/ai/harness/coder/","https://pydantic.dev/articles/company-announcement","https://pydantic.dev/articles/logfire-announcement","https://pydantic.dev/docs/ai/production/enterprise/","https://pydantic.dev/articles/gateway-merging-into-logfire","https://pypi.org/project/pydantic-ai-harness/0.75.0/","https://pypi.org/project/pydantic-ai-slim/2.75.0/","https://pydantic.dev/docs/ai/capabilities/overview/","https://pydantic.dev/docs/ai/capabilities/on-demand/","https://developers.openai.com/blog/codex-as-a-platform","https://code.claude.com/docs/en/agent-sdk/overview","https://open-code.ai/en/docs/agents","https://docs.pi.dev/latest/sdk","https://www.langchain.com/deep-agents","https://www.deepseek.com/harness/en/","https://pydantic.dev/docs/ai/pax/","https://pydantic.dev/docs/ai/harness/compaction/","https://pydantic.dev/docs/ai/harness/tool-output-limits/","https://pydantic.dev/docs/ai/harness/memory//","https://pydantic.dev/docs/ai/capabilities/model-fallback/","https://pydantic.dev/docs/ai/harness/subagents/","https://arxiv.org/abs/2609.11987","https://www.harness-bench.ai/","https://www.anthropic.com/research/demystifying-evals-for-ai-agents","https://pydantic.dev/docs/ai/harness/code-mode/","https://pydantic.dev/docs/ai/core-concepts/workspace/","https://pydantic.dev/docs/ai/harness/permissions/","https://code.claude.com/docs/en/sandboxing","https://github.com/pydantic/pydantic-ai/releases","https://github.com/pydantic/pydantic-ai/security/advisories","https://pydantic.dev/docs/ai/harness/step-persistence/","https://pydantic.dev/docs/ai/capabilities/durable_execution/overview/","https://openai.com/index/harness-engineering/","https://www.anthropic.com/research/harness-design-long-running-apps","https://www.anthropic.com/research/managed-agents"]},{"@type":"Person","@id":"https://www.xbstack.com/about/#person","name":"小白","description":"独立开发者，持续记录软件产品与技术实践、人工智能、投资研究、阅读、生活、徒步与旅行。","alternateName":"Xiaobai","url":"https://www.xbstack.com/about/","jobTitle":"Independent Developer","worksFor":{"@id":"https://www.xbstack.com/#organization"},"knowsAbout":["AI Engineering","AI Agents","Model Context Protocol (MCP)","LangGraph","AI Workflows","Independent Product Development","Investing and Company Research","Reading and Learning","Outdoor Activities and Hiking","Travel and Photography"],"image":"https://www.xbstack.com/_astro/avatar.BzDyfp9G.webp"}]}</script><meta property="article:published_time" content="2026-11-27T06:07:24Z"><meta name="abstract" content="Pydantic 11 月 25 日发布 Pax。对比 Codex、Claude Code 等七款工具，解读 SWE81 跑分、成本、M1 Pro 离线实测及权限。"><link id="xbstack-favicon" rel="icon" type="image/svg+xml" href="/favicon/logo-dark-nav.svg"><script>(function(){const googleAnalyticsId = "G-1J4274CPMT";
+const analyticsRequiresHumanInteraction = false;
+
+          const productionAnalyticsHosts = new Set(['www.xbstack.com', 'xbstack.com']);
+          const automationUserAgent = /HeadlessChrome|PhantomJS|Playwright|Puppeteer|Selenium|Lighthouse|PageSpeed|bot\b|crawler|spider|slurp|curl|wget|python-requests|axios|node-fetch|facebookexternalhit|Twitterbot|LinkedInBot|Bytespider|GPTBot|ClaudeBot|PerplexityBot/i;
+          const analyticsUrl = new URL(window.location.href);
+          const analyticsSource = String(analyticsUrl.searchParams.get('utm_source') || '').toLowerCase();
+          const analyticsCampaign = String(analyticsUrl.searchParams.get('utm_campaign') || '').toLowerCase();
+          const internalAnalyticsAudit =
+            analyticsUrl.searchParams.has('ga4_audit') ||
+            analyticsUrl.searchParams.has('analytics_test') ||
+            ['internal', 'internal_test', 'qa', 'test'].includes(analyticsSource) ||
+            analyticsCampaign.includes('ga4_audit') ||
+            analyticsCampaign.includes('internal_test');
+          const shouldTrackAnalytics =
+            Boolean(googleAnalyticsId) &&
+            productionAnalyticsHosts.has(window.location.hostname.toLowerCase()) &&
+            navigator.webdriver !== true &&
+            !automationUserAgent.test(navigator.userAgent || '') &&
+            !internalAnalyticsAudit;
+
+          if (!shouldTrackAnalytics) {
+            window.__analytics_suppressed = true;
+            window.__analytics_suppression_reason = internalAnalyticsAudit ? 'internal_test' : 'environment_or_automation';
+          } else if (!window.__ga4_initialized) {
+            const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_id', 'utm_term', 'utm_content'];
+            const UTM_ALIASES = {
+              utmsource: 'utm_source',
+              utmmedium: 'utm_medium',
+              utmcampaign: 'utm_campaign',
+              utmcontent: 'utm_content',
+              utmterm: 'utm_term',
+              utmid: 'utm_id',
+            };
+            const INTERNAL_UTM_SOURCES = new Set(['inner', 'internal', 'internal_link', 'reading_system']);
+            window.normalizeUtmAliases = () => {
+              try {
+                const url = new URL(window.location.href);
+                let changed = false;
+                Object.entries(UTM_ALIASES).forEach(([alias, canonical]) => {
+                  const aliasValue = url.searchParams.get(alias);
+                  if (aliasValue && !url.searchParams.get(canonical)) {
+                    url.searchParams.set(canonical, aliasValue);
+                    changed = true;
+                  }
+                  if (url.searchParams.has(alias)) {
+                    url.searchParams.delete(alias);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.normalizeUtmAliases();
+            window.sanitizeInternalUtm = () => {
+              try {
+                const url = new URL(window.location.href);
+                const source = String(url.searchParams.get('utm_source') || '').toLowerCase();
+                const referrerUrl = document.referrer ? new URL(document.referrer) : null;
+                const sameOriginReferrer = Boolean(referrerUrl && referrerUrl.origin === window.location.origin);
+                if (!sameOriginReferrer && !INTERNAL_UTM_SOURCES.has(source)) return;
+                let changed = false;
+                UTM_KEYS.forEach((key) => {
+                  if (url.searchParams.has(key)) {
+                    url.searchParams.delete(key);
+                    changed = true;
+                  }
+                });
+                if (changed) window.history.replaceState(window.history.state, '', url.href);
+              } catch (err) {}
+            };
+            window.sanitizeInternalUtm();
+
+            window.__ga4_initialized = true;
+            window.__ga4_client_loaded = false;
+            window.__ga4_tracking_started = false;
+            window.__ga4_human_verified = false;
+            window.__ga4_session_class = '';
+            window.__ga4_requires_human_interaction = Boolean(analyticsRequiresHumanInteraction);
+            window.__lastGA4PageKey = "";
+            window.__lastGA4PageLocation = document.referrer || "";
+            window.__ga4_tracking_start_reason = '';
+            window.__scroll50Reported = false;
+            window.__scroll90Reported = false;
+
+            const getReferrerHost = () => {
+              try {
+                return document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+              } catch (err) {
+                return '';
+              }
+            };
+
+            const inferSourceHint = () => {
+              const refHost = getReferrerHost();
+              if (!refHost) return '';
+              // Observed referral only; no claim that an AI model cited this page.
+              if (refHost === 'chatgpt.com' || refHost === 'chat.openai.com') return 'chatgpt_referrer';
+              if (refHost === 'perplexity.ai' || refHost.endsWith('.perplexity.ai')) return 'perplexity_referrer';
+              if (refHost === 'gemini.google.com') return 'gemini_referrer';
+              if (refHost === 'copilot.microsoft.com') return 'copilot_referrer';
+              if (refHost === 'claude.ai') return 'claude_referrer';
+              if (refHost.includes('zhihu')) return 'zhihu_referrer';
+              if (refHost.includes('juejin')) return 'juejin_referrer';
+              if (refHost.includes('csdn')) return 'csdn_referrer';
+              if (refHost.includes('weixin') || refHost.includes('wechat')) return 'wechat_referrer';
+              if (refHost.includes('google')) return 'google_referrer';
+              if (refHost.includes('baidu')) return 'baidu_referrer';
+              return refHost;
+            };
+
+            const getAttributionPayload = () => {
+              const params = new URLSearchParams(window.location.search);
+              const current = {};
+              UTM_KEYS.forEach((key) => {
+                const value = params.get(key);
+                if (value) current[key] = value;
+              });
+
+              const referrerHost = getReferrerHost();
+              const currentHost = window.location.hostname.replace(/^www\./, '');
+              const sourceHint = inferSourceHint();
+              const hasExternalReferrer = Boolean(referrerHost && referrerHost !== currentHost);
+
+              let stored = {};
+              try {
+                stored = JSON.parse(sessionStorage.getItem('xbstack_attribution') || '{}');
+              } catch (err) {
+                stored = {};
+              }
+
+              if (Object.keys(current).length) {
+                stored = {
+                  ...stored,
+                  ...current,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: current.utm_source ? `utm:${current.utm_source}` : sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              } else if (hasExternalReferrer && !stored.captured_at) {
+                // Preserve first-touch referral attribution even when the platform strips UTM parameters.
+                stored = {
+                  ...stored,
+                  landing_page: window.location.pathname,
+                  referrer_host: referrerHost,
+                  source_hint: sourceHint,
+                  captured_at: new Date().toISOString(),
+                };
+              }
+
+              if (stored.captured_at) {
+                try {
+                  sessionStorage.setItem('xbstack_attribution', JSON.stringify(stored));
+                } catch (err) {}
+              }
+
+              return {
+                utm_source: stored.utm_source || '',
+                utm_medium: stored.utm_medium || '',
+                utm_campaign: stored.utm_campaign || '',
+                utm_id: stored.utm_id || '',
+                utm_term: stored.utm_term || '',
+                utm_content: stored.utm_content || '',
+                attribution_landing_page: stored.landing_page || '',
+                referrer_host: stored.referrer_host || referrerHost,
+                source_hint: stored.source_hint || (stored.utm_source ? `utm:${stored.utm_source}` : sourceHint),
+              };
+            };
+
+            const getAnalyticsPageContext = () => {
+              const url = new URL(window.location.href);
+              const isCompoundCalculator = [
+                '/tools/compound-calculator/',
+                '/en/tools/compound-calculator/',
+              ].includes(url.pathname);
+
+              if (isCompoundCalculator) {
+                ['scenario', 'principal', 'monthly', 'rate', 'years', 'volatility', 'inflation', 'm2_drag', 'target', 'compare_rate'].forEach((key) => {
+                  url.searchParams.delete(key);
+                });
+              }
+
+              return {
+                pagePath: url.pathname,
+                pageLocation: url.href,
+                pageSearch: url.search,
+              };
+            };
+
+            window.xbTrackEvent = (eventName, payload = {}) => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !eventName ||
+                !window.__ga4_tracking_started ||
+                !window.__ga4_human_verified
+              ) return;
+              const analyticsPage = getAnalyticsPageContext();
+              window.gtag('event', eventName, {
+                transport_type: 'beacon',
+                page_path: analyticsPage.pagePath,
+                page_title: document.title || '',
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+                ...payload,
+              });
+            };
+
+            window.sendGA4PageView = () => {
+              if (
+                typeof window.gtag !== 'function' ||
+                !googleAnalyticsId ||
+                !window.__ga4_tracking_started
+              ) return;
+
+              const analyticsPage = getAnalyticsPageContext();
+              const pageLocation = analyticsPage.pageLocation;
+              const pageTitle = document.title || '';
+              const pageKey = `${pageLocation}|${pageTitle}`;
+
+              if (pageKey === window.__lastGA4PageKey) return;
+              const pageReferrer = window.__lastGA4PageLocation;
+              window.__lastGA4PageKey = pageKey;
+              window.__lastGA4PageLocation = pageLocation;
+              window.__scroll50Reported = false;
+              window.__scroll90Reported = false;
+
+              window.gtag('event', 'page_view', {
+                page_title: pageTitle,
+                page_location: pageLocation,
+                page_path: analyticsPage.pagePath,
+                page_search: analyticsPage.pageSearch,
+                page_referrer: pageReferrer,
+                tracking_start_reason: window.__ga4_tracking_start_reason || 'unknown',
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+                ...getAttributionPayload(),
+              });
+            };
+
+            window.initGA4Tracking = () => {
+              if (typeof window.gtag !== 'function') return;
+              if (window.__ga4_events_bound) return;
+              window.__ga4_events_bound = true;
+
+              // 1. 页面滚动深度上报
+              const handleScroll = (event) => {
+                if (!event?.isTrusted || !window.__ga4_human_verified) return;
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const progress = (scrollTop / scrollHeight) * 100;
+
+                if (progress >= 50 && !window.__scroll50Reported) {
+                  window.xbTrackEvent('scroll_50', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll50Reported = true;
+                }
+                if (progress >= 90 && !window.__scroll90Reported) {
+                  window.xbTrackEvent('scroll_90', { event_category: 'engagement', event_label: window.location.pathname });
+                  window.__scroll90Reported = true;
+                }
+              };
+
+              window.addEventListener('scroll', handleScroll, { passive: true });
+
+              // 2. 完整链接与按钮点击上报。link_click 是统一事实表，旧事件继续保留用于历史对比。
+              const inferLinkArea = (target) => {
+                const explicitArea = target.closest('[data-analytics-area]')?.getAttribute('data-analytics-area');
+                if (explicitArea) return explicitArea.slice(0, 60);
+                if (target.closest('header, nav, [role="navigation"]')) return 'navigation';
+                if (target.closest('footer')) return 'footer';
+                if (target.closest('[data-related-link], [data-related-reading], [data-analytics-area="related_content"]')) return 'related_content';
+                if (target.closest('[class*="related"], [class*="recommend"], [class*="next-reading"]')) return 'related_content';
+                if (target.closest('[class*="sidebar"], aside')) return 'sidebar';
+                if (target.closest('.markdown-content, article')) return 'article_body';
+                if (target.closest('[class*="card"], [class*="grid"]')) return 'content_card';
+                return 'page_other';
+              };
+
+              const classifyLink = (target, url, linkArea) => {
+                const rawHref = String(target.getAttribute('href') || '');
+                const protocol = String(url.protocol || '').toLowerCase();
+                const path = String(url.pathname || '/');
+                const host = String(url.hostname || '').replace(/^www\./, '').toLowerCase();
+                const isHttp = protocol === 'http:' || protocol === 'https:';
+                const isExternal = isHttp && url.origin !== window.location.origin;
+                const isDownload =
+                  target.hasAttribute('download') ||
+                  /\.(pdf|zip|gz|tar|csv|xlsx?|docx?|pptx?|json|ya?ml|mp3|mp4|mov|webm)(?:$|[?#])/i.test(rawHref);
+
+                if (protocol === 'mailto:' || protocol === 'tel:') return 'contact';
+                if (isDownload) return 'download';
+                if (isExternal && host === 'github.com') return 'github';
+                if (isExternal) return 'external';
+                if (path.startsWith('/go/')) return 'affiliate';
+                if (path.startsWith('/tools/') || path.startsWith('/compound-interest/')) return 'tool';
+                if (linkArea === 'topic_article_index' || linkArea === 'topic_pillar_index') return 'internal_article';
+                if (path.startsWith('/newsletter/')) return 'newsletter';
+                if (url.origin === window.location.origin && path === window.location.pathname && url.hash) return 'anchor';
+                if (linkArea === 'related_content') return 'related_article';
+                if (linkArea === 'article_body') return 'internal_article';
+                return 'internal';
+              };
+
+              const handleClick = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const target = e.target.closest('a,button');
+                if (!target) return;
+
+                const label = (target.getAttribute('aria-label') || target.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 100);
+                if (target.tagName === 'BUTTON') {
+                  window.xbTrackEvent('click_button', {
+                    event_category: 'engagement',
+                    event_label: label,
+                    link_area: inferLinkArea(target),
+                    link_position: inferLinkArea(target),
+                    source_page_path: window.location.pathname,
+                  });
+                  return;
+                }
+
+                const rawHref = String(target.getAttribute('href') || '').trim();
+                if (!rawHref || rawHref.toLowerCase().startsWith('javascript:')) return;
+
+                try {
+                  const url = new URL(rawHref, window.location.href);
+                  const linkArea = inferLinkArea(target);
+                  const linkType = classifyLink(target, url, linkArea);
+                  const isExternalHttp =
+                    (url.protocol === 'http:' || url.protocol === 'https:') &&
+                    url.origin !== window.location.origin;
+                  const payload = {
+                    event_category:
+                      ['affiliate', 'tool', 'newsletter'].includes(linkType)
+                        ? 'conversion'
+                        : isExternalHttp
+                          ? 'outbound'
+                          : 'navigation',
+                    event_label: url.href,
+                    link_text: label,
+                    link_url: url.href,
+                    link_domain: url.hostname.replace(/^www\./, ''),
+                    link_id: target.id || '',
+                    link_classes: String(target.className || '').slice(0, 120),
+                    outbound: isExternalHttp,
+                    link_type: linkType,
+                    link_area: linkArea,
+                    link_position: String(target.closest('[data-related-slot]')?.getAttribute('data-related-slot') || linkArea).slice(0, 60),
+                    link_context: String(target.getAttribute('data-related-reason') || target.closest('[data-related-reason]')?.getAttribute('data-related-reason') || '').slice(0, 100),
+                    source_page_path: window.location.pathname,
+                    target_page_path: url.pathname || '',
+                  };
+
+                  // 所有真实链接统一进入 link_click，运营报表以该事件为准。
+                  window.xbTrackEvent('link_click', payload);
+
+                  if (linkType === 'external' || linkType === 'github') {
+                    window.xbTrackEvent('click_external', payload);
+                  }
+                  if (linkType === 'github') {
+                    window.xbTrackEvent('github_click', payload);
+                  }
+                  if (linkType === 'download') {
+                    window.xbTrackEvent('download_click', payload);
+                  }
+                  if (linkType === 'affiliate') {
+                    window.xbTrackEvent('affiliate_click', {
+                      ...payload,
+                      affiliate_slug: url.pathname.replace(/^\/go\//, '').replace(/\/$/, ''),
+                    });
+                  }
+                  if (linkType === 'tool') {
+                    window.xbTrackEvent('click_tool', payload);
+                  }
+                  if (linkType === 'newsletter') {
+                    window.xbTrackEvent('newsletter_click', payload);
+                  }
+                  if (linkType === 'related_article') {
+                    window.xbTrackEvent('related_article_click', payload);
+                  }
+                  if (['internal', 'internal_article', 'related_article', 'anchor'].includes(linkType)) {
+                    window.xbTrackEvent('internal_link_click', payload);
+                  }
+                  if (
+                    !isExternalHttp &&
+                    ['/ai/', '/newsletter/', '/search/', '/life/', '/investing/'].some((prefix) => url.pathname.startsWith(prefix))
+                  ) {
+                    window.xbTrackEvent('click_internal_entry', payload);
+                  }
+                } catch (err) {}
+              };
+
+              const handleSubmit = (e) => {
+                if (!e?.isTrusted || !window.__ga4_human_verified) return;
+                const form = e.target;
+                if (!form || form.tagName !== 'FORM') return;
+                const action = form.getAttribute('action') || '';
+                const formType = form.getAttribute('data-analytics-form') || '';
+                const formData = new FormData(form);
+                const searchTerm = String(formData.get('q') || '').trim();
+
+                if (action.includes('/search') || formType === 'site-search') {
+                  window.xbTrackEvent('view_search_results', {
+                    event_category: 'site_search',
+                    search_term: searchTerm,
+                  });
+                }
+
+                if (action.includes('buttondown.email') || formType === 'newsletter') {
+                  const provider = action.includes('buttondown.email') ? 'buttondown' : 'xbstack_api';
+                  window.xbTrackEvent('newsletter_subscribe_attempt', {
+                    event_category: 'conversion',
+                    event_label: window.location.pathname,
+                    newsletter_provider: provider,
+                  });
+                  // The form posts to an external provider. A submit event does not
+                  // establish provider acceptance or email double opt-in.
+                  // Keep conversion success unreported until a verifiable
+                  // provider callback/webhook confirms it.
+                }
+              };
+
+              document.addEventListener('click', handleClick);
+              document.addEventListener('submit', handleSubmit, true);
+            };
+
+            // 原始访问先进入 GA4，再通过 traffic_verification 区分未验证访问与真人互动。
+            // 这样既保留完整 page_view / session_start 基线，也能在报表层排除低质量流量。
+            window.loadGA4Client = () => {
+              if (window.__ga4_client_loaded) return;
+              window.__ga4_client_loaded = true;
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = function() {
+                window.dataLayer.push(arguments);
+              };
+
+              const ga4Script = document.createElement('script');
+              ga4Script.async = true;
+              ga4Script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(googleAnalyticsId)}`;
+              document.head.appendChild(ga4Script);
+
+              window.gtag('js', new Date());
+              window.gtag('config', googleAnalyticsId, {
+                send_page_view: false,
+                traffic_verification: window.__ga4_session_class || 'unverified_session',
+              });
+            };
+
+            window.startGA4Tracking = (
+              reason = 'page_load',
+              sessionClass = 'unverified_session',
+              humanVerified = false,
+            ) => {
+              if (window.__ga4_tracking_started) {
+                if (humanVerified && !window.__ga4_human_verified) {
+                  window.verifyGA4Human(reason, sessionClass);
+                }
+                return;
+              }
+              window.__ga4_tracking_start_reason = String(reason || 'page_load').slice(0, 60);
+              window.__ga4_session_class = String(sessionClass || 'unverified_session').slice(0, 40);
+              window.__ga4_human_verified = Boolean(humanVerified);
+              window.__ga4_tracking_started = true;
+              window.loadGA4Client();
+              window.sendGA4PageView();
+              window.initGA4Tracking();
+            };
+
+            window.verifyGA4Human = (reason = 'interaction', sessionClass = 'human_interaction') => {
+              if (!window.__ga4_tracking_started) {
+                window.startGA4Tracking(reason, sessionClass, true);
+                return;
+              }
+              if (window.__ga4_human_verified) return;
+
+              const previousClass = window.__ga4_session_class || 'unverified_session';
+              window.__ga4_human_verified = true;
+              window.__ga4_session_class = String(sessionClass || 'human_interaction').slice(0, 40);
+              window.__ga4_tracking_start_reason = String(reason || 'interaction').slice(0, 60);
+              window.gtag('event', 'traffic_verified', {
+                transport_type: 'beacon',
+                traffic_verification: window.__ga4_session_class,
+                previous_traffic_verification: previousClass,
+                verification_reason: window.__ga4_tracking_start_reason,
+                page_path: window.location.pathname,
+                page_title: document.title || '',
+              });
+              // Components that defer engagement events until a real interaction can retry now.
+              window.dispatchEvent(new CustomEvent('xb:ga4-human-verified'));
+            };
+
+            ['pointerdown', 'keydown', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(
+                eventName,
+                (event) => {
+                  if (!event?.isTrusted) return;
+                  window.verifyGA4Human(`interaction:${eventName}`, 'human_interaction');
+                },
+                { once: true, passive: true },
+              );
+            });
+
+            let pointerMoveCount = 0;
+            let pointerMoveDistance = 0;
+            let lastPointerX = null;
+            let lastPointerY = null;
+            const handleHumanPointerMove = (event) => {
+              if (
+                window.__ga4_human_verified ||
+                !event?.isTrusted ||
+                event.pointerType === 'touch'
+              ) return;
+              if (lastPointerX !== null && lastPointerY !== null) {
+                pointerMoveDistance += Math.hypot(event.clientX - lastPointerX, event.clientY - lastPointerY);
+              }
+              lastPointerX = event.clientX;
+              lastPointerY = event.clientY;
+              pointerMoveCount += 1;
+              if (pointerMoveCount >= 3 && pointerMoveDistance >= 120) {
+                window.removeEventListener('pointermove', handleHumanPointerMove);
+                window.verifyGA4Human('interaction:pointermove', 'human_interaction');
+              }
+            };
+            window.addEventListener('pointermove', handleHumanPointerMove, { passive: true });
+
+            // 放宽采集：所有可见前台页面都记录原始访问；真人互动后再升级质量标签。
+            window.setTimeout(() => {
+              if (
+                window.__ga4_tracking_started ||
+                window.__ga4_requires_human_interaction ||
+                document.visibilityState !== 'visible'
+              ) return;
+              window.startGA4Tracking('page_load:visible_800ms', 'unverified_session', false);
+            }, 800);
+
+            document.addEventListener("astro:page-load", () => {
+              if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+              if (window.__ga4_tracking_started) {
+                window.sendGA4PageView();
+                window.initGA4Tracking();
+              }
+            });
+          } else {
+            // View Transitions 切换页面时先清理内部 UTM，再触发新页面上报。
+            if (typeof window.sanitizeInternalUtm === 'function') window.sanitizeInternalUtm();
+            if (window.__ga4_tracking_started && typeof window.sendGA4PageView === 'function') {
+              window.sendGA4PageView();
+            }
+          }
+        })();</script><script data-baidu-id="c7bfaf645bfc8974405a85c2a55573a0">
+          const baiduId = document.currentScript?.dataset.baiduId || '';
+          if (!window.__baidu_analytics_initialized) {
+            window._hmt = window._hmt || [];
+            window.__baidu_analytics_initialized = true;
+            window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+
+            const loadBaiduAnalytics = () => {
+              if (window.__baidu_script_loaded || !baiduId) return;
+              window.__baidu_script_loaded = true;
+              const hm = document.createElement('script');
+              hm.async = true;
+              hm.src = "https://hm.baidu.com/hm.js?" + baiduId;
+              document.head.appendChild(hm);
+              window.__lastBaiduPageKey = window.location.pathname + window.location.search;
+            };
+
+            // 百度统计不是首屏渲染依赖：首次交互时加载，若用户未交互则 12 秒后加载。
+            ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
+              window.addEventListener(eventName, loadBaiduAnalytics, { once: true, passive: true });
+            });
+            window.setTimeout(loadBaiduAnalytics, 12000);
+
+            document.addEventListener('astro:page-load', () => {
+              const pageKey = window.location.pathname + window.location.search;
+              if (!window.__baidu_script_loaded || pageKey === window.__lastBaiduPageKey) return;
+              window.__lastBaiduPageKey = pageKey;
+              window._hmt.push(['_trackPageview', pageKey]);
+            });
+          }
+        </script><link rel="stylesheet" href="/_astro/archive.DHbiqCdd.css">
+<style>.financial-disclaimer[data-astro-cid-qg2yevcq]{box-shadow:0 4px 20px -5px #f973161a}.xb-source-card[data-astro-cid-m7zhpdos]{margin-top:34px;padding:18px 20px;border:1px solid var(--xb-line);border-radius:12px;background:color-mix(in srgb,var(--xb-paper,#fff) 95%,var(--xb-blue) 5%);font-size:12px;line-height:1.7}.xb-source-brand[data-astro-cid-m7zhpdos]{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;color:var(--xb-muted)}.xb-source-name[data-astro-cid-m7zhpdos]{font-weight:760;font-size:14px;color:var(--xb-ink)}.xb-source-slogan[data-astro-cid-m7zhpdos]{font-size:11px;color:var(--xb-muted)}.xb-source-description[data-astro-cid-m7zhpdos]{margin:7px 0 9px;color:var(--xb-muted)}.xb-source-original[data-astro-cid-m7zhpdos]{margin:0;display:flex;gap:6px;flex-wrap:wrap;color:var(--xb-ink)}.xb-source-original[data-astro-cid-m7zhpdos] a[data-astro-cid-m7zhpdos]{color:var(--xb-blue);overflow-wrap:anywhere;text-decoration:underline;text-underline-offset:3px}.xb-source-actions[data-astro-cid-m7zhpdos]{margin-top:11px;display:flex;gap:12px;flex-wrap:wrap}.xb-source-actions[data-astro-cid-m7zhpdos] a[data-astro-cid-m7zhpdos]{color:var(--xb-blue);font-weight:650;text-decoration:underline;text-underline-offset:3px}.xb-source-card[data-astro-cid-m7zhpdos] a[data-astro-cid-m7zhpdos]:focus-visible{outline:2px solid var(--xb-blue);outline-offset:3px}.xb-article-grid.xb-article-v21{width:min(calc(100% - 40px),1180px);grid-template-columns:minmax(0,760px) 228px;gap:54px;justify-content:center}.xb-article-v21 .xb-article-paper{padding:36px 40px 40px}.xb-article-v21 .xb-article-side{top:126px}.xb-article-v21 .xb-article-panel{padding:17px;border-radius:10px}.xb-article-v21 .xb-article-panel__title{font-size:12px;margin-bottom:10px;letter-spacing:0;font-weight:760}.xb-v21-toc{display:flex;flex-direction:column;gap:0}.xb-v21-toc a,.xb-v21-toc button{display:flex;justify-content:space-between;gap:10px;text-align:left;padding:9px 0;border-bottom:1px solid var(--xb-line);font-size:13px;line-height:1.5;color:var(--xb-text)}.xb-v21-toc a:hover,.xb-v21-toc button:hover{color:var(--xb-blue)}.xb-v21-toc .xb-v21-toc-nested{padding-left:12px;font-size:12px}.xb-v21-evidence[data-astro-cid-ce2bgkb3]{margin:0 0 24px;border-block:1px solid var(--xb-line);padding:12px 0}.xb-v21-evidence[data-astro-cid-ce2bgkb3] summary[data-astro-cid-ce2bgkb3]{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--xb-muted);cursor:pointer}.xb-v21-evidence[data-astro-cid-ce2bgkb3] strong[data-astro-cid-ce2bgkb3]{font-size:13px;color:var(--xb-ink)}.xb-v21-evidence[data-astro-cid-ce2bgkb3] summary[data-astro-cid-ce2bgkb3]>span[data-astro-cid-ce2bgkb3]:last-child{margin-left:auto;color:var(--xb-blue)}.xb-v21-evidence-links[data-astro-cid-ce2bgkb3]{display:flex;gap:10px 18px;flex-wrap:wrap;margin-top:13px;padding-top:12px;border-top:1px solid var(--xb-line)}.xb-v21-evidence-links[data-astro-cid-ce2bgkb3] a[data-astro-cid-ce2bgkb3]{font-size:12px;line-height:1.5;color:var(--xb-blue)}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3]{display:none;border:1px solid var(--xb-line);border-radius:10px;margin:0 0 24px;padding:13px 16px;font-size:14px}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3] summary[data-astro-cid-ce2bgkb3]{display:flex;justify-content:space-between;cursor:pointer;font-weight:700}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3] nav[data-astro-cid-ce2bgkb3]{display:grid;gap:12px;padding-top:18px;color:var(--xb-text)}@media(max-width:1060px){.xb-article-grid.xb-article-v21{width:min(calc(100% - 32px),820px);display:block}.xb-article-grid.xb-article-v21>.xb-article-side{display:none}.xb-v21-mobile-toc[data-astro-cid-ce2bgkb3]{display:block}}@media(max-width:640px){.xb-article-v21 .xb-article-paper{padding:24px 18px 30px}}
+</style>
+<link rel="stylesheet" href="/_astro/_slug_.CoqtapaZ.css">
+<link rel="stylesheet" href="/_astro/_slug_.QFd94UQU.css">
+<link rel="stylesheet" href="/_astro/vendor-media.DSulWsr7.css"></head> <body class="bg-[var(--xb-bg)] text-[var(--xb-ink)] selection:bg-orange-500/20 selection:text-orange-500 overflow-x-hidden"> <style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value=="object"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};"requestIdleCallback"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event("astro:idle"));})();</script><script>(()=>{var A=Object.defineProperty;var g=(i,o,a)=>o in i?A(i,o,{enumerable:!0,configurable:!0,writable:!0,value:a}):i[o]=a;var d=(i,o,a)=>g(i,typeof o!="symbol"?o+"":o,a);{let i={0:t=>m(t),1:t=>a(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(a(t)),5:t=>new Set(a(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t),11:t=>1/0*t},o=t=>{let[l,e]=t;return l in i?i[l](e):void 0},a=t=>t.map(o),m=t=>typeof t!="object"||t===null?t:Object.fromEntries(Object.entries(t).map(([l,e])=>[l,o(e)]));class y extends HTMLElement{constructor(){super(...arguments);d(this,"Component");d(this,"hydrator");d(this,"hydrate",async()=>{var b;if(!this.hydrator||!this.isConnected)return;let e=(b=this.parentElement)==null?void 0:b.closest("astro-island[ssr]");if(e){e.addEventListener("astro:hydrate",this.hydrate,{once:!0});return}let c=this.querySelectorAll("astro-slot"),n={},h=this.querySelectorAll("template[data-astro-template]");for(let r of h){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("data-astro-template")||"default"]=r.innerHTML,r.remove())}for(let r of c){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("name")||"default"]=r.innerHTML)}let p;try{p=this.hasAttribute("props")?m(JSON.parse(this.getAttribute("props"))):{}}catch(r){let s=this.getAttribute("component-url")||"<unknown>",v=this.getAttribute("component-export");throw v&&(s+=` (export ${v})`),console.error(`[hydrate] Error parsing props for component ${s}`,this.getAttribute("props"),r),r}let u;await this.hydrator(this)(this.Component,p,n,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),this.dispatchEvent(new CustomEvent("astro:hydrate"))});d(this,"unmount",()=>{this.isConnected||this.dispatchEvent(new CustomEvent("astro:unmount"))})}disconnectedCallback(){document.removeEventListener("astro:after-swap",this.unmount),document.addEventListener("astro:after-swap",this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute("await-children")||document.readyState==="interactive"||document.readyState==="complete")this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener("DOMContentLoaded",e),c.disconnect(),this.childrenConnectedCallback()},c=new MutationObserver(()=>{var n;((n=this.lastChild)==null?void 0:n.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue==="astro:end"&&(this.lastChild.remove(),e())});c.observe(this,{childList:!0}),document.addEventListener("DOMContentLoaded",e)}}async childrenConnectedCallback(){let e=this.getAttribute("before-hydration-url");e&&await import(e),this.start()}async start(){let e=JSON.parse(this.getAttribute("opts")),c=this.getAttribute("client");if(Astro[c]===void 0){window.addEventListener(`astro:${c}`,()=>this.start(),{once:!0});return}try{await Astro[c](async()=>{let n=this.getAttribute("renderer-url"),[h,{default:p}]=await Promise.all([import(this.getAttribute("component-url")),n?import(n):()=>()=>{}]),u=this.getAttribute("component-export")||"default";if(!u.includes("."))this.Component=h[u];else{this.Component=h;for(let f of u.split("."))this.Component=this.Component[f]}return this.hydrator=p,this.hydrate},e,this)}catch(n){console.error(`[astro-island] Error hydrating ${this.getAttribute("component-url")}`,n)}}attributeChangedCallback(){this.hydrate()}}d(y,"observedAttributes",["props"]),customElements.get("astro-island")||customElements.define("astro-island",y)}})();</script><astro-island uid="ZWjsVO" prefix="r17" component-url="/_astro/GlobalLightbox.CqZePd56.js" component-export="default" renderer-url="/_astro/client.CJCcxmqC.js" props="{}" ssr client="idle" opts="{&quot;name&quot;:&quot;GlobalLightbox&quot;,&quot;value&quot;:true}"></astro-island> <div id="app-background" class="fixed inset-0 z-[-1] h-full w-full pointer-events-none bg-slate-50 dark:bg-slate-950 transition-colors duration-500"> <div id="app-background-image" class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-500" data-day="/_astro/macos2.hYF-Pyun.webp" data-night="/_astro/macos2-night.DwJ7amhx.webp" aria-hidden="true"></div> <div class="absolute inset-0 bg-[#DFE1E6]/90 dark:bg-transparent backdrop-blur-[6px] pointer-events-none"></div> <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b82f611,transparent_50%)] dark:hidden pointer-events-none"></div> <div class="absolute inset-0 opacity-[0.08] dark:opacity-[0.03] pointer-events-none mix-blend-multiply" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+');"></div> </div> <script>
+  (() => {
+    const bindBackground = () => {
+      const root = document.documentElement;
+      const background = document.getElementById('app-background-image');
+      if (!background || background.dataset.themeObserverBound === 'true') return;
+
+      const applyBackground = () => {
+        const source = root.classList.contains('dark') ? background.dataset.night : background.dataset.day;
+        if (!source) return;
+        const nextValue = `url("${source}")`;
+        if (background.style.backgroundImage !== nextValue) {
+          background.style.backgroundImage = nextValue;
+        }
+      };
+
+      applyBackground();
+      const observer = new MutationObserver(applyBackground);
+      observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+      background.dataset.themeObserverBound = 'true';
+    };
+
+    bindBackground();
+    document.addEventListener('astro:page-load', bindBackground);
+  })();
+</script> <header id="site-header" class="sticky top-0 z-[500] border-b border-[var(--xb-line)] bg-[color:var(--xb-bg)]/95 backdrop-blur-xl"> <div class="xb-shell flex min-h-[66px] items-center gap-7"> <a href="/" class="flex shrink-0 items-center gap-2.5 font-black tracking-[-0.035em] text-[var(--xb-ink)]" aria-label="XBSTACK Home"> <span class="xb-brand-logo" data-xbstack-logo-motion="load" aria-hidden="true"> <span class="xb-brand-logo__variant inline-flex dark:hidden"> <img src="/favicon/logo-light-nav.svg" alt="" width="32" height="32" decoding="async"> <span class="xb-brand-logo__shine" style="--xb-logo-mask: url(&#34;/favicon/logo-light-nav.svg&#34;)"></span> </span> <span class="xb-brand-logo__variant hidden dark:inline-flex"> <img src="/favicon/logo-dark-nav.svg" alt="" width="32" height="32" decoding="async"> <span class="xb-brand-logo__shine" style="--xb-logo-mask: url(&#34;/favicon/logo-dark-nav.svg&#34;)"></span> </span> </span> <span class="text-[17px]">XBSTACK</span> </a> <nav id="primary-navigation" class="hidden items-center gap-1 lg:flex" aria-label="主导航" data-active-menu-index="0"> <a href="/ai/" data-primary-nav-index="0" data-has-secondary="true" aria-current="page" aria-controls="secondary-preview-menu-0" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors bg-blue-500/[0.06] text-blue-600 dark:text-blue-400"> AI <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[9px] opacity-45" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a><a href="/products/" data-primary-nav-index="1" data-has-secondary="true" aria-controls="secondary-preview-menu-1" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Products <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[9px] opacity-45" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a><a href="/horizon/" data-primary-nav-index="2" data-has-secondary="true" aria-controls="secondary-preview-menu-2" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Insights <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[9px] opacity-45" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a><a href="/life/" data-primary-nav-index="3" data-has-secondary="true" aria-controls="secondary-preview-menu-3" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> Lens <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[9px] opacity-45" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </a><a href="/about/" data-primary-nav-index="4" data-has-secondary="false" class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"> About  </a> </nav> <div class="ml-auto flex items-center gap-2"> <a id="global-search-trigger" data-xbstack-search-trigger href="/search/" aria-label="打开站内搜索" class="hidden h-9 min-w-[190px] items-center gap-2 rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)] px-3 text-left text-[11px] text-[var(--xb-muted)] transition-colors hover:border-blue-400 md:flex"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="shrink-0" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.81 173.81 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.81 173.81 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3zM97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8z"></path></svg> <span class="truncate">搜索文章、工具、主题…</span> <kbd class="ml-auto rounded border border-[var(--xb-line)] px-1.5 py-0.5 text-[9px] text-[var(--xb-faint)]">⌘K</kbd> </a> <div class="hidden sm:block"> <nav data-visible-language-alternate aria-label="选择语言" data-astro-cid-iemtoba4> <details class="language-switcher-details relative" data-language-switcher-details data-astro-cid-iemtoba4> <summary class="language-switcher-summary flex h-10 min-w-[88px] cursor-pointer list-none items-center justify-center gap-2 rounded-full border border-slate-200/60 bg-white/50 px-3 text-[12px] font-bold text-slate-600 shadow-sm backdrop-blur-md transition-all hover:border-blue-300 hover:bg-blue-50/80 hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-2 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-blue-400/50 dark:hover:bg-blue-500/10 dark:hover:text-blue-400 dark:focus-visible:ring-offset-slate-950" aria-label="选择语言" title="选择语言" data-astro-cid-iemtoba4> <svg aria-hidden="true" viewBox="0 0 24 24" class="h-3.5 w-3.5 flex-none" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4> <circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle> <path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path> </svg> <span class="whitespace-nowrap" data-astro-cid-iemtoba4>中文</span> <svg aria-hidden="true" viewBox="0 0 20 20" class="language-chevron h-3 w-3 flex-none text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-iemtoba4> <path d="m5 7.5 5 5 5-5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path> </svg> </summary> <div class="language-switcher-menu absolute right-0 top-[calc(100%+0.65rem)] z-[520] w-44 overflow-hidden rounded-2xl border border-slate-200/80 bg-white/95 p-2 shadow-[0_18px_50px_-18px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0B1020]/95" role="menu" aria-label="选择语言" data-astro-cid-iemtoba4> <div class="px-3 pb-1.5 pt-1 text-[9px] font-black uppercase tracking-[0.22em] text-slate-400 dark:text-slate-500" data-astro-cid-iemtoba4> 语言 </div> <a href="/ai/tools-lab/pydantic-pax-coding-agent-harness/" data-language-choice="zh-CN" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" role="menuitemradio" aria-checked="true" title="当前语言：中文" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors cursor-default bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" data-astro-cid-iemtoba4> <span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4> <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" data-astro-cid-iemtoba4> <path d="m4.5 10 3.2 3.2 7.8-7.8" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-iemtoba4></path> </svg> </span> <span class="flex-1" data-astro-cid-iemtoba4>中文</span> <span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>ZH</span> </a><a href="/en/ai/tools-lab/pydantic-pax-coding-agent-harness/" data-language-choice="en" data-language-current="false" data-language-available="true" role="menuitemradio" aria-checked="false" title="Switch to the English version" class="flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[12px] font-bold transition-colors text-slate-600 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-blue-400" data-astro-cid-iemtoba4> <span class="flex h-5 w-5 items-center justify-center" aria-hidden="true" data-astro-cid-iemtoba4> <span class="h-1.5 w-1.5 rounded-full bg-slate-300 dark:bg-slate-700" data-astro-cid-iemtoba4></span> </span> <span class="flex-1" data-astro-cid-iemtoba4>English</span> <span class="text-[9px] font-black tracking-[0.14em] text-slate-400 dark:text-slate-600" data-astro-cid-iemtoba4>EN</span> </a> </div> </details> </nav>  <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> <div class="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)]"> <div class="relative flex items-center justify-center w-full h-full"> <input class="sr-only" id="theme-switcher" data-theme-switcher type="checkbox"> <label class="flex items-center justify-center cursor-pointer w-full h-full group/theme" for="theme-switcher" aria-label="切换主题">  <svg class="w-5 h-5 transition-all duration-500 scale-100 dark:scale-0 opacity-100 dark:opacity-0 absolute text-orange-500 group-hover/theme:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg>  <svg class="w-5 h-5 transition-all duration-500 scale-0 dark:scale-100 opacity-0 dark:opacity-100 absolute text-sky-400 group-hover/theme:-rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </label> </div> <script>
+  // 立即执行以防止闪烁
+  (function() {
+    const theme = localStorage.getItem("theme");
+    const isDark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  })();
+
+  // 页面加载和切换后的初始化逻辑
+  function initTheme() {
+    const themeSwitchers = document.querySelectorAll("[data-theme-switcher]");
+    const isDark = document.documentElement.classList.contains("dark");
+
+    const favicon = document.getElementById("xbstack-favicon");
+    if (favicon) {
+      favicon.setAttribute(
+        "href",
+        isDark
+          ? "/favicon/logo-dark.svg"
+          : "/favicon/logo-light.svg",
+      );
+    }
+
+    // 同步所有切换按钮的状态
+    themeSwitchers.forEach((el) => {
+      el.checked = isDark;
+      
+      // 移除旧的监听器（如果存在），防止重复绑定
+      // 由于是匿名函数难以移除，我们采用 cloneNode 或者简单的标志位
+      // Astro 的 View Transitions 会重新运行脚本，所以只需确保不累积
+      // 最简单的方式是直接覆盖 onclick 或 onchange，但这里用 addEventListener
+      // 我们可以给元素加个标记
+      if (el.dataset.initialized) return;
+      
+      el.addEventListener("change", (e) => {
+        const checked = e.target.checked;
+        if (checked) {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        }
+
+        const favicon = document.getElementById("xbstack-favicon");
+        if (favicon) {
+          favicon.setAttribute(
+            "href",
+            checked
+              ? "/favicon/logo-dark.svg"
+              : "/favicon/logo-light.svg",
+          );
+        }
+        
+        // 同步其他可能存在的切换按钮（例如移动端和桌面端各有一个）
+        document.querySelectorAll("[data-theme-switcher]").forEach(other => {
+            if (other !== el) other.checked = checked;
+        });
+      });
+      
+      el.dataset.initialized = "true";
+    });
+  }
+
+  // 绑定事件
+  document.addEventListener("DOMContentLoaded", initTheme);
+  document.addEventListener("astro:page-load", initTheme);
+  document.addEventListener("astro:after-swap", initTheme);
+</script> </div> <button id="mobile-menu-trigger" type="button" aria-label="打开导航菜单" aria-controls="mobile-menu" aria-expanded="false" class="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--xb-line)] bg-[var(--xb-surface)] text-[var(--xb-text)] lg:hidden"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path></svg></button> </div> </div> <div id="desktop-secondary-navigation"> <div class="xb-shell min-h-[45px] overflow-x-auto"> <nav class="flex min-w-max items-center gap-1 py-2" aria-label="AI 二级导航"> <a href="/ai/agent/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> Agents </a><a href="/ai/mcp/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> MCP </a><a href="/ai/security/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> Security </a><a href="/ai/local-ai/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors text-[var(--xb-muted)] hover:bg-blue-500/[0.04] hover:text-[var(--xb-ink)]"> Local AI </a><a href="/ai/tools-lab/" aria-current="page" class="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors bg-blue-500/[0.08] text-blue-600 dark:text-blue-400"> Tools Lab </a> </nav> </div> </div> <div id="desktop-secondary-preview" data-visible="false" aria-hidden="true" class="pointer-events-none absolute left-0 right-0 top-[66px] z-30 hidden bg-[color:var(--xb-bg)] shadow-lg lg:block"> <div class="xb-shell min-h-[45px] overflow-x-auto pointer-events-none"> <nav id="secondary-preview-menu-0" data-secondary-preview-index="0" class="pointer-events-auto hidden min-w-max items-center gap-1 py-2" aria-label="AI 二级导航预览"> <a href="/ai/agent/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Agents </a><a href="/ai/mcp/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> MCP </a><a href="/ai/security/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Security </a><a href="/ai/local-ai/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Local AI </a><a href="/ai/tools-lab/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Tools Lab </a> </nav><nav id="secondary-preview-menu-1" data-secondary-preview-index="1" class="pointer-events-auto hidden min-w-max items-center gap-1 py-2" aria-label="Products 二级导航预览"> <a href="/products/lunest/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> SleepAnew </a><a href="/products/recalia/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> OwnRAG </a><a href="/tools/ai-finance/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> AI Finance </a><a href="/tools/mcp-inspector/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> MCP Inspector </a><a href="/tools/agent-readiness-auditor/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Agent Readiness </a><a href="/tools/agent-security-auditor/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Agent Security </a><a href="/tools/compound-calculator/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Compound Calculator </a><a href="/tools/utm-builder/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> UTM Builder </a> </nav><nav id="secondary-preview-menu-2" data-secondary-preview-index="2" class="pointer-events-auto hidden min-w-max items-center gap-1 py-2" aria-label="Insights 二级导航预览"> <a href="/investing/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Investing </a><a href="/horizon/reading/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Reading </a><a href="/investing/thoughts/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Thinking </a> </nav><nav id="secondary-preview-menu-3" data-secondary-preview-index="3" class="pointer-events-auto hidden min-w-max items-center gap-1 py-2" aria-label="Lens 二级导航预览"> <a href="/life/hiking/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Outdoor </a><a href="/life/road-trip/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Travel </a><a href="/life/photo/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Photography </a><a href="/life/gear/" class="rounded-md px-3 py-1.5 text-[12px] font-semibold text-[var(--xb-muted)] transition-colors hover:bg-blue-500/[0.06] hover:text-[var(--xb-ink)]"> Gear </a> </nav> </div> </div> <div id="mobile-menu" class="invisible fixed inset-0 z-[600] pointer-events-none"> <div id="mobile-menu-overlay" class="absolute inset-0 bg-black/50 opacity-0 backdrop-blur-sm transition-opacity"></div> <aside id="mobile-menu-panel" class="absolute right-0 top-0 flex h-full w-[300px] translate-x-full flex-col border-l border-[var(--xb-line)] bg-[var(--xb-surface)] transition-transform"> <div class="flex h-16 items-center justify-between border-b border-[var(--xb-line)] px-5"> <strong class="text-sm tracking-tight text-[var(--xb-ink)]">XBSTACK</strong> <button id="mobile-menu-close" type="button" aria-label="关闭导航菜单" class="text-[var(--xb-muted)]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg></button> </div> <div class="border-b border-[var(--xb-line)] p-4"> <a id="mobile-search-trigger" data-xbstack-search-trigger href="/search/" class="flex h-10 w-full items-center gap-2 rounded-lg border border-[var(--xb-line)] px-3 text-[12px] text-[var(--xb-muted)]"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M456.69 421.39 362.6 327.3a173.81 173.81 0 0 0 34.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.81 173.81 0 0 0 327.3 362.6l94.09 94.09a25 25 0 0 0 35.3-35.3zM97.92 222.72a124.8 124.8 0 1 1 124.8 124.8 124.95 124.95 0 0 1-124.8-124.8z"></path></svg> 搜索 XBSTACK </a> </div> <nav class="flex flex-1 flex-col gap-2 overflow-y-auto p-4"> <details class="group/mobile" open> <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-4 py-3 text-[15px] font-semibold [&#38;::-webkit-details-marker]:hidden bg-blue-500/[0.07] text-blue-600 dark:text-blue-400"> <span>AI</span> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[10px] opacity-50 transition-transform group-open/mobile:rotate-180" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </summary> <div class="ml-4 mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3"> <a href="/ai/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">AI Overview</a> <a href="/ai/agent/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Agents</a><a href="/ai/mcp/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">MCP</a><a href="/ai/security/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Security</a><a href="/ai/local-ai/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Local AI</a><a href="/ai/tools-lab/" class="rounded-md px-3 py-2 text-[12px] font-semibold text-blue-600 dark:text-blue-400">Tools Lab</a> </div> </details><details class="group/mobile"> <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-4 py-3 text-[15px] font-semibold [&#38;::-webkit-details-marker]:hidden text-[var(--xb-text)]"> <span>Products</span> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[10px] opacity-50 transition-transform group-open/mobile:rotate-180" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </summary> <div class="ml-4 mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3"> <a href="/products/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Products Overview</a> <a href="/products/lunest/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">SleepAnew</a><a href="/products/recalia/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">OwnRAG</a><a href="/tools/ai-finance/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">AI Finance</a><a href="/tools/mcp-inspector/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">MCP Inspector</a><a href="/tools/agent-readiness-auditor/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Agent Readiness</a><a href="/tools/agent-security-auditor/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Agent Security</a><a href="/tools/compound-calculator/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Compound Calculator</a><a href="/tools/utm-builder/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">UTM Builder</a> </div> </details><details class="group/mobile"> <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-4 py-3 text-[15px] font-semibold [&#38;::-webkit-details-marker]:hidden text-[var(--xb-text)]"> <span>Insights</span> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[10px] opacity-50 transition-transform group-open/mobile:rotate-180" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </summary> <div class="ml-4 mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3"> <a href="/horizon/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Insights Overview</a> <a href="/investing/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Investing</a><a href="/horizon/reading/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Reading</a><a href="/investing/thoughts/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Thinking</a> </div> </details><details class="group/mobile"> <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-4 py-3 text-[15px] font-semibold [&#38;::-webkit-details-marker]:hidden text-[var(--xb-text)]"> <span>Lens</span> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="text-[10px] opacity-50 transition-transform group-open/mobile:rotate-180" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg> </summary> <div class="ml-4 mt-1 flex flex-col border-l border-[var(--xb-line)] pl-3"> <a href="/life/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Lens Overview</a> <a href="/life/hiking/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Outdoor</a><a href="/life/road-trip/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Travel</a><a href="/life/photo/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Photography</a><a href="/life/gear/" class="rounded-md px-3 py-2 text-[12px] text-[var(--xb-muted)]">Gear</a> </div> </details><a href="/about/" class="block rounded-lg px-4 py-3 text-[15px] font-semibold text-[var(--xb-text)]">About</a> </nav> <div class="border-t border-[var(--xb-line)] p-4 sm:hidden"> <nav data-visible-language-alternate aria-label="选择语言" data-astro-cid-iemtoba4> <div class="flex w-full items-center justify-between gap-4" aria-label="选择语言" data-astro-cid-iemtoba4> <div class="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300" data-astro-cid-iemtoba4> <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-iemtoba4> <circle cx="12" cy="12" r="9" data-astro-cid-iemtoba4></circle> <path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12S9.7 18.6 12 21" data-astro-cid-iemtoba4></path> </svg> <span data-astro-cid-iemtoba4>语言</span> </div> <div class="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 p-1 dark:border-white/10 dark:bg-white/5" data-astro-cid-iemtoba4> <a href="/ai/tools-lab/pydantic-pax-coding-agent-harness/" data-language-choice="zh-CN" data-language-current="true" data-language-available="true" aria-current="page" aria-disabled="true" title="当前语言：中文" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all cursor-default bg-white text-blue-600 shadow-sm dark:bg-blue-500/15 dark:text-blue-400" data-astro-cid-iemtoba4> 中文 </a><a href="/en/ai/tools-lab/pydantic-pax-coding-agent-harness/" data-language-choice="en" data-language-current="false" data-language-available="true" title="Switch to the English version" class="flex min-h-9 min-w-[70px] items-center justify-center rounded-full px-3 text-[11px] font-bold transition-all text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400" data-astro-cid-iemtoba4> English </a> </div> </div> </nav>  <script>
+  if (!window.__xbstackLanguageChoiceBound) {
+    window.__xbstackLanguageChoiceBound = true;
+
+    const closeLanguageMenus = (except = null) => {
+      document.querySelectorAll('[data-language-switcher-details][open]').forEach((details) => {
+        if (details !== except) details.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const clickedDetails = event.target instanceof Element
+        ? event.target.closest('[data-language-switcher-details]')
+        : null;
+      if (!clickedDetails) closeLanguageMenus();
+
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-language-choice]')
+        : null;
+      if (!target) return;
+
+      const language = target.getAttribute('data-language-choice');
+      const isCurrent = target.getAttribute('data-language-current') === 'true';
+      const isAvailable = target.getAttribute('data-language-available') === 'true';
+      const parentDetails = target.closest('[data-language-switcher-details]');
+      if (!language) return;
+
+      if (isCurrent) {
+        event.preventDefault();
+        if (parentDetails) parentDetails.removeAttribute('open');
+        return;
+      }
+
+      document.cookie = `xbstack_lang=${encodeURIComponent(language)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem('xbstack_lang', language);
+      } catch (error) {}
+      try {
+        sessionStorage.setItem('xbstack_auto_lang_checked', '1');
+        if (!isAvailable) {
+          sessionStorage.setItem('xbstack_language_notice', JSON.stringify({
+            language,
+            sourcePath: window.location.pathname,
+          }));
+        } else {
+          sessionStorage.removeItem('xbstack_language_notice');
+        }
+      } catch (error) {}
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDetails = document.querySelector('[data-language-switcher-details][open]');
+      if (!openDetails) return;
+      openDetails.removeAttribute('open');
+      openDetails.querySelector('summary')?.focus();
+    });
+  }
+</script> </div> </aside> </div> <script>
+    if (!window.__xbstackSearchShortcutReady) {
+      window.__xbstackSearchShortcutReady = true;
+      window.addEventListener('keydown', (event) => {
+        const target = event.target;
+        const isTyping = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target?.isContentEditable;
+        const isCommandK = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
+        const isSlash = event.key === '/' && !isTyping;
+        if (!isCommandK && !isSlash) return;
+        event.preventDefault();
+        window.location.href = window.location.pathname.startsWith('/en/') ? '/en/search/' : '/search/';
+      });
+    }
+
+    const bindHeader = () => {
+      const header = document.getElementById('site-header');
+      const trigger = document.getElementById('mobile-menu-trigger');
+      const close = document.getElementById('mobile-menu-close');
+      const menu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const panel = document.getElementById('mobile-menu-panel');
+      const primaryNavigation = document.getElementById('primary-navigation');
+      const persistentSecondaryNavigation = document.getElementById('desktop-secondary-navigation');
+      const secondaryPreview = document.getElementById('desktop-secondary-preview');
+      const primaryLinks = Array.from(primaryNavigation?.querySelectorAll('[data-primary-nav-index]') || []);
+      const previewMenus = Array.from(secondaryPreview?.querySelectorAll('[data-secondary-preview-index]') || []);
+      const activeMenuIndex = Number(primaryNavigation?.dataset.activeMenuIndex ?? '-1');
+
+      const hideSecondaryPreview = () => {
+        if (!secondaryPreview) return;
+        previewMenus.forEach((item) => {
+          item.classList.add('hidden');
+          item.classList.remove('flex');
+        });
+        secondaryPreview.dataset.visible = 'false';
+        secondaryPreview.setAttribute('aria-hidden', 'true');
+        if (persistentSecondaryNavigation) {
+          persistentSecondaryNavigation.classList.remove('invisible', 'pointer-events-none');
+          persistentSecondaryNavigation.setAttribute('aria-hidden', 'false');
+        }
+      };
+
+      const showSecondaryPreview = (index) => {
+        if (!secondaryPreview || index === activeMenuIndex) {
+          hideSecondaryPreview();
+          return;
+        }
+        const target = previewMenus.find((item) => Number(item.dataset.secondaryPreviewIndex) === index);
+        previewMenus.forEach((item) => {
+          const visible = item === target;
+          item.classList.toggle('hidden', !visible);
+          item.classList.toggle('flex', visible);
+        });
+        secondaryPreview.dataset.visible = target ? 'true' : 'false';
+        secondaryPreview.setAttribute('aria-hidden', target ? 'false' : 'true');
+        if (persistentSecondaryNavigation) {
+          persistentSecondaryNavigation.classList.toggle('invisible', Boolean(target));
+          persistentSecondaryNavigation.classList.toggle('pointer-events-none', Boolean(target));
+          persistentSecondaryNavigation.setAttribute('aria-hidden', target ? 'true' : 'false');
+        }
+      };
+
+      primaryLinks.forEach((link) => {
+        if (link.dataset.secondaryPreviewBound === '1') return;
+        link.dataset.secondaryPreviewBound = '1';
+        const index = Number(link.dataset.primaryNavIndex);
+        const preview = () => {
+          if (link.dataset.hasSecondary === 'true') showSecondaryPreview(index);
+          else hideSecondaryPreview();
+        };
+        link.addEventListener('mouseenter', preview);
+        link.addEventListener('focus', preview);
+      });
+
+      if (header && header.dataset.secondaryRestoreBound !== '1') {
+        header.dataset.secondaryRestoreBound = '1';
+        header.addEventListener('mouseleave', hideSecondaryPreview);
+        header.addEventListener('focusout', () => {
+          requestAnimationFrame(() => {
+            if (!header.contains(document.activeElement)) hideSecondaryPreview();
+          });
+        });
+        header.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') hideSecondaryPreview();
+        });
+      }
+
+      hideSecondaryPreview();
+
+      const setOpen = (open) => {
+        if (!menu || !overlay || !panel) return;
+        trigger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) {
+          menu.classList.remove('invisible', 'pointer-events-none');
+          overlay.classList.add('opacity-100');
+          panel.classList.remove('translate-x-full');
+          document.body.style.overflow = 'hidden';
+        } else {
+          overlay.classList.remove('opacity-100');
+          panel.classList.add('translate-x-full');
+          document.body.style.overflow = '';
+          setTimeout(() => menu.classList.add('invisible', 'pointer-events-none'), 220);
+        }
+      };
+      if (trigger && trigger.dataset.mobileMenuBound !== '1') {
+        trigger.dataset.mobileMenuBound = '1';
+        trigger.addEventListener('click', () => setOpen(true));
+      }
+      if (close && close.dataset.mobileMenuBound !== '1') {
+        close.dataset.mobileMenuBound = '1';
+        close.addEventListener('click', () => setOpen(false));
+      }
+      if (overlay && overlay.dataset.mobileMenuBound !== '1') {
+        overlay.dataset.mobileMenuBound = '1';
+        overlay.addEventListener('click', () => setOpen(false));
+      }
+    };
+    const bindBrandLogoMotion = () => {
+      const logos = document.querySelectorAll('[data-xbstack-logo-motion]');
+      logos.forEach((logo) => {
+        if (logo.dataset.logoMotionBound === '1') return;
+        logo.dataset.logoMotionBound = '1';
+
+        const play = () => {
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+          requestAnimationFrame(() => logo.classList.add('is-animating'));
+        };
+
+        if (logo.dataset.xbstackLogoMotion === 'view' && 'IntersectionObserver' in window) {
+          const observer = new IntersectionObserver((entries) => {
+            if (!entries.some((entry) => entry.isIntersecting)) return;
+            observer.disconnect();
+            play();
+          }, { threshold: 0.35 });
+          observer.observe(logo);
+        } else {
+          play();
+        }
+      });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindBrandLogoMotion, { once: true });
+    } else {
+      bindBrandLogoMotion();
+    }
+    document.addEventListener('astro:page-load', bindHeader);
+    document.addEventListener('astro:page-load', bindBrandLogoMotion);
+    bindHeader();
+  </script>  </header> <div id="language-switch-notice" class="pointer-events-none fixed left-1/2 top-24 z-[700] hidden max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/95 px-5 py-3 text-center text-sm font-bold text-slate-700 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 dark:text-slate-200" role="status" aria-live="polite"></div> <main id="main-content" class="flex-1">  <div id="reading-progress" class="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 z-[110] transition-all duration-300 w-0 shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div> <main class="pt-24 md:pt-32 pb-20"> <script type="module" src="/_astro/Comment.astro_astro_type_script_index_0_lang.C65OC043.js"></script><div class="xb-article-grid xb-article-v21 py-8 md:py-10" data-astro-cid-ce2bgkb3> <main class="min-w-0" data-astro-cid-ce2bgkb3> <article class="xb-article-paper" data-astro-cid-ce2bgkb3> <header class="mb-10 border-b border-[var(--xb-line)] pb-8"><div class="mb-4 flex flex-wrap items-center gap-2"><a href="/ai/tools-lab/" data-article-category-link class="rounded-md border border-blue-500/15 bg-blue-500/[0.05] px-2.5 py-1 text-[10px] font-bold text-blue-600 dark:text-blue-400">AI 工具实测</a></div><h1 class="m-0 text-[clamp(2rem,4vw,3.6rem)] font-black leading-[1.12] tracking-[-.045em] text-[var(--xb-ink)]">Pydantic Pax 是什么？与 Codex、Claude Code 的区别及 Agent Harness 的未来</h1><p class="mt-5 max-w-[760px] text-[15px] leading-7 text-[var(--xb-text)]">Pax 是什么，能替代 Codex 或 Claude Code 吗？从安装、源码架构、七款工具对照、八模型跑分、本地 Code Mode 实验、安全和使用成本分析选型。</p><div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] text-[var(--xb-faint)]"><span>发布 · <time datetime="2026-11-27T06:07:24Z">2026/11/27 06:07 UTC</time></span><a href="/about/" rel="author">作者：小白</a><span>46 分钟阅读</span><span>XBSTACK 原创</span></div></header> <details class="xb-v21-evidence" data-astro-cid-ce2bgkb3> <summary data-astro-cid-ce2bgkb3> <strong data-astro-cid-ce2bgkb3>Evidence</strong> <span data-astro-cid-ce2bgkb3>40 条资料来源</span>  <span aria-hidden="true" data-astro-cid-ce2bgkb3>⌄</span> </summary> <div class="xb-v21-evidence-links" data-astro-cid-ce2bgkb3>  <a href="https://pydantic.dev/articles/why-code-mode-is-the-future" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>pydantic.dev ↗</a><a href="https://pydantic.dev/docs/ai/guides/testing/" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>pydantic.dev ↗</a><a href="https://pydantic.dev/articles/pax-harness-beta" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>pydantic.dev ↗</a><a href="https://pypi.org/project/pydantic-ai-pax/0.75.0/" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>pypi.org ↗</a><a href="https://pydantic.dev/docs/ai/harness/" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>pydantic.dev ↗</a><a href="https://pydantic.dev/docs/ai/harness/coder/" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>pydantic.dev ↗</a><a href="https://pydantic.dev/articles/company-announcement" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>pydantic.dev ↗</a><a href="https://pydantic.dev/articles/logfire-announcement" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>pydantic.dev ↗</a><a href="https://pydantic.dev/docs/ai/production/enterprise/" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>pydantic.dev ↗</a><a href="https://pydantic.dev/articles/gateway-merging-into-logfire" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>pydantic.dev ↗</a><a href="https://pypi.org/project/pydantic-ai-harness/0.75.0/" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>pypi.org ↗</a><a href="https://pypi.org/project/pydantic-ai-slim/2.75.0/" target="_blank" rel="noopener noreferrer" data-astro-cid-ce2bgkb3>pypi.org ↗</a> </div> </details> <nav data-cluster-hub-link class="mb-6 text-[13px] font-semibold text-[var(--xb-blue)]" aria-label="所属专题" data-astro-cid-ce2bgkb3><a href="/ai/tools-lab/" data-astro-cid-ce2bgkb3>所属专题：AI 工具实测 →</a></nav> <details class="xb-v21-mobile-toc" data-astro-cid-ce2bgkb3> <summary data-astro-cid-ce2bgkb3>本文目录 <span aria-hidden="true" data-astro-cid-ce2bgkb3>⌄</span></summary> <nav aria-label="本文目录" data-astro-cid-ce2bgkb3><a href="#pydantic-pax-是什么与-codexclaude-code-的区别及-agent-harness-的未来" data-astro-cid-ce2bgkb3>Pydantic Pax 是什么？与 Codex、Claude Code 的区别及 Agent Harness 的未来</a><a href="#1谁发布了-pax它与-pydantic-ai-的关系是什么" data-astro-cid-ce2bgkb3>1、谁发布了 Pax？它与 Pydantic AI 的关系是什么？</a><a href="#pydantic-的商业位置为什么开源验证库公司要做终端智能体" data-astro-cid-ce2bgkb3>Pydantic 的商业位置：为什么开源验证库公司要做终端智能体</a><a href="#2固定版本的源码复核三个-wheel而不是一份产品说明" data-astro-cid-ce2bgkb3>2、固定版本的源码复核：三个 wheel，而不是一份产品说明</a><a href="#3pax-与-codexclaude-code-真正不同在哪里" data-astro-cid-ce2bgkb3>3、Pax 与 Codex、Claude Code 真正不同在哪里？</a><a href="#七款工具的定位矩阵比较的是控制方式不是功能数量" data-astro-cid-ce2bgkb3>七款工具的定位矩阵：比较的是控制方式，不是功能数量</a><a href="#4多模型与会话迁移降低切换成本但不是消除锁定" data-astro-cid-ce2bgkb3>4、多模型与会话迁移：降低切换成本，但不是消除锁定</a><a href="#5上下文记忆与多模型回退真正影响长期任务的运行机制" data-astro-cid-ce2bgkb3>5、上下文、记忆与多模型回退：真正影响长期任务的运行机制</a><a href="#6官方测试921-美元对-2105-美元意味着什么" data-astro-cid-ce2bgkb3>6、官方测试：9.21 美元对 21.05 美元意味着什么？</a><a href="#7完整八模型数据与独立-pareto-分析" data-astro-cid-ce2bgkb3>7、完整八模型数据与独立 Pareto 分析</a><a href="#怎样建立可信的编码智能体测试" data-astro-cid-ce2bgkb3>怎样建立可信的编码智能体测试</a><a href="#8code-mode少走几次模型往返代价是什么" data-astro-cid-ce2bgkb3>8、Code Mode：少走几次模型往返，代价是什么？</a><a href="#9工作区抽象流式工具执行与真实隔离" data-astro-cid-ce2bgkb3>9、工作区抽象、流式工具执行与真实隔离</a><a href="#10安全与恢复pax-最不能忽略的两个边界" data-astro-cid-ce2bgkb3>10、安全与恢复：Pax 最不能忽略的两个边界</a><a href="#安全治理不要把仓库文本提升为操作者指令" data-astro-cid-ce2bgkb3>安全治理：不要把仓库文本提升为操作者指令</a><a href="#11会话步骤持久化与-durable-execution-的差异" data-astro-cid-ce2bgkb3>11、会话、步骤持久化与 Durable Execution 的差异</a><a href="#12给个人开发者与企业团队的选择建议" data-astro-cid-ce2bgkb3>12、给个人开发者与企业团队的选择建议</a><a href="#13独立复核结果与企业采用的阶段门禁" data-astro-cid-ce2bgkb3>13、独立复核结果与企业采用的阶段门禁</a><a href="#本站新增真实运行m1-pro-上的-code-mode-对照" data-astro-cid-ce2bgkb3>本站新增真实运行：M1 Pro 上的 Code Mode 对照</a><a href="#八款模型在假设环境下的费用推演与硬件边界" data-astro-cid-ce2bgkb3>八款模型在假设环境下的费用推演与硬件边界</a><a href="#14harness-会成为操作系统吗这个类比的解释力和局限" data-astro-cid-ce2bgkb3>14、Harness 会成为操作系统吗：这个类比的解释力和局限</a><a href="#15未来harness-会成为独立竞争层吗" data-astro-cid-ce2bgkb3>15、未来：Harness 会成为独立竞争层吗？</a><a href="#16中长期商业竞争与三种可证伪情景" data-astro-cid-ce2bgkb3>16、中长期商业竞争与三种可证伪情景</a><a href="#结论" data-astro-cid-ce2bgkb3>结论</a></nav> </details> <nav class="mb-7 flex items-center justify-between gap-4 border-y border-[var(--xb-line)] py-3 text-[12px] text-[var(--xb-muted)]" aria-label="文章语言版本" data-astro-cid-ce2bgkb3> <span data-astro-cid-ce2bgkb3>当前 URL 为中文版本。</span> <a href="/en/ai/tools-lab/pydantic-pax-coding-agent-harness/" hreflang="en" class="font-bold text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>Read this article in English →</a> </nav>  <div class="prose prose-tech markdown-content max-w-none" data-astro-cid-ce2bgkb3>  <aside class="mb-10 rounded-2xl border border-orange-500/20 bg-orange-500/[0.045] px-5 py-4 not-prose" data-analytics-area="article_body" aria-label="推荐下一步"> <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"> <div> <p class="text-xs font-black uppercase tracking-[0.18em] text-orange-600 dark:text-orange-400">专题入口 / AI Agent Hub</p> <p class="mt-1 text-sm font-bold leading-6 text-slate-700 dark:text-slate-300">从单个 Agent 问题继续进入完整生产体系</p> </div> <div class="flex shrink-0 flex-wrap gap-2"> <a href="/ai/agent/" class="rounded-full bg-orange-500 px-4 py-2 text-xs font-black text-white transition-colors hover:bg-orange-600">进入 AI Agent 专题 →</a> <a href="/ai/ai-agent-architecture/" class="rounded-full border border-slate-300 px-4 py-2 text-xs font-black text-slate-700 transition-colors hover:border-orange-500 hover:text-orange-500 dark:border-white/15 dark:text-slate-200">查看架构指南</a> </div> </div> </aside> <h2 id="pydantic-pax-是什么与-codexclaude-code-的区别及-agent-harness-的未来">Pydantic Pax 是什么？与 Codex、Claude Code 的区别及 Agent Harness 的未来</h2>
+<p>2026 年 11 月 25 日，Pydantic 正式公布 <a href="https://pydantic.dev/articles/pax-harness-beta" rel="nofollow noopener noreferrer" target="_blank">Pax 与 Pydantic AI Harness 公开测试版</a>。Pax 是基于可组合 Harness SDK 的终端 AI 编程助手，不是新的基础模型。此次发布把可选模型、执行能力、工作环境和交互界面进一步分离，为开发者提供了 Codex、Claude Code 之外的另一种技术选择。</p>
+<p>截至 11 月 27 日，XBSTACK 已核验三份固定版本发行包、复算官方八模型 SWE81 数据，并在 M1 Pro 上完成隔离安装、CLI 启动检查及 60 次离线 Harness 工具链计时。结果表明，Code Mode 在有依赖且请求等待显著的合成任务中可以减少执行耗时，但零等待时反而增加开销。该实验未调用真实商业模型，不能据此宣布 Pax 的实际编码能力领先。此次发布值得关注的核心问题是：相同模型能否通过不同的执行框架获得更好的交付结果、更低的成本和可验证的安全边界。</p>
+<p><strong>先给判断：Pax 值得试验，但现在不足以证明应该把 Codex 或 Claude Code 从日常工作中移除。</strong> 对开发者而言，真正需要关注的是它背后的 Harness SDK，而不是终端界面能否赢下一次排行榜。本文结合截至 11 月 27 日的公开资料、固定发行包核验与真实离线 Harness 运行实验；另给出八模型费用情景推演。尚未执行商业模型横评。</p>
+<p>如果你正在寻找新的 AI 编程助手，先把三个问题分开：Pax 可以作为多模型终端工具试用，但不是新的大模型；Pax 的软件开源不等于模型调用免费；本站 M1 Pro 实验验证了安装、CLI 与固定合成工具链，尚未证明它在真实编码任务中优于 Codex 或 Claude Code。下面分别给出安装条件、工具选型、实际计时和安全边界。</p>
+<p>相关阅读：<a href="/ai/tools-lab/">AI 工具实测与选型研究</a>.</p>
+<h2 id="1谁发布了-pax它与-pydantic-ai-的关系是什么">1、谁发布了 Pax？它与 Pydantic AI 的关系是什么？</h2>
+<p>Pydantic 原本以 Python 数据校验和类型约束工具为人熟知。在 Agent 应用中，数据结构是否有效、工具参数是否满足约束，恰恰是模型输出进入真实业务之前的一道重要门槛。这个背景解释了为什么一个 Python 基础设施团队会向智能体的执行层扩展，却不能据此推断其编程工具天然更可靠。</p>
+<p>Pax 是 Pydantic 官方的终端产品，Python 包名为 pydantic-ai-pax。可在 <a href="https://pypi.org/project/pydantic-ai-pax/0.75.0/" rel="nofollow noopener noreferrer" target="_blank">PyPI 0.75.0 发行页</a> 核验 11 月 25 日的发行记录、MIT 许可及 Python 3.11 以上的要求。0.75.0 是本文核验的发布版本，不代表最新版本。开源软件许可也不意味着底层模型调用、云端工作区和商业服务全部免费。架构上应区别四层：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>层次</th><th>解决的问题</th><th>采用时的决策</th></tr></thead><tbody><tr><td>Pydantic AI</td><td>模型与工具的智能体循环、结构化结果</td><td>是否需要在应用内建立 Agent</td></tr><tr><td>Harness SDK</td><td>文件、工作区、上下文、执行控制等可组合能力</td><td>哪些能力适合实际业务</td></tr><tr><td>Coder</td><td>封装了编程工作所需的一组能力</td><td>是否复用现成编码工作流</td></tr><tr><td>Pax</td><td>提供终端交互及插件管理</td><td>是否把它作为日常编程入口</td></tr></tbody></table>
+<p>参见 <a href="https://pydantic.dev/docs/ai/harness/" rel="nofollow noopener noreferrer" target="_blank">Harness 文档</a> 与 <a href="https://pydantic.dev/docs/ai/harness/coder/" rel="nofollow noopener noreferrer" target="_blank">Coder 文档</a>。Pax 不是 Pydantic AI 的另一个名称，也不是本地大模型。模型仍由接入的供应商或本地服务提供。SDK 可独立使用，因此构建产品不一定需要启动终端界面。</p>
+<p>这一层次划分的工程意义是：替换一层时，理论上不必重写全部其他层。然而接口兼容并不自动保证行为兼容，尤其涉及权限、历史会话和模型原生工具时。</p>
+<h3 id="pydantic-的商业位置为什么开源验证库公司要做终端智能体">Pydantic 的商业位置：为什么开源验证库公司要做终端智能体</h3>
+<p>把 Pax 当成一家模型公司推出的附属客户端，会误判它的竞争动机。Pydantic 在 <a href="https://pydantic.dev/articles/company-announcement" rel="nofollow noopener noreferrer" target="_blank">公司成立公告</a> 中明确将开源项目视为公司的基础，随后通过 <a href="https://pydantic.dev/articles/logfire-announcement" rel="nofollow noopener noreferrer" target="_blank">Logfire 上线与融资公告</a> 扩展可观测性。现在其 <a href="https://pydantic.dev/docs/ai/production/enterprise/" rel="nofollow noopener noreferrer" target="_blank">企业服务说明</a> 将开源框架、Logfire、AI Gateway 和企业支持区分开来，<a href="https://pydantic.dev/articles/gateway-merging-into-logfire" rel="nofollow noopener noreferrer" target="_blank">Gateway 并入 Logfire 的公告</a> 则提供了商业服务整合的具体依据。这些是公开产品组合，不是对公司营收、客户数、市场份额或未来估值的推断。</p>
+<p>Pydantic 原先解决的是一个相对确定的问题：把未经验证的输入变成应用程序可以依赖的数据。Agent 时代的输入不再只是用户填写的表单，而包括模型生成的工具参数、执行环境返回的结果和多轮任务状态。数据校验仍重要，却不足以判定一个操作是否被授权、是否已经发生、是否符合用户真正想要的结果。一个格式正确的删除请求，也可能删除错误的对象；结构化输出通过校验的代码生成结果，也可能不满足需求。</p>
+<p>这意味着 Pydantic 进入 Harness 的合理性来自其技术生态，但它必须证明新的能力。类型系统解决数据约束，框架解决模型和工具调用，Harness 提供任务执行控制，Logfire 等服务则提供运行后的追踪、评价和治理。在这一链条中，终端产品能让开发者更容易感知执行机制的效果，并向 SDK 的采用者提供实际交互入口。</p>
+<p>从商业角度看，有三种可能的收益路径：开发者因使用 Pax 接触框架；应用团队因使用框架产生追踪、评估、代理接入和运行服务需求；组织因为监管和维护成本购买支持。它们是本文基于公开产品结构的分析，不是厂商承诺的转化漏斗。免费且开源的客户端可以扩大接触面，但如果用户仅使用本地工具并自行建设全部基础设施，商业转化未必发生。反过来，如果框架的可组合性被商业服务绑定，独立 SDK 的差异化也可能降低。观察这两种力量，比预测 Pax 会获得多少终端用户更有意义。</p>
+<h2 id="2固定版本的源码复核三个-wheel而不是一份产品说明">2、固定版本的源码复核：三个 wheel，而不是一份产品说明</h2>
+<p><img src="/images/articles/pydantic-pax-coding-agent-harness/zh/02-four-layer-architecture.webp" alt="Pydantic AI、Harness SDK、Coder 与 Pax 的四层源码架构示意"></p>
+<p><em>GPT 解释性配图；具体事实与实验数据以正文及原始记录为准。</em></p>
+<p>为避免将不断变化的网页文档直接当成当前安装事实，XBSTACK 从 PyPI 获取了三份指定版本的 wheel，在本地内存中读取 ZIP 和 METADATA，并按官方发行哈希核对字节、解析 Python AST。静态审阅阶段没有安装、导入或执行下载的代码；独立隔离运行另见第 13 节。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>发行包</th><th>固定版本</th><th align="right">Python 源文件数</th><th>核心依赖关系</th></tr></thead><tbody><tr><td>pydantic-ai-pax</td><td>0.75.0</td><td align="right">255</td><td>Harness 0.75.0、Core 2.75.0，包含编码及 Skills 等额外依赖</td></tr><tr><td>pydantic-ai-harness</td><td>0.75.0</td><td align="right">441</td><td>pydantic-ai-slim 2.75.0</td></tr><tr><td>pydantic-ai-slim</td><td>2.75.0</td><td align="right">483</td><td>Core 本身，不依赖上述两层</td></tr></tbody></table>
+<p>发行依据分别见 <a href="https://pypi.org/project/pydantic-ai-pax/0.75.0/" rel="nofollow noopener noreferrer" target="_blank">Pax wheel</a>、<a href="https://pypi.org/project/pydantic-ai-harness/0.75.0/" rel="nofollow noopener noreferrer" target="_blank">Harness wheel</a> 与 <a href="https://pypi.org/project/pydantic-ai-slim/2.75.0/" rel="nofollow noopener noreferrer" target="_blank">Core wheel</a>。源码数量反映包内 Python 文件规模，不是代码质量、生产成熟度或性能排名。包中的版本锁定也意味着可组合不等于任意版本可混装。生产部署应锁定三个包及传递依赖，逐个核验升级说明。</p>
+<p>静态复核发现以下有实际源码对应的结构：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>研究层</th><th>固定 wheel 中的路径或符号</th><th>说明</th></tr></thead><tbody><tr><td>终端入口</td><td>pydantic_ai_pax.<strong>main</strong>:main</td><td>pax 与 pydantic-ai-pax 都指向这一入口</td></tr><tr><td>终端插件</td><td>builtin_plugins/coder.py、CoderPlugin</td><td>终端侧编码能力通过插件组织</td></tr><tr><td>SDK 组合</td><td>pydantic_ai_harness/coder/_capability.py、Coder</td><td>编码能力与 TUI 不是同一模块</td></tr><tr><td>插件接口</td><td>pydantic_ai_pax/plugins/<strong>init</strong>.py、Plugin、PluginHost</td><td>有独立的宿主及插件概念</td></tr><tr><td>权限处理</td><td>runtime/permissions.py、ApprovalHandler、session_permissions</td><td>不能将默认行为与可配置审批混为一谈</td></tr><tr><td>Code Mode</td><td>code_mode 下的 capability、toolset、streaming、speculation</td><td>编排、流式处理与提前执行有不同实现文件</td></tr><tr><td>上下文</td><td>compaction 下的 summarizing、clear_tool_results、deduplicate_file_reads</td><td>压缩并非一个简单截断函数</td></tr><tr><td>状态</td><td>step_persistence 下的 store、recovery；Core 的 ModelFallback</td><td>步骤持久化与模型回退是不同机制</td></tr></tbody></table>
+<p>这是一种有限但可复核的独立证据：它证明指定版本确实包含这些入口、模块和符号；不能证明所有路径被启用、所有 API 调用成功、权限策略不会被绕过，或恢复语义已经达到生产标准。本文附带的本地复核脚本与结果文件位于 experiments/pax-harness-evidence-20261127/，尚未公开到 GitHub。正式发布时可提供审阅后的公开证据链接，而不是提前制造不可访问的链接。</p>
+<p>从接口设计看，Pydantic 的 <a href="https://pydantic.dev/docs/ai/capabilities/overview/" rel="nofollow noopener noreferrer" target="_blank">Capabilities 文档</a> 与 <a href="https://pydantic.dev/docs/ai/capabilities/on-demand/" rel="nofollow noopener noreferrer" target="_blank">按需加载机制</a> 给出另一条区别于单体 CLI 的路线：工具、指令和生命周期处理可以包装成组件，在任务真正需要时再加入。组件边界使团队有机会对某一项行为进行单独测试，但它不自动解决组合后的冲突。例如一个组件将输出裁剪以控制上下文，另一个组件要求完整引用原文，二者可能在同一请求中形成不兼容的假设。需要对组合顺序、权限、资源上限、消息格式和失败语义建立显式契约。仅仅存在扩展接口，不能证明它已形成成熟插件生态。</p>
+<h2 id="3pax-与-codexclaude-code-真正不同在哪里">3、Pax 与 Codex、Claude Code 真正不同在哪里？</h2>
+<p><img src="/images/articles/pydantic-pax-coding-agent-harness/zh/03-seven-tool-comparison.webp" alt="Pax、Codex、Claude Code、OpenCode、pi、Deep Agents 与 DeepSeek Harness 的定位和选型问题"></p>
+<p><em>GPT 解释性配图；具体事实与实验数据以正文及原始记录为准。</em></p>
+<p>不要用功能勾选表代替架构比较。三者都能帮助开发者阅读项目、编辑代码和执行任务，但产品目标与集成方式有所差别。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>维度</th><th>Pax</th><th>Codex</th><th>Claude Code</th></tr></thead><tbody><tr><td>主要入口</td><td>终端及 Python 组件</td><td>CLI、应用及开发者集成</td><td>CLI、应用及 Agent SDK</td></tr><tr><td>模型选择</td><td>面向多模型、多账户工作方式</td><td>主要围绕 OpenAI 模型生态</td><td>主要围绕 Claude 模型生态</td></tr><tr><td>扩展路径</td><td>可组合能力和终端插件</td><td>开源 Harness、SDK、App Server</td><td>Agent SDK、工具、Hooks、Skills</td></tr><tr><td>权限边界</td><td>本地默认没有额外隔离或逐次审批</td><td>提供沙箱和审批控制</td><td>提供工具权限控制与可配置 Bash 沙箱</td></tr><tr><td>产品阶段</td><td>Beta；接口仍可能变化</td><td>已形成独立开发平台</td><td>已形成独立开发平台</td></tr></tbody></table>
+<p><a href="https://developers.openai.com/blog/codex-as-a-platform" rel="nofollow noopener noreferrer" target="_blank">OpenAI 的 Codex 平台说明</a> 已明确开放 Harness 的集成方式；<a href="https://code.claude.com/docs/en/agent-sdk/overview" rel="nofollow noopener noreferrer" target="_blank">Claude Agent SDK</a> 也提供程序化交互和控制。因此，Pax 并非第一个开放执行框架的产品。其差异是把能力组合与多模型选择放到产品设计中心。</p>
+<p>对于个人开发者，现成工具的优势在于默认工作流、模型适配与交互成本。对于要在自己的产品中内嵌 Agent 的团队，关注点则可能是能否保留自主的工作区、工具权限、任务状态和业务验收。后者需要评估的不是「哪个 CLI 更漂亮」，而是谁控制生产执行边界。</p>
+<h3 id="七款工具的定位矩阵比较的是控制方式不是功能数量">七款工具的定位矩阵：比较的是控制方式，不是功能数量</h3>
+<p>如果把竞争范围从三款热门终端扩大到开源工具生态，Pax 的创新程度需要重新衡量。<a href="https://open-code.ai/en/docs/agents" rel="nofollow noopener noreferrer" target="_blank">OpenCode Agents 文档</a> 提供主 Agent、子 Agent 和权限配置；<a href="https://docs.pi.dev/latest/sdk" rel="nofollow noopener noreferrer" target="_blank">pi SDK</a> 提供可嵌入会话，支持开发者构建自己的扩展；<a href="https://www.langchain.com/deep-agents" rel="nofollow noopener noreferrer" target="_blank">Deep Agents</a> 将 SDK 与终端 dcode 放到同一个生态；<a href="https://www.deepseek.com/harness/en/" rel="nofollow noopener noreferrer" target="_blank">DeepSeek Harness</a> 同样强调插件及可组合执行。这里不引用未经验证的 GitHub Star 数或下载量来估算产品份额。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>产品</th><th>主要差异化</th><th>优先评估的迁移风险</th></tr></thead><tbody><tr><td>Codex</td><td>模型原生适配、开放 Harness 和产品整合</td><td>更换模型生态后，原生功能与订阅成本是否仍可用</td></tr><tr><td>Claude Code</td><td>原生编码工作流与 Agent SDK</td><td>权限模式、供应商原生工具、长期任务成本</td></tr><tr><td>Pax</td><td>Python Capability 组合、终端插件、模型选择</td><td>0.x 接口变化、默认本地权限、SDK 与产品功能差异</td></tr><tr><td>OpenCode</td><td>多模型终端、可配置 Agent 与权限</td><td>供应商适配、配置迁移及工具行为差异</td></tr><tr><td>pi</td><td>可扩展会话和精简的工具运行体验</td><td>扩展实现与组织治理的长期维护成本</td></tr><tr><td>Deep Agents / dcode</td><td>可嵌入 Harness、LangChain/LangGraph 生态</td><td>现有状态系统、后端与运行架构的集成</td></tr><tr><td>DeepSeek Harness</td><td>插件化与原生模型工具体系</td><td>跨供应商行为差异、插件兼容性及独立证据</td></tr></tbody></table>
+<p>最后一列不是对各产品现有缺陷的断言，而是更换工具时需要实测的风险。没有在相同机器上运行七款产品，因此这里不给主观体验分或安全排名。DeepSeek Harness 未进入本次 Pydantic 公布的六列对照矩阵，不能从它缺席推断其性能。框架层与产品层也有不同的替代关系：一个团队可以保留 Codex 作为日常编码工具，同时使用 Pydantic 或 Deep Agents 开发自己的业务智能体；也可以在已有 Agent 中只采用某个上下文组件，不必迁移整个工作流。</p>
+<p>对 Pydantic 来说，更现实的挑战不是能否提供全部工具，而是组件化是否真的让一个新团队减少了整合工作。若替换一个模型需要重写工具 Schema、重新设计审批、重新生成所有历史消息并调整终止条件，那么多模型支持只是连接器能力，尚未成为可维护的生产架构。相反，即使工具只支持一种模型，只要业务运行有稳定的隔离、结果契约和可验证状态，它仍可能是更经济的选择。</p>
+<h2 id="4多模型与会话迁移降低切换成本但不是消除锁定">4、多模型与会话迁移：降低切换成本，但不是消除锁定</h2>
+<p>根据 <a href="https://pydantic.dev/docs/ai/pax/" rel="nofollow noopener noreferrer" target="_blank">Pax 文档</a>，它支持通过插件定制交互入口，并有导入其他编码智能体会话的机制，包括 —resume-codex 与 —resume-claude。项目规则及 Skills 也有相应读取路径。插件可以连接 MCP 工具或 Logfire 追踪，也可以关闭 Coder，使终端不再具备默认编程工具。对于研究型 Agent，采用哪些能力应取决于任务，而不是把所有插件一律打开。</p>
+<p>这类兼容有助于降低初次试用成本，但必须区分三种可迁移性：</p>
+<ul>
+<li>配置可迁移：项目规则、工具定义、模型配置能否被理解。</li>
+<li>对话可迁移：之前的消息与摘要是否能够恢复到新工具。</li>
+<li>执行状态可迁移：未完成任务、已经产生的副作用、审批记录、工作区改动和事务状态是否能够正确衔接。</li>
+</ul>
+<p>第三种才最困难。导入历史并不意味着旧工具的审批可在新工具中自动继续有效，更不代表远端任务可以安全重试。不同模型对上下文压缩、原生工具、思考预算和输出格式的处理也可能不同。切换前应当先保存工作区、检查 Git 差异，再对未完成的外部操作进行核对。</p>
+<p>对于会修改数据库、发布服务或创建任务的编码 Agent，这与 <a href="/ai/langgraph-agent-error-recovery-retry-timeout/">LangGraph 失败恢复与重试</a> 中讨论的 UNKNOWN 结果问题一致：无法证明原操作没有完成时，不应直接重放。</p>
+<h2 id="5上下文记忆与多模型回退真正影响长期任务的运行机制">5、上下文、记忆与多模型回退：真正影响长期任务的运行机制</h2>
+<p><img src="/images/articles/pydantic-pax-coding-agent-harness/zh/04-context-memory-fallback.webp" alt="当前上下文、任务进度、长期知识与外部事实状态，以及压缩、回退和会话导入的区别"></p>
+<p><em>GPT 解释性配图；具体事实与实验数据以正文及原始记录为准。</em></p>
+<p>将模型接入改成通用接口，只是第一步。长期代码任务的问题通常出现在上下文不断增长、工具返回变得过大、模型开始忽略早期约束时。Pydantic 提供 <a href="https://pydantic.dev/docs/ai/harness/compaction/" rel="nofollow noopener noreferrer" target="_blank">Compaction</a>、<a href="https://pydantic.dev/docs/ai/harness/tool-output-limits/" rel="nofollow noopener noreferrer" target="_blank">Tool Output Limits</a> 与 <a href="https://pydantic.dev/docs/ai/harness/memory//" rel="nofollow noopener noreferrer" target="_blank">Memory</a> 等分离的能力。从设计上需要区分四类状态：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>状态</th><th>用途</th><th>丢失或篡改后果</th></tr></thead><tbody><tr><td>当前模型上下文</td><td>本轮推理所需消息与工具结果</td><td>错误判断或重复读取</td></tr><tr><td>任务进度</td><td>完成的步骤、待解决问题、独立验收</td><td>中断后漏做或重复做</td></tr><tr><td>长期知识</td><td>项目习惯、历史事实、约束</td><td>过期信息或不可信记忆持续影响未来</td></tr><tr><td>外部事实状态</td><td>文件版本、远端任务 ID、业务账本</td><td>重复提交、错误回滚、错误宣告完成</td></tr></tbody></table>
+<p>上下文压缩应解决第一类问题，而不应当被用作后三类状态的唯一存储。比较两种上下文算法时，需要分清可重新获得的工具结果和不可从文本恢复的状态。读取同一文件十次或保存整段日志可能浪费 Token；而把用户的限制、当前授权和失败证据摘要成一句“工作正常”，则可能让最终输出失去可验证性。</p>
+<p>一个具体例子是分两天修改一个代码库。第一天模型已新增迁移脚本，第二天从压缩历史继续工作。如果文件已经被开发者手动修改，昨日的摘要就不能作为当前版本依据。恢复时应再次读取 Git 差异、校验基线、读取独立任务记录。只要新工具的会话导入无法恢复这些可验证状态，就不能用“成功导入历史消息”作为迁移验收。</p>
+<p><a href="https://pydantic.dev/docs/ai/capabilities/model-fallback/" rel="nofollow noopener noreferrer" target="_blank">Model Fallback</a> 的存在说明模型回退也在执行层管理，但回退发生在模型请求的阶段，并不是外部业务事务的自动重放方案。模型 A 返回无法处理的内容后改用模型 B，有可能解决推理或可用性问题；如果模型 A 已触发远端操作而结果未知，模型 B 不能仅凭上一轮没有收到完整回复再次提交。预算也应按任务全局管理，不能每回退一次就重新计算全部额度。对拒答的处理应尊重供应商及组织安全策略，不以切换模型规避限制。</p>
+<p><a href="https://pydantic.dev/docs/ai/harness/subagents/" rel="nofollow noopener noreferrer" target="_blank">SubAgents</a> 文档说明父子任务有各自的错误处理方式。多 Agent 的收益来自明确可并行、可验证的工作拆分，而不是无限增加子 Agent。每个子 Agent 应持有任务范围内的授权与预算，返回证据而不是只有一个成功字符串。父 Agent 必须能区分某个子任务失败、任务被用户主动取消、模型供应商失败与已执行操作结果未知。否则并行的执行框架会比单 Agent 更容易产生状态漂移。</p>
+<h2 id="6官方测试921-美元对-2105-美元意味着什么">6、官方测试：9.21 美元对 21.05 美元意味着什么？</h2>
+<p>Pydantic 在发布公告中列出了 Harness-Bench SWE81 对照结果。以下是从原始公告选取的两组同模型比较，得分越高越好，成本为 81 项任务上的平均单任务运行费用，而不是订阅价格或完整项目总成本。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>模型</th><th>Harness</th><th align="right">得分</th><th align="right">平均费用</th></tr></thead><tbody><tr><td>GPT-6.2 Sol</td><td>Pax</td><td align="right">64.7</td><td align="right">9.21 美元</td></tr><tr><td>GPT-6.2 Sol</td><td>Codex</td><td align="right">60.1</td><td align="right">21.05 美元</td></tr><tr><td>Claude Opus 5.5</td><td>Pax</td><td align="right">61.2</td><td align="right">24.61 美元</td></tr><tr><td>Claude Opus 5.5</td><td>Claude Code</td><td align="right">60.4</td><td align="right">25.10 美元</td></tr></tbody></table>
+<p>来源：<a href="https://pydantic.dev/articles/pax-harness-beta" rel="nofollow noopener noreferrer" target="_blank">Pydantic 2026-11-25 公告，测试方法说明与原始表</a>。</p>
+<p>按这些报告值计算，Sol 组 Pax 的平均费用比 Codex 低约 56.2%，评分高 4.6 分；Opus 组的费用差距仅约 2.0%，评分差距 0.8 分。两组呈现出的收益并不一致，因此不能简单归结为「Pax 让所有模型成本减半」。</p>
+<p>更重要的是，厂商在同一公告中说明了三个限制：每个配置使用单次运行；Sol 和 Opus 应用了统一的宽松重评分；Pax 的 Sol 组使用 max 自主性设置。恢复原评分规则后，Sol 组分别为 51.0 与 49.8。评分改变使差距从 4.6 缩小到 1.2，说明结论依赖验收口径。</p>
+<p>八模型覆盖的四个 Harness 平均分也相当接近：Pax 为 58.5，OpenCode 为 58.2，deepagents-code 为 57.6，pi 为 57.3。pi 的平均成本为 6.47 美元，低于 Pax 的 7.69 美元。没有充分证据将微小得分差异解释成稳定排名。跨模型费用还涉及不同的计费来源，不能与个人订阅额度直接换算。</p>
+<p>一项独立研究 <a href="https://arxiv.org/abs/2609.11987" rel="nofollow noopener noreferrer" target="_blank">Harness or Model?</a> 对相同模型的不同 Harness 进行了配对评估，两个主要对照的平均差异均未被统计上明确区分。这不是 Pax 的复测，也不能否定上述厂商结果；它提醒我们 Harness 效果会随任务、模型和配置变化。</p>
+<p>比较工具时，真正值得计算的是每个<strong>通过独立验收且没有越权副作用的任务</strong>所消耗的总成本：</p>
+<p><code>有效任务成本 = (模型费用 + 沙箱与执行费用 + 人工返工成本) / 有效验收任务数</code></p>
+<p>如果没有有效验收任务，这个指标不应被填成零。费用低但生成的代码无法运行，或者需要重新修复，均可能使最终成本高于另一套工具。与本站既有 <a href="/ai/tools-lab/agent-harness-vs-model-upgrade/">Agent 失败究竟该换模型还是改 Harness</a> 相比，本文的独立问题是具体产品选型与迁移，不再重复通用故障诊断。</p>
+<h2 id="7完整八模型数据与独立-pareto-分析">7、完整八模型数据与独立 Pareto 分析</h2>
+<p><img src="/images/articles/pydantic-pax-coding-agent-harness/zh/05-eight-model-benchmark.webp" alt="八模型 SWE81 厂商平均分、费用和两组旗舰模型对照"></p>
+<p><em>GPT 解释性配图；八模型均值按 Pydantic 厂商单次测试的公开数值复算，非本站独立模型跑分。旗舰示例仅比较所列两款工具，详见正文评分口径。</em></p>
+<p>按公开表格中已报告的八行数据复算，四个完整覆盖的 Harness 平均单任务费用为：Pax 7.69 美元、OpenCode 8.04 美元、pi 6.47 美元、deepagents-code 9.43 美元（按显示值四舍五入）。Codex 和 Claude Code 有缺失模型行，不能作为八模型完整均值直接排名。</p>
+<p>仅展示两款旗舰模型会引起选样偏差，因此把 11 月 25 日官方报告的八行数据完整列在这里。缺失项用 — 表示未报告，不代表零分或不支持。所有数值都是厂商提供的结果，不是 XBSTACK 运行八款模型得到的结果。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>模型</th><th align="right">Pax</th><th align="right">OpenCode</th><th align="right">pi</th><th align="right">deepagents-code</th><th align="right">Codex</th><th align="right">Claude Code</th></tr></thead><tbody><tr><td>GPT-6 Luna</td><td align="right">55.1</td><td align="right">57.2</td><td align="right">53.3</td><td align="right">55.1</td><td align="right">56.0</td><td align="right">—</td></tr><tr><td>GPT-6.1 Terra</td><td align="right">54.1</td><td align="right">54.7</td><td align="right">57.2</td><td align="right">51.4</td><td align="right">54.2</td><td align="right">—</td></tr><tr><td>Claude Haiku 5.5</td><td align="right">56.0</td><td align="right">55.5</td><td align="right">52.9</td><td align="right">59.1</td><td align="right">—</td><td align="right">56.5</td></tr><tr><td>Claude Sonnet 5.5</td><td align="right">58.4</td><td align="right">60.8</td><td align="right">57.9</td><td align="right">57.7</td><td align="right">—</td><td align="right">56.9</td></tr><tr><td>MiniMax M3.1 Flash</td><td align="right">54.7</td><td align="right">50.8</td><td align="right">52.3</td><td align="right">50.7</td><td align="right">54.7</td><td align="right">38.6</td></tr><tr><td>Kimi K3.1 Pro</td><td align="right">63.7</td><td align="right">64.3</td><td align="right">59.1</td><td align="right">61.5</td><td align="right">61.8</td><td align="right">62.9</td></tr><tr><td>GPT-6.2 Sol</td><td align="right">64.7</td><td align="right">61.0</td><td align="right">64.8</td><td align="right">61.7</td><td align="right">60.1</td><td align="right">—</td></tr><tr><td>Claude Opus 5.5</td><td align="right">61.2</td><td align="right">61.4</td><td align="right">61.1</td><td align="right">63.3</td><td align="right">—</td><td align="right">60.4</td></tr></tbody></table>
+<p>平均单任务运行费用，美元：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>模型</th><th align="right">Pax</th><th align="right">OpenCode</th><th align="right">pi</th><th align="right">deepagents-code</th><th align="right">Codex</th><th align="right">Claude Code</th></tr></thead><tbody><tr><td>GPT-6 Luna</td><td align="right">0.77</td><td align="right">0.69</td><td align="right">0.57</td><td align="right">1.08</td><td align="right">1.04</td><td align="right">—</td></tr><tr><td>GPT-6.1 Terra</td><td align="right">4.97</td><td align="right">5.41</td><td align="right">3.97</td><td align="right">13.79</td><td align="right">6.36</td><td align="right">—</td></tr><tr><td>Claude Haiku 5.5</td><td align="right">1.46</td><td align="right">1.50</td><td align="right">1.20</td><td align="right">1.34</td><td align="right">—</td><td align="right">1.37</td></tr><tr><td>Claude Sonnet 5.5</td><td align="right">7.90</td><td align="right">7.43</td><td align="right">6.54</td><td align="right">7.90</td><td align="right">—</td><td align="right">6.86</td></tr><tr><td>MiniMax M3.1 Flash</td><td align="right">1.67</td><td align="right">2.94</td><td align="right">1.40</td><td align="right">2.92</td><td align="right">1.85</td><td align="right">2.95</td></tr><tr><td>Kimi K3.1 Pro</td><td align="right">10.92</td><td align="right">9.81</td><td align="right">9.44</td><td align="right">11.88</td><td align="right">14.42</td><td align="right">11.40</td></tr><tr><td>GPT-6.2 Sol</td><td align="right">9.21</td><td align="right">9.17</td><td align="right">7.69</td><td align="right">12.98</td><td align="right">21.05</td><td align="right">—</td></tr><tr><td>Claude Opus 5.5</td><td align="right">24.61</td><td align="right">27.33</td><td align="right">20.96</td><td align="right">23.51</td><td align="right">—</td><td align="right">25.10</td></tr></tbody></table>
+<p>来源仍为 <a href="https://pydantic.dev/articles/pax-harness-beta" rel="nofollow noopener noreferrer" target="_blank">Pydantic 官方完整表</a>。评分是已评分任务的平均分，并非成功解决的百分比；费用是覆盖 81 项任务的平均运行成本，OpenAI/Anthropic 使用标价 Token，MiniMax/Kimi 使用 OpenRouter 计费。分母与计价口径的差异使直接以费用除以分数只能得到每评分点成本，不能得到每成功任务成本。</p>
+<p>本地脚本另做了一个不依赖主观评分的比较：如果 A 的分数不低于 B，费用不高于 B，并且至少一项严格更好，则 A 在这一对指标上支配 B。没有被其他已报告方案支配的组合构成当前数据的 Pareto 前沿。这不是统计检验，也没有包含安全性、延迟、体验等指标。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>模型</th><th>最高分组合</th><th>最低费用组合</th><th>当前 Pareto 前沿</th></tr></thead><tbody><tr><td>GPT-6 Luna</td><td>OpenCode</td><td>pi</td><td>OpenCode、pi</td></tr><tr><td>GPT-6.1 Terra</td><td>pi</td><td>pi</td><td>pi</td></tr><tr><td>Claude Haiku 5.5</td><td>deepagents-code</td><td>pi</td><td>pi、deepagents-code</td></tr><tr><td>Claude Sonnet 5.5</td><td>OpenCode</td><td>pi</td><td>OpenCode、pi</td></tr><tr><td>MiniMax M3.1 Flash</td><td>Pax、Codex 并列</td><td>pi</td><td>Pax、pi</td></tr><tr><td>Kimi K3.1 Pro</td><td>OpenCode</td><td>pi</td><td>OpenCode、pi</td></tr><tr><td>GPT-6.2 Sol</td><td>pi</td><td>pi</td><td>pi</td></tr><tr><td>Claude Opus 5.5</td><td>deepagents-code</td><td>pi</td><td>pi、deepagents-code</td></tr></tbody></table>
+<p>这个结果比平均分的宣传标题更值得关注。在这些四舍五入后的单次数据里，pi 在八行中都是费用最低的组合，Pax 只有 MiniMax 那一行处于所定义的 Pareto 前沿。Pax 的八模型平均分第一并不等同于对每种模型都更优秀，也不能证明 pi 的真实运行总成本最低：对比遗漏了人工工时、任务失败率、安全控制、环境费用和不同任务的权重，且缺少不确定性。对于某个组织，若需要 SDK 的可组合接口、特定模型的接入方式或治理能力，分数与 API 费用以外的因素可能比这点差异更加重要。</p>
+<p>换一种评分方式还会改变结论。Sol 原评分差为 1.2，宽松重评分后为 4.6；Opus 原评分差为 1.4，重评分后反而为 0.8。重评分不会固定地使某一个产品受益，说明比较结果不能脱离评测规则。厂商另外报告了 GPT-6.1 Sol 的 29% 成本降幅，那是不同对照，不能移植到 GPT-6.2 Sol 表中。</p>
+<h3 id="怎样建立可信的编码智能体测试">怎样建立可信的编码智能体测试</h3>
+<p><a href="https://www.harness-bench.ai/" rel="nofollow noopener noreferrer" target="_blank">Harness-Bench 官网</a> 介绍了多个任务类别及独立任务判定方式。实际的产品评估除了标准题集，还需要考虑本组织的代码类型与工作边界。厂商本次公布的是示例矩阵，完整方法与重复测试尚待披露；没有原始每题结果，本文不会制造置信区间，也不能从八行均值反推出任务解决概率。</p>
+<p>独立研究的反例也值得细读。在前述 <a href="https://arxiv.org/abs/2609.11987" rel="nofollow noopener noreferrer" target="_blank">Harness or Model?</a> 研究中，同模型的两组主要对比置信区间均覆盖零，而且仓库任务与竞赛任务的分层结果可能朝相反方向变化。这项研究并没有研究 Pax，价值在于提醒：Harness 的效果与任务类型相关。对于本文讨论的 OpenCode、pi、Pax 的细小平均分差，不能按排行榜的顺序分配采购预算。</p>
+<p>本地评测建议分两个轨道。轨道 A 固定所有工具都使用的公共模型、任务版本、推理预算、网络权限、工作目录、时间限制和验收器，尽可能隔离 Harness 的差异；轨道 B 按产品原生推荐配置运行，反映开发者实际可能获得的体验。轨道 A 更接近因果对照，轨道 B 更接近采购选择。二者可能产生不同排序，但只要试验前登记条件，就不必强行追求同一个结果。</p>
+<p>每一组样本至少记录任务 ID、仓库提交、模型实际标识、运行工具版本、环境镜像摘要、是否允许联网、预算、完整结果、终止原因、修改文件和测试结果。用同一组任务进行多轮配对评估，优先提供配对差及区间而不是只展示均值。不能由参加测试的 Agent 自己修改验收器，不能因测试费用过高就事后剔除失败任务。还要分别记录任务正确但超时、输出声称完成却未通过测试、无审批产生副作用等失败类别。<a href="https://www.anthropic.com/research/demystifying-evals-for-ai-agents" rel="nofollow noopener noreferrer" target="_blank">Anthropic 关于 Agent 评估的研究</a> 提供了将轨迹、任务结果和评分分开的思路。</p>
+<p>因此，比起现在花大量预算重跑整张榜单，XBSTACK 更需要公开一个小而可复核的证据资产。本轮已完成三份 wheel 的固定哈希、入口、依赖和核心符号核验，以及原始矩阵的完整复算和 Pareto 分析。12 项核验全部通过，其中 8 项是静态发行包与源码结构检查，3 项为公开数据数学复核，1 项为假设成本示例。它们不等于 12 次 Pax 的实际运行。</p>
+<h2 id="8code-mode少走几次模型往返代价是什么">8、Code Mode：少走几次模型往返，代价是什么？</h2>
+<p>传统工具调用经常要经过模型提出工具请求、接收结果、再决定下一步的循环。如果每次只是搜索文件、读取一段代码或从结果中抽取几个字段，重复地将全部内容发送回模型未必划算。</p>
+<p>Pydantic 的 <a href="https://pydantic.dev/docs/ai/harness/code-mode/" rel="nofollow noopener noreferrer" target="_blank">Code Mode</a> 通过 Monty 的受约束 Python 执行环境组织一组工具动作，将结果整理后返回。这种设计具有降低往返次数和减少无关上下文的潜力。不过它不是把所有工具无条件批量运行的理由。</p>
+<p>设想一个查找函数定义、读取调用者并检查测试文件的任务。搜索和只读检查可以在受控环境内组合；一旦进入修改文件、运行不可信脚本或调用外部业务接口阶段，就需要不同授权。代码执行器的限制并不能替代整个进程的系统权限边界。假如一个被允许的工具可以读出凭据或触发外部写入，限制 Python 语法本身并不能解决这个问题。</p>
+<p>实际评估应记录：输入 Token、缓存命中、模型往返次数、工具调用次数、返回字节数、验收结果以及越权事件。只比较 Token 总量，很难分辨是上下文利用率提高，还是测试、审批和验证环节被省略。</p>
+<h2 id="9工作区抽象流式工具执行与真实隔离">9、工作区抽象、流式工具执行与真实隔离</h2>
+<p>SDK 的 <a href="https://pydantic.dev/docs/ai/core-concepts/workspace/" rel="nofollow noopener noreferrer" target="_blank">Workspace 说明</a> 将文件操作和命令执行放到共享的工作区接口之后，允许应用根据需求选择本地或独立运行环境。这种抽象的价值不止是把代码放到远端运行，而是让工具所看到的文件系统、进程和执行记录有统一边界。一个组件只需要使用受控接口，而不必了解每一种容器或虚拟机的具体通信方式。</p>
+<p>但是工作区接口不是隔离机制本身。假如某个工具绕开这一接口，直接读取宿主文件系统，替换工作区不会自动限制它。即使工作区真的有独立文件系统，数据同步也可能把不必要的文件、未提交修改或配置带进去。因此必须区分可写目录、只读目录、网络出口、敏感文件、子进程和工具执行者身份，并将同步方向明确记录。默认采用远程环境也不代表数据从未外传，数据进入供应商的沙箱就需要评估供应商的保存、删除和访问条件。</p>
+<p>Pax 的部分远程工作区方案在发布公告里还描述了代理式 GitHub 访问方式。即使认证信息不直接进入沙箱，也要验证代理实际允许的仓库、操作和身份，以及撤销权限后会话能否及时失去访问。代理降低了特定凭据在执行环境中的暴露面，不等于所有应用操作都遵守最小权限。</p>
+<p>Code Mode 的流式处理和提前执行还需要额外的验收边界。可只读地提前完成独立文件搜索；对有外部副作用的任务，必须等待完整、可验证的参数和业务授权。即使最终生成的代码被截断，已经开始执行的操作可能已经成功。若工作区中正在并行生成补丁，则读取操作也要记录文件版本，避免分析基于过期内容。可见的时间节省需要结合重复调用、执行中断、错误率以及人工返工一起衡量。只展示工具调用提早启动了几秒，没有证据说明整项工作更可靠。</p>
+<h2 id="10安全与恢复pax-最不能忽略的两个边界">10、安全与恢复：Pax 最不能忽略的两个边界</h2>
+<p>Pax 文档明确说明默认本地模式的命令与文件编辑使用当前用户权限，不提供额外沙箱或逐次审批。因此开源和插件化不等于运行安全。其 SDK 的 <a href="https://pydantic.dev/docs/ai/harness/permissions/" rel="nofollow noopener noreferrer" target="_blank">权限说明</a> 还区分命令匹配规则与真正的隔离能力。仅凭命令名称或字符串规则不能建立完整的安全边界。</p>
+<p>对比产品时，也不能把 <a href="https://code.claude.com/docs/en/sandboxing" rel="nofollow noopener noreferrer" target="_blank">Claude Code 的 Bash 沙箱配置</a> 或 Codex 的控制机制理解为任何配置下绝对安全。必须在实际设置、工具接口和身份权限下验证。</p>
+<p>在正式试用前，建议用不含真实密钥的临时仓库，限制网络和可写目录，使用最小权限身份，对外部操作单独审批。插件、Skills 与 MCP 工具说明均应作为不可信输入对待，而非系统级授权。相关威胁可进一步参考 <a href="/ai/mcp-tool-poisoning/">MCP 工具污染</a> 和 <a href="/ai/ai-agent-security/">AI Agent 安全</a>。</p>
+<p>另一个容易被忽略的区别是会话恢复与任务可靠恢复。Pydantic 发布时明确将 SDK 的持久执行能力与 Pax 当前实现区分开来。保存对话不意味着进程崩溃后外部写入一定不会重复。真正的持久任务系统应具备独立操作标识、持久账本、状态确认、超时对账和恢复时重新核对授权等能力。</p>
+<h3 id="安全治理不要把仓库文本提升为操作者指令">安全治理：不要把仓库文本提升为操作者指令</h3>
+<p>Pydantic AI <a href="https://github.com/pydantic/pydantic-ai/releases" rel="nofollow noopener noreferrer" target="_blank">v2.75.0 发行记录</a> 还披露了一个与 Agent 安全直接相关的兼容性变化：来自低于操作者权限级别的工作区内容，不应直接变成高权限指令。RepoContext、Skills 和 Memory 均需要区分信息来源。这是非常具体的安全设计问题，而不是抽象的“防提示注入”。</p>
+<p>例如，编码 Agent 要修复第三方仓库中的一个问题。仓库可能包含项目说明、示例配置、依赖文件和嵌套文档。那些资料当然可以用于理解任务，但来自不受信任贡献者的文本不能重新定义操作范围。工作区是否被用户信任、工具是否有写权限、特定远端操作是否获批，是三个不同的问题。即便模型正确识别了仓库内容是低信任级别，宿主的工具调用层仍需独立核对权限，不能让模型自己决定自己的授权。</p>
+<p><a href="https://github.com/pydantic/pydantic-ai/security/advisories" rel="nofollow noopener noreferrer" target="_blank">官方安全公告目录</a> 可用于后续核查版本影响与修复状态。本文不将安全公告数量作为产品不安全的排名，也不将发布新版本视作全部安全问题已经解决。开源可审计性降低了检查的门槛，实际安全性取决于当前版本和部署方式。</p>
+<p>企业可以按下表建立测试门禁。这些是建议检查，不是 Pax 已通过的测试结果。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>威胁场景</th><th>可验证的控制</th><th>不能替代的证据</th></tr></thead><tbody><tr><td>不受信任的仓库说明影响模型决策</td><td>来源标记、权限不可由文本提升</td><td>宿主拒绝未经授权的工具调用</td></tr><tr><td>插件或 Skills 变更行为</td><td>固定来源、版本和审计</td><td>实际加载的插件及权限清单</td></tr><tr><td>工具读取超出业务范围的资料</td><td>文件范围、身份与数据最小化</td><td>对受保护资源的真实拒绝记录</td></tr><tr><td>云端运行环境接收不必要数据</td><td>同步白名单、出网策略</td><td>审计同步范围与网络出口</td></tr><tr><td>多 Agent 委托任务</td><td>子任务不超父任务授权、独立预算</td><td>无越权操作的结果</td></tr><tr><td>执行中断及请求结果未知</td><td>持久操作记录、对账和验收</td><td>外部系统的真实状态</td></tr></tbody></table>
+<p>没有经过这些控制测试前，不能把“支持沙箱”“支持工具批准”等文档功能转换成已通过组织安全认证的结论。也不应当因为一款产品使用开源许可，便放松对供应链和配置的要求。</p>
+<p>还有一个值得单独提醒的首次启动细节：<a href="https://pydantic.dev/docs/ai/pax/" rel="nofollow noopener noreferrer" target="_blank">Pax 使用文档</a> 描述了项目及父目录中的环境配置加载、项目文件信任状态和本地会话存储。选择不信任某个仓库，并不意味着终端禁止读取或修改其中的文件；信任状态主要影响资料如何进入模型的指令体系。因此，在自己维护的生产仓库中启动一个新工具，与在不含业务数据的空目录中试用，不能视为同一种测试。即使只是查看项目，模型请求也可能包含工具获得的文件内容。首次试用时应确认会话目录、插件列表、数据发送目的地和自动更新通道，将本地工作区隔离在明确范围内。公司设备上尤其需要核对既有数据分类规则，明确源代码和客户资料是否可交给所选模型供应商。没有看到实际出站请求及数据处理条款之前，不能声称“全部数据只留在本地”。</p>
+<p>安全评估还要区分自主性和权限。Coder 的 autonomy 是模型行为指引，而不是系统层对工具能力的硬限制。要求模型先给计划，并不能代替执行前审批；要求它完成任务，也不能视作对所有外部操作的授权。测试中应观察真正被允许和被拒绝的调用，而不是只检查最终回复是否提到遵守规则。用户中断、会话恢复和子任务委托发生时，原授权是否仍然有效，需要由应用重新核对。</p>
+<h2 id="11会话步骤持久化与-durable-execution-的差异">11、会话、步骤持久化与 Durable Execution 的差异</h2>
+<p><img src="/images/articles/pydantic-pax-coding-agent-harness/zh/07-security-recovery.webp" alt="仓库信任、最小权限和任务恢复状态机，未知结果先对账"></p>
+<p><em>GPT 解释性配图；具体事实与实验数据以正文及原始记录为准。</em></p>
+<p><a href="https://pydantic.dev/docs/ai/harness/step-persistence/" rel="nofollow noopener noreferrer" target="_blank">Step Persistence 文档</a> 说明了步骤状态保存与恢复的边界；<a href="https://pydantic.dev/docs/ai/capabilities/durable_execution/overview/" rel="nofollow noopener noreferrer" target="_blank">Durable Execution 文档</a> 则涉及底层运行引擎。三者不应混为一谈：对话历史能够帮助重新建立模型上下文，步骤记录能够帮助恢复到已知边界，持久运行引擎可能恢复中断的运行操作。即使选择了可靠的持久引擎，也无法自动证明外部服务执行恰好一次。</p>
+<p>可以把执行副作用的恢复过程表达为一个业务状态机：PLANNED → AUTHORIZED → DISPATCHED → CONFIRMED → ACCEPTED。如果请求中途断线，应记录 UNKNOWN；只有通过外部系统查证，才能更新到 CONFIRMED、明确失败或经重新授权再次执行。不能以模型输出“我已经修复”代替独立测试结果，也不能以进程重启后成功显示上次聊天记录代替状态验收。</p>
+<p>以软件发布为例，构建成功、代码提交成功、部署开始、服务更新、生产探测和最终验收是不同阶段。某个命令返回超时，并不意味着没有更新部署。一个可靠的 Agent 应该在重启后读取实际发布版本和部署回执，而不是重新发起全部流程。Pax 发布时明确还没有 SDK 的 Durable Execution，这正是企业不能直接把一个交互式终端替换成业务执行平台的原因。</p>
+<h2 id="12给个人开发者与企业团队的选择建议">12、给个人开发者与企业团队的选择建议</h2>
+<p>如果只是了解如何安装，官方文档提供 uvx pydantic-ai-pax 临时运行和 uv tool install pydantic-ai-pax 常驻安装两种方式；macOS 还需注意系统同名归档程序与 AI 工具的命令冲突。可先核对固定版本、包来源及实际命令路径，再在隔离的临时目录试用。本站随后采用固定版本的一次性环境执行了安装和 CLI 启动检查，详细结果见第 13 节。</p>
+<p>如果主要工作是已有仓库的日常编码，先保留能够稳定完成工作的现有工具。Pax 可以作为独立测试对象，用相同的小型任务集评估，暂时不要把原有权限体系和业务状态迁移过去。</p>
+<p>如果目标是把编程 Agent 或其他执行型 Agent 嵌入 Python 应用，Harness SDK 值得单独研究。先定义工具契约、工作区边界、事件记录和任务验收，再看 Coder 能否复用。如果现有编排系统需要明确的业务节点、事务和审批状态，不应仅因为有一个现成的编码智能体便推倒已有架构。</p>
+<p>可以使用如下四类样本做第一轮测试（这是建议方案，不是已完成的实测）：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>样本</th><th>主要验收</th></tr></thead><tbody><tr><td>阅读型项目问答</td><td>引用文件与行号可核查、无额外写入</td></tr><tr><td>小型 Bug 修复</td><td>补丁与需求一致、隐藏测试通过</td></tr><tr><td>审批敏感任务</td><td>未批准时无真实外部副作用</td></tr><tr><td>中断后恢复</td><td>状态一致、不重复提交、不误报完成</td></tr></tbody></table>
+<p>固定任务版本、模型、预算、推理设置、权限和环境，每个配置多次独立运行，保留失败样本并盲评结果。初次可使用离线合成任务验证权限控制和状态机制，不需要连接真实生产系统。没有这些证据前，不应为了追新直接迁移整个开发工作流。</p>
+<h2 id="13独立复核结果与企业采用的阶段门禁">13、独立复核结果与企业采用的阶段门禁</h2>
+<p><img src="/images/articles/pydantic-pax-coding-agent-harness/zh/06-m1-pro-code-mode.webp" alt="M1 Pro 上十步合成工具链的真实计时中位数，按人工注入等待时间对比"></p>
+<p><em>GPT 解释性配图；十步合成任务总耗时中位数，每组五次计时，横轴为每次模拟模型请求注入延迟；没有真实云模型调用，不代表商业模型推理性能。</em></p>
+<p>第一阶段静态实验处理公开发行包与公开表格，不安装、不导入 wheel 中的代码；通过 SHA-256 固定输入，使用 AST 查看语法树。第二阶段在一次性隔离环境进行真实安装和运行验证。首次运行因 TLS 握手中断退出，第二次使用本地 Python 3.11 环境通过，未关闭证书检查。用户机器未安装 Docker；不将这项环境缺失包装成 Pax 无法运行，也不在生产工作区执行未知插件。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>核验类别</th><th align="right">数量</th><th>本轮结果</th><th>能证明什么</th></tr></thead><tbody><tr><td>固定版本、依赖、入口与关键源码结构</td><td align="right">8</td><td>8/8</td><td>发行物可核查、模块确实存在</td></tr><tr><td>八模型矩阵、Pareto 与评分敏感性</td><td align="right">3</td><td>3/3</td><td>公布数据的数学关系可重算</td></tr><tr><td>假设费用与验收成本反转示例</td><td align="right">1</td><td>1/1</td><td>直接费用更低不必然代表有效任务更便宜</td></tr><tr><td>Pax 固定版本隔离安装与 CLI 启动</td><td align="right">2</td><td>通过</td><td>包可安装，CLI 帮助可运行</td></tr><tr><td>Harness 脚本模型工具链计时</td><td align="right">60</td><td>60/60</td><td>本地框架运行，不是实际模型推理</td></tr><tr><td>商业模型编码任务与 SWE81 独立复测</td><td align="right">0</td><td>未执行</td><td>不能给出独立模型能力排名</td></tr></tbody></table>
+<p>示例中，A 的直接开销为 10 个任意成本单位、返工为 50、六个任务通过；B 的直接开销为 20、返工为 10、八个任务通过。有效任务成本分别为 10 和 3.75。所有数字都是教学假设，不是产品价格或实测结果。A 的直接开销只有 B 的一半，但整体费用表现更差；这说明组织需要记录人工时间、失败和返工，而不是只比 API 账单。</p>
+<h3 id="本站新增真实运行m1-pro-上的-code-mode-对照">本站新增真实运行：M1 Pro 上的 Code Mode 对照</h3>
+<p>2026 年 11 月 27 日，XBSTACK 在 Apple M1 Pro（10 核 CPU、16 GiB 统一内存、macOS 27.0.1 arm64）上使用 Python 3.11.15、Pax 0.75.0、Harness 0.75.0、Core 2.75.0、Monty 1.7.0 进行了本地运行验证。安装使用独立临时环境及仅 wheel 依赖；不读取用户主目录，限制写入临时目录，运行阶段通过 macOS 系统沙箱禁止网络，实际本地 socket bind 被拒绝；测试结束后删除临时环境。Pax CLI 的 —help 正常退出（0）。这只验证启动与依赖，未打开实际交互会话。</p>
+<p>性能测试使用真正安装的 Pydantic AI、CodeMode 和 Monty 执行固定的递增工具链，模型由官方 <a href="https://pydantic.dev/docs/ai/guides/testing/" rel="nofollow noopener noreferrer" target="_blank">FunctionModel 测试接口</a> 控制，明确关闭真实模型请求。普通模式每次模拟请求发出一个预先规定的工具调用；Code Mode 模式在一次 run_code 中通过循环将上一步的返回值交给下一步，再由模拟模型返回完成标志。两种模式均检查全部工具调用顺序、次数及最后的完成标志，而非让真实语言模型解决编程题。每个条件预热一次、测量五次，共 12 组、60 次计时、12 次预热；延迟是每次模拟模型响应人为注入的固定等待，不是真实 API RTT 或生成速度。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th align="right">工具步骤</th><th align="right">每次模拟请求延迟</th><th align="right">普通工具调用中位数（ms）</th><th align="right">Code Mode 中位数（ms）</th><th align="right">模拟模型请求数（普通/Code）</th></tr></thead><tbody><tr><td align="right">3</td><td align="right">0 ms</td><td align="right">6.76</td><td align="right">22.44</td><td align="right">4 / 2</td></tr><tr><td align="right">10</td><td align="right">0 ms</td><td align="right">15.37</td><td align="right">25.43</td><td align="right">11 / 2</td></tr><tr><td align="right">3</td><td align="right">25 ms</td><td align="right">131.35</td><td align="right">81.67</td><td align="right">4 / 2</td></tr><tr><td align="right">10</td><td align="right">25 ms</td><td align="right">365.35</td><td align="right">92.10</td><td align="right">11 / 2</td></tr><tr><td align="right">3</td><td align="right">100 ms</td><td align="right">436.72</td><td align="right">270.19</td><td align="right">4 / 2</td></tr><tr><td align="right">10</td><td align="right">100 ms</td><td align="right">1211.23</td><td align="right">270.52</td><td align="right">11 / 2</td></tr></tbody></table>
+<p>60/60 次通过脚本断言。10 步、25 ms 条件下，实测中位时间减少约 74.8%；100 ms 条件下减少约 77.7%。0 ms 时，Code Mode 额外执行机制反而耗时更多，说明不能无条件宣称其更快。所有数字属于本地真实计时，不是 GPT、Claude、Kimi 或 MiniMax 推理时间。普通模式刻意设置成逐步请求；真实模型可能在单次响应中批量调用独立工具，因此上述优势不能推广到所有任务。进程峰值 RSS 约 186.6 MiB（195690496 字节），仅为实验 Python 进程的峰值，不包含全部子进程，也不代表 Pax 交互式运行的系统内存占用。初次运行的 Code Mode 脚本因工具调用缺少 await 而失败，修正测试脚本后复跑才得到上述结果；未将该错误归因于 Pax。完整样本保存在本地 runtime-result.json，脚本为 isolated_runner.py 和 runtime_probe.py，尚未对外发布。</p>
+<p>可与 Pydantic 的另一项 <a href="https://pydantic.dev/articles/why-code-mode-is-the-future" rel="nofollow noopener noreferrer" target="_blank">5,276 次 Code Mode 厂商实验</a> 对照。该实验采用八款模型、五个小型应用和确定性验收，报告长任务的费用与耗时均有明显下降，但小规模任务存在额外成本。其版本、任务、eager 配置与本次不同，研究代码未公开，不能当作 Pax 的独立复测。更重要的是，厂商发现真实模型能够在单个响应中批量发出工具调用，所以 Code Mode 的收益也可能来自减少上下文，而不仅仅是减少请求次数。本机实验支持的是一种有限机制：有依赖的预设工具链、请求等待显著时，减少往返可以降低总耗时；真实模型是否能正确构造这种程序仍需实测。</p>
+<h3 id="八款模型在假设环境下的费用推演与硬件边界">八款模型在假设环境下的费用推演与硬件边界</h3>
+<p>SWE81 的八款模型来自厂商测试，模型推理服务端的 GPU 型号、显存、批处理和调度参数并未完整披露。不能声称它们在本站 M1 Pro 本机运行，也不能按不同显卡虚构 token/s 或 TTFT。为了给读者提供可复算的预算参考，假设仍使用相同模型供应方式、相同任务难度分布和厂商报告的单任务平均运行费用，执行 100 个任务，不计额外重试、人工、工具或环境费用，直接将报告均值乘 100。下表是情景计算，不是报价、实际账单或新跑分。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>云端模型</th><th align="right">Pax（100 任务，美元）</th><th align="right">pi（100 任务，美元）</th><th>原生工具已报告的对照（美元）</th></tr></thead><tbody><tr><td>GPT-6 Luna</td><td align="right">77</td><td align="right">57</td><td>Codex 104</td></tr><tr><td>GPT-6.1 Terra</td><td align="right">497</td><td align="right">397</td><td>Codex 636</td></tr><tr><td>Claude Haiku 5.5</td><td align="right">146</td><td align="right">120</td><td>Claude Code 137</td></tr><tr><td>Claude Sonnet 5.5</td><td align="right">790</td><td align="right">654</td><td>Claude Code 686</td></tr><tr><td>MiniMax M3.1 Flash</td><td align="right">167</td><td align="right">140</td><td>Codex 185；Claude Code 295</td></tr><tr><td>Kimi K3.1 Pro</td><td align="right">1092</td><td align="right">944</td><td>Codex 1442；Claude Code 1140</td></tr><tr><td>GPT-6.2 Sol</td><td align="right">921</td><td align="right">769</td><td>Codex 2105</td></tr><tr><td>Claude Opus 5.5</td><td align="right">2461</td><td align="right">2096</td><td>Claude Code 2510</td></tr></tbody></table>
+<p>本表沿用第 7 节的费用口径，不保证不同订阅、路由、缓存、任务类型或结果质量下仍相同。对成本敏感的用户可将任务数量替换为实际值；不能把 100 个任务假定为 100 个成功交付。具体硬件有三种情景：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>硬件环境</th><th>适合的测试</th><th>已有证据</th></tr></thead><tbody><tr><td>M1 Pro / 16 GiB</td><td>本地 Harness 编排、云模型客户端、离线 mock</td><td>上表之外，本站已实测 60 次工具链；未测远端模型</td></tr><tr><td>假设 x86-64 / 32 GiB 开发机</td><td>相同云模型客户端及独立测试环境</td><td>未测；不能套用 M1 的耗时和 RSS</td></tr><tr><td>假设 24 GiB GPU、64 GiB RAM 工作站</td><td>自托管可获得权重的模型、量化及上下文测试</td><td>未测；不能把闭源或未取得权重的服务视为可本地部署</td></tr></tbody></table>
+<p>自托管模型的硬件需求必须以实际发布权重、架构、量化格式和运行引擎为准。作为纯理论下界，密集模型仅权重的 4-bit 存储约为参数数乘 0.5 字节（7B 约 3.5 GB、14B 约 7 GB、32B 约 16 GB、70B 约 35 GB），还需另计量化元数据、KV cache、运行时、激活、并发、操作系统及预留空间；MoE 不能以激活参数直接代替全部常驻权重。该公式不是实际显存占用或吞吐测试，不对八款云端模型的参数规模作假设。若要得到各模型真实硬件表现，需实际取得授权权重或可调用端点，在明确机器和版本条件下实测并保留原始日志。</p>
+<p>对于企业的采用过程，建议分阶段放行，而不是把一次安装成功视作全部通过。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>阶段</th><th>最小证据</th><th>阻止进入下一阶段的情况</th></tr></thead><tbody><tr><td>0. 发行审阅</td><td>版本锁定、依赖来源、功能边界</td><td>来源不明或版本变化无法解释</td></tr><tr><td>1. 隔离离线验证</td><td>CLI 启动、模拟模型、工具与权限测试</td><td>读写范围不受控、意外出网</td></tr><tr><td>2. 小样本双轨实测</td><td>多轮配对、正确率、延迟和费用</td><td>关键任务退化、存在越权</td></tr><tr><td>3. 非生产试点</td><td>完整日志、故障恢复、回滚和退出方案</td><td>无法明确恢复外部操作状态</td></tr><tr><td>4. 有限生产应用</td><td>业务负责人批准、SLO、独立验收与监测</td><td>不能满足审计、隐私或授权要求</td></tr></tbody></table>
+<p>本轮达到阶段 0，并部分完成阶段 1：CLI 启动、模拟模型与工具链运行通过；后续仍需验证真实项目文件编辑、拒绝越界、上下文缩减、会话导入、模型回退、步骤恢复与中断后对账。每项都应保存真实输入和结果。没有发生的测试在文章中保持未验收，不能以计划充当证据。</p>
+<h2 id="14harness-会成为操作系统吗这个类比的解释力和局限">14、Harness 会成为操作系统吗：这个类比的解释力和局限</h2>
+<p>把 Harness 比作 AI 时代的操作系统具有传播力，但容易误导。操作系统提供进程、地址空间、资源调度、文件、权限等相对确定的基础原语。Harness 的任务则是在概率性模型与真实执行之间维护信息、控制副作用、管理运行状态和验收。二者可能承担相似的协调职能，却不能因此认为 Harness 拥有操作系统内核级隔离。</p>
+<p>更准确的类比是应用运行时和业务中间件的组合。模型负责提出行动方案，运行时提供工具与资源管理，业务系统掌握最终授权和数据真相。与传统中间件一样，Harness 可以成为应用中不必重复实现的通用能力；与传统中间件不同，它必须面对指令的不确定性、模型行为变化和上下文的有限性。</p>
+<p>可以将一个成熟的执行基础设施拆成三个平面：数据平面负责模型请求、工具结果和应用数据；控制平面负责选择工具、权限、预算、调度与取消；证据平面负责状态变更、来源、审计、独立评价和回滚。未来产品是否拥有行业基础设施价值，取决于这三个平面是否能稳定地组合并替换，而不是插件数量是否最多。</p>
+<p><a href="https://openai.com/index/harness-engineering/" rel="nofollow noopener noreferrer" target="_blank">OpenAI Harness Engineering</a> 的实践侧重让代码库与验收机制更适合 Agent 使用；<a href="https://www.anthropic.com/research/harness-design-long-running-apps" rel="nofollow noopener noreferrer" target="_blank">Anthropic 的长任务 Harness 研究</a> 强调规划、生成与评价之间的结构。这些研究说明原生模型供应商并没有放弃执行层。Anthropic 在 <a href="https://www.anthropic.com/research/managed-agents" rel="nofollow noopener noreferrer" target="_blank">Managed Agents 架构说明</a> 中进一步将会话、Harness 和沙箱区分开来。因此 Pax 的出现更像一个趋势上的新参与者，而不是首次发现中间层价值。</p>
+<p>如果未来模型能力趋同，开放 Harness 可能扩大供应商选择；如果不同模型越来越依赖特定推理接口、原生工具与训练时的执行环境，模型与 Harness 的耦合也可能增强。这个问题不能只用一个模型的 Token 费用判断。最终需要看模型之间迁移时，业务目标、权限、历史和验收是否保持一致，以及维持这种一致性需要多少额外工程成本。</p>
+<h2 id="15未来harness-会成为独立竞争层吗">15、未来：Harness 会成为独立竞争层吗？</h2>
+<p>这是趋势判断而非已经发生的市场结论。Pax 的发布使三个方向更值得观察。</p>
+<p>第一，模型选择与执行能力可能进一步分离。若多模型支持不断改善，工具之间可以竞争上下文管理、成本与可靠交付，模型提供商则需要同时证明能力和生态价值。但原生工具拥有深度适配、供应商原生能力和完整产品体验，未必会失去优势。</p>
+<p>第二，框架市场可能更重视可组合执行组件。未来的工具可能不只提供 Agent Loop，而会提供可替换的工作区、持久任务、权限和可观测接口。Pydantic 的商业生态可以从这一变化中受益，但维护跨供应商兼容和长期 API 稳定也会带来成本。其 1.0 计划是未来里程碑，而不是已经交付的稳定版本。</p>
+<p>第三，企业可能将验收与授权掌握在应用侧，而不是交给模型自行宣布成功。真正稀缺的能力是把编程建议安全转换为可靠的业务结果。长期竞争未必只有一个 Harness 胜出，可能按行业、任务和数据边界分化。</p>
+<p>未来 1—4 周观察 SDK 稳定性、权限默认配置、原始基准数据和第三方复测；未来 6—24 个月观察团队能否在多个模型间迁移而不破坏权限与状态、是否持续降低每个有效任务的成本。如果 API 变动频繁、安全控制难以部署，或者原生工具开放相同层次的能力而具备更强生态，Pax 的差异化会减弱。</p>
+<h2 id="16中长期商业竞争与三种可证伪情景">16、中长期商业竞争与三种可证伪情景</h2>
+<p><img src="/images/articles/pydantic-pax-coding-agent-harness/zh/08-enterprise-adoption.webp" alt="企业从发行审阅到有限生产的五阶段采用门禁及三种未来情景"></p>
+<p><em>GPT 解释性配图；具体事实与实验数据以正文及原始记录为准。</em></p>
+<p>未来的竞争可能围绕模型能力、执行控制和客户关系展开。Pydantic 能够通过开放组件吸引希望建立自主运行体系的团队；OpenAI 与 Anthropic 的优势是模型、原生工具、应用和开发者渠道之间的深度协同；多模型生态可以利用不同供应商的性价比与特定能力。没有证据支持当前任何一方已经掌握最终的行业标准。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>情景</th><th>可能出现的变化</th><th>后续验证信号</th></tr></thead><tbody><tr><td>开放组件趋于标准化</td><td>企业组合多个模型和运行组件，较少依赖单一客户端</td><td>同一套任务权限与历史在不同实现间稳定迁移</td></tr><tr><td>原生平台继续深度整合</td><td>模型、Harness、沙箱和训练方法形成互补，原生组合更强</td><td>固定任务中原生工具保持可靠性或有效成本优势</td></tr><tr><td>垂直行业分化</td><td>通用框架提供底层能力，应用方掌握审批、状态和专业验收</td><td>不同行业出现不同安全与恢复门禁，不追求统一榜单</td></tr></tbody></table>
+<p>短期三至六个月，应关注 1.0 是否按预期形成兼容政策、是否提供重复跑分与原始结果、Pax 是否真正补齐持久执行，以及企业默认权限是否更加清晰。不要用计划日期代替交付日期。中期一至两年，应该观察不同模型的真实适配成本、组件是否形成兼容标准、软件团队的交付速度和返工率是否改善。长期看，执行证据与业务验收可能成为 Harness 的重要价值，但如果模型供应商统一了执行接口并保有更好的体验与定价，独立组件生态仍可能无法建立广泛商业优势。</p>
+<p>对独立开发者而言，不需要预测行业最终胜者才能行动。应保存代码、测试、规则、任务状态与业务数据在可以控制的系统中，避免把这些资产全部绑定在某个会话文件里；使用可验证的接口逐步替换某一层。对企业则更重要的是把验收标准和审批职责定义成应用的一部分。无论未来采用 Pax、Codex、Claude Code，还是其他开源框架，控制权和真实结果都不应从组织手中转移给一次模型输出。</p>
+<h2 id="结论">结论</h2>
+<p>Pax 是一个值得关注的终端 AI 编程产品，但更值得关注的是它所代表的可组合执行体系。当前官方证据可以支持「在特定任务和运行配置下有竞争力」，不能支持「已经全面超越 Codex、Claude Code」或「所有用户都能省下一半费用」。</p>
+<p>更好的选择标准不是新工具的排行榜，而是能否在真实工作边界内稳定、可审计地完成任务。对于独立开发者和企业，先保留稳定的工作流，再用隔离环境评估新工具，可能比立刻迁移更有价值。</p>
+<p>本文截至 2026-11-27；结论包含作者的技术分析与可检验的未来判断，不保证产品路线图、成本优势或市场结果兑现。已执行 Pax 隔离安装与 CLI 检查、真实 Harness 的离线模拟模型运行和计时；没有商业模型调用、安全穿透测试或独立 SWE81 复测，本文是包含有限运行实测的架构研究，不是完整编码性能测评。</p>  <aside class="mt-12 rounded-2xl border border-slate-200 bg-slate-50/70 px-5 py-4 not-prose dark:border-white/10 dark:bg-white/[0.025]"> <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"> <div><p class="text-sm font-black text-slate-900 dark:text-white">讨论这个问题</p><p class="mt-1 text-xs leading-6 text-slate-500 dark:text-slate-400">有不同的复现结果、版本变化或补充证据？欢迎继续讨论。</p></div> <a href="#discussion" class="shrink-0 text-xs font-black text-blue-600 dark:text-blue-400">发表观点或复现 →</a> </div> </aside><section class="mt-16 rounded-[34px] border border-orange-500/20 bg-orange-500/[0.06] p-7 md:p-9 not-prose"> <div class="text-[10px] font-black uppercase tracking-[0.28em] text-orange-500 mb-4">专题入口 / AI Agent Hub</div> <h2 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-4">从单个 Agent 问题继续进入完整生产体系</h2> <p class="text-sm font-bold leading-7 text-slate-600 dark:text-slate-400 max-w-3xl">AI Agent 专题统一组织架构、记忆、工具调用、评测、安全、部署和多智能体协作，让每篇文章都回到明确的主题主页面。</p> <div class="mt-7 flex flex-wrap gap-3"> <a href="/ai/agent/" class="rounded-full bg-orange-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-white hover:bg-orange-600 transition-colors">进入 AI Agent 专题 →</a> <a href="/ai/ai-agent-architecture/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">查看架构指南</a> <a href="/newsletter/" class="rounded-full border border-slate-300 dark:border-white/15 px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors">订阅</a> </div> </section> </div> <aside class="xb-source-card" aria-label="原文来源与延伸阅读" data-source-attribution data-astro-cid-m7zhpdos> <div class="xb-source-brand" data-astro-cid-m7zhpdos> <span data-astro-cid-m7zhpdos>原文出自：</span> <a href="https://www.xbstack.com/" class="xb-source-name" data-astro-cid-m7zhpdos>XBSTACK 向上生长</a> <span class="xb-source-slogan" data-astro-cid-m7zhpdos>在高处看世界，在底层堆资产</span> </div> <p class="xb-source-description" data-astro-cid-m7zhpdos>XBSTACK 是独立开发者小白长期维护的个人网站，记录 AI 工程、智能体开发、独立产品、投资研究、阅读和生活实践，重视真实证据与独立判断。</p> <p class="xb-source-original" data-astro-cid-m7zhpdos> <span data-astro-cid-m7zhpdos>原文链接：</span> <a href="https://www.xbstack.com/ai/tools-lab/pydantic-pax-coding-agent-harness/" data-astro-cid-m7zhpdos>Pydantic Pax 是什么？与 Codex、Claude Code 的区别及 Agent Harness 的未来</a> </p> <nav class="xb-source-actions" aria-label="查看更多 XBSTACK 内容" data-astro-cid-m7zhpdos> <a href="https://www.xbstack.com/ai/tools-lab/" data-astro-cid-m7zhpdos>查看更多</a> <a href="https://www.xbstack.com/about/" data-astro-cid-m7zhpdos>关于 XBSTACK</a> <a href="https://www.xbstack.com/" data-astro-cid-m7zhpdos>官方网站</a> </nav> </aside>  <section class="mt-14 border-t border-[var(--xb-line)] pt-7" data-related-reading data-analytics-area="related_content" data-related-slot="article_end" data-astro-cid-ce2bgkb3> <div class="mb-2 flex items-center justify-between gap-4" data-astro-cid-ce2bgkb3><h2 class="m-0 text-[17px] font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3>下一步：继续搭建 Agent 系统</h2><a href="/ai/tools-lab/" data-related-topic-link class="text-[12px] font-bold text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>完整专题路径 →</a></div> <p class="mb-4 max-w-3xl text-[12px] leading-5 text-[var(--xb-muted)]" data-astro-cid-ce2bgkb3>沿着架构、工具、Memory、评测、安全或生产治理继续推进，不必重新从头找资料。</p> <div class="xb-article-related" data-astro-cid-ce2bgkb3><a href="/ai/tools-lab/agent-harness-vs-model-upgrade/" data-related-link data-related-reason="继续排查运行时故障" data-astro-cid-ce2bgkb3><span class="mb-1 block text-[12px] font-extrabold uppercase tracking-[0.08em] text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>继续排查运行时故障</span><span class="font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3>AI Agent 总是执行失败？问题出在大模型还是 Agent Harness</span><span class="mt-1 block line-clamp-2 text-[12px] text-[var(--xb-faint)]" data-astro-cid-ce2bgkb3>AI Agent 为什么反复重试、工具调用失败、无法完成任务？结合 IBM 同模型 Harness 对照、独立研究和五项模拟控制测试，给出排查方法与模型升级决策。</span></a><a href="/ai/mcp-tool-poisoning/" data-related-link data-related-reason="补齐权限与安全边界" data-astro-cid-ce2bgkb3><span class="mb-1 block text-[12px] font-extrabold uppercase tracking-[0.08em] text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>补齐权限与安全边界</span><span class="font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3>MCP 安全吗？工具投毒、API Key 泄露风险与防护方法</span><span class="mt-1 block line-clamp-2 text-[12px] text-[var(--xb-faint)]" data-astro-cid-ce2bgkb3>MCP Server 会泄露 API Key 吗？工具描述投毒、Rug Pull 和 Prompt Injection 怎么识别？结合官方安全资料与研究，说明接入检查、工具变更审计、扫描结果和防护方法。</span></a><a href="/ai/tools-lab/chatgpt-work-chat-codex-difference/" data-related-link data-related-reason="继续处理工具与协议边界" data-astro-cid-ce2bgkb3><span class="mb-1 block text-[12px] font-extrabold uppercase tracking-[0.08em] text-blue-600 dark:text-blue-400" data-astro-cid-ce2bgkb3>继续处理工具与协议边界</span><span class="font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3>ChatGPT Chat、Work、Codex 有什么区别？怎么选与真实任务对比</span><span class="mt-1 block line-clamp-2 text-[12px] text-[var(--xb-faint)]" data-astro-cid-ce2bgkb3>ChatGPT Chat 和 Work 区别是什么？本文同时对比 Chat、Work、Codex 的任务边界，并补充 Cloud/Local、Mobile Remote 与 Voice 的 2026 最新变化。</span></a></div> </section> </article> <section id="discussion" class="xb-article-comments scroll-mt-28" data-astro-cid-ce2bgkb3> <div class="mb-5 flex items-center gap-3 text-[11px] font-bold text-[var(--xb-ink)]" data-astro-cid-ce2bgkb3><span data-astro-cid-ce2bgkb3>评论与补充证据</span><span class="h-px flex-1 bg-[var(--xb-line)]" data-astro-cid-ce2bgkb3></span></div> <section class="xbstack-comments" data-xbstack-waline data-server-url="https://comments.xbstack.com" data-comment-path="/ai/tools-lab/pydantic-pax-coding-agent-harness/" data-comment-lang="zh-CN" data-comment-mode="evidence" aria-labelledby="xbstack-comments-title"> <div class="xbstack-comments__header"> <div> <p class="xbstack-comments__eyebrow">参与讨论</p> <h2 id="xbstack-comments-title"> 问题、验证与勘误 </h2> <p class="xbstack-comments__description"> 登录后可发表评论。所有新评论先进入审核；审核期间仅评论者本人和管理员可见，通过后才公开。 </p> </div> <div class="xbstack-comments__policy" aria-label="评论规则"> <span>登录评论</span> <span>审核后公开</span> </div> </div> <div class="xbstack-comments__status" data-waline-status role="status" aria-live="polite"> <span class="xbstack-comments__spinner" aria-hidden="true"></span> <span>正在加载评论区…</span> </div> <div id="waline" class="xbstack-comments__mount" data-waline-mount></div> <noscript> <p class="xbstack-comments__noscript"> 评论区需要启用 JavaScript 才能查看和发布评论。 </p> </noscript> </section>  </section> </main> <aside class="xb-article-side xb-article-v21-side" aria-label="文章导航" data-astro-cid-ce2bgkb3> <section class="xb-article-panel" data-astro-cid-ce2bgkb3> <h2 class="xb-article-panel__title" data-astro-cid-ce2bgkb3>本文目录</h2> <nav class="xb-v21-toc" aria-label="本文目录" data-astro-cid-ce2bgkb3> <a href="#pydantic-pax-是什么与-codexclaude-code-的区别及-agent-harness-的未来" data-astro-cid-ce2bgkb3>Pydantic Pax 是什么？与 Codex、Claude Code 的区别及 Agent Harness 的未来</a><a href="#1谁发布了-pax它与-pydantic-ai-的关系是什么" data-astro-cid-ce2bgkb3>1、谁发布了 Pax？它与 Pydantic AI 的关系是什么？</a><a href="#pydantic-的商业位置为什么开源验证库公司要做终端智能体" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>Pydantic 的商业位置：为什么开源验证库公司要做终端智能体</a><a href="#2固定版本的源码复核三个-wheel而不是一份产品说明" data-astro-cid-ce2bgkb3>2、固定版本的源码复核：三个 wheel，而不是一份产品说明</a><a href="#3pax-与-codexclaude-code-真正不同在哪里" data-astro-cid-ce2bgkb3>3、Pax 与 Codex、Claude Code 真正不同在哪里？</a><a href="#七款工具的定位矩阵比较的是控制方式不是功能数量" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>七款工具的定位矩阵：比较的是控制方式，不是功能数量</a><a href="#4多模型与会话迁移降低切换成本但不是消除锁定" data-astro-cid-ce2bgkb3>4、多模型与会话迁移：降低切换成本，但不是消除锁定</a><a href="#5上下文记忆与多模型回退真正影响长期任务的运行机制" data-astro-cid-ce2bgkb3>5、上下文、记忆与多模型回退：真正影响长期任务的运行机制</a><a href="#6官方测试921-美元对-2105-美元意味着什么" data-astro-cid-ce2bgkb3>6、官方测试：9.21 美元对 21.05 美元意味着什么？</a><a href="#7完整八模型数据与独立-pareto-分析" data-astro-cid-ce2bgkb3>7、完整八模型数据与独立 Pareto 分析</a><a href="#怎样建立可信的编码智能体测试" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>怎样建立可信的编码智能体测试</a><a href="#8code-mode少走几次模型往返代价是什么" data-astro-cid-ce2bgkb3>8、Code Mode：少走几次模型往返，代价是什么？</a><a href="#9工作区抽象流式工具执行与真实隔离" data-astro-cid-ce2bgkb3>9、工作区抽象、流式工具执行与真实隔离</a><a href="#10安全与恢复pax-最不能忽略的两个边界" data-astro-cid-ce2bgkb3>10、安全与恢复：Pax 最不能忽略的两个边界</a><a href="#安全治理不要把仓库文本提升为操作者指令" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>安全治理：不要把仓库文本提升为操作者指令</a><a href="#11会话步骤持久化与-durable-execution-的差异" data-astro-cid-ce2bgkb3>11、会话、步骤持久化与 Durable Execution 的差异</a><a href="#12给个人开发者与企业团队的选择建议" data-astro-cid-ce2bgkb3>12、给个人开发者与企业团队的选择建议</a><a href="#13独立复核结果与企业采用的阶段门禁" data-astro-cid-ce2bgkb3>13、独立复核结果与企业采用的阶段门禁</a><a href="#本站新增真实运行m1-pro-上的-code-mode-对照" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>本站新增真实运行：M1 Pro 上的 Code Mode 对照</a><a href="#八款模型在假设环境下的费用推演与硬件边界" class="xb-v21-toc-nested" data-astro-cid-ce2bgkb3>八款模型在假设环境下的费用推演与硬件边界</a><a href="#14harness-会成为操作系统吗这个类比的解释力和局限" data-astro-cid-ce2bgkb3>14、Harness 会成为操作系统吗：这个类比的解释力和局限</a><a href="#15未来harness-会成为独立竞争层吗" data-astro-cid-ce2bgkb3>15、未来：Harness 会成为独立竞争层吗？</a><a href="#16中长期商业竞争与三种可证伪情景" data-astro-cid-ce2bgkb3>16、中长期商业竞争与三种可证伪情景</a><a href="#结论" data-astro-cid-ce2bgkb3>结论</a> </nav> </section> <section class="xb-article-panel" data-astro-cid-ce2bgkb3> <h2 class="xb-article-panel__title" data-astro-cid-ce2bgkb3>文章工具</h2> <div class="xb-v21-toc" data-astro-cid-ce2bgkb3> <button type="button" data-copy-article data-astro-cid-ce2bgkb3><span data-astro-cid-ce2bgkb3>复制链接</span><span aria-hidden="true" data-astro-cid-ce2bgkb3>↗</span></button> <a href="/ai/tools-lab/" data-astro-cid-ce2bgkb3>返回专题 →</a> </div> </section> </aside> </div>  <script>
+  const bindArticleTools=()=>{document.querySelectorAll('[data-copy-article]').forEach((button)=>{if(button.dataset.ready)return;button.dataset.ready='1';button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(window.location.href);const original=button.querySelector('span')?.textContent;if(button.querySelector('span'))button.querySelector('span').textContent='已复制';setTimeout(()=>{if(button.querySelector('span'))button.querySelector('span').textContent=original||'复制链接'},1200)}catch{}})})};
+  const trackRelatedContentView=(section)=>{if(!section||section.dataset.viewTracked||!window.__ga4_human_verified||typeof window.xbTrackEvent!=='function')return false;section.dataset.viewTracked='1';window.xbTrackEvent('related_content_view',{event_category:'engagement',link_area:'related_content',link_position:section.getAttribute('data-related-slot')||'unknown',source_page_path:window.location.pathname});return true};
+  const bindRelatedContentViews=()=>{document.querySelectorAll('[data-analytics-area="related_content"]').forEach((section)=>{if(section.dataset.viewObserverReady)return;section.dataset.viewObserverReady='1';const observer=new IntersectionObserver((entries)=>{entries.forEach((entry)=>{if(!entry.isIntersecting||entry.intersectionRatio<0.35||section.dataset.viewTracked)return;if(trackRelatedContentView(section))observer.disconnect()})},{threshold:[0.35]});observer.observe(section)})};
+  const retryVisibleRelatedContentViews=()=>{document.querySelectorAll('[data-analytics-area="related_content"]').forEach((section)=>{if(section.dataset.viewTracked)return;const rect=section.getBoundingClientRect();const viewportHeight=window.innerHeight||document.documentElement.clientHeight;if(rect.bottom<=0||rect.top>=viewportHeight)return;const visible=Math.min(rect.bottom,viewportHeight)-Math.max(rect.top,0);if(visible/Math.max(rect.height,1)>=0.35)trackRelatedContentView(section)})};
+  const bindArticlePageTools=()=>{bindArticleTools();bindRelatedContentViews();retryVisibleRelatedContentViews()};document.addEventListener('astro:page-load',bindArticlePageTools);window.addEventListener('xb:ga4-human-verified',retryVisibleRelatedContentViews);bindArticlePageTools();
+</script> </main> <script>
+    function initProgress() {
+      const progressBar = document.getElementById('reading-progress');
+      if (!progressBar) return;
+      window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = scrolled + "%";
+      });
+    }
+    document.addEventListener('astro:page-load', initProgress);
+    initProgress();
+  </script>   </main> <footer class="xb-v21-footer mt-12 border-t border-[var(--xb-line)] bg-[var(--xb-surface)]"> <div class="xb-shell py-10 md:py-12"> <div class="grid gap-10 lg:grid-cols-[minmax(260px,0.9fr)_minmax(0,1.6fr)] lg:gap-16"> <div class="max-w-[430px]"> <a href="/" class="inline-flex items-center gap-2.5 font-black tracking-[-0.035em] text-[var(--xb-ink)]"> <span class="xb-brand-logo" data-xbstack-logo-motion="view" aria-hidden="true"> <span class="xb-brand-logo__variant inline-flex dark:hidden"> <img src="/favicon/logo-light-nav.svg" alt="" width="32" height="32" loading="lazy" decoding="async"> <span class="xb-brand-logo__shine" style="--xb-logo-mask: url(&#34;/favicon/logo-light-nav.svg&#34;)"></span> </span> <span class="xb-brand-logo__variant hidden dark:inline-flex"> <img src="/favicon/logo-dark-nav.svg" alt="" width="32" height="32" loading="lazy" decoding="async"> <span class="xb-brand-logo__shine" style="--xb-logo-mask: url(&#34;/favicon/logo-dark-nav.svg&#34;)"></span> </span> </span> <span class="text-[17px]">XBSTACK</span> </a> <p class="mt-5 text-[18px] font-bold leading-7 tracking-[-0.02em] text-[var(--xb-ink)]"> 在高处看世界，在底层堆资产。 </p> <p class="mt-3 text-[12px] leading-6 text-[var(--xb-muted)]"> 工程实践、可用产品、投资与阅读记录，以及旅行和户外现场。 </p> </div> <nav class="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-4" aria-label="页脚导航"> <div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">主题</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/ai/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">AI</a><a href="/products/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Products</a><a href="/horizon/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Insights</a><a href="/life/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Lens</a><a href="/about/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">About</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">AI 工程</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/ai/agent/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">Agents</a><a href="/ai/mcp/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">MCP</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">资源</h2> <div class="flex flex-col items-start gap-2.5"> <a href="/search/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">搜索</a><a href="/archive/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">归档</a><a href="/newsletter/#subscribe" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">小白周刊 · 订阅</a><a href="/rss.xml" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">RSS</a><a href="/friends/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">朋友与独立站</a><a href="https://github.com/xbstack" target="_blank" rel="noopener noreferrer" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">GitHub：@xbstack</a> </div> </div><div> <h2 class="mb-3 text-[12px] font-bold text-[var(--xb-ink)]">联系</h2> <div class="flex flex-col items-start gap-2.5"> <a href="mailto:xbstack@163.com" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">邮箱：xbstack@163.com</a><a href="/wechat/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 wechat-trigger" data-wechat-qr="/assets/qrcode_guizhou_outdoor.png">微信公众号：贵州户外</a><a href="/contact/" class="text-[12px] leading-5 text-[var(--xb-muted)] transition-colors hover:text-blue-600 dark:hover:text-blue-400 ">商务合作</a> </div> </div> </nav> </div> <div class="mt-9 flex flex-col gap-3 border-t border-[var(--xb-line)] pt-5 sm:flex-row sm:items-center sm:justify-between"> <div class="text-[10px] text-[var(--xb-faint)]">© 2026 XBSTACK. All rights reserved.</div> <div class="flex flex-wrap gap-x-4 gap-y-2"> <a href="/privacy/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">隐私政策</a><a href="/tos/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">服务条款</a><a href="/disclosure/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">免责声明</a><a href="/advertising/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">广告政策</a><a href="/cookies/" class="text-[10px] text-[var(--xb-faint)] transition-colors hover:text-[var(--xb-ink)]">Cookie 政策</a> </div> </div> <div class="mt-4 text-center text-[11px] leading-6 text-[var(--xb-faint)]"> <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--xb-ink)]">黔ICP备2026019006号-1</a> </div> </div> </footer> <!-- 桌面悬停卡：由全局脚本定位到当前公众号入口附近 --><div id="wechat-hover-card" class="fixed z-[9998] hidden w-[390px] pointer-events-none opacity-0 translate-y-2 transition-all duration-200" aria-hidden="true"> <div class="rounded-[30px] border border-white/15 bg-[#0d1728]/95 p-6 text-white shadow-[0_28px_80px_rgba(2,6,23,0.48)] backdrop-blur-2xl"> <div class="text-[10px] font-black uppercase tracking-[0.34em] text-orange-400">XBSTACK 微信公众号</div> <div class="mt-2 text-[24px] font-black tracking-tight">关注内容更新</div> <div class="mt-1 text-[12px] font-bold tracking-[0.12em] text-slate-400">AI 工程 · 产品构建 · 户外实践</div> <div class="mt-5 grid grid-cols-[148px_1fr] items-center gap-5"> <img id="wechat-hover-qr" data-src="/assets/qrcode_guizhou_outdoor.png" loading="lazy" decoding="async" width="360" height="360" alt="微信公众号贵州户外二维码" class="block aspect-square w-full object-contain"> <div class="space-y-3 text-[13px] font-bold leading-relaxed text-slate-300"> <p>贵州徒步与路线实测</p> <p>AI 工具与独立产品</p> <p>投资体系与长期复盘</p> </div> </div> <div class="mt-5 border-t border-white/10 pt-4 text-center text-[12px] font-black text-slate-300"> 点击查看完整名片 </div> </div> </div> <!-- 全局点击弹窗 --> <div id="wechat-modal" class="fixed inset-0 z-[10000] hidden items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="wechat-modal-title" aria-hidden="true"> <button id="wechat-modal-backdrop" type="button" aria-label="关闭微信公众号弹窗" class="absolute inset-0 cursor-default bg-slate-950/86 backdrop-blur-xl"></button> <div id="wechat-modal-content" class="relative max-h-[94vh] w-full max-w-[620px] scale-95 overflow-y-auto rounded-[38px] border border-slate-500/45 bg-[#0d1728] text-white opacity-0 shadow-[0_40px_140px_rgba(0,0,0,0.68)] transition-all duration-300 sm:rounded-[50px]"> <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"> <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px]"></div> <div class="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-orange-500/10 blur-[80px]"></div> </div> <button id="wechat-modal-close" type="button" aria-label="关闭微信公众号弹窗" class="absolute right-5 top-5 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 transition hover:bg-white/10 hover:text-white"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 352 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg> </button> <div class="relative z-10 px-6 pb-6 pt-10 sm:px-10 sm:pb-9 sm:pt-12"> <header class="text-center"> <div class="text-[10px] font-black uppercase tracking-[0.44em] text-orange-400 sm:text-xs">XBSTACK 微信公众号</div> <h2 id="wechat-modal-title" class="mt-4 text-3xl font-black tracking-tight text-white sm:text-[38px]" style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;">关注内容更新</h2> <p class="mt-3 text-sm font-bold tracking-[0.16em] text-slate-400 sm:text-base">AI 工程 · 产品构建 · 户外实践</p> </header> <div class="mt-8 grid items-center gap-7 sm:grid-cols-[210px_1fr] sm:gap-8"> <img id="wechat-modal-qr" data-src="/assets/qrcode_guizhou_outdoor.png" loading="lazy" decoding="async" width="360" height="360" alt="微信公众号贵州户外二维码" class="mx-auto block aspect-square w-full max-w-[210px] object-contain sm:max-w-none"> <div class="divide-y divide-white/10"> <div class="grid grid-cols-[38px_1fr] gap-3 py-3 first:pt-0"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M634.92 462.7l-288-448C341.03 5.54 330.89 0 320 0s-21.03 5.54-26.92 14.7l-288 448a32.001 32.001 0 0 0-1.17 32.64A32.004 32.004 0 0 0 32 512h576c11.71 0 22.48-6.39 28.09-16.67a31.983 31.983 0 0 0-1.17-32.63zM320 91.18L405.39 224H320l-64 64-38.06-38.06L320 91.18z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">户外徒步 · 贵州路线实探与分享</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">记录每一次出发，提供真实路况、补给、风险和下撤信息。</p> </div> </div> <div class="grid grid-cols-[38px_1fr] gap-3 py-3"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M278.9 511.5l-61-17.7c-6.4-1.8-10-8.5-8.2-14.9L346.2 8.7c1.8-6.4 8.5-10 14.9-8.2l61 17.7c6.4 1.8 10 8.5 8.2 14.9L293.8 503.3c-1.9 6.4-8.5 10.1-14.9 8.2zm-114-112.2l43.5-46.4c4.6-4.9 4.3-12.7-.8-17.2L117 256l90.6-79.7c5.1-4.5 5.5-12.3.8-17.2l-43.5-46.4c-4.5-4.8-12.1-5.1-17-.5L3.8 247.2c-5.1 4.7-5.1 12.8 0 17.5l144.1 135.1c4.9 4.6 12.5 4.4 17-.5zm327.2.6l144.1-135.1c5.1-4.7 5.1-12.8 0-17.5L492.1 112.1c-4.8-4.5-12.4-4.3-17 .5L431.6 159c-4.6 4.9-4.3 12.7.8 17.2L523 256l-90.6 79.7c-5.1 4.5-5.5 12.3-.8 17.2l43.5 46.4c4.5 4.9 12.1 5.1 17 .6z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">独立开发 · AI、工具与产品实战</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">从真实需求到上线复盘，持续构建可长期积累的数字产品。</p> </div> </div> <div class="grid grid-cols-[38px_1fr] gap-3 py-3 last:pb-0"> <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-base text-orange-400"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16zM464 96H345.94c-21.38 0-32.09 25.85-16.97 40.97l32.4 32.4L288 242.75l-73.37-73.37c-12.5-12.5-32.76-12.5-45.25 0l-68.69 68.69c-6.25 6.25-6.25 16.38 0 22.63l22.62 22.62c6.25 6.25 16.38 6.25 22.63 0L192 237.25l73.37 73.37c12.5 12.5 32.76 12.5 45.25 0l96-96 32.4 32.4c15.12 15.12 40.97 4.41 40.97-16.97V112c.01-8.84-7.15-16-15.99-16z"></path></svg></div> <div> <div class="text-sm font-black sm:text-[15px]">投资思考 · 复利、风险与长期主义</div> <p class="mt-1 text-[11px] font-bold leading-relaxed text-slate-400 sm:text-xs">分享投资体系、市场观察和个人决策复盘，不构成投资建议。</p> </div> </div> </div> </div> <div class="mt-6 text-center text-sm font-black leading-relaxed text-slate-300"> 扫码关注微信公众号 <span class="text-orange-400">“贵州户外”</span> <p class="mt-1 text-xs font-bold text-slate-500">获取户外路线、独立开发与投资复盘的最新内容</p> </div> <button id="wechat-modal-confirm" type="button" class="mt-7 w-full rounded-[24px] bg-white px-6 py-4 text-sm font-black tracking-[0.12em] text-slate-950 shadow-xl transition hover:-translate-y-0.5 hover:bg-slate-100 active:translate-y-0"> 知道了 / CLOSE </button> </div> </div> </div> <script type="module">const b="/assets/qrcode_guizhou_outdoor.png";function f(){const t=document.getElementById("wechat-modal"),y=document.getElementById("wechat-modal-backdrop"),d=document.getElementById("wechat-modal-content"),u=document.getElementById("wechat-modal-close"),E=document.getElementById("wechat-modal-confirm"),c=document.getElementById("wechat-modal-qr"),o=document.getElementById("wechat-hover-card"),i=document.getElementById("wechat-hover-qr");if(!t||!d||!o)return;let l=0;const p=window.matchMedia("(hover: hover) and (pointer: fine)"),w=e=>{const n=e.dataset.wechatQr||b;c&&c.src!==new URL(n,window.location.href).href&&(c.src=n),i&&i.src!==new URL(n,window.location.href).href&&(i.src=n)},s=()=>{window.clearTimeout(l),o.classList.add("opacity-0","translate-y-2"),l=window.setTimeout(()=>o.classList.add("hidden"),180)},v=e=>{if(!p.matches||!t.classList.contains("hidden"))return;window.clearTimeout(l),w(e),o.classList.remove("hidden");const n=e.getBoundingClientRect(),L=390,B=310,r=12;let m=n.left+n.width/2-L/2;m=Math.max(r,Math.min(m,window.innerWidth-L-r));let h=n.top-B-12;h<r&&(h=n.bottom+12),o.style.left=`${m}px`,o.style.top=`${h}px`,requestAnimationFrame(()=>o.classList.remove("opacity-0","translate-y-2"))},I=e=>{s(),w(e),t.classList.remove("hidden"),t.classList.add("flex"),t.setAttribute("aria-hidden","false"),document.body.style.overflow="hidden",requestAnimationFrame(()=>{d.classList.remove("scale-95","opacity-0"),d.classList.add("scale-100","opacity-100"),u?.focus()})},a=()=>{d.classList.remove("scale-100","opacity-100"),d.classList.add("scale-95","opacity-0"),window.setTimeout(()=>{t.classList.add("hidden"),t.classList.remove("flex"),t.setAttribute("aria-hidden","true"),document.body.style.overflow=""},260)};document.querySelectorAll(".wechat-trigger").forEach(e=>{e.dataset.wechatInitialized!=="true"&&(e.dataset.wechatInitialized="true",e.addEventListener("mouseenter",()=>v(e)),e.addEventListener("mouseleave",s),e.addEventListener("focus",()=>v(e)),e.addEventListener("blur",s),e.addEventListener("click",n=>{n.preventDefault(),I(e)}))}),t.dataset.wechatInitialized!=="true"&&(t.dataset.wechatInitialized="true",u?.addEventListener("click",a),E?.addEventListener("click",a),y?.addEventListener("click",a),document.addEventListener("keydown",e=>{e.key==="Escape"&&!t.classList.contains("hidden")&&a()}),window.addEventListener("scroll",s,{passive:!0}),window.addEventListener("resize",s))}f();document.addEventListener("astro:page-load",f);</script> <script>
+      const showLanguageSwitchNotice = () => {
+        let payload = null;
+        try {
+          const raw = sessionStorage.getItem('xbstack_language_notice');
+          if (!raw) return;
+          payload = JSON.parse(raw);
+          sessionStorage.removeItem('xbstack_language_notice');
+        } catch (error) {
+          return;
+        }
+
+        const notice = document.getElementById('language-switch-notice');
+        if (!notice) return;
+
+        const targetIsEnglish = String(payload?.language || '').toLowerCase().startsWith('en');
+        notice.textContent = targetIsEnglish
+          ? 'This page does not have an English version yet. You have been taken to the English home page.'
+          : '当前页面暂未提供中文版本，已为你打开中文首页。';
+        notice.classList.remove('hidden');
+        window.setTimeout(() => notice.classList.add('hidden'), 4800);
+      };
+
+      document.addEventListener('astro:page-load', showLanguageSwitchNotice);
+      showLanguageSwitchNotice();
+    </script> </body> </html>
